@@ -1,21 +1,96 @@
-type Props = {}
+import { useForm, Controller } from "react-hook-form";
+import { TextField, Button, Box } from "@mui/material";
 
-export default function Login({ }: Props) {
-    return (
-        <div className="flex flex-col justify-center items-center gap-5">
-            <h2 className="text-center text-4xl mb-5 font-bold p-5 md:p-0">Iniciar Sesión</h2>
+function Login() {
+  const { handleSubmit, control } = useForm();
 
-            <form method="POST" action="{{ route('login') }}" className="flex flex-col gap-5 w-1/4" noValidate>
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="username" className="block font-medium text-sm text-gray-700 uppercase">Nombre de Usuario:</label>
-                    <input autoComplete="off" name="username" id="username" placeholder="Coloque su nombre de usuario" type="text" className="border border-black p-1.5 focus:border-indigo-500 focus:ring-indigo-500 rounded" />
-                </div>
+  const onSubmit = () => {
+    console.log('Inciando sesión...');
+  };
 
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="password" className="block font-medium text-sm text-gray-700 uppercase">Contraseña:</label>
-                    <input autoComplete="off" name="password" id="password" placeholder="Coloque su contraseña" type="password" className="border border-black p-1.5 focus:border-indigo-500 focus:ring-indigo-500 rounded" />
-                </div>
+  return (
+    <div className="w-2/3 md:w-1/2 mx-auto">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 400,
+              backgroundColor: "white",
+              padding: 4,
+              borderRadius: 2,
+              boxShadow: 3,
+            }}
+          >
+            <h2 className="text-center text-2xl font-bold mb-5">Iniciar Sesión</h2>
+    
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Email */}
+              <Controller
+                name="username"
+                control={control}
+                defaultValue=""
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    label="Nombre de usuario"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    error={!!error}
+                    helperText={error ? error.message : ""}
+                    autoComplete="off"
+                  />
+                )}
+                rules={{
+                  required: "El nombre de usuario es obligatorio",
+                  pattern: {
+                    value: /^(?!.*\.\.)(?!.*\.$)(?!.*\._)(?!^_)(?!^\.)(?!.*_$)[a-zA-Z0-9._]{3,16}$/,
+                    message: "Introduce un nombre de usuario válido",
+                  },
+                }}
+              />
+    
+              {/* Contraseña */}
+              <Controller
+                name="password"
+                control={control}
+                defaultValue=""
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    label="Contraseña"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    type="password"
+                    error={!!error}
+                    helperText={error ? error.message : ""}
+                  />
+                )}
+                rules={{ required: "La contraseña es obligatoria" }}
+              />
+    
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ marginTop: 2 }}
+              >
+                Iniciar Sesión
+              </Button>
             </form>
-        </div>
-    )
+          </Box>
+        </Box>
+    </div>
+  );
 }
+
+export default Login;

@@ -8,11 +8,11 @@ export default function PublicHeader() {
         <Logo />
 
         <div className="flex flex-row gap-5 items-center justify-center">
-          <Link to={'/login'} >
+          <Link to={"/login"} className="text-gray-500 font-bold uppercase">
             Iniciar Sesión
           </Link>
         </div>
       </div>
     </header>
-  )
+  );
 }
