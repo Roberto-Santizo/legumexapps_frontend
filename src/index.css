@@ -10,6 +10,14 @@
   @apply bg-white divide-y divide-gray-200;
 }
 
+.table-header {
+  @apply text-white uppercase text-lg;
+}
+
+.record{
+  @apply p-2 text-xl text-center;
+}
+
 .button {
-  @apply text-white font-bold py-2 px-4 rounded;
+  @apply text-white font-bold py-2 px-4 rounded cursor-pointer uppercase;
 }

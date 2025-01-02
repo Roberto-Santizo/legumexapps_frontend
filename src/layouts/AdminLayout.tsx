@@ -29,9 +29,6 @@ export default function AdminLayout() {
         </aside>
 
         <main className="mx-auto p-10 w-full md:ml-32">  
-          <h1 className="text-2xl font-bold md:text-4xl">
-            Dashboard Administración
-          </h1>
           <Outlet />
         </main>
       </div>
