@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
 import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
-import { users } from "../../../data/data";
-
+import { useAppStore } from "../../../stores/useAppStore";
+import { useEffect } from "react";
+import Spinner from "../../../components/Spinner";
 
 export default function IndexUsers() {
+  const fetchUsers = useAppStore((state) => state.fetchUsers);
+  const users = useAppStore((state) => state.users);
+  const loading = useAppStore((state) => state.loading);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   return (
     <>
       <h2 className="font-bold text-4xl">Administración de Usuarios</h2>
@@ -40,42 +49,64 @@ export default function IndexUsers() {
         </div>
 
         <div className="p-2 h-96 overflow-y-auto mt-10">
+          {loading ? (
+            <Spinner />
+          ) : (
             <table className="table">
-                <thead className="bg-gray-400">
-                    <tr className="text-xs md:text-sm rounded">
-                        <th scope="col" className="table-header">Nombre</th>
-                        <th scope="col" className="table-header">Nombre de Usuario</th>
-                        <th scope="col" className="table-header">Correo</th>
-                        <th scope="col" className="table-header">Rol</th>
-                        <th scope="col" className="table-header">Estado</th>
-                        <th scope="col" className="table-header">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody className="table-body">
-                    {users.map((user) => 
-                      <tr className="text-xl" key={user.id}>
-                        <td className="record">
-                          <span>{user.name}</span>
-                        </td>
-                        <td className="record">
-                          <span>{user.username}</span>
-                        </td>
-                        <td className="record">
-                          <span>{user.email}</span>
-                        </td>
-                        <td className="record">
-                          <span>{user.role.name}</span>
-                        </td>
-                        <td className="record">
-                          <span>{user.estado}</span>
-                        </td>
-                        <td className="record">
-                          <PencilIcon className="w-8 cursor-pointer hover:text-gray-500"/>
-                        </td>
-                      </tr>
-                    )}
-                </tbody>
+              <thead className="bg-gray-400">
+                <tr className="text-xs md:text-sm rounded">
+                  <th scope="col" className="table-header">
+                    Nombre
+                  </th>
+                  <th scope="col" className="table-header">
+                    Nombre de Usuario
+                  </th>
+                  <th scope="col" className="table-header">
+                    Correo
+                  </th>
+                  {/* <th scope="col" className="table-header">Rol</th> */}
+                  <th scope="col" className="table-header">
+                    Estado
+                  </th>
+                  <th scope="col" className="table-header">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="table-body">
+                {users.map((user) => (
+                  <tr className="text-xl" key={user.id}>
+                    <td className="record">
+                      <span className="font-medium">{user.name}</span>
+                    </td>
+                    <td className="record">
+                      <span className="font-medium">{user.username}</span>
+                    </td>
+                    <td className="record">
+                      <span className="font-medium">{user.email}</span>
+                    </td>
+                    {/* <td className="record">
+                    <span className="font-medium">{user.role.name}</span>
+                  </td>*/}
+                    <td className="record">
+                      <span
+                        className={
+                          user.status
+                            ? "bg-green-500 button"
+                            : "bg-red-500 button"
+                        }
+                      >
+                        {user.status ? "Activo" : "Inactivo"}
+                      </span>
+                    </td>
+                    <td className="record">
+                      <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
+          )}
         </div>
       </div>
     </>
