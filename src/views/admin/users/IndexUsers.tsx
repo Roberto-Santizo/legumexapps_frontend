@@ -3,11 +3,13 @@ import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect } from "react";
 import Spinner from "../../../components/Spinner";
+import ShowErrorAPI from "../../../components/ShowErrorAPI";
 
 export default function IndexUsers() {
   const fetchUsers = useAppStore((state) => state.fetchUsers);
   const users = useAppStore((state) => state.users);
   const loading = useAppStore((state) => state.loading);
+  const error = useAppStore((state) => state.error);
 
   useEffect(() => {
     fetchUsers();
@@ -49,9 +51,11 @@ export default function IndexUsers() {
         </div>
 
         <div className="p-2 h-96 overflow-y-auto mt-10">
-          {loading ? (
-            <Spinner />
-          ) : (
+          {loading && <Spinner />}
+          {error && (
+            <ShowErrorAPI />
+          )} 
+          {!loading && !error && (
             <table className="table">
               <thead className="bg-gray-400">
                 <tr className="text-xs md:text-sm rounded">
@@ -64,7 +68,7 @@ export default function IndexUsers() {
                   <th scope="col" className="table-header">
                     Correo
                   </th>
-                  {/* <th scope="col" className="table-header">Rol</th> */}
+                  <th scope="col" className="table-header">Rol</th>
                   <th scope="col" className="table-header">
                     Estado
                   </th>
@@ -77,17 +81,17 @@ export default function IndexUsers() {
                 {users.map((user) => (
                   <tr className="text-xl" key={user.id}>
                     <td className="record">
-                      <span className="font-medium">{user.name}</span>
+                      <p>{user.name}</p>
                     </td>
                     <td className="record">
-                      <span className="font-medium">{user.username}</span>
+                      <p>{user.username}</p>
                     </td>
                     <td className="record">
-                      <span className="font-medium">{user.email}</span>
+                      <p>{user.email}</p>
                     </td>
-                    {/* <td className="record">
-                    <span className="font-medium">{user.role.name}</span>
-                  </td>*/}
+                    <td className="record">
+                      <p>{user.roles.map((role) => role.name).join(", ")}</p>
+                    </td>
                     <td className="record">
                       <span
                         className={

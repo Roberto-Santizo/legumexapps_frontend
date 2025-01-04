@@ -1,11 +1,13 @@
 import { StateCreator } from "zustand"
-import { User } from "../types"
-import { getUsers } from "../services/UsersServices"
+import { DraftUser, User } from "../types"
+import { createUser, getUsers } from "../services/UsersServices"
 
 export type UsersSliceType = {
     users: User[],
     loading: boolean,
-    fetchUsers: () => Promise<void>
+    error: boolean,
+    fetchUsers: () => Promise<void>,
+    createUser: (user: DraftUser) => Promise<void>
    
 }
 
@@ -13,13 +15,23 @@ export type UsersSliceType = {
 export const createUsersSlice : StateCreator<UsersSliceType> = (set) => ({
     users: [],
     loading: false,
+    error:false,
     fetchUsers: async () => {
         set({ loading: true })
-        const response = await getUsers()
-        set({
-            users: response?.users || [],
-            loading: false
-        })
+        try {
+            const response = await getUsers()
+            set({
+                users: response?.data,
+                loading: false,
+                error: false
+            })
+        } catch (error) {
+            set({ error: true, loading: false })
+        }
+        
     },
+    createUser: async(user) => {
+        const response = await createUser(user);
+    }
     
 })

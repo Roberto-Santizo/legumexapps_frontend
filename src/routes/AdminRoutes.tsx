@@ -3,21 +3,46 @@ import AdminDashboard from "../views/admin/AdminDashboard";
 import AdminLayout from "../layouts/AdminLayout";
 import IndexUsers from "../views/admin/users/IndexUsers";
 import CreateUser from "../views/admin/users/CreateUser";
+import ProtectedRoute from "../components/ProtectedRoutes";
 
 export default function AdminRoutes() {
   return (
     <>
       <Route element={<AdminLayout />}>
-        <Route path="/dashboard/administracion" element={<AdminDashboard />} index />
+        <Route
+          path="/dashboard/administracion"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+          index
+        />
       </Route>
 
       <Route element={<AdminLayout />}>
-        <Route path="/administracion/usuarios" element={<IndexUsers />} index />
+        <Route
+          path="/administracion/usuarios"
+          element={
+            <ProtectedRoute>
+              <IndexUsers />
+            </ProtectedRoute>
+          }
+          index
+        />
       </Route>
 
       <Route element={<AdminLayout />}>
-        <Route path="/administracion/usuarios/crear" element={<CreateUser />} index />
+        <Route
+          path="/administracion/usuarios/crear"
+          element={
+            <ProtectedRoute>
+              <CreateUser />
+            </ProtectedRoute>
+          }
+          index
+        />
       </Route>
     </>
-  )
+  );
 }

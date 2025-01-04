@@ -4,9 +4,11 @@ import { UserCircleIcon } from "@heroicons/react/16/solid";
 import Logo from "../components/Logo";
 import AdminNavegation from "../components/menus-navegations/AdminNavegation";
 import UserMobile from "../components/UserMobile";
+import { useAppStore } from "../stores/useAppStore";
 
 export default function AdminLayout() {
   const [open, setOpen] = useState(false);
+  const user = useAppStore((state) => state.AuthUser);
   return (
     <>
       <header className="header flex flex-row h-24 justify-between bg-gray-400  p-5 text-white w-full fixed top-0 left-0 z-10 items-center">
@@ -15,7 +17,7 @@ export default function AdminLayout() {
           <div className="flex flex-row gap-5 justify-center items-center"></div>
         </div>
         <div className="flex justify-center items-center gap-5">
-          <p className="text-xl font-bold">Hola: Nombre de Usuario</p>
+          <p className="text-xl font-bold">Hola: {user.name}</p>
           <UserCircleIcon
             className="w-12 hover:text-gray-200 cursor-pointer"
             onClick={() => setOpen(true)}

@@ -11,11 +11,11 @@
 }
 
 .table-header {
-  @apply text-white uppercase text-lg;
+  @apply text-white uppercase text-left p-2;
 }
 
 .record{
-  @apply p-2 text-xl text-center;
+  @apply text-black text-base p-2;
 }
 
 .button {

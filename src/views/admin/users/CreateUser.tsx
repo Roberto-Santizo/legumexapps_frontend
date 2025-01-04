@@ -3,8 +3,11 @@ import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import { roles, permissions } from "../../../data/data";
 import Error from "../../../components/Error";
 import { DraftUser } from "../../../types";
+import { useAppStore } from "../../../stores/useAppStore";
 
 export default function CreateUser() {
+  const createUser = useAppStore((state) => state.createUser);
+
   const {
     register,
     handleSubmit,
@@ -12,7 +15,7 @@ export default function CreateUser() {
   } = useForm<DraftUser>();
 
   const RegisterUser = (data: DraftUser) => {
-    console.log(data);
+    createUser(data);
   };
 
   return (
@@ -72,7 +75,6 @@ export default function CreateUser() {
             placeholder={"Correo Electronico"}
             className="border border-black p-3"
             {...register("email", {
-              required: "El email es obligatorio",
               pattern: {
                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                 message: "El formato del email es inválido",
@@ -109,7 +111,7 @@ export default function CreateUser() {
           <select
             id="role"
             className="border border-black p-3"
-            {...register("role", { required: "El rol es obligatorio" })}
+            {...register("roles", { required: "El rol es obligatorio" })}
           >
             <option value="">--SELECCIONE UNA OPCIÓN--</option>
             {roles.map((role) => (
@@ -119,12 +121,15 @@ export default function CreateUser() {
             ))}
           </select>
 
-          {errors.role && <Error>{errors.role?.message?.toString()}</Error>}
+          {errors.roles && <Error>{errors.roles?.message?.toString()}</Error>}
         </div>
 
         <fieldset className="shadow p-5">
           <legend className="text-3xl font-bold">Permisos</legend>
-          <div className="flex flex-col gap-5">
+          {errors.permissions && (
+            <Error>{errors.permissions.message?.toString()}</Error>
+          )}
+          <div className="flex flex-col gap-5 mt-5">
             {permissions.map((permission) => (
               <div
                 className="w-full flex flex-row gap-5 p-5 odd:bg-gray-300 odd:text-white shadow-xl"
@@ -145,9 +150,6 @@ export default function CreateUser() {
               </div>
             ))}
           </div>
-          {errors.permissions && (
-            <Error>{errors.permissions.message?.toString()}</Error>
-          )}
         </fieldset>
 
         <input
