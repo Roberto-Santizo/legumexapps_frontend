@@ -5,7 +5,7 @@ import clienteAxios from "../config/axios";
 export type AuthSliceType = {
     loadingAuth: boolean,
     logedIn: boolean,
-    errors: string[],
+    Autherrors: string[],
     AuthUser: AuthAPIUser,
     login: (user: AuthUser) => Promise<void>,
     logOut: () => Promise<void>
@@ -15,7 +15,7 @@ export type AuthSliceType = {
 export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
     loadingAuth: false,
     logedIn: sessionStorage.getItem('AUTH_TOKEN') ? true : false,
-    errors: [],
+    Autherrors: [],
     AuthUser: sessionStorage.getItem('AUTH_USER') ? JSON.parse(sessionStorage.getItem('AUTH_USER') as string) : {},
     login: async (user) => {
         const url = 'http://127.0.0.1:8000/api/login';
@@ -25,9 +25,9 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
             const { data } = await clienteAxios.post(url, user);
             sessionStorage.setItem('AUTH_TOKEN', data.token);
             sessionStorage.setItem('AUTH_USER', JSON.stringify(data.user));
-            set({ logedIn: true, loadingAuth: false, errors:[], AuthUser: data.user });
+            set({ logedIn: true, loadingAuth: false, Autherrors:[], AuthUser: data.user });
         } catch (error : any) {
-            set({ errors: Object.values(error.response.data.errors) , loadingAuth: false });
+            set({ Autherrors: Object.values(error.response.data.errors) , loadingAuth: false });
         }
     },
     logOut: async () => {

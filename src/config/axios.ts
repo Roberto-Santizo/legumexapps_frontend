@@ -5,7 +5,9 @@ const clienteAxios : AxiosInstance = axios.create({
     headers:{
         'Accept': 'application/json',
         'x-Requested-With': 'XMLHttpRequest',
+        "Content-Type": 'apllication/json',
     },
+    withCredentials: true,
 })
 
 export default clienteAxios;

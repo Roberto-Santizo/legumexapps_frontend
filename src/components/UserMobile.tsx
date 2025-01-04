@@ -2,6 +2,7 @@ import { XCircleIcon } from "@heroicons/react/16/solid";
 import { Dispatch, SetStateAction } from "react";
 import { useAppStore } from "../stores/useAppStore";
 import Spinner from "./Spinner";
+import { toast } from "react-toastify";
 
 type UserMobileProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -12,7 +13,7 @@ export default function UserMobile({ setOpen }: UserMobileProps) {
   const logout = useAppStore((state) => state.logOut);
   const loadingAuth = useAppStore((state) => state.loadingAuth);
   const handleClick = ()=> {
-    logout();
+    logout().then(() => toast.success("Sesión cerrada correctamente"));
   }
   return (
     <div className="bg-opacity-70 fixed top-0 right-0 m-4 flex justify-center items-center z-50">

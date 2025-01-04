@@ -10,7 +10,7 @@ function Login() {
   const { handleSubmit, control } = useForm<AuthUser>();
   const login = useAppStore((state) => state.login);
   const loadingAuth = useAppStore((state) => state.loadingAuth);
-  const errors = useAppStore((state) => state.errors);
+  const errors = useAppStore((state) => state.Autherrors);
   const navigate = useNavigate();
 
   const createUser = (data: AuthUser) => {

@@ -8,8 +8,8 @@ import ShowErrorAPI from "../../../components/ShowErrorAPI";
 export default function IndexUsers() {
   const fetchUsers = useAppStore((state) => state.fetchUsers);
   const users = useAppStore((state) => state.users);
-  const loading = useAppStore((state) => state.loading);
-  const error = useAppStore((state) => state.error);
+  const loading = useAppStore((state) => state.loadingUser);
+  const error = useAppStore((state) => state.UserError);
 
   useEffect(() => {
     fetchUsers();
@@ -87,7 +87,7 @@ export default function IndexUsers() {
                       <p>{user.username}</p>
                     </td>
                     <td className="record">
-                      <p>{user.email}</p>
+                      <p>{user.email }</p>
                     </td>
                     <td className="record">
                       <p>{user.roles.map((role) => role.name).join(", ")}</p>

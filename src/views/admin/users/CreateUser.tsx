@@ -4,9 +4,16 @@ import { roles, permissions } from "../../../data/data";
 import Error from "../../../components/Error";
 import { DraftUser } from "../../../types";
 import { useAppStore } from "../../../stores/useAppStore";
+import Spinner from "../../../components/Spinner";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function CreateUser() {
   const createUser = useAppStore((state) => state.createUser);
+  const UserErrors = useAppStore((state) => state.usersErrors);
+  const loadingUser = useAppStore((state) => state.loadingUser);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -15,7 +22,12 @@ export default function CreateUser() {
   } = useForm<DraftUser>();
 
   const RegisterUser = (data: DraftUser) => {
-    createUser(data);
+    createUser(data).then(() => { 
+      toast.success("Usuario creado correctamente");
+      navigate("/administracion/usuarios");
+    }).catch(()=>{
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   };
 
   return (
@@ -26,6 +38,9 @@ export default function CreateUser() {
         className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
         onSubmit={handleSubmit(RegisterUser)}
       >
+        {UserErrors
+          ? UserErrors.map((error, index) => <Error key={index}>{error}</Error>)
+          : null}
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="name">
             Nombre:
@@ -152,11 +167,16 @@ export default function CreateUser() {
           </div>
         </fieldset>
 
-        <input
+        <Button
+          disabled={loadingUser}
           type="submit"
-          value={"Guardar"}
-          className="button bg-blue-500 hover:bg-blue-600 w-full"
-        />
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ marginTop: 2 }}
+        >
+          {loadingUser ? <Spinner /> : <p className="font-bold text-lg">Crear Usuario</p>}
+        </Button>
       </form>
     </>
   );
