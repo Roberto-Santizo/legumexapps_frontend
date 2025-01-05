@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand"
 import { DraftUser, User } from "../types"
-import { getUsers } from "../services/UsersServices"
+import { getUsers } from "../services/usersServices"
 import clienteAxios from "../config/axios"
 
 export type UsersSliceType = {

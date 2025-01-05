@@ -1,5 +1,6 @@
 import {z} from 'zod';
-import { PermissionAPIResponseSchema, UserAPIResponseSchema, RoleAPIResponseSchema,UserAuthAPIResponseSchema } from '../utils/users-schema';
+import { PermissionAPIResponseSchema, UserAPIResponseSchema,UserAuthAPIResponseSchema } from '../utils/users-schema';
+import { RoleAPIResponseSchema } from '../utils/roles-schema';
 
 export type User = z.infer<typeof UserAPIResponseSchema>;
 export type UserCreated = z.infer<typeof UserAuthAPIResponseSchema>;

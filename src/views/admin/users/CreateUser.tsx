@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import ReturnLink from "../../../components/utilities-components/ReturnLink";
-import { roles, permissions } from "../../../data/data";
+import { permissions } from "../../../data/data";
 import Error from "../../../components/Error";
 import { DraftUser } from "../../../types";
 import { useAppStore } from "../../../stores/useAppStore";
@@ -8,13 +8,19 @@ import Spinner from "../../../components/Spinner";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 export default function CreateUser() {
   const createUser = useAppStore((state) => state.createUser);
+  const fetchRoles = useAppStore((state) => state.fetchRoles); 
+  const roles = useAppStore((state) => state.roles);
   const UserErrors = useAppStore((state) => state.usersErrors);
   const loadingUser = useAppStore((state) => state.loadingUser);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchRoles();
+  },[]);
   const {
     register,
     handleSubmit,

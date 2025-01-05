@@ -42,7 +42,3 @@ export const UsersAPIResponseSchema = z.object({
     data: z.array(UserAPIResponseSchema)
 })
 
-export const RoleAPIResponseSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-});

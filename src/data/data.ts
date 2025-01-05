@@ -1,27 +1,4 @@
-import { Permission, Role, User } from "../types";
-
-const users: User[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    username: 'johndoe',
-    email: 'johndoe@example.com',
-    role: {
-      name: 'Admin',
-    },
-    estado: '1',
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    username: 'janesmith',
-    email: 'janesmith@example.com',
-    role: {
-      name: 'User',
-    },
-    estado: '0',
-  },
-];
+import { Permission, Role } from "../types";
 
 const permissions : Permission[] = [
   {
@@ -57,4 +34,4 @@ const roles : Role[] = [
   }
 ]
 
-export { users, permissions, roles };
+export { permissions, roles };
