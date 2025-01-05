@@ -4,6 +4,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import IndexUsers from "../views/admin/users/IndexUsers";
 import CreateUser from "../views/admin/users/CreateUser";
 import ProtectedRoute from "../components/ProtectedRoutes";
+import IndexRoles from "../views/admin/roles/IndexRoles";
 
 export default function AdminRoutes() {
   return (
@@ -38,6 +39,18 @@ export default function AdminRoutes() {
           element={
             <ProtectedRoute>
               <CreateUser />
+            </ProtectedRoute>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<AdminLayout />}>
+        <Route
+          path="/administracion/roles"
+          element={
+            <ProtectedRoute>
+              <IndexRoles />
             </ProtectedRoute>
           }
           index

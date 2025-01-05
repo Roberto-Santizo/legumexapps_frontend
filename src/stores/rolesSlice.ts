@@ -19,14 +19,17 @@ export const createRolesSlice: StateCreator<RolesSliceType> = (set) => ({
     rolesError: false,
     fetchRoles: async () => {
         try {
+            set({loadingRoles: true});
             const response = await getRoles();
             set({
                 roles: response?.data,
                 loadingRoles: false,
                 rolesError: false
             })
+            set({loadingRoles:false, rolesError:false});
         } catch (error) {
             console.log(error);
+            set({loadingRoles:false, rolesError:true});
         }
         
         
