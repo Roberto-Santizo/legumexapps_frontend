@@ -3,9 +3,11 @@ import { devtools } from 'zustand/middleware'
 import { UsersSliceType, createUsersSlice } from './usersSlice';
 import { AuthSliceType, createAuthSlice } from './authSlice';
 import { RolesSliceType, createRolesSlice } from './rolesSlice';
+import { PermissionsSliceType, createPermissionsSlice } from './permissionsSlice';
 
-export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType>()(devtools((...a) => ({
+export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType>()(devtools((...a) => ({
     ...createUsersSlice(...a),
     ...createAuthSlice(...a),
     ...createRolesSlice(...a),
+    ...createPermissionsSlice(...a),
 })))

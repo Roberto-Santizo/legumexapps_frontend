@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import ReturnLink from "../../../components/utilities-components/ReturnLink";
-import { permissions } from "../../../data/data";
 import Error from "../../../components/Error";
 import { DraftUser } from "../../../types";
 import { useAppStore } from "../../../stores/useAppStore";
@@ -13,6 +12,8 @@ import { useEffect } from "react";
 export default function CreateUser() {
   const createUser = useAppStore((state) => state.createUser);
   const fetchRoles = useAppStore((state) => state.fetchRoles); 
+  const fetchPermissions = useAppStore((state) => state.fetchPermissions); 
+  const permissions = useAppStore((state) => state.permissions); 
   const roles = useAppStore((state) => state.roles);
   const UserErrors = useAppStore((state) => state.usersErrors);
   const loadingUser = useAppStore((state) => state.loadingUser);
@@ -20,7 +21,9 @@ export default function CreateUser() {
 
   useEffect(() => {
     fetchRoles();
+    fetchPermissions();
   },[]);
+  
   const {
     register,
     handleSubmit,

@@ -1,15 +1,15 @@
 import clienteAxios from '../config/axios';
-import { RolesAPIResponseSchema } from '../utils/roles-schema';
+import { PermissionsAPIResponseSchema } from '../utils/permissions-schema';
 
-export async function getRoles() {
+export async function getPermissions() {
     try {
-        const url = 'http://127.0.0.1:8000/api/roles';
+        const url = 'http://127.0.0.1:8000/api/permissions';
         const { data } = await clienteAxios(url,{
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
             }
         })
-        const result = RolesAPIResponseSchema.safeParse(data)
+        const result = PermissionsAPIResponseSchema.safeParse(data);
         if (result.success) {
             return result.data
         }

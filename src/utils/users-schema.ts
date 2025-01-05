@@ -1,10 +1,5 @@
 import { z } from 'zod'
 
-export const PermissionAPIResponseSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-});
-
 export const UserAuthAPIResponseSchema = z.object({
     id: z.number(),
     name: z.string(),
