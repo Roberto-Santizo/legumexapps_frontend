@@ -42,7 +42,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
                 }
             });
-
+            
             set({ loadingUser: false, usersErrors: [], UserError: false });
         } catch (error: any) {
             set({ usersErrors: Object.values(error.response.data.errors), UserError: true, loadingUser: false });

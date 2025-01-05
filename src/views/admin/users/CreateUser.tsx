@@ -31,7 +31,9 @@ export default function CreateUser() {
   } = useForm<DraftUser>();
 
   const RegisterUser = (data: DraftUser) => {
-    createUser(data).then(() => { 
+    console.log(data);
+    createUser(data)
+    .then(() => { 
       toast.success("Usuario creado correctamente");
       navigate("/administracion/usuarios");
     }).catch(()=>{
@@ -139,7 +141,7 @@ export default function CreateUser() {
           >
             <option value="">--SELECCIONE UNA OPCIÓN--</option>
             {roles.map((role) => (
-              <option value={role.id} key={role.id}>
+              <option value={role.name} key={role.id}>
                 {role.name}
               </option>
             ))}
@@ -161,14 +163,14 @@ export default function CreateUser() {
               >
                 <input
                   type="checkbox"
-                  id={permission.id}
+                  id={permission.name}
                   value={permission.id}
                   {...register("permissions", {
                     required: "Selecciona al menos un permiso",
                   })}
                   className="w-10"
                 />
-                <label className="font-bold text-xl" htmlFor={permission.id}>
+                <label className="font-bold text-xl" htmlFor={permission.name}>
                   {permission.name}
                 </label>
               </div>
