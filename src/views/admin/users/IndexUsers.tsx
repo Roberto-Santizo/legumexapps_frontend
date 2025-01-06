@@ -74,7 +74,7 @@ export default function IndexUsers() {
                       <p>{user.email}</p>
                     </td>
                     <td className="record">
-                      <p>{user.roles.map((role) => role.name).join(", ")}</p>
+                      <p>{user.roles}</p>
                     </td>
                     <td className="record">
                       <span
@@ -88,7 +88,9 @@ export default function IndexUsers() {
                       </span>
                     </td>
                     <td className="record">
-                      <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
+                      <Link to={`/usuarios/editar/${user.id}`}>
+                        <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
+                      </Link>
                     </td>
                   </tr>
                 ))}

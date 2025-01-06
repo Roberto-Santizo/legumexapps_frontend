@@ -8,6 +8,7 @@ import Dashboard from "../components/Dashboard";
 import IndexPermisos from "../views/admin/permisos/IndexPermisos";
 import CreateRole from "../views/admin/roles/CreateRole";
 import CreatePermiso from "../views/admin/permisos/CreatePermiso";
+import EditUser from "../views/admin/users/EditUser";
 
 export default function AdminRoutes() {
   return (
@@ -42,6 +43,18 @@ export default function AdminRoutes() {
           element={
             <ProtectedRoute>
               <CreateUser />
+            </ProtectedRoute>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/usuarios/editar/:id"
+          element={
+            <ProtectedRoute>
+              <EditUser />
             </ProtectedRoute>
           }
           index

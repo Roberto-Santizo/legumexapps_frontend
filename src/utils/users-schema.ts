@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const UserAuthAPIResponseSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
     email: z.string() || z.null(),
     username: z.string(),
@@ -15,15 +15,12 @@ export const UserAuthAPIResponseSchema = z.object({
 });
 
 export const UserAPIResponseSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
     email: z.string() || z.null(),
     username: z.string(),
     status: z.number(),
-    roles: z.array(z.object({
-        'id': z.number(),
-        'name': z.string(),
-    })),
+    roles: z.string(),
     permissions: z.array(z.object({
         id: z.number(),
         name: z.string(),
