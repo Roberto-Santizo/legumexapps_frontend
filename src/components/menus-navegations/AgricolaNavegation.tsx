@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { HomeIcon, UserCog, User, UserCheck } from "lucide-react";
+import { BookCheck, ListCheck, Map, Warehouse } from "lucide-react";
 
-export default function AdminNavegation() {
+export default function AgricolaNavegation() {
   return (
     <>
-      <nav className="gap-2 py-2 flex flex-col w-full">
+      <nav className="gap-5 p-4 flex flex-col items-center justify-center w-full">
         <NavLink
           to={"/dashboard"}
           className={({ isActive }) =>
@@ -13,44 +13,44 @@ export default function AdminNavegation() {
             }`
           }
         >
-          <HomeIcon className="w-8" />
-          <p className="text-sm font-bold">Dashboard</p>
+          <BookCheck className="w-8" />
+          <p className="text-sm font-bold">Tareas Finca</p>
         </NavLink>
 
         <NavLink
-          to={"/usuarios"}
+          to={"/dashboard"}
           className={({ isActive }) =>
             `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
               isActive ? "bg-gray-200" : "hover:bg-gray-200"
             }`
           }
         >
-          <User className="w-8" />
-          <p className="text-sm font-bold">Usuarios</p>
+          <ListCheck className="w-8" />
+          <p className="text-sm font-bold">Tareas</p>
         </NavLink>
 
         <NavLink
-          to={"/roles"}
+          to={"/dashboard"}
           className={({ isActive }) =>
             `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
               isActive ? "bg-gray-200" : "hover:bg-gray-200"
             }`
           }
         >
-          <UserCog className="w-8" />
-          <p className="text-sm font-bold">Roles</p>
+          <Map className="w-8" />
+          <p className="text-sm font-bold">Lotes</p>
         </NavLink>
 
         <NavLink
-          to={"/permisos"}
+          to={"/dashboard"}
           className={({ isActive }) =>
             `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
               isActive ? "bg-gray-200" : "hover:bg-gray-200"
             }`
           }
         >
-          <UserCheck className="w-8" />
-          <p className="text-sm font-bold">Permisos</p>
+          <Warehouse className="w-8" />
+          <p className="text-sm font-bold">Insumos</p>
         </NavLink>
       </nav>
     </>

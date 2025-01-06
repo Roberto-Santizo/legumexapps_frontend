@@ -1,19 +1,26 @@
+//EXTERNAS
 import { useForm } from "react-hook-form";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
-import Error from "../../../components/Error";
-import { DraftUser } from "../../../types";
-import { useAppStore } from "../../../stores/useAppStore";
-import Spinner from "../../../components/Spinner";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
+//HOOKS
 import { useEffect } from "react";
+import { useAppStore } from "../../../stores/useAppStore";
+
+//TYPES
+import { DraftUser } from "../../../types";
+
+//COMPONENTES
+import ReturnLink from "../../../components/utilities-components/ReturnLink";
+import Error from "../../../components/Error";
+import Spinner from "../../../components/Spinner";
 
 export default function CreateUser() {
   const createUser = useAppStore((state) => state.createUser);
-  const fetchRoles = useAppStore((state) => state.fetchRoles); 
-  const fetchPermissions = useAppStore((state) => state.fetchPermissions); 
-  const permissions = useAppStore((state) => state.permissions); 
+  const fetchRoles = useAppStore((state) => state.fetchRoles);
+  const fetchPermissions = useAppStore((state) => state.fetchPermissions);
+  const permissions = useAppStore((state) => state.permissions);
   const roles = useAppStore((state) => state.roles);
   const UserErrors = useAppStore((state) => state.usersErrors);
   const loadingUser = useAppStore((state) => state.loadingUser);
@@ -22,8 +29,8 @@ export default function CreateUser() {
   useEffect(() => {
     fetchRoles();
     fetchPermissions();
-  },[]);
-  
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -33,18 +40,19 @@ export default function CreateUser() {
   const RegisterUser = (data: DraftUser) => {
     console.log(data);
     createUser(data)
-    .then(() => { 
-      toast.success("Usuario creado correctamente");
-      navigate("/administracion/usuarios");
-    }).catch(()=>{
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+      .then(() => {
+        toast.success("Usuario creado correctamente");
+        navigate("/usuarios");
+      })
+      .catch(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
   };
 
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Usuario</h2>
-      <ReturnLink url="/administracion/usuarios" />
+      <ReturnLink url="/usuarios" />
       <form
         className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
         onSubmit={handleSubmit(RegisterUser)}
@@ -186,7 +194,11 @@ export default function CreateUser() {
           fullWidth
           sx={{ marginTop: 2 }}
         >
-          {loadingUser ? <Spinner /> : <p className="font-bold text-lg">Crear Usuario</p>}
+          {loadingUser ? (
+            <Spinner />
+          ) : (
+            <p className="font-bold text-lg">Crear Usuario</p>
+          )}
         </Button>
       </form>
     </>

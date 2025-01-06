@@ -7,10 +7,7 @@ export const UserAuthAPIResponseSchema = z.object({
     username: z.string(),
     status: z.number(),
     password: z.string(),
-    roles: z.array(z.object({
-        'id': z.number(),
-        'name': z.string(),
-    })),
+    roles: z.string(),
     permissions: z.array(z.object({
         id: z.number(),
         name: z.string(),

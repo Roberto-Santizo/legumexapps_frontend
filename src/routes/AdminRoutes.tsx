@@ -1,29 +1,29 @@
 import { Route } from "react-router-dom";
-import AdminDashboard from "../views/admin/AdminDashboard";
-import AdminLayout from "../layouts/AdminLayout";
+import Layout from "../layouts/Layout";
 import IndexUsers from "../views/admin/users/IndexUsers";
 import CreateUser from "../views/admin/users/CreateUser";
 import ProtectedRoute from "../components/ProtectedRoutes";
 import IndexRoles from "../views/admin/roles/IndexRoles";
+import Dashboard from "../components/Dashboard";
 
 export default function AdminRoutes() {
   return (
     <>
-      <Route element={<AdminLayout />}>
+      <Route element={<Layout />}>
         <Route
-          path="/dashboard/administracion"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <AdminDashboard />
+              <Dashboard />
             </ProtectedRoute>
           }
           index
         />
       </Route>
 
-      <Route element={<AdminLayout />}>
+      <Route element={<Layout />}>
         <Route
-          path="/administracion/usuarios"
+          path="/usuarios"
           element={
             <ProtectedRoute>
               <IndexUsers />
@@ -33,9 +33,9 @@ export default function AdminRoutes() {
         />
       </Route>
 
-      <Route element={<AdminLayout />}>
+      <Route element={<Layout />}>
         <Route
-          path="/administracion/usuarios/crear"
+          path="/usuarios/crear"
           element={
             <ProtectedRoute>
               <CreateUser />
@@ -45,9 +45,9 @@ export default function AdminRoutes() {
         />
       </Route>
 
-      <Route element={<AdminLayout />}>
+      <Route element={<Layout />}>
         <Route
-          path="/administracion/roles"
+          path="/roles"
           element={
             <ProtectedRoute>
               <IndexRoles />
