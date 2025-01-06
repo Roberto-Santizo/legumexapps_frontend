@@ -6,6 +6,8 @@ import { formatDate } from "../../../helpers";
 //COMPONENTES
 import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
+import { Link } from "react-router-dom";
+import { PlusIcon } from "lucide-react";
 
 export default function IndexPermisos() {
   const fetchPermissions = useAppStore((state) => state.fetchPermissions);
@@ -20,6 +22,15 @@ export default function IndexPermisos() {
   return (
     <>
       <h2 className="font-bold text-4xl">Administración de Permisos</h2>
+      <div className="flex flex-row justify-end gap-5">
+        <Link
+          to="/permisos/crear"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+        >
+          <PlusIcon className="w-8" />
+          <p>Crear Permiso</p>
+        </Link>
+      </div>
 
       <div className="mt-10">
         {loadingPermissions && <Spinner />}

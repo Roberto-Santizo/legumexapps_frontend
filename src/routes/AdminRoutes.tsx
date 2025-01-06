@@ -7,6 +7,7 @@ import IndexRoles from "../views/admin/roles/IndexRoles";
 import Dashboard from "../components/Dashboard";
 import IndexPermisos from "../views/admin/permisos/IndexPermisos";
 import CreateRole from "../views/admin/roles/CreateRole";
+import CreatePermiso from "../views/admin/permisos/CreatePermiso";
 
 export default function AdminRoutes() {
   return (
@@ -77,6 +78,18 @@ export default function AdminRoutes() {
           element={
             <ProtectedRoute>
               <IndexPermisos />
+            </ProtectedRoute>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/permisos/crear"
+          element={
+            <ProtectedRoute>
+              <CreatePermiso />
             </ProtectedRoute>
           }
           index

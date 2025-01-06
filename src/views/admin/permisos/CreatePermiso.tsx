@@ -1,30 +1,36 @@
+//HOOKS
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useAppStore } from "../../../stores/useAppStore";
+import { toast } from "react-toastify";
+
+
+//TYPES
+import { DraftPermssion } from "../../../types";
+
+//COMPONENTES
 import { Button } from "@mui/material";
 import ReturnLink from "../../../components/utilities-components/ReturnLink";
-import { useForm } from "react-hook-form";
-import { DraftRole } from "../../../types";
-import { useAppStore } from "../../../stores/useAppStore";
 import Error from "../../../components/Error";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import Spinner from "../../../components/Spinner";
 
-export default function CreateRole() {
-  const createUser = useAppStore((state) => state.createRole);
-  const roleErrores = useAppStore((state) => state.rolesErrors);
-  const loadingRoles = useAppStore((state) => state.loadingRoles);
+export default function CreatePermiso() {
+  const createPermiso = useAppStore((state) => state.createPermission);
+  const permisosErrores = useAppStore((state) => state.permissionsErrors);
+  const loadingPermission = useAppStore((state) => state.loadingPermissions);
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<DraftRole>();
+  } = useForm<DraftPermssion>();
 
-  const RegisterUser = (data: DraftRole) => {
-    createUser(data)
+  const RegisterPermission = (data: DraftPermssion) => {
+    createPermiso(data)
       .then(() => {
-        toast.success("Usuario creado correctamente");
-        navigate("/roles");
+        toast.success("Permiso creado correctamente");
+        navigate("/permisos");
       })
       .catch(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -33,16 +39,16 @@ export default function CreateRole() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear Rol</h2>
-      <ReturnLink url="/roles" />
+      <h2 className="text-4xl font-bold">Crear Permiso</h2>
+      <ReturnLink url="/permisos" />
 
       <div>
         <form
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
-          onSubmit={handleSubmit(RegisterUser)}
+          onSubmit={handleSubmit(RegisterPermission)}
         >
-          {roleErrores
-            ? roleErrores.map((error, index) => (
+          {permisosErrores
+            ? permisosErrores.map((error, index) => (
                 <Error key={index}>{error}</Error>
               ))
             : null}
@@ -55,7 +61,7 @@ export default function CreateRole() {
               autoComplete="off"
               id="name"
               type="text"
-              placeholder={"Nombre del rol"}
+              placeholder={"Nombre del permiso"}
               className="border border-black p-3"
               {...register("name", { required: "El nombre es obligatorio" })}
             />
@@ -63,17 +69,17 @@ export default function CreateRole() {
           </div>
 
           <Button
-            disabled={loadingRoles}
+            disabled={loadingPermission}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loadingRoles ? (
+            {loadingPermission ? (
               <Spinner />
             ) : (
-              <p className="font-bold text-lg">Crear Rol</p>
+              <p className="font-bold text-lg">Crear Permiso</p>
             )}
           </Button>
         </form>
