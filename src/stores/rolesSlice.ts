@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand"
-import { Role } from "../types"
+import { DraftRole, Role } from "../types"
 import { getRoles } from "../services/rolesServices"
+import clienteAxios from "../config/axios"
 
 export type RolesSliceType = {
     roles: Role[],
@@ -8,7 +9,7 @@ export type RolesSliceType = {
     rolesError: boolean,
     rolesErrors: string[],
     fetchRoles: () => Promise<void>,
-
+    createRole: (rol : DraftRole) => Promise<void>
 }
 
 
@@ -33,5 +34,20 @@ export const createRolesSlice: StateCreator<RolesSliceType> = (set) => ({
         }
         
         
+    },
+    createRole: async (rol) => {
+        try {
+            set({loadingRoles:true});
+            const url = 'http://127.0.0.1:8000/api/roles';
+            await clienteAxios.post(url, rol, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
+                }
+            });
+            set({ loadingRoles: false, rolesErrors: [], rolesError: false });
+        } catch (error : any) {
+            set({rolesErrors: Object.values(error.response.data.errors), rolesError:true ,loadingRoles:false});
+            throw error;
+        }
     },
 })

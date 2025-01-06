@@ -38,7 +38,6 @@ export default function CreateUser() {
   } = useForm<DraftUser>();
 
   const RegisterUser = (data: DraftUser) => {
-    console.log(data);
     createUser(data)
       .then(() => {
         toast.success("Usuario creado correctamente");
