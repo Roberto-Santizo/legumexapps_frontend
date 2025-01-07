@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const AuthUser = z.object({
+export const UserAuthAPIResponseSchema = z.object({
     id: z.string(),
     name: z.string(),
     email: z.string() || z.null(),
