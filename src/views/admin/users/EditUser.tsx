@@ -9,7 +9,6 @@ import { DraftUser } from "../../../types";
 
 //COMPONENTES
 import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { Button } from "@mui/material";
 import Error from "../../../components/Error";
 import ReturnLink from "../../../components/utilities-components/ReturnLink";
