@@ -9,9 +9,13 @@ import { useAppStore } from "../../../stores/useAppStore";
 //COMPONENTES
 import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
+import { User } from "../../../types";
 
 export default function IndexUsers() {
   const fetchUsers = useAppStore((state) => state.fetchUsers);
+  const changeActiveUser = useAppStore((state) => state.changeActiveUser);
+  const loadingChangeStatus = useAppStore((state) => state.loadingChangeStatus);
+  const updatingId = useAppStore((state) => state.updatingId);
   const users = useAppStore((state) => state.users);
   const loading = useAppStore((state) => state.loadingUser);
   const error = useAppStore((state) => state.UserError);
@@ -19,6 +23,10 @@ export default function IndexUsers() {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const handleChangeUserStatus = (id: User["id"]) => {
+    changeActiveUser(id);
+  };
 
   return (
     <>
@@ -76,7 +84,7 @@ export default function IndexUsers() {
                     <td className="record">
                       <p>{user.roles}</p>
                     </td>
-                    <td className="record">
+                    <td className="record"  onClick={() => handleChangeUserStatus(user.id)}>
                       <span
                         className={
                           user.status
@@ -84,7 +92,22 @@ export default function IndexUsers() {
                             : "bg-red-500 button"
                         }
                       >
-                        {user.status ? "Activo" : "Inactivo"}
+                        <button
+                          disabled={loadingChangeStatus} 
+                          className={`w-24 ${
+                            loadingChangeStatus
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
+                        >
+                          {(loadingChangeStatus && updatingId === user.id) ? (
+                            <Spinner />
+                          ) : user.status ? (
+                            "ACTIVO"
+                          ) : (
+                            "INACTIVO"
+                          )}
+                        </button>
                       </span>
                     </td>
                     <td className="record">

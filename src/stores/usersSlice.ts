@@ -2,18 +2,21 @@ import { StateCreator } from "zustand"
 import { DraftUser, User } from "../types"
 import { getUsers } from "../services/UsersServices"
 import clienteAxios from "../config/axios"
-import { User as UserSchema } from "../utils/users-schema"
+import { Users, User as UserSchema } from "../utils/users-schema"
 
 export type UsersSliceType = {
     users: User[],
     userEditing: User,
     loadingUser: boolean,
     UserError: boolean,
+    loadingChangeStatus: boolean,
     usersErrors: string[],
+    updatingId: string,
     fetchUsers: () => Promise<void>,
     createUser: (user: DraftUser) => Promise<void>,
     getUser: (id: User['id']) => Promise<void>,
-    updateUser: (id : User['id'], user : DraftUser) => Promise<void>
+    updateUser: (id: User['id'], user: DraftUser) => Promise<void>
+    changeActiveUser: (id: User['id']) => Promise<void>
 
 }
 
@@ -22,8 +25,10 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
     users: [],
     userEditing: {} as User,
     loadingUser: false,
+    loadingChangeStatus: false,
     usersErrors: [],
     UserError: false,
+    updatingId: '',
     fetchUsers: async () => {
         set({ loadingUser: true })
         try {
@@ -47,7 +52,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
                 }
             });
-            
+
             set({ loadingUser: false, usersErrors: [], UserError: false });
         } catch (error: any) {
             set({ usersErrors: Object.values(error.response.data.errors), UserError: true, loadingUser: false });
@@ -58,16 +63,16 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
         set({ loadingUser: true });
         const url = `http://127.0.0.1:8000/api/users/${id}`;
         try {
-            const {data} = await clienteAxios(url, {
+            const { data } = await clienteAxios(url, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
                 }
             });
-            
+
             const result = UserSchema.safeParse(data.data);
 
-            if(result.success){
-                set({ loadingUser: false, usersErrors: [], UserError: false, userEditing: result.data});
+            if (result.success) {
+                set({ loadingUser: false, usersErrors: [], UserError: false, userEditing: result.data });
             }
         } catch (error: any) {
             set({ usersErrors: Object.values(error.response.data.errors), UserError: true, loadingUser: false });
@@ -75,26 +80,50 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
         }
     },
 
-    updateUser: async (id,user) => {
+    updateUser: async (id, user) => {
         set({ loadingUser: true });
         const url = `http://127.0.0.1:8000/api/users/${id}`;
         try {
-            const {data} = await clienteAxios.put(url, user, {
+            const { data } = await clienteAxios.put(url, user, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
                 }
             });
-            
+
             const result = UserSchema.safeParse(data.data);
 
-            if(result.success){
-                set({ loadingUser: false, usersErrors: [], UserError: false, userEditing: {} as User});
+            if (result.success) {
+                set({ loadingUser: false, usersErrors: [], UserError: false, userEditing: {} as User });
+            }
+        } catch (error: any) {
+            set({ usersErrors: Object.values(error.response.data.errors), UserError: true, loadingUser: false });
+            throw error;
+        }
+    },
+    changeActiveUser: async (id) => {
+        set({ loadingChangeStatus: true, updatingId: id});
+        const url = `http://127.0.0.1:8000/api/users/${id}/status`;
+        try {
+            const { data } = await clienteAxios.patch(
+                url, 
+                { status: 1 }, 
+                { 
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`,
+                    },
+                }
+            );
+
+            const result = Users.safeParse(data);
+
+            if (result.success) {
+                set({ loadingChangeStatus: false, usersErrors: [], UserError: false , users:data.data, updatingId:''});
             }
         } catch (error: any) {
             set({ usersErrors: Object.values(error.response.data.errors), UserError: true, loadingUser: false });
             throw error;
         }
     }
-   
+
 
 })
