@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-export const RoleAPIResponseSchema = z.object({
+export const Role = z.object({
     id: z.number(),
     name: z.string(),
     created_at: z.string(),
     updated_at: z.string()
 });
 
-export const RolesAPIResponseSchema = z.object({
-    data: z.array(RoleAPIResponseSchema)
+export const Roles = z.object({
+    data: z.array(Role)
 })

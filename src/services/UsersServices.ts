@@ -1,4 +1,4 @@
-import { UsersAPIResponseSchema } from '../utils/users-schema';
+import { Users } from '../utils/users-schema';
 import clienteAxios from '../config/axios';
 
 export async function getUsers() {
@@ -9,7 +9,7 @@ export async function getUsers() {
                 Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
             }
         })
-        const result = UsersAPIResponseSchema.safeParse(data)
+        const result =  Users.safeParse(data)
         if (result.success) {
             return result.data
         }

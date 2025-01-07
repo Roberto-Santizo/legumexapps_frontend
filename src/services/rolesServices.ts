@@ -1,5 +1,5 @@
 import clienteAxios from '../config/axios';
-import { RolesAPIResponseSchema } from '../utils/roles-schema';
+import { Roles } from '../utils/roles-schema';
 
 export async function getRoles() {
     try {
@@ -9,7 +9,7 @@ export async function getRoles() {
                 Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
             }
         })
-        const result = RolesAPIResponseSchema.safeParse(data)
+        const result = Roles.safeParse(data)
         if (result.success) {
             return result.data
         }

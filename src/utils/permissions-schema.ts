@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const PermissionAPIResponseSchema = z.object({
+export const Permission = z.object({
     id: z.number(),
     name: z.string(),
     created_at: z.string(),
@@ -8,6 +8,6 @@ export const PermissionAPIResponseSchema = z.object({
 });
 
 
-export const PermissionsAPIResponseSchema = z.object({
-    data: z.array(PermissionAPIResponseSchema)
+export const Permissions = z.object({
+    data: z.array(Permission)
 })

@@ -2,7 +2,7 @@ import { StateCreator } from "zustand"
 import { DraftUser, User } from "../types"
 import { getUsers } from "../services/UsersServices"
 import clienteAxios from "../config/axios"
-import { UserAPIResponseSchema } from "../utils/users-schema"
+import { User as UserSchema } from "../utils/users-schema"
 
 export type UsersSliceType = {
     users: User[],
@@ -64,7 +64,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                 }
             });
             
-            const result = UserAPIResponseSchema.safeParse(data.data);
+            const result = UserSchema.safeParse(data.data);
 
             if(result.success){
                 set({ loadingUser: false, usersErrors: [], UserError: false, userEditing: result.data});
@@ -85,7 +85,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                 }
             });
             
-            const result = UserAPIResponseSchema.safeParse(data.data);
+            const result = UserSchema.safeParse(data.data);
 
             if(result.success){
                 set({ loadingUser: false, usersErrors: [], UserError: false, userEditing: {} as User});

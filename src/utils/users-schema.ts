@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const UserAuthAPIResponseSchema = z.object({
+export const AuthUser = z.object({
     id: z.string(),
     name: z.string(),
     email: z.string() || z.null(),
@@ -14,7 +14,7 @@ export const UserAuthAPIResponseSchema = z.object({
     }))
 });
 
-export const UserAPIResponseSchema = z.object({
+export const User = z.object({
     id: z.string(),
     name: z.string(),
     email: z.string() || z.null(),
@@ -27,7 +27,7 @@ export const UserAPIResponseSchema = z.object({
     }))
 })
 
-export const UsersAPIResponseSchema = z.object({
-    data: z.array(UserAPIResponseSchema)
+export const Users = z.object({
+    data: z.array(User)
 })
 

@@ -1,5 +1,5 @@
 import clienteAxios from '../config/axios';
-import { PermissionsAPIResponseSchema } from '../utils/permissions-schema';
+import { Permissions } from '../utils/permissions-schema';
 
 export async function getPermissions() {
     try {
@@ -9,7 +9,7 @@ export async function getPermissions() {
                 Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
             }
         })
-        const result = PermissionsAPIResponseSchema.safeParse(data);
+        const result = Permissions.safeParse(data);
         if (result.success) {
             return result.data
         }
