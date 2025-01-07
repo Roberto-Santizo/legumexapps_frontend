@@ -1,14 +1,27 @@
+import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
-import IndexUsers from "../views/admin/users/IndexUsers";
-import CreateUser from "../views/admin/users/CreateUser";
 import ProtectedRoute from "../components/ProtectedRoutes";
-import IndexRoles from "../views/admin/roles/IndexRoles";
-import Dashboard from "../components/Dashboard";
-import IndexPermisos from "../views/admin/permisos/IndexPermisos";
-import CreateRole from "../views/admin/roles/CreateRole";
-import CreatePermiso from "../views/admin/permisos/CreatePermiso";
-import EditUser from "../views/admin/users/EditUser";
+import Spinner from "../components/Spinner";
+
+const Dashboard = lazy(() => import("../components/Dashboard"));
+
+//RUTAS DE USUARIOS
+const CreateUser = lazy(() => import("../views/admin/users/CreateUser"));
+const IndexUsers = lazy(() => import("../views/admin/users/IndexUsers"));
+const EditUser = lazy(() => import("../views/admin/users/EditUser"));
+
+//RUTAS DE PERMISOS
+const IndexPermisos = lazy(
+  () => import("../views/admin/permisos/IndexPermisos")
+);
+const CreatePermiso = lazy(
+  () => import("../views/admin/permisos/CreatePermiso")
+);
+
+//RUTAS DE ROLES
+const IndexRoles = lazy(() => import("../views/admin/roles/IndexRoles"));
+const CreateRole = lazy(() => import("../views/admin/roles/CreateRole"));
 
 export default function AdminRoutes() {
   return (
@@ -17,95 +30,90 @@ export default function AdminRoutes() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            </Suspense>
           }
           index
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
           path="/usuarios"
           element={
-            <ProtectedRoute>
-              <IndexUsers />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <IndexUsers />
+              </ProtectedRoute>
+            </Suspense>
           }
-          index
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
           path="/usuarios/crear"
           element={
-            <ProtectedRoute>
-              <CreateUser />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <CreateUser />
+              </ProtectedRoute>
+            </Suspense>
           }
-          index
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
           path="/usuarios/editar/:id"
           element={
-            <ProtectedRoute>
-              <EditUser />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <EditUser />
+              </ProtectedRoute>
+            </Suspense>
           }
-          index
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
           path="/roles"
           element={
-            <ProtectedRoute>
-              <IndexRoles />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <IndexRoles />
+              </ProtectedRoute>
+            </Suspense>
           }
-          index
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
           path="/roles/crear"
           element={
-            <ProtectedRoute>
-              <CreateRole />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <CreateRole />
+              </ProtectedRoute>
+            </Suspense>
           }
-          index
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
           path="/permisos"
           element={
-            <ProtectedRoute>
-              <IndexPermisos />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <IndexPermisos />
+              </ProtectedRoute>
+            </Suspense>
           }
-          index
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
           path="/permisos/crear"
           element={
-            <ProtectedRoute>
-              <CreatePermiso />
-            </ProtectedRoute>
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <CreatePermiso />
+              </ProtectedRoute>
+            </Suspense>
           }
-          index
         />
       </Route>
     </>
