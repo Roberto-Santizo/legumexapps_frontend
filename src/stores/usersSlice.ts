@@ -12,7 +12,8 @@ export type UsersSliceType = {
     usersErrors: string[],
     fetchUsers: () => Promise<void>,
     createUser: (user: DraftUser) => Promise<void>,
-    getUser: (id: User['id']) => Promise<void>
+    getUser: (id: User['id']) => Promise<void>,
+    updateUser: (id : User['id'], user : DraftUser) => Promise<void>
 
 }
 
@@ -73,6 +74,27 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
             throw error;
         }
     },
+
+    updateUser: async (id,user) => {
+        set({ loadingUser: true });
+        const url = `http://127.0.0.1:8000/api/users/${id}`;
+        try {
+            const {data} = await clienteAxios.put(url, user, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
+                }
+            });
+            
+            const result = UserAPIResponseSchema.safeParse(data.data);
+
+            if(result.success){
+                set({ loadingUser: false, usersErrors: [], UserError: false, userEditing: {} as User});
+            }
+        } catch (error: any) {
+            set({ usersErrors: Object.values(error.response.data.errors), UserError: true, loadingUser: false });
+            throw error;
+        }
+    }
    
 
 })
