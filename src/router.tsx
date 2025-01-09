@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes } from "react-router-dom";
 import PublicRoutes from "./routes/PublicRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
+import AgricolaRoutes from "./routes/AgricolaRoutes";
 
 export default function AppRouter() {
     return (
@@ -8,6 +9,7 @@ export default function AppRouter() {
             <Routes>
                 {PublicRoutes()}
                 {AdminRoutes()}
+                {AgricolaRoutes()}
             </Routes>
         </BrowserRouter>
     )
