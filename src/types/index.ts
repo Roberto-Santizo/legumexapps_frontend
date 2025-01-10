@@ -3,6 +3,7 @@ import { User,UserAuthAPIResponseSchema } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
 import { Tarea } from '../utils/tareas-schema';
+import { Crop, Plantation } from '../utils/plantation-schema';
 
 //PERMISOS
 export type Permission = z.infer<typeof Permission>;
@@ -25,3 +26,9 @@ export type AuthUser = {
 //TAREAS
 export type Tarea = z.infer<typeof Tarea>
 export type DraftTarea = Omit<Tarea, 'id' >
+
+//CULTIVOS
+export type Crop = z.infer<typeof Crop>
+
+//CPDS
+export type Plantation = z.infer<typeof Plantation>;

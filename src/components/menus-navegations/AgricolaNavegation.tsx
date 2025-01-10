@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { BookCheck, ListCheck, Map, Warehouse } from "lucide-react";
+import { BookCheck, BookXIcon, ListCheck, Map, Warehouse } from "lucide-react";
 
 export default function AgricolaNavegation() {
   return (
@@ -27,6 +27,19 @@ export default function AgricolaNavegation() {
         <ListCheck className="w-8" />
         <p className="text-sm font-bold">Tareas</p>
       </NavLink>
+
+      <NavLink
+        to={"/cdps"}
+        className={({ isActive }) =>
+          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
+            isActive ? "bg-gray-200" : "hover:bg-gray-200"
+          }`
+        }
+      >
+        <BookXIcon className="w-8" />
+        <p className="text-sm font-bold">Control Plantación</p>
+      </NavLink>
+
 
       <NavLink
         to={"/lotes"}
