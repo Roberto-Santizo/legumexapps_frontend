@@ -1,21 +1,36 @@
+//DEPENDENCIAS
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+
+//ESTADO GLOBAL
+import { useAppStore } from "../../../stores/useAppStore";
+
+//COMPONENTES
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import Spinner from "../../../components/Spinner";
 import { Button } from "@mui/material";
-import { useForm } from "react-hook-form";
-import { DraftTarea } from "../../../types";
-import Error from "../../../components/Error";
 import ReturnLink from "../../../components/utilities-components/ReturnLink";
-import { toast } from "react-toastify";
+import Error from "../../../components/Error";
+
+//TYPES
+import { DraftTarea } from "../../../types";
 
 export default function EditTarea() {
+  //FETCH TAREA
   const { id } = useParams();
   const getTarea = useAppStore((state) => state.getTarea);
+
+  //LOADING STATES
   const loadingTarea = useAppStore((state) => state.loadingTareas);
-  const errorTarea = useAppStore((state) => state.errorTareas);
+  const loadingUpdateTarea = useAppStore((state) => state.loadingUpdateTarea);
+
+  //ERROR STATES
+  const errorGetTarea = useAppStore((state) => state.errorGetTarea);
+  const errorUpdateTarea = useAppStore((state) => state.errorUpdateTarea);
   const errorsTareas = useAppStore((state) => state.errorsTareas);
+
   const tarea = useAppStore((state) => state.editingTarea);
   const update = useAppStore((state) => state.updateTarea);
   const navigate = useNavigate();
@@ -55,25 +70,29 @@ export default function EditTarea() {
   };
   return (
     <>
-      {!loadingTarea && !errorTarea && (
+      {!loadingTarea && !errorGetTarea && (
         <>
           <h2 className="text-4xl font-bold">Editar Tarea {tarea.name}</h2>
           <ReturnLink url="/tareas" />
         </>
       )}
       {loadingTarea && <Spinner />}
-      {!loadingTarea && errorTarea && <ShowErrorAPI />}
 
-      {errorsTareas
-        ? errorsTareas.map((error, index) => <Error key={index}>{error}</Error>)
-        : null}
+      {!loadingTarea && errorGetTarea && <ShowErrorAPI />}
 
-      {!loadingTarea && !errorTarea && (
+      {!loadingTarea && !errorGetTarea && (
         <div>
           <form
             className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
             onSubmit={handleSubmit(updateTarea)}
           >
+            {errorUpdateTarea &&
+              (errorsTareas
+                ? errorsTareas.map((error, index) => (
+                    <Error key={index}>{error}</Error>
+                  ))
+                : null)}
+
             <div className="flex flex-col gap-2">
               <label className="text-lg font-bold uppercase" htmlFor="name">
                 Nombre:
@@ -124,14 +143,14 @@ export default function EditTarea() {
             </div>
 
             <Button
-              disabled={loadingTarea}
+              disabled={loadingUpdateTarea}
               type="submit"
               variant="contained"
               color="primary"
               fullWidth
               sx={{ marginTop: 2 }}
             >
-              {loadingTarea ? (
+              {loadingUpdateTarea ? (
                 <Spinner />
               ) : (
                 <p className="font-bold text-lg">Actualizar Tarea</p>

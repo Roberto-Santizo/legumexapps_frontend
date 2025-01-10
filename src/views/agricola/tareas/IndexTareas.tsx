@@ -6,12 +6,12 @@ import { Link } from "react-router-dom";
 //COMPONENTES
 import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import { Edit, Eye, PlusIcon } from "lucide-react";
+import { Edit, PlusIcon } from "lucide-react";
 
 export default function IndexTareas() {
   const fetchTareas = useAppStore((state) => state.fetchTareas);
   const loadingTareas = useAppStore((state) => state.loadingTareas);
-  const errorTareas = useAppStore((state) => state.errorTareas);
+  const errorTareas = useAppStore((state) => state.errorFetchTareas);
   const tareas = useAppStore((state) => state.tareas);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function IndexTareas() {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-8" />
-          <p>Crear Usuario</p>
+          <p>Crear Tarea</p>
         </Link>
       </div>
 
@@ -66,7 +66,10 @@ export default function IndexTareas() {
                     <p>{tarea.code}</p>
                   </td>
                   <td className="record flex gap-2">
-                    <Link to={`/tareas/edit/${tarea.id}`} className="hover:text-gray-400">
+                    <Link
+                      to={`/tareas/edit/${tarea.id}`}
+                      className="hover:text-gray-400"
+                    >
                       <Edit />
                     </Link>
                   </td>

@@ -1,11 +1,17 @@
 import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
+
+//TYPES
 import { Tarea as TareaSchema, Tareas } from "../utils/tareas-schema";
 import { DraftTarea, Tarea } from "../types";
 
 export type TareasSliceType = {
     loadingTareas: boolean
-    errorTareas: boolean
+    loadingUpdateTarea:boolean
+    errorFetchTareas: boolean
+    errorCreateTarea: boolean
+    errorUpdateTarea: boolean
+    errorGetTarea: boolean
     errorsTareas: string[]
     tareas: Tarea[]
     editingTarea: Tarea
@@ -18,7 +24,11 @@ export type TareasSliceType = {
 
 export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
     loadingTareas: false,
-    errorTareas: false,
+    loadingUpdateTarea: false,
+    errorFetchTareas: false,
+    errorCreateTarea: false,
+    errorUpdateTarea: false,
+    errorGetTarea: false,
     errorsTareas: [],
     editingTarea: {} as Tarea,
     tareas: [],
@@ -36,7 +46,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
                 set({ tareas: data.data, loadingTareas: false })
             }
         } catch (error) {
-            set({ errorTareas: true, loadingTareas: false })
+            set({ errorFetchTareas: true, loadingTareas: false })
         }
     },
 
@@ -52,7 +62,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             })
 
         } catch (error: any) {
-            set({ errorsTareas: Object.values(error.response.data.errors), errorTareas: true, loadingTareas: false });
+            set({ errorsTareas: Object.values(error.response.data.errors), errorCreateTarea: true, loadingTareas: false });
             throw error;
         }
     },
@@ -68,11 +78,11 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             const result = TareaSchema.safeParse(data.data);
             set({ loadingTareas: false, editingTarea: result.data });
         } catch (error) {
-            set({ loadingTareas: false, errorTareas: true })
+            set({ loadingTareas: false, errorGetTarea: true })
         }
     },
     updateTarea: async (id, tarea) => {
-        set({ loadingTareas: true });
+        set({ loadingUpdateTarea: true });
         const url = `http://127.0.0.1:8000/api/tareas/${id}`
 
         try {
@@ -81,9 +91,9 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
                 }
             });
-            set({ loadingTareas: false, editingTarea: {} as Tarea});
+            set({ loadingUpdateTarea: false, editingTarea: {} as Tarea, errorsTareas: []});
         } catch (error : any) {
-            set({ errorsTareas: Object.values(error.response.data.errors), errorTareas: true, loadingTareas: false });
+            set({ errorsTareas: Object.values(error.response.data.errors), errorUpdateTarea: true, loadingUpdateTarea: false });
             throw error;
         }
     }
