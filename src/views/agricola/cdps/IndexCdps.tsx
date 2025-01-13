@@ -50,6 +50,24 @@ export default function IndexCdps() {
                 Receta
               </th>
               <th scope="col" className="table-header">
+                Densidad
+              </th>
+              <th scope="col" className="table-header">
+                Tamaño
+              </th>
+              <th scope="col" className="table-header">
+                Fecha de Inicio
+              </th>
+              <th scope="col" className="table-header">
+                Fecha Final
+              </th>
+              <th scope="col" className="table-header">
+                Semanas de Aplicación
+              </th>
+              <th scope="col" className="table-header">
+                Estado
+              </th>
+              <th scope="col" className="table-header">
                 Acción
               </th>
             </tr>
@@ -68,6 +86,24 @@ export default function IndexCdps() {
                 </td>
                 <td className="record">
                   <p>{cdp.recipe}</p>
+                </td>
+                <td className="record">
+                  <p>{cdp.density}</p>
+                </td>
+                <td className="record">
+                  <p>{cdp.size}</p>
+                </td>
+                <td className="record">
+                  <p>{cdp.start_date}</p>
+                </td>
+                <td className="record">
+                  <p>{cdp.end_date}</p>
+                </td>
+                <td className="record">
+                  <p>{(cdp.aplication_week > 0) ? cdp.aplication_week  : 'SIN INCIO' }</p>
+                </td>
+                <td className="record">
+                  <p className={`button text-center ${cdp.status ? 'bg-green-500' : 'bg-red-500'}`}>{cdp.status ? 'ACTIVO' : 'CERRADO'}</p>
                 </td>
                 <td className="record flex gap-2">
                   <Link

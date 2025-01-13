@@ -3,7 +3,9 @@ import { User,UserAuthAPIResponseSchema } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
 import { Tarea } from '../utils/tareas-schema';
-import { Crop, Plantation } from '../utils/plantation-schema';
+import { Crop, DraftCDP, Plantation, Recipe } from '../utils/plantation-schema';
+import { Lote } from '../utils/lotes-schema';
+import { Finca } from '../utils/fincas-schema';
 
 //PERMISOS
 export type Permission = z.infer<typeof Permission>;
@@ -31,4 +33,14 @@ export type DraftTarea = Omit<Tarea, 'id' >
 export type Crop = z.infer<typeof Crop>
 
 //CPDS
+export type Recipe = z.infer<typeof Recipe >;
+
 export type Plantation = z.infer<typeof Plantation>;
+export type DraftCDP = z.infer<typeof DraftCDP>;
+
+
+//LOTES
+export type Lote = z.infer<typeof Lote >
+
+//FINCAS
+export type Finca = z.infer<typeof Finca >

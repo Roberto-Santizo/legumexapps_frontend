@@ -18,7 +18,7 @@ const CreateCdp = lazy(() => import("../views/agricola/cdps/CreateCdp"));
 
 //LOTES
 const IndexLotes = lazy(() => import("../views/agricola/lotes/IndexLotes"));
-
+const CreateLote = lazy(() => import("../views/agricola/lotes/CreateLote"));
 export default function AgricolaRoutes() {
   return (
     <>
@@ -116,6 +116,20 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedRoute>
                 <IndexLotes />
+              </ProtectedRoute>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/lotes/crear"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <CreateLote />
               </ProtectedRoute>
             </Suspense>
           }

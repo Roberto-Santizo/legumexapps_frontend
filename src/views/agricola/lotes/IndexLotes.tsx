@@ -1,7 +1,20 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAppStore } from "../../../stores/useAppStore";
+import { useEffect } from "react";
+import Spinner from "../../../components/Spinner";
+import ShowErrorAPI from "../../../components/ShowErrorAPI";
 
 export default function IndexLotes() {
+  const fetchLotes = useAppStore((state) => state.fetchLotes);
+  const loading = useAppStore((state) => state.loadingFetchLotes);
+  const errorFetchLoading = useAppStore((state) => state.errorFetchLotes);
+  const lotes = useAppStore((state) => state.lotes);
+
+  useEffect(() => {
+    fetchLotes();
+  }, []);
+
   return (
     <>
       <h2 className="font-bold text-4xl">Lotes</h2>
@@ -15,6 +28,46 @@ export default function IndexLotes() {
           <p>Crear Lote</p>
         </Link>
       </div>
+
+      {loading && <Spinner />}
+      {!loading && errorFetchLoading && <ShowErrorAPI />}
+      {!loading && !errorFetchLoading && (
+        <table className="table mt-10">
+          <thead className="bg-gray-400">
+            <tr className="text-xs md:text-sm rounded">
+              <th scope="col" className="table-header">
+                ID
+              </th>
+              <th scope="col" className="table-header">
+                Nombre
+              </th>
+              <th scope="col" className="table-header">
+                Finca
+              </th>
+            </tr>
+          </thead>
+          <tbody className="table-body">
+            {lotes.map((lote) => (
+              <tr className="text-xl" key={lote.id}>
+                <td className="record">
+                    {lote.id}
+                </td>
+                <td className="record">
+                    {lote.name}
+                </td>
+                <td className="record">
+                    {lote.finca}
+                </td>
+                {/* <td className="record">
+                  <Link to={`/usuarios/editar/${user.id}`}>
+                    <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
+                  </Link>
+                </td> */}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </>
   );
 }
