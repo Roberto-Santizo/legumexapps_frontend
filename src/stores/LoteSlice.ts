@@ -29,11 +29,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
         set({ loadingFetchLotes: true });
         try {
             const url = '/api/lotes';
-            const { data } = await clienteAxios(url, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            })
+            const { data } = await clienteAxios(url)
             const result = Lotes.safeParse(data);
             if (result.success) {
                 set({ loadingFetchLotes: false, errorFetchLotes: false, lotes: result.data.data })
@@ -46,11 +42,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
         set({ loadingCreateLote: true });
         try {
             const url = '/api/lotes';
-            await clienteAxios.post(url, draftlote, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            await clienteAxios.post(url, draftlote);
 
             set({ loadingCreateLote: false, errorCreateLote: false });
         } catch (error: any) {

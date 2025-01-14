@@ -36,11 +36,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
         set({ loadingTareas: true });
         const url = '/api/tareas';
         try {
-            const { data } = await clienteAxios(url, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            const { data } = await clienteAxios(url);
             const result = Tareas.safeParse(data);
             if (result.success) {
                 set({ tareas: data.data, loadingTareas: false })
@@ -55,11 +51,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
         const url = '/api/tareas';
 
         try {
-            await clienteAxios.post(url, tarea, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            })
+            await clienteAxios.post(url, tarea)
 
         } catch (error: any) {
             set({ errorsTareas: Object.values(error.response.data.errors), errorCreateTarea: true, loadingTareas: false });
@@ -71,9 +63,6 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
         const url = `/api/tareas/${id}`
         try {
             const { data } = await clienteAxios(url, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
             });
             const result = TareaSchema.safeParse(data.data);
             set({ loadingTareas: false, editingTarea: result.data });
@@ -86,11 +75,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
         const url = `/api/tareas/${id}`
 
         try {
-            await clienteAxios.put(url, tarea, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            await clienteAxios.put(url, tarea);
             set({ loadingUpdateTarea: false, editingTarea: {} as Tarea, errorsTareas: []});
         } catch (error : any) {
             set({ errorsTareas: Object.values(error.response.data.errors), errorUpdateTarea: true, loadingUpdateTarea: false });

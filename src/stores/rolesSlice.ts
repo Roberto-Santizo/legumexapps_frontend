@@ -39,11 +39,7 @@ export const createRolesSlice: StateCreator<RolesSliceType> = (set) => ({
         try {
             set({loadingRoles:true});
             const url = '/api/roles';
-            await clienteAxios.post(url, rol, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            await clienteAxios.post(url, rol);
             set({ loadingRoles: false, rolesErrors: [], rolesError: false });
         } catch (error : any) {
             set({rolesErrors: Object.values(error.response.data.errors), rolesError:true ,loadingRoles:false});

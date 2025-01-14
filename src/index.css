@@ -15,9 +15,9 @@
 }
 
 .record{
-  @apply text-black text-base p-2;
+  @apply text-sm p-2;
 }
 
 .button {
-  @apply text-white font-bold py-2 px-4 rounded cursor-pointer uppercase;
+  @apply text-white font-bold py-2 px-4 rounded cursor-pointer uppercase  transition-all duration-300;
 }

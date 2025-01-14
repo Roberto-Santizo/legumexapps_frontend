@@ -22,11 +22,7 @@ export const createFincaSlice: StateCreator<FincaSliceType> = (set) => ({
 
         try {
             const url = '/api/fincas';
-            const { data } = await clienteAxios(url,{
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            })
+            const { data } = await clienteAxios(url)
             const result = Fincas.safeParse(data);
             if(result.success){
                 set({loadingFetchFincas: false, errorFetchFincas:false, fincas: result.data.data })

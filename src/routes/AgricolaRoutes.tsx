@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "../components/Spinner";
 import ProtectedRoute from "../components/ProtectedRoutes";
+import CreatePlanSemanal from "../views/agricola/planes-semanales/CreatePlanSemanal";
 
 //PLANES SEMANALES
 const IndexPlanSemanal = lazy(() => import("../views/agricola/planes-semanales/IndexPlanSemanal"));
@@ -35,6 +36,21 @@ export default function AgricolaRoutes() {
           index
         />
       </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/planes-semanales/crear"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <CreatePlanSemanal />
+              </ProtectedRoute>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
 
       <Route element={<Layout />}>
         <Route

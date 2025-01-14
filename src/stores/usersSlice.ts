@@ -47,11 +47,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
         const url = `/api/users`;
         set({ loadingUser: true });
         try {
-            await clienteAxios.post(url, user, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            await clienteAxios.post(url, user);
 
             set({ loadingUser: false, usersErrors: [], UserError: false });
         } catch (error: any) {
@@ -64,9 +60,6 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
         const url = `/api/users/${id}`;
         try {
             const { data } = await clienteAxios(url, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
             });
 
             const result = UserSchema.safeParse(data.data);
@@ -84,11 +77,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
         set({ loadingUser: true });
         const url = `/api/users/${id}`;
         try {
-            const { data } = await clienteAxios.put(url, user, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            const { data } = await clienteAxios.put(url, user);
 
             const result = UserSchema.safeParse(data.data);
 
@@ -108,9 +97,6 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                 url,
                 { status: 1 },
                 {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`,
-                    },
                 }
             );
 

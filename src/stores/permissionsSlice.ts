@@ -35,11 +35,7 @@ export const createPermissionsSlice: StateCreator<PermissionsSliceType> = (set) 
         try {
             set({ loadingPermissions: true });
             const url = '/api/permissions';
-            await clienteAxios.post(url, permission, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            await clienteAxios.post(url, permission);
             set({ loadingPermissions: false, permissionsErrors: [] });
         } catch (error: any) {
             set({ loadingPermissions: false, permissionsErrors: Object.values(error.response.data.errors) })

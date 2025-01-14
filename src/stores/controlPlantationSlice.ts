@@ -47,11 +47,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
         set({ loadingfetchControlPlantations: true });
         const url = '/api/cdps';
         try {
-            const { data } = await clienteAxios(url, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            });
+            const { data } = await clienteAxios(url);
             const result = Plantations.safeParse(data);
             if (result.success) {
                 set({ loadingfetchControlPlantations: false, plantations: result.data.data });
@@ -64,11 +60,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
         set({ loadingFetchCrop: true });
         const url = '/api/crops'
         try {
-            const { data } = await clienteAxios(url, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            })
+            const { data } = await clienteAxios(url)
             const result = Crops.safeParse(data);
             if (result.success) {
                 set({ loadingFetchCrop: false, crops: result.data.data });
@@ -81,11 +73,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
         set({ loadingFetchRecipes: true });
         const url = '/api/recipes'
         try {
-            const { data } = await clienteAxios(url, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            })
+            const { data } = await clienteAxios(url)
             const result = Recipes.safeParse(data);
             if (result.success) {
                 set({ loadingFetchRecipes: false, recipes: result.data.data });
@@ -99,11 +87,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
         set({ loadingCreateCDP: true });
         const url = '/api/cdps'
         try {
-            await clienteAxios.post(url,cdp, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
-                }
-            })
+            await clienteAxios.post(url,cdp)
             set({ loadingCreateCDP: false});
         } catch (error: any) {
             set({ loadingCreateCDP: false, errorCreateCDP: true, errorsCreateCDP: Object.values(error.response.data.errors) })
