@@ -44,7 +44,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
 
     },
     createUser: async (user) => {
-        const url = 'http://127.0.0.1:8000/api/users';
+        const url = `/api/users`;
         set({ loadingUser: true });
         try {
             await clienteAxios.post(url, user, {
@@ -61,7 +61,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
     },
     getUser: async (id) => {
         set({ loadingUser: true });
-        const url = `http://127.0.0.1:8000/api/users/${id}`;
+        const url = `/api/users/${id}`;
         try {
             const { data } = await clienteAxios(url, {
                 headers: {
@@ -82,7 +82,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
 
     updateUser: async (id, user) => {
         set({ loadingUser: true });
-        const url = `http://127.0.0.1:8000/api/users/${id}`;
+        const url = `/api/users/${id}`;
         try {
             const { data } = await clienteAxios.put(url, user, {
                 headers: {
@@ -101,13 +101,13 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
         }
     },
     changeActiveUser: async (id) => {
-        set({ loadingChangeStatus: true, updatingId: id});
-        const url = `http://127.0.0.1:8000/api/users/${id}/status`;
+        set({ loadingChangeStatus: true, updatingId: id });
+        const url = `/api/users/${id}/status`;
         try {
             const { data } = await clienteAxios.patch(
-                url, 
-                { status: 1 }, 
-                { 
+                url,
+                { status: 1 },
+                {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`,
                     },
@@ -117,7 +117,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
             const result = Users.safeParse(data);
 
             if (result.success) {
-                set({ loadingChangeStatus: false, usersErrors: [], UserError: false , users:data.data, updatingId:''});
+                set({ loadingChangeStatus: false, usersErrors: [], UserError: false, users: data.data, updatingId: '' });
             }
         } catch (error: any) {
             set({ usersErrors: Object.values(error.response.data.errors), UserError: true, loadingUser: false });

@@ -18,7 +18,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
     Autherrors: [],
     AuthUser: sessionStorage.getItem('AUTH_USER') ? JSON.parse(sessionStorage.getItem('AUTH_USER') as string) : {},
     login: async (user) => {
-        const url = 'http://127.0.0.1:8000/api/login';
+        const url = '/api/login';
 
         try {
             set({ loadingAuth: true });

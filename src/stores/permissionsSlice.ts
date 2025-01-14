@@ -34,7 +34,7 @@ export const createPermissionsSlice: StateCreator<PermissionsSliceType> = (set) 
     createPermission: async (permission) => {
         try {
             set({ loadingPermissions: true });
-            const url = 'http://127.0.0.1:8000/api/permissions';
+            const url = '/api/permissions';
             await clienteAxios.post(url, permission, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`

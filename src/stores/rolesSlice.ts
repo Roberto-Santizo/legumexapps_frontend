@@ -38,7 +38,7 @@ export const createRolesSlice: StateCreator<RolesSliceType> = (set) => ({
     createRole: async (rol) => {
         try {
             set({loadingRoles:true});
-            const url = 'http://127.0.0.1:8000/api/roles';
+            const url = '/api/roles';
             await clienteAxios.post(url, rol, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`

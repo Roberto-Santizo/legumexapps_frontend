@@ -28,7 +28,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
     fetchLotes: async () => {
         set({ loadingFetchLotes: true });
         try {
-            const url = 'http://127.0.0.1:8000/api/lotes';
+            const url = '/api/lotes';
             const { data } = await clienteAxios(url, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
@@ -45,7 +45,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
     createLote: async (draftlote) => {
         set({ loadingCreateLote: true });
         try {
-            const url = 'http://127.0.0.1:8000/api/lotes';
+            const url = '/api/lotes';
             await clienteAxios.post(url, draftlote, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`

@@ -45,7 +45,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
 
     fetchControlPlantations: async () => {
         set({ loadingfetchControlPlantations: true });
-        const url = 'http://127.0.0.1:8000/api/cdps';
+        const url = '/api/cdps';
         try {
             const { data } = await clienteAxios(url, {
                 headers: {
@@ -62,7 +62,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
     },
     fetchCrops: async () => {
         set({ loadingFetchCrop: true });
-        const url = 'http://127.0.0.1:8000/api/crops'
+        const url = '/api/crops'
         try {
             const { data } = await clienteAxios(url, {
                 headers: {
@@ -79,7 +79,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
     },
     fetchRecipes: async () => {
         set({ loadingFetchRecipes: true });
-        const url = 'http://127.0.0.1:8000/api/recipes'
+        const url = '/api/recipes'
         try {
             const { data } = await clienteAxios(url, {
                 headers: {
@@ -97,7 +97,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
 
     createControlPlantation: async (cdp) => {
         set({ loadingCreateCDP: true });
-        const url = 'http://127.0.0.1:8000/api/cdps'
+        const url = '/api/cdps'
         try {
             await clienteAxios.post(url,cdp, {
                 headers: {

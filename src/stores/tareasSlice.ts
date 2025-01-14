@@ -34,7 +34,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
     tareas: [],
     fetchTareas: async () => {
         set({ loadingTareas: true });
-        const url = 'http://127.0.0.1:8000/api/tareas';
+        const url = '/api/tareas';
         try {
             const { data } = await clienteAxios(url, {
                 headers: {
@@ -52,7 +52,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
 
     createTarea: async (tarea) => {
         set({ loadingTareas: true })
-        const url = 'http://127.0.0.1:8000/api/tareas';
+        const url = '/api/tareas';
 
         try {
             await clienteAxios.post(url, tarea, {
@@ -68,7 +68,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
     },
     getTarea: async (id) => {
         set({ loadingTareas: true });
-        const url = `http://127.0.0.1:8000/api/tareas/${id}`
+        const url = `/api/tareas/${id}`
         try {
             const { data } = await clienteAxios(url, {
                 headers: {
@@ -83,7 +83,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
     },
     updateTarea: async (id, tarea) => {
         set({ loadingUpdateTarea: true });
-        const url = `http://127.0.0.1:8000/api/tareas/${id}`
+        const url = `/api/tareas/${id}`
 
         try {
             await clienteAxios.put(url, tarea, {

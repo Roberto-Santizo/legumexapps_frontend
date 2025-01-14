@@ -21,7 +21,7 @@ export const createFincaSlice: StateCreator<FincaSliceType> = (set) => ({
         set({loadingFetchFincas: true});
 
         try {
-            const url = 'http://127.0.0.1:8000/api/fincas';
+            const url = '/api/fincas';
             const { data } = await clienteAxios(url,{
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`

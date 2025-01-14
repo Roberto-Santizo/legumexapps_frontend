@@ -3,7 +3,7 @@ import { Roles } from '../utils/roles-schema';
 
 export async function getRoles() {
     try {
-        const url = 'http://127.0.0.1:8000/api/roles';
+        const url = '/api/roles';
         const { data } = await clienteAxios(url,{
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem('AUTH_TOKEN')}`
