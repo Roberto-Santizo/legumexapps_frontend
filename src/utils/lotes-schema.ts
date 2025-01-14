@@ -3,12 +3,14 @@ import { z } from 'zod';
 export const Lote = z.object({
     id: z.number(),
     name: z.string(),
-    finca: z.string()
+    finca: z.string(),
+    cdp: z.string()
 });
 
 export const DraftLote = z.object({
     name: z.string(),
-    finca_id: z.string()
+    finca_id: z.string(),
+    cdp_id: z.string()
 });
 
 

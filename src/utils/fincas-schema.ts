@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const Finca = z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
     code: z.string(),
     terminal_id: z.number()

@@ -4,7 +4,7 @@ import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
 import { Tarea } from '../utils/tareas-schema';
 import { Crop, DraftCDP, Plantation, Recipe } from '../utils/plantation-schema';
-import { Lote } from '../utils/lotes-schema';
+import { DraftLote, Lote } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
 
 //PERMISOS
@@ -41,6 +41,7 @@ export type DraftCDP = z.infer<typeof DraftCDP>;
 
 //LOTES
 export type Lote = z.infer<typeof Lote >
+export type DraftLote = z.infer<typeof DraftLote>
 
 //FINCAS
 export type Finca = z.infer<typeof Finca >

@@ -27,9 +27,9 @@ export function Sidebar() {
               <p className="text-sm font-bold">Dashboard</p>
             </NavLink>
             {user.roles === "admin" && <AdminNavegation />}
-            {(user.roles === "adminagricola" ||
-              user.roles === "auxagricola") && <AgricolaNavegation />}
-            {(user.roles === "adminmanto" || user.roles === "auxmanto") && (
+            {(user.roles === "adminagricola" || 
+              user.roles === "auxagricola" || user.roles === 'admin') && <AgricolaNavegation />}
+            {(user.roles === "adminmanto" || user.roles === "auxmanto" || user.roles==="admin") && (
               <MantoNavegation />
             )}
           </nav>

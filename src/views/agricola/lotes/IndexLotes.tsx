@@ -1,4 +1,4 @@
-import { PlusIcon } from "lucide-react";
+import { PencilIcon, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect } from "react";
@@ -6,6 +6,7 @@ import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 
 export default function IndexLotes() {
+  // const authUser = useAppStore((state) => state.AuthUser);
   const fetchLotes = useAppStore((state) => state.fetchLotes);
   const loading = useAppStore((state) => state.loadingFetchLotes);
   const errorFetchLoading = useAppStore((state) => state.errorFetchLotes);
@@ -44,6 +45,12 @@ export default function IndexLotes() {
               <th scope="col" className="table-header">
                 Finca
               </th>
+              <th scope="col" className="table-header">
+                CDP Activo
+              </th>
+              <th scope="col" className="table-header">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody className="table-body">
@@ -58,11 +65,14 @@ export default function IndexLotes() {
                 <td className="record">
                     {lote.finca}
                 </td>
-                {/* <td className="record">
-                  <Link to={`/usuarios/editar/${user.id}`}>
+                <td className="record">
+                    {lote.cdp}
+                </td>
+                <td className="record">
+                  <Link to={`/`}>
                     <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
                   </Link>
-                </td> */}
+                </td>
               </tr>
             ))}
           </tbody>
