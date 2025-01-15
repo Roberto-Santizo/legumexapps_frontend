@@ -7,16 +7,20 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import { toast } from "react-toastify";
+import Error from "../../../components/Error";
+import Spinner from "../../../components/Spinner";
 
 export default function CreatePlanSemanal() {
   const [file, setFile] = useState<File[] | null>(null);
   const loadingCreatePlan = useAppStore((state) => state.loadingCreatePlan);
+  const errorCreatePlan = useAppStore((state) => state.errorCreatePlan);
+  const errorsCreatePlan = useAppStore((state) => state.errorsCreatePlan);
   const uploadedFile = useAppStore((state) => state.uploadedFile);
   const createPlan = useAppStore((state) => state.createPlan);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    if(acceptedFiles){
+    if (acceptedFiles) {
       setFile(acceptedFiles);
     }
   }, []);
@@ -27,8 +31,8 @@ export default function CreatePlanSemanal() {
     e.preventDefault();
     if (file) {
       createPlan(file).then(() => {
-        navigate('/planes-semanales');
-        toast.success('Plan Creado Correctamente');
+        navigate("/planes-semanales");
+        toast.success("Plan Creado Correctamente");
       });
     }
   };
@@ -37,9 +41,10 @@ export default function CreatePlanSemanal() {
     <>
       <h2 className="text-4xl font-bold">Crear Plan Semanal</h2>
       <ReturnLink url="/planes-semanales" />
-
       <form className="w-1/2 mx-auto" onSubmit={handleSubmit}>
+        {errorCreatePlan && <Error>{errorsCreatePlan}</Error>}
         <div
+          className="mt-5"
           {...getRootProps()}
           style={{
             border: "2px dashed #cccccc",
@@ -54,7 +59,9 @@ export default function CreatePlanSemanal() {
             disabled={loadingCreatePlan || !!uploadedFile}
           />
           {file ? (
-            <p className="text-green-600 font-medium">Archivo: {file[0].name}</p>
+            <p className="text-green-600 font-medium">
+              Archivo: {file[0].name}
+            </p>
           ) : isDragActive ? (
             <p className="uppercase font-medium text-blue-500">
               Suelta el archivo aquí
@@ -74,7 +81,9 @@ export default function CreatePlanSemanal() {
           sx={{ marginTop: 2 }}
           disabled={!file || loadingCreatePlan}
         >
-          <p className="font-bold text-lg">Crear Plan Semanal</p>
+          {loadingCreatePlan ? (<Spinner />) : (
+            <p className="font-bold text-lg">Crear Plan Semanal</p>
+          )}
         </Button>
       </form>
     </>

@@ -12,6 +12,8 @@ export type WeeklyPlansSliceType = {
     errorFetchPlans: boolean;
     errorCreatePlan: boolean;
 
+    errorsCreatePlan: string[];
+
     uploadedFile: File;
 
     fetchPlans: () => Promise<void>;
@@ -26,6 +28,9 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
 
     errorFetchPlans: false,
     errorCreatePlan: false,
+
+    errorsCreatePlan: [],
+
     uploadedFile: {} as File,
 
     fetchPlans: async () => {
@@ -52,7 +57,9 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
             await clienteAxios.post(url,formData);
             set({loadingCreatePlan: false,errorCreatePlan:false, uploadedFile: {} as File})
         } catch (error : any) {
-            set({loadingCreatePlan: false,errorCreatePlan:true})
+            console.log(error);
+            set({errorsCreatePlan:error.response.data.message, loadingCreatePlan: false,errorCreatePlan:true, uploadedFile: {} as File})
+            throw error;
         }
     }
 
