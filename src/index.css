@@ -15,7 +15,7 @@
 }
 
 .record{
-  @apply text-sm p-2;
+  @apply text-base p-5 font-medium;
 }
 
 .button {

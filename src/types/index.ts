@@ -6,7 +6,8 @@ import { Tarea } from '../utils/tareas-schema';
 import { Crop, DraftCDP, Plantation, Recipe } from '../utils/plantation-schema';
 import { DraftLote, Lote } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
-import { WeeklyPlan } from '../utils/weekly_plans-schema';
+import { SummaryWeeklyPlan, WeeklyPlan } from '../utils/weekly_plans-schema';
+import { TasksWeeklyPlanSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
 
 //PERMISOS
 export type Permission = z.infer<typeof Permission>;
@@ -49,3 +50,8 @@ export type Finca = z.infer<typeof Finca >
 
 //PLANES
 export type WeeklyPlan = z.infer<typeof WeeklyPlan>
+export type SummaryWeeklyPlanType = z.infer<typeof SummaryWeeklyPlan>
+
+//TAREA LOTE
+export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>
+export type TasksWeeklyPlan = z.infer<typeof TasksWeeklyPlanSchema>

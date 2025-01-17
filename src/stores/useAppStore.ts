@@ -9,8 +9,9 @@ import { ControlPlantationSliceType, createControlPlantationSlice } from './cont
 import { LoteSliceType, createLoteSlice } from './LoteSlice';
 import { FincaSliceType, createFincaSlice } from './fincaSlice';
 import { WeeklyPlansSliceType, createWeeklyPlansSlice } from './weeklyPlansSlice';
+import { TaskWeeklyPlanSliceType, createTaskWeeklyPlanSlice } from './taskWeeklyPlan';
 
-export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType & TareasSliceType & ControlPlantationSliceType & LoteSliceType & FincaSliceType & WeeklyPlansSliceType>()(devtools((...a) => ({
+export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType & TareasSliceType & ControlPlantationSliceType & LoteSliceType & FincaSliceType & WeeklyPlansSliceType & TaskWeeklyPlanSliceType>()(devtools((...a) => ({
     ...createUsersSlice(...a),
     ...createAuthSlice(...a),
     ...createRolesSlice(...a),
@@ -19,5 +20,6 @@ export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceTyp
     ...createControlPlantationSlice(...a),
     ...createLoteSlice(...a),
     ...createFincaSlice(...a),
-    ...createWeeklyPlansSlice(...a)
+    ...createWeeklyPlansSlice(...a),
+    ...createTaskWeeklyPlanSlice(...a)
 })))

@@ -5,6 +5,7 @@ import Spinner from "../components/Spinner";
 import ProtectedRoute from "../components/ProtectedRoutes";
 import CreatePlanSemanal from "../views/agricola/planes-semanales/CreatePlanSemanal";
 import ShowPlanSemanal from "../views/agricola/planes-semanales/ShowPlanSemanal";
+import IndexTareasLote from "../views/agricola/tareas-lote/IndexTareasLote";
 
 //PLANES SEMANALES
 const IndexPlanSemanal = lazy(
@@ -162,6 +163,21 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedRoute>
                 <CreateLote />
+              </ProtectedRoute>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      {/* TAREAS LOTE */}
+      <Route element={<Layout />}>
+        <Route
+          path="/tareas-lote/:lote/:id"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <IndexTareasLote />
               </ProtectedRoute>
             </Suspense>
           }
