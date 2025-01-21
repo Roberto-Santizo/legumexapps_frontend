@@ -1,37 +1,37 @@
 import { useLocation, useParams } from "react-router-dom"
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import { useAppStore } from "../../../stores/useAppStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+
+//COMPONENTES
+import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Spinner from "../../../components/Spinner";
 import Task from "../../../components/Task";
-import { TaskWeeklyPlan } from "../../../types";
+import ShowErrorAPI from "../../../components/ShowErrorAPI";
 
 export default function IndexTareasLote() {
     const { id } = useParams();
     const location = useLocation();
-    const [tasks, setTasks] = useState<TaskWeeklyPlan[]>([]);
     const previousUrl = location.state?.previousUrl || "/";
-    const plan = location.state?.plan;
     const fetchTasks = useAppStore((state) => state.fetchTasks);
+    const tasks = useAppStore((state) => state.tasks);
+    const errorLoadingFetchTasks = useAppStore((state) => state.errorLoadingFetchTasks);
     const loadingFetchTasks = useAppStore((state) => state.loadingFetchTasks);
-    const getTasks = async () => {
-      if(id){
-        setTasks(await fetchTasks(id));
-      }
-    }
+   
     useEffect(() => {
-      getTasks();
+      if(id){
+        fetchTasks(id);
+      }
     },[]);
 
   return (
     <>
-      <h2>Plan Semanal Semana{plan.data.week}</h2>
+      {(!loadingFetchTasks && !errorLoadingFetchTasks) && <h2 className="font-bold text-3xl">Plan Semanal Semana {tasks?.week} - FINCA {tasks?.finca} - LOTE {tasks?.lote}</h2>}
       <ReturnLink url={previousUrl}/>
       {loadingFetchTasks && <Spinner />}
-
+      {(!loadingFetchTasks && errorLoadingFetchTasks) && <ShowErrorAPI />}
       <div className="flex flex-col gap-10 mt-10">
-        {(!loadingFetchTasks) && (
-          tasks.map(task => <Task key={task.id} task={task}/>)
+        {(!loadingFetchTasks && !errorLoadingFetchTasks) && (
+          tasks?.data.map(task => <Task key={task.id} task={task} id={id}/>)
         )}
       </div>
     </>

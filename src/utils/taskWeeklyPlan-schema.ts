@@ -7,10 +7,14 @@ export const TaskWeeklyPlanSchema = z.object({
     week: z.number(),
     hours: z.number(),
     budget: z.number(),
+    active_closure: z.boolean(),
     start_date:  z.union([z.string(), z.null()]),
     end_date:  z.union([z.string(), z.null()])
 });
 
 export const TasksWeeklyPlanSchema = z.object({
+    finca: z.string(),
+    week: z.number(),
+    lote: z.string(),
     data: z.array(TaskWeeklyPlanSchema)
 });

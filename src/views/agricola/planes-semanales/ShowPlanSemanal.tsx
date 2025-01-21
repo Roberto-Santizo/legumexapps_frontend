@@ -41,7 +41,7 @@ export default function ShowPlanSemanal() {
   }, []);
 
   const goToDetailLote= (lote : string, lote_plantation_control_id: string) =>{
-    navigate(`/tareas-lote/${lote}/${lote_plantation_control_id}`, {state: { previousUrl: window.location.pathname, plan: plan.data }})
+    navigate(`/tareas-lote/${lote}/${lote_plantation_control_id}`, {state: { previousUrl: window.location.pathname }})
   }
 
   return (
