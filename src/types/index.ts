@@ -8,6 +8,7 @@ import { DraftLote, Lote } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
 import { SummaryWeeklyPlan, WeeklyPlan } from '../utils/weekly_plans-schema';
 import { TasksWeeklyPlanSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
+import { EmployeeSchema } from '../utils/employee-schema';
 
 //PERMISOS
 export type Permission = z.infer<typeof Permission>;
@@ -55,3 +56,6 @@ export type SummaryWeeklyPlanType = z.infer<typeof SummaryWeeklyPlan>
 //TAREA LOTE
 export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>
 export type TasksWeeklyPlan = z.infer<typeof TasksWeeklyPlanSchema>
+
+//EMPLEADOS
+export type Employee = z.infer<typeof EmployeeSchema>;

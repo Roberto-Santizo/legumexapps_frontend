@@ -12,6 +12,7 @@ import { useAppStore } from "../stores/useAppStore";
 import { TaskWeeklyPlan } from "../types";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
+import {  useNavigate } from "react-router-dom";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
@@ -22,15 +23,31 @@ export default function Task({ task, id }: TaskProps) {
   const createPartialClosure = useAppStore(
     (state) => state.createPartialClosure
   );
+  const closePartialClosure = useAppStore((state) => state.closePartialClosure);
   const reloadTasks = useAppStore((state) => state.reloadTasks);
   const loadingUpdateTask = useAppStore((state) => state.loadingUpdateTask);
-  const handleClick = async (idTask: TaskWeeklyPlan["id"]) => {
+  const navigate = useNavigate();
+
+  const handleClickCreatePartialClosure = async (
+    idTask: TaskWeeklyPlan["id"]
+  ) => {
     await createPartialClosure(idTask);
     if (id) {
       await reloadTasks(id);
     }
     toast.success("Tarea cerrada parcialmente");
   };
+
+  const handleClickClosePartialClosure = async (
+    idTask: TaskWeeklyPlan["id"]
+  ) => {
+    await closePartialClosure(idTask);
+    if (id) {
+      await reloadTasks(id);
+    }
+    toast.success("Tarea reabierta");
+  };
+
   return (
     <div className="grid grid-cols-6 shadow-xl p-10 text-xl">
       <div className="col-span-5">
@@ -67,7 +84,16 @@ export default function Task({ task, id }: TaskProps) {
           <>
             {!task.start_date && !task.end_date && !task.active_closure && (
               <>
-                <SquarePlusIcon className="cursor-pointer hover:text-gray-400" />
+                <SquarePlusIcon
+                  className="cursor-pointer hover:text-gray-400"
+                  onClick={() =>
+                    navigate(`/tareas-lote/asignar/${task.id}`, {
+                      state: {
+                        previousUrl: window.location.pathname,
+                      },
+                    })
+                  }
+                />
                 <TrashIcon className="cursor-pointer hover:text-red-400" />
               </>
             )}
@@ -78,13 +104,16 @@ export default function Task({ task, id }: TaskProps) {
                 <Info className="cursor-pointer hover:text-gray-400" />
                 <CirclePause
                   className="cursor-pointer text-orange-500 hover:text-orange-800"
-                  onClick={() => handleClick(task.id)}
+                  onClick={() => handleClickCreatePartialClosure(task.id)}
                 />
                 <Eraser className="cursor-pointer text-red-500 hover:text-red-800" />
               </>
             )}
             {task.active_closure && (
-              <PlayCircleIcon className="cursor-pointer text-green-500 hover:text-green-400" />
+              <PlayCircleIcon
+                className="cursor-pointer text-green-500 hover:text-green-400"
+                onClick={() => handleClickClosePartialClosure(task.id)}
+              />
             )}
 
             {task.start_date && task.end_date && !task.active_closure && (

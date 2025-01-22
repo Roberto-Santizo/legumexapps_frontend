@@ -8,6 +8,8 @@ export const TaskWeeklyPlanSchema = z.object({
     hours: z.number(),
     budget: z.number(),
     active_closure: z.boolean(),
+    slots:z.number(),
+    lote: z.string(),
     start_date:  z.union([z.string(), z.null()]),
     end_date:  z.union([z.string(), z.null()])
 });

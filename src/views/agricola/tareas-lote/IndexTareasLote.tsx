@@ -11,7 +11,7 @@ import ShowErrorAPI from "../../../components/ShowErrorAPI";
 export default function IndexTareasLote() {
     const { id } = useParams();
     const location = useLocation();
-    const previousUrl = location.state?.previousUrl || "/";
+    const previousUrl = location.state?.previousUrl || "/dashboard";
     const fetchTasks = useAppStore((state) => state.fetchTasks);
     const tasks = useAppStore((state) => state.tasks);
     const errorLoadingFetchTasks = useAppStore((state) => state.errorLoadingFetchTasks);
@@ -25,13 +25,13 @@ export default function IndexTareasLote() {
 
   return (
     <>
-      {(!loadingFetchTasks && !errorLoadingFetchTasks) && <h2 className="font-bold text-3xl">Plan Semanal Semana {tasks?.week} - FINCA {tasks?.finca} - LOTE {tasks?.lote}</h2>}
+      {(!loadingFetchTasks && !errorLoadingFetchTasks) && <h2 className="font-bold text-3xl">Plan Semanal Semana {tasks.week} - FINCA {tasks.finca} - LOTE {tasks?.lote}</h2>}
       <ReturnLink url={previousUrl}/>
       {loadingFetchTasks && <Spinner />}
       {(!loadingFetchTasks && errorLoadingFetchTasks) && <ShowErrorAPI />}
       <div className="flex flex-col gap-10 mt-10">
         {(!loadingFetchTasks && !errorLoadingFetchTasks) && (
-          tasks?.data.map(task => <Task key={task.id} task={task} id={id}/>)
+          tasks?.data.map(task => <Task key={task.id} task={task} id={id} />)
         )}
       </div>
     </>
