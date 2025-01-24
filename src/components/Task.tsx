@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { formatDate } from "../helpers";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
@@ -131,6 +132,10 @@ export default function Task({ task, id }: TaskProps) {
           {task.week}
         </p>
         <p>
+          <span className="font-bold uppercase">Horas Teoricas: </span>
+          {task.hours}
+        </p>
+        <p>
           <span className="font-bold uppercase">Tarea: </span>
           {task.task}
         </p>
@@ -140,12 +145,13 @@ export default function Task({ task, id }: TaskProps) {
         </p>
         <p>
           <span className="font-bold uppercase">Fecha de Asignación: </span>
-          {task.start_date ?? "Sin asignación"}
+          {task.start_date ? formatDate(task.start_date) : "Sin asignación"}
         </p>
         <p>
           <span className="font-bold uppercase">Fecha de Cierre: </span>
-          {task.end_date ?? "Sin cierre"}
+          {task.end_date ? formatDate(task.end_date) : "Sin cierre"}
         </p>
+        
       </div>
 
       <div className="col-start-7 space-y-5">
@@ -224,7 +230,13 @@ export default function Task({ task, id }: TaskProps) {
             )}
 
             {(userRole === "admin" || userRole === "adminagricola") && (
-              <Edit className="cursor-pointer hover:text-gray-400" />
+              <Edit className="cursor-pointer hover:text-gray-400" onClick={() => {
+                  navigate(`/tareas-lote/editar/${task.id}`,{
+                    state: {
+                      previousUrl: window.location.pathname,
+                    }
+                  })
+              }}/>
             )}
           </>
         )}

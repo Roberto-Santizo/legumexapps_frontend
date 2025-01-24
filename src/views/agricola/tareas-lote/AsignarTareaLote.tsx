@@ -9,7 +9,6 @@ import { Employee } from "../../../types";
 
 // COMPONENTS
 import { Trash2Icon } from "lucide-react";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Spinner from "../../../components/Spinner";
 import Worker from "../../../components/Worker";
 import { toast } from "react-toastify";
@@ -27,9 +26,7 @@ export default function AsignarTareaLote() {
   const reduceSlots = useAppStore((state) => state.reduceSlots);
   const addSlots = useAppStore((state) => state.addSlots);
   const employees = useAppStore((state) => state.employees);
-  const errorCloseAssignment = useAppStore(
-    (state) => state.errorCloseAssignment
-  );
+
   const closeAssigment = useAppStore((state) => state.closeAssigment);
   const navigate = useNavigate();
 

@@ -3,16 +3,15 @@ import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "../components/Spinner";
 import ProtectedRoute from "../components/ProtectedRoutes";
-import CreatePlanSemanal from "../views/agricola/planes-semanales/CreatePlanSemanal";
-import ShowPlanSemanal from "../views/agricola/planes-semanales/ShowPlanSemanal";
-import IndexTareasLote from "../views/agricola/tareas-lote/IndexTareasLote";
-import AsignarTareaLote from "../views/agricola/tareas-lote/AsignarTareaLote";
-import InfoTareaLote from "../views/agricola/tareas-lote/InfoTareaLote";
+
 
 //PLANES SEMANALES
 const IndexPlanSemanal = lazy(
   () => import("../views/agricola/planes-semanales/IndexPlanSemanal")
 );
+
+const CreatePlanSemanal  = lazy(() => import( "../views/agricola/planes-semanales/CreatePlanSemanal"));
+const ShowPlanSemanal = lazy(() => import( "../views/agricola/planes-semanales/ShowPlanSemanal"));
 
 //TAREAS
 const IndexTareas = lazy(() => import("../views/agricola/tareas/IndexTareas"));
@@ -26,6 +25,13 @@ const CreateCdp = lazy(() => import("../views/agricola/cdps/CreateCdp"));
 //LOTES
 const IndexLotes = lazy(() => import("../views/agricola/lotes/IndexLotes"));
 const CreateLote = lazy(() => import("../views/agricola/lotes/CreateLote"));
+
+//TAREAS LOTE
+const IndexTareasLote = lazy(() => import( "../views/agricola/tareas-lote/IndexTareasLote"));
+const AsignarTareaLote  = lazy(() => import("../views/agricola/tareas-lote/AsignarTareaLote"));
+const InfoTareaLote  = lazy(() => import( "../views/agricola/tareas-lote/InfoTareaLote"));
+const EditarTareaLote = lazy(() => import( "../views/agricola/tareas-lote/EditarTareaLote"));
+
 export default function AgricolaRoutes() {
   return (
     <>
@@ -208,6 +214,20 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedRoute>
                 <InfoTareaLote />
+              </ProtectedRoute>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/tareas-lote/editar/:id"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <EditarTareaLote />
               </ProtectedRoute>
             </Suspense>
           }

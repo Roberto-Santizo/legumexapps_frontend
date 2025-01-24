@@ -8,11 +8,26 @@ export const TaskWeeklyPlanSchema = z.object({
     hours: z.number(),
     budget: z.number(),
     active_closure: z.boolean(),
+    weekly_plan_id: z.string(),
     slots: z.number(),
     lote: z.string(),
     minimum_slots: z.number(),
     start_date: z.union([z.string(), z.null()]),
-    end_date: z.union([z.string(), z.null()])
+    end_date: z.union([z.string(), z.null()]),
+    start_time: z.union([z.string(), z.null()]),
+    end_time: z.union([z.string(), z.null()])
+});
+
+export const EditTaskWeeklySchema = z.object({
+    task: z.string(),
+    hours: z.number(),
+    budget: z.number(),
+    slots: z.number(),
+    weekly_plan_id: z.string(),
+    start_date: z.string(),
+    start_time: z.string(),
+    end_date: z.string(),
+    end_time: z.string()
 });
 
 export const TaskWeeklyPlanDetailsSchema = z.object({
@@ -21,10 +36,10 @@ export const TaskWeeklyPlanDetailsSchema = z.object({
     week: z.number(),
     finca: z.string(),
     aplication_week: z.number(),
-    start_date: z.union([z.string(),z.null()]),
-    end_date: z.union([z.string(),z.null()]),
+    start_date: z.union([z.string(), z.null()]),
+    end_date: z.union([z.string(), z.null()]),
     hours: z.number(),
-    real_hours: z.union([z.number(),z.null()]),
+    real_hours: z.union([z.number(), z.null()]),
     slots: z.number(),
     total_employees: z.number(),
     employees: z.array(

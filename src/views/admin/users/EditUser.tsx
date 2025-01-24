@@ -11,7 +11,6 @@ import { DraftUser } from "../../../types";
 import Spinner from "../../../components/Spinner";
 import { Button } from "@mui/material";
 import Error from "../../../components/Error";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import { toast } from "react-toastify";
 
 export default function EditUser() {

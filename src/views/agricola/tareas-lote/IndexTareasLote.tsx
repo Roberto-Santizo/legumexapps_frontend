@@ -1,17 +1,14 @@
-import { useLocation, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect } from "react";
 
 //COMPONENTES
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Spinner from "../../../components/Spinner";
 import Task from "../../../components/Task";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 
 export default function IndexTareasLote() {
     const { id } = useParams();
-    const location = useLocation();
-    const previousUrl = location.state?.previousUrl || "/dashboard";
     const fetchTasks = useAppStore((state) => state.fetchTasks);
     const tasks = useAppStore((state) => state.tasks);
     const errorLoadingFetchTasks = useAppStore((state) => state.errorLoadingFetchTasks);

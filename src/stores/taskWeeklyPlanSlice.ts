@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand"
 import clienteAxios from "../config/axios"
-import { Employee, TasksWeeklyPlan, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "../types"
+import { DraftTaskWeeklyPlan, Employee, TasksWeeklyPlan, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "../types"
 import { TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from "../utils/taskWeeklyPlan-schema";
 import { EmployeesSchema } from "../utils/employee-schema";
 
@@ -18,6 +18,7 @@ export type TaskWeeklyPlanSliceType = {
     loadingGetTaskDetail: boolean;
     loadingCloseTask: boolean;
     loadingDeleteTask: boolean;
+    loadingEditTask:boolean;
 
     errorLoadingFetchTasks: boolean;
     errorCreatePartialClosure: boolean;
@@ -40,6 +41,7 @@ export type TaskWeeklyPlanSliceType = {
     closeTask: (id: TaskWeeklyPlan['id']) => Promise<void>
     deteleteTask: (id: TaskWeeklyPlan['id']) => Promise<void>
     cleanTask: (id: TaskWeeklyPlan['id']) => Promise<void>
+    editTask: (data : DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id']) => Promise<void>
 }
 
 
@@ -57,6 +59,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
     loadingGetTaskDetail: false,
     loadingCloseTask: false,
     loadingDeleteTask: false,
+    loadingEditTask:false,
 
     errorLoadingFetchTasks: false,
     errorCreatePartialClosure: false,
@@ -224,4 +227,15 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             throw new Error("Hubo un problema para limpiar la asignación");
         }
     },
+    editTask: async (data,id) =>{
+        set({loadingEditTask: true});
+        try {
+            const url = `/api/tasks-lotes/${id}`
+            await clienteAxios.put(url,data);
+            set({loadingEditTask: false});
+        } catch (error) {
+            set({loadingEditTask: false});
+            throw new Error("Hubo un problema para limpiar la asignación");
+        }
+    }
 })
