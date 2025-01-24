@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "../components/Spinner";
-import ProtectedRoute from "../components/ProtectedRoutes";
+import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
 
 //PLANES SEMANALES
@@ -40,9 +40,9 @@ export default function AgricolaRoutes() {
           path="/planes-semanales"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <IndexPlanSemanal />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -54,9 +54,9 @@ export default function AgricolaRoutes() {
           path="/planes-semanales/crear"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <CreatePlanSemanal />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -68,9 +68,9 @@ export default function AgricolaRoutes() {
           path="/planes-semanales/:finca/:id"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <ShowPlanSemanal />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -82,9 +82,9 @@ export default function AgricolaRoutes() {
           path="/tareas"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <IndexTareas />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -96,9 +96,9 @@ export default function AgricolaRoutes() {
           path="/tareas/crear"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <CreateTarea />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -110,9 +110,9 @@ export default function AgricolaRoutes() {
           path="/tareas/edit/:id"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <EditTarea />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -125,9 +125,9 @@ export default function AgricolaRoutes() {
           path="/cdps"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <IndexCdps />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -139,9 +139,9 @@ export default function AgricolaRoutes() {
           path="/cdps/crear"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <CreateCdp />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -155,9 +155,9 @@ export default function AgricolaRoutes() {
           path="/lotes"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <IndexLotes />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -169,9 +169,9 @@ export default function AgricolaRoutes() {
           path="/lotes/crear"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <CreateLote />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -184,9 +184,9 @@ export default function AgricolaRoutes() {
           path="/tareas-lote/:lote/:id"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <IndexTareasLote />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -198,9 +198,9 @@ export default function AgricolaRoutes() {
           path="/tareas-lote/asignar/:id"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <AsignarTareaLote />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -212,9 +212,9 @@ export default function AgricolaRoutes() {
           path="/tareas-lote/informacion/:id"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <InfoTareaLote />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index
@@ -226,9 +226,9 @@ export default function AgricolaRoutes() {
           path="/tareas-lote/editar/:id"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAgricolaRoutes>
                 <EditarTareaLote />
-              </ProtectedRoute>
+              </ProtectedAgricolaRoutes>
             </Suspense>
           }
           index

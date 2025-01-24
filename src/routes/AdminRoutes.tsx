@@ -1,8 +1,9 @@
 import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
-import ProtectedRoute from "../components/ProtectedRoutes";
+import ProtectedAdminRoutes from "../components/ProtectedAdminRoutes";
 import Spinner from "../components/Spinner";
+import ProtectedRoute from "../components/ProtectedRoutes";
 
 const Dashboard = lazy(() => import("../components/Dashboard"));
 
@@ -43,9 +44,9 @@ export default function AdminRoutes() {
           path="/usuarios"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAdminRoutes>
                 <IndexUsers />
-              </ProtectedRoute>
+              </ProtectedAdminRoutes>
             </Suspense>
           }
         />
@@ -54,9 +55,9 @@ export default function AdminRoutes() {
           path="/usuarios/crear"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAdminRoutes>
                 <CreateUser />
-              </ProtectedRoute>
+              </ProtectedAdminRoutes>
             </Suspense>
           }
         />
@@ -65,9 +66,9 @@ export default function AdminRoutes() {
           path="/usuarios/editar/:id"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAdminRoutes>
                 <EditUser />
-              </ProtectedRoute>
+              </ProtectedAdminRoutes>
             </Suspense>
           }
         />
@@ -76,9 +77,9 @@ export default function AdminRoutes() {
           path="/roles"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAdminRoutes>
                 <IndexRoles />
-              </ProtectedRoute>
+              </ProtectedAdminRoutes>
             </Suspense>
           }
         />
@@ -87,9 +88,9 @@ export default function AdminRoutes() {
           path="/roles/crear"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAdminRoutes>
                 <CreateRole />
-              </ProtectedRoute>
+              </ProtectedAdminRoutes>
             </Suspense>
           }
         />
@@ -98,9 +99,9 @@ export default function AdminRoutes() {
           path="/permisos"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAdminRoutes>
                 <IndexPermisos />
-              </ProtectedRoute>
+              </ProtectedAdminRoutes>
             </Suspense>
           }
         />
@@ -109,9 +110,9 @@ export default function AdminRoutes() {
           path="/permisos/crear"
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedRoute>
+              <ProtectedAdminRoutes>
                 <CreatePermiso />
-              </ProtectedRoute>
+              </ProtectedAdminRoutes>
             </Suspense>
           }
         />
