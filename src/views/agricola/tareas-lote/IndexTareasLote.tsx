@@ -26,7 +26,6 @@ export default function IndexTareasLote() {
   return (
     <>
       {(!loadingFetchTasks && !errorLoadingFetchTasks) && <h2 className="font-bold text-3xl">Plan Semanal Semana {tasks.week} - FINCA {tasks.finca} - LOTE {tasks?.lote}</h2>}
-      <ReturnLink url={previousUrl}/>
       {loadingFetchTasks && <Spinner />}
       {(!loadingFetchTasks && errorLoadingFetchTasks) && <ShowErrorAPI />}
       <div className="flex flex-col gap-10 mt-10">

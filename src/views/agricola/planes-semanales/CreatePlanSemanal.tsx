@@ -40,7 +40,6 @@ export default function CreatePlanSemanal() {
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Plan Semanal</h2>
-      <ReturnLink url="/planes-semanales" />
       <form className="w-1/2 mx-auto" onSubmit={handleSubmit}>
         {errorCreatePlan && <Error>{errorsCreatePlan}</Error>}
         <div

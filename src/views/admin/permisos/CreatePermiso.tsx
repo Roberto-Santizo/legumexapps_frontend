@@ -10,7 +10,6 @@ import { DraftPermssion } from "../../../types";
 
 //COMPONENTES
 import { Button } from "@mui/material";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Error from "../../../components/Error";
 import Spinner from "../../../components/Spinner";
 
@@ -40,7 +39,6 @@ export default function CreatePermiso() {
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Permiso</h2>
-      <ReturnLink url="/permisos" />
 
       <div>
         <form

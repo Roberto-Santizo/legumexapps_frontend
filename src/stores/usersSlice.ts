@@ -1,11 +1,10 @@
 import { StateCreator } from "zustand"
-import { DraftUser, User } from "../types"
-import { getUsers } from "../services/UsersServices"
+import { DraftUser, User, UserCollection } from "../types"
 import clienteAxios from "../config/axios"
-import { Users, User as UserSchema } from "../utils/users-schema"
+import { UsersSchema, UserSchema, UsersCollectionSchema } from "../utils/users-schema"
 
 export type UsersSliceType = {
-    users: User[],
+    users: UserCollection[],
     userEditing: User,
     loadingUser: boolean,
     UserError: boolean,
@@ -31,15 +30,16 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
     updatingId: '',
     fetchUsers: async () => {
         set({ loadingUser: true })
+
         try {
-            const response = await getUsers()
-            set({
-                users: response?.data,
-                loadingUser: false,
-                UserError: false
-            })
+            const url = `/api/users`;
+            const { data } = await clienteAxios(url)
+            const result =  UsersCollectionSchema.safeParse(data)
+            if (result.success) {
+                set({users: result.data.data, loadingUser: false, usersErrors: [], UserError: false });
+            }
         } catch (error) {
-            set({ UserError: true, loadingUser: false })
+            throw error;
         }
 
     },
@@ -100,7 +100,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                 }
             );
 
-            const result = Users.safeParse(data);
+            const result = UsersSchema.safeParse(data);
 
             if (result.success) {
                 set({ loadingChangeStatus: false, usersErrors: [], UserError: false, users: data.data, updatingId: '' });

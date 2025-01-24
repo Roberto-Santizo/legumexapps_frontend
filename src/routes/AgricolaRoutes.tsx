@@ -7,6 +7,7 @@ import CreatePlanSemanal from "../views/agricola/planes-semanales/CreatePlanSema
 import ShowPlanSemanal from "../views/agricola/planes-semanales/ShowPlanSemanal";
 import IndexTareasLote from "../views/agricola/tareas-lote/IndexTareasLote";
 import AsignarTareaLote from "../views/agricola/tareas-lote/AsignarTareaLote";
+import InfoTareaLote from "../views/agricola/tareas-lote/InfoTareaLote";
 
 //PLANES SEMANALES
 const IndexPlanSemanal = lazy(
@@ -193,6 +194,20 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedRoute>
                 <AsignarTareaLote />
+              </ProtectedRoute>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/tareas-lote/informacion/:id"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedRoute>
+                <InfoTareaLote />
               </ProtectedRoute>
             </Suspense>
           }

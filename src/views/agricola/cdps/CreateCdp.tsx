@@ -46,7 +46,6 @@ export default function CreateCdp() {
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Control de Plantación</h2>
-      <ReturnLink url="/cdps" />
 
       <form
         action=""

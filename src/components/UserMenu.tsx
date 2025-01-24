@@ -15,8 +15,9 @@ type UserMobileProps = {
 };
 
 export default function UserMenu({ setOpen }: UserMobileProps) {
-  const user = useAppStore((state) => state.AuthUser);
+
   const logout = useAppStore((state) => state.logOut);
+  const user = useAppStore((state) => state.AuthUser);
   const loadingAuth = useAppStore((state) => state.loadingAuth);
 
   const handleClick = () => {

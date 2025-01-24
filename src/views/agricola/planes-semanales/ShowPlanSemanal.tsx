@@ -54,7 +54,6 @@ export default function ShowPlanSemanal() {
             Plan Semanal {plan.data.finca} Semana {plan.data.week} -{" "}
             {plan.data.year}
           </h2>
-          <ReturnLink url="/planes-semanales" />
 
           <table className="table mt-10">
             <thead className="bg-gray-400">

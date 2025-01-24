@@ -1,13 +1,13 @@
-//EXTERNAL IMPORTS
-import { useLocation, useParams } from "react-router-dom";
+// EXTERNAL IMPORTS
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Fuse from "fuse.js";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
-
-//TYPES
+import Swal from "sweetalert2";
+// TYPES
 import { Employee } from "../../../types";
 
-//COMPONENTES
+// COMPONENTS
 import { Trash2Icon } from "lucide-react";
 import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Spinner from "../../../components/Spinner";
@@ -27,10 +27,18 @@ export default function AsignarTareaLote() {
   const reduceSlots = useAppStore((state) => state.reduceSlots);
   const addSlots = useAppStore((state) => state.addSlots);
   const employees = useAppStore((state) => state.employees);
+  const errorCloseAssignment = useAppStore(
+    (state) => state.errorCloseAssignment
+  );
   const closeAssigment = useAppStore((state) => state.closeAssigment);
+  const navigate = useNavigate();
 
   const loadingGetTask = useAppStore((state) => state.loadingGetTask);
   const loadingGetEmployees = useAppStore((state) => state.loadingGetEmployees);
+
+  const necesarySlots = useMemo(() => {
+    return assignedEmployees.length >= task.minimum_slots;
+  }, [assignedEmployees, task.minimum_slots]);
 
   const fuse = new Fuse(employees, {
     keys: ["name"],
@@ -44,7 +52,7 @@ export default function AsignarTareaLote() {
       getTask(id);
       getEmployees(id);
     }
-  }, []);
+  }, [id, getTask, getEmployees]);
 
   useEffect(() => {
     setResults(employees);
@@ -61,9 +69,12 @@ export default function AsignarTareaLote() {
   };
 
   const handleAddEmployee = (employee: Employee) => {
-    if(task.slots === 0) {toast.error("No puedes asignar más empleados a esta tarea"); return};
+    if (task.slots === 0) {
+      toast.error("No puedes asignar más empleados a esta tarea");
+      return;
+    }
 
-    setAssignedEmployees([...assignedEmployees, employee]);
+    setAssignedEmployees((prev) => [...prev, employee]);
     reduceSlots(task);
   };
 
@@ -73,22 +84,51 @@ export default function AsignarTareaLote() {
         assignedEmployees.filter((emp) => emp.emp_id !== employee.emp_id)
       );
       addSlots(task);
-      return;
     }
-  }
+  };
 
   const handleCloseAssignment = () => {
-    closeAssigment(assignedEmployees, task);
-  }
+    if (!necesarySlots) {
+      Swal.fire({
+        title: "¿Deseas Cerrar la Asignación?",
+        text: `Los cupos minimos son: ${task.minimum_slots} y solo hay ${assignedEmployees.length} empleados asignados`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Cerrar Asignación",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          try {
+            closeAssigment(assignedEmployees, task);
+            toast.success("Asignación cerrada correctamente");
+            navigate(previousUrl);
+          } catch (error) {
+            toast.error("Hubo un error al cerrar la asignación");
+          }
+        }
+      });
+      return;
+    }
+
+    try {
+      closeAssigment(assignedEmployees, task);
+      toast.success("Asignación cerrada correctamente");
+      navigate(previousUrl);
+    } catch (error) {
+      toast.error("Hubo un error al cerrar la asignación");
+    }
+  };
+
   return (
     <>
       <h1 className="text-4xl font-bold">Asignación de Empleados</h1>
-      <ReturnLink url={previousUrl} />
 
       {loadingGetTask && <Spinner />}
       {!loadingGetTask && (
         <div className="grid grid-cols-6 mt-10">
-          <div className="col-span-4 splace-y-5">
+          <div className="col-span-4 space-y-5">
             <div>
               <h2 className="font-bold text-2xl">Información de la tarea:</h2>
               <p className="text-lg">
@@ -100,6 +140,10 @@ export default function AsignarTareaLote() {
               </p>
               <p className="text-lg">
                 <span className="font-bold">Semana:</span> {task.week}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Cupos Minimos:</span>{" "}
+                {task.minimum_slots}
               </p>
             </div>
 
@@ -115,7 +159,7 @@ export default function AsignarTareaLote() {
                   className="flex gap-2 p-2 justify-between bg-indigo-500 text-white rounded-md font-bold"
                   key={employee.emp_id}
                 >
-                  <p key={employee.emp_id}>{employee.name}</p>
+                  <p>{employee.name}</p>
                   <Trash2Icon
                     className="hover:text-red-500 cursor-pointer"
                     onClick={() => handleRemoveEmployee(employee)}
@@ -130,7 +174,7 @@ export default function AsignarTareaLote() {
                   ? "bg-gray-400 text-gray-700 cursor-not-allowed"
                   : "bg-indigo-500 text-white hover:bg-indigo-600"
               }`}
-              onClick={() => handleCloseAssignment()}
+              onClick={handleCloseAssignment}
               disabled={assignedEmployees.length === 0}
             >
               Cerrar Asignación

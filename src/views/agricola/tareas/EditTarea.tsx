@@ -73,7 +73,6 @@ export default function EditTarea() {
       {!loadingTarea && !errorGetTarea && (
         <>
           <h2 className="text-4xl font-bold">Editar Tarea {tarea.name}</h2>
-          <ReturnLink url="/tareas" />
         </>
       )}
       {loadingTarea && <Spinner />}

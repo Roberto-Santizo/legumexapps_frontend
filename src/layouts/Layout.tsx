@@ -1,5 +1,5 @@
 //EXTERNAS
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 //HOOKS
@@ -8,9 +8,20 @@ import UserMobile from "../components/UserMenu";
 //COMPONENTES
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
+import { useAppStore } from "../stores/useAppStore";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
+  const getUser = useAppStore((state) => state.getUserByToken);
+  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
+
+  useEffect(() => {
+    getUserRoleByToken();
+  }, []);
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <>

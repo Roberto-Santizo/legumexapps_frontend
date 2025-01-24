@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import { User,UserAuthAPIResponseSchema } from '../utils/users-schema';
+import { UserCollectionSchema, UserSchema, } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
 import { Tarea } from '../utils/tareas-schema';
@@ -7,7 +7,7 @@ import { Crop, DraftCDP, Plantation, Recipe } from '../utils/plantation-schema';
 import { DraftLote, Lote } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
 import { SummaryWeeklyPlan, WeeklyPlan } from '../utils/weekly_plans-schema';
-import { TasksWeeklyPlanSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
+import { TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
 import { EmployeeSchema } from '../utils/employee-schema';
 
 //PERMISOS
@@ -19,10 +19,14 @@ export type Role = z.infer<typeof Role>;
 export type DraftRole = Omit<Role, 'id'>;
 
 //USUARIOS
-export type User = z.infer<typeof User>;
-export type UserCreated = z.infer<typeof UserAuthAPIResponseSchema>;
+export type User = z.infer<typeof UserSchema>;
+export type UserCreated = z.infer<typeof UserCollectionSchema>;
 export type DraftUser = Omit<UserCreated, 'id'>;
-export type AuthAPIUser = z.infer<typeof UserAuthAPIResponseSchema>;
+
+
+export type UserCollection = z.infer<typeof UserCollectionSchema>;
+
+
 export type AuthUser = {
     username: string,
     password: string,
@@ -56,6 +60,7 @@ export type SummaryWeeklyPlanType = z.infer<typeof SummaryWeeklyPlan>
 //TAREA LOTE
 export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>
 export type TasksWeeklyPlan = z.infer<typeof TasksWeeklyPlanSchema>
+export type TaskWeeklyPlanDetails = z.infer<typeof TaskWeeklyPlanDetailsSchema>
 
 //EMPLEADOS
 export type Employee = z.infer<typeof EmployeeSchema>;

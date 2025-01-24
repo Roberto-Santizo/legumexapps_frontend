@@ -12,7 +12,8 @@ import { useAppStore } from "../stores/useAppStore";
 import { TaskWeeklyPlan } from "../types";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
@@ -24,8 +25,14 @@ export default function Task({ task, id }: TaskProps) {
     (state) => state.createPartialClosure
   );
   const closePartialClosure = useAppStore((state) => state.closePartialClosure);
+  const closeTask = useAppStore((state) => state.closeTask);
+  const cleanTask = useAppStore((state) => state.cleanTask);
   const reloadTasks = useAppStore((state) => state.reloadTasks);
+  const fetchTasks = useAppStore((state) => state.fetchTasks);
   const loadingUpdateTask = useAppStore((state) => state.loadingUpdateTask);
+  const deteleteTask = useAppStore((state) => state.deteleteTask);
+  const userRole = useAppStore((state) => state.userRole);
+
   const navigate = useNavigate();
 
   const handleClickCreatePartialClosure = async (
@@ -46,6 +53,70 @@ export default function Task({ task, id }: TaskProps) {
       await reloadTasks(id);
     }
     toast.success("Tarea reabierta");
+  };
+
+  const handleCloseTask = async (idTask: TaskWeeklyPlan["id"]) => {
+    await closeTask(idTask);
+    if (id) {
+      await reloadTasks(id);
+    }
+    toast.success("Tarea Cerrada Correctamente");
+  };
+
+  const handleDeleteTask = async (idTask: TaskWeeklyPlan["id"]) => {
+    Swal.fire({
+      title: "¿Desea eliminar la tarea?",
+      text: `La tarea no se podra recuperar`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Eliminar Tarea",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          deteleteTask(idTask);
+          toast.success("Tarea Eliminada correctamente");
+
+          (async () => {
+            if (id) {
+              await fetchTasks(id);
+            }
+          })();
+        } catch (error) {
+          toast.error("Hubo un error al cerrar la asignación");
+        }
+      }
+    });
+  };
+
+  const handleEraseTask = async (idTask: TaskWeeklyPlan["id"]) => {
+    Swal.fire({
+      title: "¿Desea limpiar la asignación de esta tarea?",
+      text: `La asignación no se podra recuperar`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Limpiar Tarea",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          cleanTask(idTask);
+          toast.success("Asignación Eliminada Correctamente");
+
+          (async () => {
+            if (id) {
+              await fetchTasks(id);
+            }
+          })();
+        } catch (error) {
+          toast.error("Hubo un error al cerrar la asignación");
+        }
+      }
+    });
   };
 
   return (
@@ -94,19 +165,39 @@ export default function Task({ task, id }: TaskProps) {
                     })
                   }
                 />
-                <TrashIcon className="cursor-pointer hover:text-red-400" />
+                {(userRole === "admin" || userRole === "adminagricola") && (
+                  <TrashIcon
+                    className="cursor-pointer hover:text-red-400"
+                    onClick={() => handleDeleteTask(task.id)}
+                  />
+                )}
               </>
             )}
 
             {task.start_date && !task.end_date && !task.active_closure && (
               <>
-                <CircleCheck className="cursor-pointer hover:text-green-400" />
-                <Info className="cursor-pointer hover:text-gray-400" />
+                <CircleCheck
+                  className="cursor-pointer hover:text-green-400"
+                  onClick={() => handleCloseTask(task.id)}
+                />
+                <Info
+                  className="cursor-pointer hover:text-gray-400"
+                  onClick={() => {
+                    navigate(`/tareas-lote/informacion/${task.id}`, {
+                      state: {
+                        previousUrl: window.location.pathname,
+                      },
+                    });
+                  }}
+                />
                 <CirclePause
                   className="cursor-pointer text-orange-500 hover:text-orange-800"
                   onClick={() => handleClickCreatePartialClosure(task.id)}
                 />
-                <Eraser className="cursor-pointer text-red-500 hover:text-red-800" />
+
+                {(userRole === "admin" || userRole === "adminagricola") && (
+                  <Eraser className="cursor-pointer text-red-500 hover:text-red-800"  onClick={() => handleEraseTask(task.id)}/>
+                )}
               </>
             )}
             {task.active_closure && (
@@ -119,11 +210,22 @@ export default function Task({ task, id }: TaskProps) {
             {task.start_date && task.end_date && !task.active_closure && (
               <>
                 <CircleCheck className="cursor-pointer text-green-500 hover:text-green-400" />
-                <Info className="cursor-pointer hover:text-gray-400" />
+                <Info
+                  className="cursor-pointer hover:text-gray-400"
+                  onClick={() => {
+                    navigate(`/tareas-lote/informacion/${task.id}`, {
+                      state: {
+                        previousUrl: window.location.pathname,
+                      },
+                    });
+                  }}
+                />
               </>
             )}
 
-            <Edit className="cursor-pointer hover:text-gray-400" />
+            {(userRole === "admin" || userRole === "adminagricola") && (
+              <Edit className="cursor-pointer hover:text-gray-400" />
+            )}
           </>
         )}
       </div>

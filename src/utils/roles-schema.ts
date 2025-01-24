@@ -7,6 +7,11 @@ export const Role = z.object({
     updated_at: z.string()
 });
 
+export const userRoleSchema = z.object({
+    name: z.string()
+});
+
 export const Roles = z.object({
     data: z.array(Role)
 })
+

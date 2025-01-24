@@ -17,7 +17,7 @@ export default function PublicHeader() {
           {logedIn ? (
             <div className="flex gap-2">
               <Link
-                to={"/dashboard/administracion"}
+                to={"/dashboard"}
                 className="text-gray-500 font-bold uppercase"
               >
                 Adminsistración

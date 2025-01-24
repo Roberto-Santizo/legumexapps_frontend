@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import { useForm } from "react-hook-form";
 import { DraftRole } from "../../../types";
 import { useAppStore } from "../../../stores/useAppStore";
@@ -34,7 +33,6 @@ export default function CreateRole() {
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Rol</h2>
-      <ReturnLink url="/roles" />
 
       <div>
         <form

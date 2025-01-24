@@ -59,7 +59,6 @@ export default function CreateLote() {
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Lote</h2>
-      <ReturnLink url="/lotes" />
       <form
         className="w-1/2 mx-auto p-5 space-y-5"
         onSubmit={handleSubmit(create)}

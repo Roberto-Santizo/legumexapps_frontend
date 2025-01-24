@@ -89,7 +89,6 @@ export default function EditUser() {
           <h2 className="text-4xl font-bold">
             Edición de Usuario: {userEditing.name}
           </h2>
-          <ReturnLink url="/usuarios" />
         </div>
       )}
 

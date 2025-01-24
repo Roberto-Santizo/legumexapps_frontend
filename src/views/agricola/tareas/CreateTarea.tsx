@@ -37,7 +37,6 @@ export default function CreateTarea() {
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Tarea</h2>
-      <ReturnLink url="/tareas" />
       <form
         className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
         onSubmit={handleSubmit(RegisterTarea)}

@@ -1,13 +1,8 @@
-//EXTERNAS
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Button, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-
-//LOCALES
 import { useAppStore } from "../../stores/useAppStore";
 import { AuthUser } from "../../types";
-
-//COMPONENTES
+import { useNavigate } from "react-router-dom";
 import Error from "../../components/Error";
 import Spinner from "../../components/Spinner";
 
@@ -18,10 +13,11 @@ function Login() {
   const errors = useAppStore((state) => state.Autherrors);
   const navigate = useNavigate();
 
-  const createUser = (data: AuthUser) => {
-    login(data).then(() => {
-      navigate("/dashboard");
-    });
+  const createUser = async (data: AuthUser) => {
+    await login(data).then(()=>{
+      navigate('/dashboard');
+      window.location.reload();
+    })
   };
 
   return (
@@ -49,10 +45,10 @@ function Login() {
           </h2>
 
           <form onSubmit={handleSubmit(createUser)}>
-            {errors
-              ? errors.map((error, index) => <Error key={index}>{error}</Error>)
-              : null}
-            {/* Email */}
+            {errors &&
+              errors.map((error, index) => <Error key={index}>{error}</Error>)}
+
+            {/* Nombre de Usuario */}
             <Controller
               name="username"
               control={control}

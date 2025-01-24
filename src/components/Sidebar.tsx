@@ -4,9 +4,13 @@ import AdminNavegation from "./menus-navegations/AdminNavegation";
 import AgricolaNavegation from "./menus-navegations/AgricolaNavegation";
 import MantoNavegation from "./menus-navegations/MantoNavegation";
 import { HomeIcon } from "lucide-react";
+import Spinner from "./Spinner";
 
 export function Sidebar() {
-  const user = useAppStore((state) => state.AuthUser);
+  
+  const userRole = useAppStore((state) => state.userRole);
+  const loadingGetRole = useAppStore((state) => state.loadingGetRole);
+
   return (
     <div className="pb-12 h-screen w-64 bg-gray-100 dark:bg-gray-800">
       <div className="space-y-4 py-4">
@@ -26,10 +30,13 @@ export function Sidebar() {
               <HomeIcon className="w-8" />
               <p className="text-sm font-bold">Dashboard</p>
             </NavLink>
-            {user.roles === "admin" && <AdminNavegation />}
-            {(user.roles === "adminagricola" || 
-              user.roles === "auxagricola" || user.roles === 'admin') && <AgricolaNavegation />}
-            {(user.roles === "adminmanto" || user.roles === "auxmanto" || user.roles==="admin") && (
+
+            {loadingGetRole && <Spinner />}
+            
+            {userRole === "admin" && <AdminNavegation />}
+            {(userRole === "adminagricola" || 
+              userRole === "auxagricola" || userRole === 'admin') && <AgricolaNavegation />}
+            {(userRole === "adminmanto" || userRole === "auxmanto" || userRole==="admin") && (
               <MantoNavegation />
             )}
           </nav>
