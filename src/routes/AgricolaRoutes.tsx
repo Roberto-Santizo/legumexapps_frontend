@@ -4,7 +4,6 @@ import Layout from "../layouts/Layout";
 import Spinner from "../components/Spinner";
 import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
-
 //PLANES SEMANALES
 const IndexPlanSemanal = lazy(
   () => import("../views/agricola/planes-semanales/IndexPlanSemanal")
@@ -31,6 +30,10 @@ const IndexTareasLote = lazy(() => import( "../views/agricola/tareas-lote/IndexT
 const AsignarTareaLote  = lazy(() => import("../views/agricola/tareas-lote/AsignarTareaLote"));
 const InfoTareaLote  = lazy(() => import( "../views/agricola/tareas-lote/InfoTareaLote"));
 const EditarTareaLote = lazy(() => import( "../views/agricola/tareas-lote/EditarTareaLote"));
+
+//TAREAS COSECHA LOTE
+const IndexTareasCosechaLote = lazy(() => import("../views/agricola/tareas-cosecha/IndexTareasCosechaLote"));
+
 
 export default function AgricolaRoutes() {
   return (
@@ -181,7 +184,7 @@ export default function AgricolaRoutes() {
       {/* TAREAS LOTE */}
       <Route element={<Layout />}>
         <Route
-          path="/tareas-lote/:lote/:id"
+          path="/planes-semanales/tareas-lote/:weekly_plan_id/:lote_plantation_control_id"
           element={
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
@@ -195,7 +198,7 @@ export default function AgricolaRoutes() {
 
       <Route element={<Layout />}>
         <Route
-          path="/tareas-lote/asignar/:id"
+          path="/planes-semanales/tareas-lote/asignar/:finca_id/:task_id"
           element={
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
@@ -209,7 +212,7 @@ export default function AgricolaRoutes() {
 
       <Route element={<Layout />}>
         <Route
-          path="/tareas-lote/informacion/:id"
+          path="/planes-semanales/tareas-lote/informacion/:id"
           element={
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
@@ -223,11 +226,26 @@ export default function AgricolaRoutes() {
 
       <Route element={<Layout />}>
         <Route
-          path="/tareas-lote/editar/:id"
+          path="/planes-semanales/tareas-lote/editar/:id"
           element={
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
                 <EditarTareaLote />
+              </ProtectedAgricolaRoutes>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      {/* TAREAS COSECHA LOTE */}
+      <Route element={<Layout />}>
+        <Route
+          path="/planes-semanales/tareas-cosecha-lote/:weekly_plan_id/:lote_plantation_control_id"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedAgricolaRoutes>
+                <IndexTareasCosechaLote />
               </ProtectedAgricolaRoutes>
             </Suspense>
           }

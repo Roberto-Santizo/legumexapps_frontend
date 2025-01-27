@@ -6,7 +6,7 @@ export function Header() {
   const [open,setOpen] = useState<boolean>(false);
 
   return (
-    <header className="flex items-center justify-end py-5 dark:bg-gray-800">
+    <header className="flex items-center justify-end py-5">
       
       {open && <UserMenu setOpen={setOpen}/>}
       

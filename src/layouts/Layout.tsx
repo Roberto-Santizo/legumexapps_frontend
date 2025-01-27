@@ -1,11 +1,11 @@
-//EXTERNAS
+// EXTERNAS
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-//HOOKS
+// HOOKS
 import UserMobile from "../components/UserMenu";
 
-//COMPONENTES
+// COMPONENTES
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
 import { useAppStore } from "../stores/useAppStore";
@@ -25,12 +25,17 @@ export default function Layout() {
 
   return (
     <>
-      <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-        <Sidebar />
+      <div className="flex h-screen bg-gray-100">
+        {/* Sidebar responsivo */}
+        <div className="hidden lg:block">
+          <Sidebar />
+        </div>
+
+        {/* Contenedor Principal */}
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header />
-          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white dark:bg-gray-900">
-            <div className="container ml-10">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mt-4"></div>
               <div className="mt-8">
                 <Outlet />
@@ -40,6 +45,7 @@ export default function Layout() {
         </div>
       </div>
 
+      {/* Menú móvil */}
       {open && <UserMobile setOpen={setOpen} />}
     </>
   );

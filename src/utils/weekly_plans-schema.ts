@@ -18,10 +18,11 @@ export const WeeklyPlan = z.object({
 
 export const SummaryWeeklyPlan = z.object({
     data: z.object({
+        id: z.string(),
         finca: z.string(),
         week: z.number(),
         year: z.number(),
-        summary: z.array(z.object({
+        summary_tasks: z.array(z.object({
             lote: z.string(),
             total_budget: z.number(),
             lote_plantation_control_id: z.string(),
@@ -30,6 +31,11 @@ export const SummaryWeeklyPlan = z.object({
             total_tasks: z.number(),
             finished_tasks: z.number()
 
+        })),
+        summary_crops: z.array(z.object({
+            id: z.string(),
+            lote_plantation_control_id: z.string(),
+            lote: z.string()
         }))
     })
 

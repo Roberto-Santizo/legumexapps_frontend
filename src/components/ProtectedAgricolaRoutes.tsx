@@ -8,7 +8,7 @@ export default function ProtectedAgricolaRoutes({ children }: ProtectedAgricolaR
   const logedIn = useAppStore((state) => state.logedIn);
   const loadingAuth = useAppStore((state) => state.loadingAuth);
   const loadingGetRole = useAppStore((state) => state.loadingGetRole);
-  const userRole = useAppStore((state) => state.userRole);
+  // const userRole = useAppStore((state) => state.userRole);
 
 
   if(!loadingAuth && !loadingGetRole){
@@ -16,9 +16,9 @@ export default function ProtectedAgricolaRoutes({ children }: ProtectedAgricolaR
       return <Navigate to="/login" replace />;
     }
   
-    if (userRole !== "adminagricola" && userRole !== "admin") {
-      return <Navigate to="/dashboard" replace />;
-    }
+    // if (userRole !== "adminagricola" && userRole !== "admin") {
+    //   return <Navigate to="/dashboard" replace />;
+    // }
   }
 
   return children;

@@ -5,6 +5,7 @@ import { SummaryWeeklyPlan, WeeklyPlans } from "../utils/weekly_plans-schema";
 
 export type WeeklyPlansSliceType = {
     weeklyPlans: WeeklyPlan[];
+    weeklyPlan: SummaryWeeklyPlanType;
 
     loadingFetchPlans: boolean;
     loadingCreatePlan: boolean;
@@ -20,12 +21,13 @@ export type WeeklyPlansSliceType = {
 
     fetchPlans: () => Promise<void>;
     createPlan: (file: File[]) => Promise<void>;
-    getPlan: (id: WeeklyPlan['id']) => Promise<SummaryWeeklyPlanType>;
+    getPlan: (id: WeeklyPlan['id']) => Promise<void>;
 }
 
 
 export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) => ({
     weeklyPlans: [],
+    weeklyPlan: {} as SummaryWeeklyPlanType,
     loadingFetchPlans: false,
     loadingCreatePlan: false,
     loadingFetchPlan: false,
@@ -74,13 +76,7 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
             const { data } = await clienteAxios(url);
             const result = SummaryWeeklyPlan.safeParse(data);
             if (result.success) {
-                set({ loadingFetchPlan: false, errorFetchPlan: false });
-                return {
-                    data: result.data.data
-                }
-            } else {
-                set({ loadingFetchPlan: false, errorFetchPlan: true });
-                return { data: { year: 0, week: 0, finca: '', summary: [] } };
+                set({ loadingFetchPlan: false, errorFetchPlan: false, weeklyPlan: result.data });
             }
         } catch (error) {
             set({ loadingFetchPlan: false, errorFetchPlan: true });

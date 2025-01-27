@@ -103,7 +103,7 @@ export default function IndexCdps() {
                   <p>{(cdp.aplication_week > 0) ? cdp.aplication_week  : 'SIN INCIO' }</p>
                 </td>
                 <td className="record">
-                  <p className={`button text-center ${cdp.status ? 'bg-green-500' : 'bg-red-500'}`}>{cdp.status ? 'ACTIVO' : 'CERRADO'}</p>
+                  <p className={`button text-center ${cdp.status ? 'bg-red-500' : ' bg-green-500'}`}>{cdp.status ? 'CERRADO' : 'ACTIVO'}</p>
                 </td>
                 <td className="record flex gap-2">
                   <Link

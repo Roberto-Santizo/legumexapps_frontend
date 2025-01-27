@@ -12,36 +12,40 @@ import { useAppStore } from "../stores/useAppStore";
 import { TaskWeeklyPlan } from "../types";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { formatDate } from "../helpers";
+import TaskLabel from "./TaskLabel";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
-  id: string | undefined;
 };
 
-export default function Task({ task, id }: TaskProps) {
-  const createPartialClosure = useAppStore(
-    (state) => state.createPartialClosure
-  );
+export default function Task({ task }: TaskProps) {
+  const { weekly_plan_id } = useParams()
+
+  //ASYNC FUNCTIONS
+  const createPartialClosure = useAppStore((state) => state.createPartialClosure);
   const closePartialClosure = useAppStore((state) => state.closePartialClosure);
   const closeTask = useAppStore((state) => state.closeTask);
   const cleanTask = useAppStore((state) => state.cleanTask);
   const reloadTasks = useAppStore((state) => state.reloadTasks);
-  const fetchTasks = useAppStore((state) => state.fetchTasks);
-  const loadingUpdateTask = useAppStore((state) => state.loadingUpdateTask);
+  const getTasks = useAppStore((state) => state.getTasks);
   const deteleteTask = useAppStore((state) => state.deteleteTask);
-  const userRole = useAppStore((state) => state.userRole);
 
+  //STATES
   const navigate = useNavigate();
+  const loadingUpdateTask = useAppStore((state) => state.loadingUpdateTask);
+  const userRole = useAppStore((state) => state.userRole);
+  const weeklyPlan = useAppStore((state) => state.weeklyPlan);
+
 
   const handleClickCreatePartialClosure = async (
     idTask: TaskWeeklyPlan["id"]
   ) => {
     await createPartialClosure(idTask);
-    if (id) {
-      await reloadTasks(id);
+    if (task.lote_plantation_control_id, weekly_plan_id) {
+      await reloadTasks(task.lote_plantation_control_id, weekly_plan_id);
     }
     toast.success("Tarea cerrada parcialmente");
   };
@@ -50,16 +54,16 @@ export default function Task({ task, id }: TaskProps) {
     idTask: TaskWeeklyPlan["id"]
   ) => {
     await closePartialClosure(idTask);
-    if (id) {
-      await reloadTasks(id);
+    if (task.lote_plantation_control_id, weekly_plan_id) {
+      await reloadTasks(task.lote_plantation_control_id, weekly_plan_id);
     }
     toast.success("Tarea reabierta");
   };
 
   const handleCloseTask = async (idTask: TaskWeeklyPlan["id"]) => {
     await closeTask(idTask);
-    if (id) {
-      await reloadTasks(id);
+    if (task.lote_plantation_control_id, weekly_plan_id) {
+      await reloadTasks(task.lote_plantation_control_id, weekly_plan_id);
     }
     toast.success("Tarea Cerrada Correctamente");
   };
@@ -81,8 +85,8 @@ export default function Task({ task, id }: TaskProps) {
           toast.success("Tarea Eliminada correctamente");
 
           (async () => {
-            if (id) {
-              await fetchTasks(id);
+            if (task.lote_plantation_control_id) {
+              await getTasks(task.lote_plantation_control_id, weeklyPlan.data.id);
             }
           })();
         } catch (error) {
@@ -109,8 +113,8 @@ export default function Task({ task, id }: TaskProps) {
           toast.success("Asignación Eliminada Correctamente");
 
           (async () => {
-            if (id) {
-              await fetchTasks(id);
+            if (task.lote_plantation_control_id) {
+              await getTasks(task.lote_plantation_control_id, weeklyPlan.data.id);
             }
           })();
         } catch (error) {
@@ -123,35 +127,13 @@ export default function Task({ task, id }: TaskProps) {
   return (
     <div className="grid grid-cols-6 shadow-xl p-10 text-xl">
       <div className="col-span-5">
-        <p>
-          <span className="font-bold uppercase">ID: </span>
-          {task.id}
-        </p>
-        <p>
-          <span className="font-bold uppercase">Semana: </span>
-          {task.week}
-        </p>
-        <p>
-          <span className="font-bold uppercase">Horas Teoricas: </span>
-          {task.hours}
-        </p>
-        <p>
-          <span className="font-bold uppercase">Tarea: </span>
-          {task.task}
-        </p>
-        <p>
-          <span className="font-bold uppercase">Presupuesto: </span>
-          <span className="font-bold text-green-500">Q{task.budget}</span>
-        </p>
-        <p>
-          <span className="font-bold uppercase">Fecha de Asignación: </span>
-          {task.start_date ? formatDate(task.start_date) : "Sin asignación"}
-        </p>
-        <p>
-          <span className="font-bold uppercase">Fecha de Cierre: </span>
-          {task.end_date ? formatDate(task.end_date) : "Sin cierre"}
-        </p>
-        
+        <TaskLabel label={'ID'} text={task.id} />
+        <TaskLabel label={'Semana'} text={task.week.toString()} />
+        <TaskLabel label={'Horas Teoricas'} text={task.hours.toString()} />
+        <TaskLabel label={'Tarea'} text={task.task} />
+        <TaskLabel label={'Presupuesto'} text={`Q${task.budget.toString()}`} text_classes="text-green-500 font-bold" />
+        <TaskLabel label={'Fecha de Asignación'} text={task.start_date ? formatDate(task.start_date) : "Sin asignación"} />
+        <TaskLabel label={'Fecha de Cierre'} text={task.end_date ? formatDate(task.end_date) : "Sin cierre"} />
       </div>
 
       <div className="col-start-7 space-y-5">
@@ -164,10 +146,10 @@ export default function Task({ task, id }: TaskProps) {
                 <SquarePlusIcon
                   className="cursor-pointer hover:text-gray-400"
                   onClick={() =>
-                    navigate(`/tareas-lote/asignar/${task.id}`, {
+                    navigate(`/planes-semanales/tareas-lote/asignar/${task.finca_id}/${task.id}`, {
                       state: {
-                        previousUrl: window.location.pathname,
-                      },
+                        previousUrl: window.location.pathname
+                      }
                     })
                   }
                 />
@@ -189,7 +171,7 @@ export default function Task({ task, id }: TaskProps) {
                 <Info
                   className="cursor-pointer hover:text-gray-400"
                   onClick={() => {
-                    navigate(`/tareas-lote/informacion/${task.id}`, {
+                    navigate(`/planes-semanales/tareas-lote/informacion/${task.id}`, {
                       state: {
                         previousUrl: window.location.pathname,
                       },
@@ -202,7 +184,7 @@ export default function Task({ task, id }: TaskProps) {
                 />
 
                 {(userRole === "admin" || userRole === "adminagricola") && (
-                  <Eraser className="cursor-pointer text-red-500 hover:text-red-800"  onClick={() => handleEraseTask(task.id)}/>
+                  <Eraser className="cursor-pointer text-red-500 hover:text-red-800" onClick={() => handleEraseTask(task.id)} />
                 )}
               </>
             )}
@@ -219,11 +201,7 @@ export default function Task({ task, id }: TaskProps) {
                 <Info
                   className="cursor-pointer hover:text-gray-400"
                   onClick={() => {
-                    navigate(`/tareas-lote/informacion/${task.id}`, {
-                      state: {
-                        previousUrl: window.location.pathname,
-                      },
-                    });
+                    navigate(`/planes-semanales/tareas-lote/informacion/${task.id}`);
                   }}
                 />
               </>
@@ -231,12 +209,12 @@ export default function Task({ task, id }: TaskProps) {
 
             {(userRole === "admin" || userRole === "adminagricola") && (
               <Edit className="cursor-pointer hover:text-gray-400" onClick={() => {
-                  navigate(`/tareas-lote/editar/${task.id}`,{
-                    state: {
-                      previousUrl: window.location.pathname,
-                    }
-                  })
-              }}/>
+                navigate(`/planes-semanales/tareas-lote/editar/${task.id}`, {
+                  state: {
+                    previousUrl: window.location.pathname
+                  }
+                })
+              }} />
             )}
           </>
         )}

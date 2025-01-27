@@ -13,9 +13,7 @@ export default function IndexPlanSemanal() {
   const loading = useAppStore((state) => state.loadingFetchPlans);
   const error = useAppStore((state) => state.errorFetchPlans);
   const plans = useAppStore((state) => state.weeklyPlans);
-  // const userRole = useAppStore((state) => state.userRole);
 
-  // const useRole = useAppStore((state) => state.useRole);
   useEffect(() => {
     fetchWeeklyPlans();
   }, []);

@@ -12,7 +12,7 @@ export function Sidebar() {
   const loadingGetRole = useAppStore((state) => state.loadingGetRole);
 
   return (
-    <div className="pb-12 h-screen w-64 bg-gray-100 dark:bg-gray-800">
+    <div className="pb-12 h-screen w-64 bg-gray-100 ">
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
           <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">

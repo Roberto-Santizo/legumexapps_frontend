@@ -7,7 +7,7 @@ import { Crop, DraftCDP, Plantation, Recipe } from '../utils/plantation-schema';
 import { DraftLote, Lote } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
 import { SummaryWeeklyPlan, WeeklyPlan } from '../utils/weekly_plans-schema';
-import { EditTaskWeeklySchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
+import { EditTaskWeeklySchema, TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
 import { EmployeeSchema } from '../utils/employee-schema';
 
 //PERMISOS
@@ -62,6 +62,10 @@ export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>
 export type DraftTaskWeeklyPlan = z.infer<typeof EditTaskWeeklySchema>
 export type TasksWeeklyPlan = z.infer<typeof TasksWeeklyPlanSchema>
 export type TaskWeeklyPlanDetails = z.infer<typeof TaskWeeklyPlanDetailsSchema>
+
+//TAREA COSECHA LOTE
+export type TasksCropWeeklyPlan = z.infer<typeof TasksCropWeeklyPlanSchema>
+export type TaskCropWeeklyPlan = z.infer<typeof TaskCropWeeklyPlanSchema>
 
 //EMPLEADOS
 export type Employee = z.infer<typeof EmployeeSchema>;

@@ -14,9 +14,10 @@ import Worker from "../../../components/Worker";
 import { toast } from "react-toastify";
 
 export default function AsignarTareaLote() {
-  const { id } = useParams();
+  const { finca_id,task_id } = useParams();
   const location = useLocation();
-  const previousUrl = location.state?.previousUrl || "/";
+  const previousUrl = location.state?.previousUrl || "/planes-semanales";
+  
 
   const [query, setQuery] = useState<string>("");
   const [assignedEmployees, setAssignedEmployees] = useState<Employee[]>([]);
@@ -45,11 +46,16 @@ export default function AsignarTareaLote() {
   const [results, setResults] = useState<Employee[]>(employees);
 
   useEffect(() => {
-    if (id) {
-      getTask(id);
-      getEmployees(id);
+    if (finca_id && task_id) {
+      getTask(task_id);
+      getEmployees(finca_id);
     }
-  }, [id, getTask, getEmployees]);
+  }, []);
+  
+  if(task.start_date != null){
+    navigate(previousUrl);
+    toast.error('La tarea ya cuenta con una asignación');
+  }
 
   useEffect(() => {
     setResults(employees);
@@ -98,7 +104,7 @@ export default function AsignarTareaLote() {
       }).then((result) => {
         if (result.isConfirmed) {
           try {
-            closeAssigment(assignedEmployees, task);
+            closeAssigment(assignedEmployees, task.id);
             toast.success("Asignación cerrada correctamente");
             navigate(previousUrl);
           } catch (error) {
@@ -110,7 +116,7 @@ export default function AsignarTareaLote() {
     }
 
     try {
-      closeAssigment(assignedEmployees, task);
+      closeAssigment(assignedEmployees, task.id);
       toast.success("Asignación cerrada correctamente");
       navigate(previousUrl);
     } catch (error) {
@@ -134,6 +140,9 @@ export default function AsignarTareaLote() {
               </p>
               <p className="text-lg">
                 <span className="font-bold">Tarea:</span> {task.task}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Finca:</span> {task.lote}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Semana:</span> {task.week}

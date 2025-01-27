@@ -1,5 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
+import {  useParams } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { TaskWeeklyPlanDetails } from "../../../types";
@@ -8,8 +7,6 @@ import { Trash } from "lucide-react";
 
 export default function InfoTareaLote() {
   const { id } = useParams();
-  const location = useLocation();
-  const previousUrl = location.state?.previousUrl || "/dashboard";
 
   const getTaskDetailsById = useAppStore((state) => state.getTaskDetailsById);
   const loadingGetTaskDetail = useAppStore(
@@ -32,8 +29,6 @@ export default function InfoTareaLote() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Información de Tarea</h2>
-
       {loadingGetTaskDetail && <Spinner />}
       {!loadingGetTaskDetail && !errorGetTaskDetail && (
         <div className="text-xl space-y-10 mt-5">
@@ -98,7 +93,7 @@ export default function InfoTareaLote() {
                     </p>
                   )}
 
-                  {taskDetail.closures?.length > 1 && (
+                  {taskDetail.closures?.length > 0 && (
                     <table className="table mt-5">
                       <thead className="bg-gray-400">
                         <tr className="text-xs md:text-sm rounded">
@@ -111,8 +106,8 @@ export default function InfoTareaLote() {
                         </tr>
                       </thead>
                       <tbody className="table-body">
-                        {taskDetail.closures.map((closure) => (
-                          <tr>
+                        {taskDetail.closures.map((closure,index) => (
+                          <tr key={index}>
                             <td className="record">{closure.start_date}</td>
                             <td className="record">{closure.end_date}</td>
                           </tr>

@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 export default function EditarTareaLote() {
   const { id } = useParams();
   const location = useLocation();
-  const previousUrl = location.state?.previousUrl || "/dashboard";
+  const previousUrl = location.state?.previousUrl || "/planes-semanales";
   const getTask = useAppStore((state) => state.getTask);
   const loadingGetTask = useAppStore((state) => state.loadingGetTask);
   const errorGetTask = useAppStore((state) => state.errorGetTask);
