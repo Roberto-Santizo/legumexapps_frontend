@@ -64,18 +64,3 @@ export const TasksWeeklyPlanSchema = z.object({
   lote: z.string(),
   data: z.array(TaskWeeklyPlanSchema),
 });
-
-export const TaskCropWeeklyPlanSchema = z.object({
-  id: z.string(),
-  task: z.string(),
-  cultivo: z.string(),
-  assigment_today: z.boolean(),
-  finished_assigment_today: z.boolean()
-});
-
-export const TasksCropWeeklyPlanSchema = z.object({
-  week: z.number(),
-  finca: z.string(),
-  lote: z.string(),
-  tasks: z.array(TaskCropWeeklyPlanSchema),
-});

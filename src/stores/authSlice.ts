@@ -33,7 +33,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
 
     userRole: '',
 
-    logedIn: sessionStorage.getItem('AUTH_TOKEN') ? true : false,
+    logedIn: localStorage.getItem('AUTH_TOKEN') ? true : false,
 
     Autherrors: [],
     errorgetRole: false,
@@ -44,7 +44,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
         try {
             set({ loadingAuth: true });
             const { data } = await clienteAxios.post(url, user);
-            sessionStorage.setItem('AUTH_TOKEN', data.token);
+            localStorage.setItem('AUTH_TOKEN', data.token);
             set({ logedIn: true, loadingAuth: false, Autherrors:[] });
             return Promise.resolve(data); 
         } catch (error : any) {
@@ -56,8 +56,8 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
         try {
             set({ loadingAuth: true });
             await clienteAxios.post('/api/logout',null);
-            sessionStorage.removeItem('AUTH_TOKEN');
-            sessionStorage.removeItem('AUTH_USER');
+            localStorage.removeItem('AUTH_TOKEN');
+            localStorage.removeItem('AUTH_USER');
             set({ logedIn: false, loadingAuth: false });
         } catch (error) {
             console.log(error);

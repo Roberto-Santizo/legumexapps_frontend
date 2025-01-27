@@ -18,7 +18,6 @@ export default function IndexTareasCosechaLote() {
     }
   }, []);
 
-  console.log(tasksCrops);
   return (
     <>
       {(!loadingGetTasks && !errorGetTasks) && <h2 className="font-bold text-3xl">Plan Semanal Semana {tasksCrops.week} - FINCA {tasksCrops.finca} - LOTE {tasksCrops?.lote}</h2>}
@@ -27,7 +26,7 @@ export default function IndexTareasCosechaLote() {
 
       <div className="flex flex-col gap-10 mt-10">
         {(!loadingGetTasks && !errorGetTasks && tasksCrops.tasks) && (
-          tasksCrops.tasks.map(task => <TaskCrop task={task} />)
+          tasksCrops.tasks.map(task => <TaskCrop key={task.id} task={task} />)
         )}
       </div>
     </>

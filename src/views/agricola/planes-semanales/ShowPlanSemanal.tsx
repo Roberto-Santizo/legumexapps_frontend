@@ -13,17 +13,16 @@ export default function ShowPlanSemanal() {
   const getPlan = useAppStore((state) => state.getPlan);
   const plan = useAppStore((state) => state.weeklyPlan);
   useEffect(() => {
-    if(id){
+    if (id) {
       getPlan(id);
     }
-      
   }, []);
 
   return (
     <>
       {loadingFetchPlan && <Spinner />}
       {errorFetchPlan && <ShowErrorAPI />}
-      {(!loadingFetchPlan && !errorFetchPlan && plan?.data) && (
+      {!loadingFetchPlan && !errorFetchPlan && plan?.data && (
         <div className="space-y-10">
           <h2 className="text-4xl font-bold">
             Plan Semanal {plan.data.finca} Semana {plan.data.week} -{" "}
@@ -63,10 +62,15 @@ export default function ShowPlanSemanal() {
                     <td className="record">{task.total_hours}</td>
                     <td className="record">{`${task.finished_tasks}/${task.total_tasks}`}</td>
                     <td className="record w-1/6">
-                      <button onClick={() => navigate(`/planes-semanales/tareas-lote/${id}/${task.lote_plantation_control_id}`)} className="button bg-gray-400 hover:bg-gray-500">
-                        <p>
-                          Ver Tareas de Lote
-                        </p>
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/planes-semanales/tareas-lote/${id}/${task.lote_plantation_control_id}`
+                          )
+                        }
+                        className="button bg-gray-400 hover:bg-gray-500"
+                      >
+                        <p>Ver Tareas de Lote</p>
                       </button>
                     </td>
                   </tr>
@@ -75,36 +79,44 @@ export default function ShowPlanSemanal() {
             </table>
           </div>
 
-          <div>
-            <h2 className="text-xl font-bold uppercase">Cosechas Asignadas</h2>
-            <table className="table mt-10">
-              <thead className="bg-gray-400">
-                <tr className="text-xs md:text-sm rounded">
-                  <th scope="col" className="table-header">
-                    Lote
-                  </th>
-                  <th scope="col" className="table-header">
-                    Accion
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="table-body">
-                {plan.data.summary_crops.map((task, index) => (
-                  <tr className="even:bg-gray-100 shadow" key={index}>
-                    <td className="record">{task.lote}</td>
-                    <td className="record w-1/6">
-                      <button onClick={() => navigate(`/planes-semanales/tareas-cosecha-lote/${id}/${task.lote_plantation_control_id}`)} className="button bg-gray-400 hover:bg-gray-500">
-                        <p>
-                          Ver Cosecha Lote
-                        </p>
-                      </button>
-                    </td>
+          {plan.data.summary_crops.length > 0 && (
+            <div>
+              <h2 className="text-xl font-bold uppercase">
+                Cosechas Asignadas
+              </h2>
+              <table className="table mt-10">
+                <thead className="bg-gray-400">
+                  <tr className="text-xs md:text-sm rounded">
+                    <th scope="col" className="table-header">
+                      Lote
+                    </th>
+                    <th scope="col" className="table-header">
+                      Accion
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
+                </thead>
+                <tbody className="table-body">
+                  {plan.data.summary_crops.map((task, index) => (
+                    <tr className="even:bg-gray-100 shadow" key={index}>
+                      <td className="record">{task.lote}</td>
+                      <td className="record w-1/6">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/planes-semanales/tareas-cosecha-lote/${id}/${task.lote_plantation_control_id}`
+                            )
+                          }
+                          className="button bg-gray-400 hover:bg-gray-500"
+                        >
+                          <p>Ver Cosecha Lote</p>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
     </>

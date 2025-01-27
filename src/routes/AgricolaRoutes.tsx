@@ -3,11 +3,11 @@ import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "../components/Spinner";
 import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
+import TomarLibrasPersonal from "../views/agricola/tareas-cosecha/TomarLibrasPersonal";
+
 
 //PLANES SEMANALES
-const IndexPlanSemanal = lazy(
-  () => import("../views/agricola/planes-semanales/IndexPlanSemanal")
-);
+const IndexPlanSemanal = lazy(() => import("../views/agricola/planes-semanales/IndexPlanSemanal"));
 
 const CreatePlanSemanal  = lazy(() => import( "../views/agricola/planes-semanales/CreatePlanSemanal"));
 const ShowPlanSemanal = lazy(() => import( "../views/agricola/planes-semanales/ShowPlanSemanal"));
@@ -33,7 +33,7 @@ const EditarTareaLote = lazy(() => import( "../views/agricola/tareas-lote/Editar
 
 //TAREAS COSECHA LOTE
 const IndexTareasCosechaLote = lazy(() => import("../views/agricola/tareas-cosecha/IndexTareasCosechaLote"));
-
+const AsignarTareaCosechaLote   = lazy(() => import("../views/agricola/tareas-cosecha/AsignarTareaCosechaLote"));
 
 export default function AgricolaRoutes() {
   return (
@@ -246,6 +246,34 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
                 <IndexTareasCosechaLote />
+              </ProtectedAgricolaRoutes>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/planes-semanales/tareas-cosecha-lote/asignar/:task_crop_id/:finca_id"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedAgricolaRoutes>
+                <AsignarTareaCosechaLote />
+              </ProtectedAgricolaRoutes>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/planes-semanales/tareas-cosecha-lote/toma-rendimiento/:task_crop_id"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedAgricolaRoutes>
+                <TomarLibrasPersonal />
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
