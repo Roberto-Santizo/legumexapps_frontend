@@ -194,7 +194,7 @@ export default function AsignarTareaLote() {
           {loadingGetEmployees && <Spinner />}
           {!loadingGetEmployees && (
             <div className="col-start-5 col-span-2">
-              <div className="mt-5 overflow-y-auto h-5/6 shadow-lg rounded-md p-5 space-y-2">
+              <div className="mt-5 overflow-y-auto h-96 shadow-lg rounded-md p-5 space-y-2">
                 <p className="font-bold text-2xl text-center">
                   Empleados Disponibles
                 </p>

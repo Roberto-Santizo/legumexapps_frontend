@@ -15,11 +15,11 @@ export default function EditarTareaLote() {
   const getTask = useAppStore((state) => state.getTask);
   const loadingGetTask = useAppStore((state) => state.loadingGetTask);
   const errorGetTask = useAppStore((state) => state.errorGetTask);
-  const fetchPlans = useAppStore((state) => state.fetchPlans);
+  const getAllPlans = useAppStore((state) => state.getAllPlans);
   const loadingEditTask = useAppStore((state) => state.loadingEditTask);
   const userRole = useAppStore((state) => state.userRole);
-  const loadingFetchPlans = useAppStore((state) => state.loadingFetchPlans);
-  const errorFetchPlans = useAppStore((state) => state.errorFetchPlans);
+  const loadinggetAllPlans = useAppStore((state) => state.loadinggetAllPlans);
+  const errorgetAllPlans = useAppStore((state) => state.errorgetAllPlans);
   const navigate = useNavigate();
   const editTask = useAppStore((state) => state.editTask);
   const plans = useAppStore((state) => state.weeklyPlans);
@@ -38,7 +38,7 @@ export default function EditarTareaLote() {
         await getTask(id);
       })();
     }
-    fetchPlans();
+    getAllPlans();
   }, []);
 
   useEffect(() => {
@@ -106,8 +106,8 @@ export default function EditarTareaLote() {
             {errors.hours && <Error>{errors.hours?.message?.toString()}</Error>}
           </div>
 
-          {loadingFetchPlans && <Spinner />}
-          {!loadingFetchPlans && !errorFetchPlans && (
+          {loadinggetAllPlans && <Spinner />}
+          {!loadinggetAllPlans && !errorgetAllPlans && (
             <div className="flex flex-col gap-2">
               <label
                 className="text-lg font-bold uppercase"

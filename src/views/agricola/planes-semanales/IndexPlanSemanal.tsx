@@ -1,5 +1,5 @@
 //HOOKS
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
 
 //COMPONENTES
@@ -7,15 +7,18 @@ import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import Spinner from "../../../components/Spinner";
 import { Link } from "react-router-dom";
 import { PlusIcon, Sheet } from "lucide-react";
+import { WeeklyPlan } from "../../../types";
 
 export default function IndexPlanSemanal() {
-  const fetchWeeklyPlans = useAppStore((state) => state.fetchPlans);
-  const loading = useAppStore((state) => state.loadingFetchPlans);
-  const error = useAppStore((state) => state.errorFetchPlans);
-  const plans = useAppStore((state) => state.weeklyPlans);
+
+  const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);
+
+  const getAllPlans = useAppStore((state) => state.getAllPlans);
+  const loading = useAppStore((state) => state.loadinggetAllPlans);
+  const error = useAppStore((state) => state.errorgetAllPlans);
 
   useEffect(() => {
-    fetchWeeklyPlans();
+    getAllPlans().then((plans) => setWeeklyPlans(plans));
   }, []);
   return (
     <>
@@ -76,7 +79,7 @@ export default function IndexPlanSemanal() {
             </tr>
           </thead>
           <tbody>
-            {plans.map((plan) => (
+            {weeklyPlans.map((plan) => (
               <tr className="tbody-tr" key={plan.id}>
                 <td className="tbody-td">{plan.finca}</td>
                 <td className="tbody-td">{plan.week}</td>

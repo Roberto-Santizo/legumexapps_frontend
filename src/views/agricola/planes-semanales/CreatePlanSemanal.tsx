@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 //COMPONENTES
 import { Button } from "@mui/material";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import { toast } from "react-toastify";
 import Error from "../../../components/Error";
 import Spinner from "../../../components/Spinner";
@@ -15,7 +14,6 @@ export default function CreatePlanSemanal() {
   const loadingCreatePlan = useAppStore((state) => state.loadingCreatePlan);
   const errorCreatePlan = useAppStore((state) => state.errorCreatePlan);
   const errorsCreatePlan = useAppStore((state) => state.errorsCreatePlan);
-  const uploadedFile = useAppStore((state) => state.uploadedFile);
   const createPlan = useAppStore((state) => state.createPlan);
   const navigate = useNavigate();
 
@@ -55,7 +53,7 @@ export default function CreatePlanSemanal() {
         >
           <input
             {...getInputProps()}
-            disabled={loadingCreatePlan || !!uploadedFile}
+            disabled={loadingCreatePlan || !!file}
           />
           {file ? (
             <p className="text-green-600 font-medium">
