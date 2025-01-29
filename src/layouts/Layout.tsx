@@ -9,6 +9,7 @@ import UserMobile from "../components/UserMenu";
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
 import { useAppStore } from "../stores/useAppStore";
+import ModalTomaLibras from "../components/ModalTomaLibras";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
@@ -44,6 +45,8 @@ export default function Layout() {
           </main>
         </div>
       </div>
+
+      <ModalTomaLibras />
 
       {/* Menú móvil */}
       {open && <UserMobile setOpen={setOpen} />}

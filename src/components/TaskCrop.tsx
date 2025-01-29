@@ -1,7 +1,13 @@
 import { TaskCropWeeklyPlan } from "../types";
 import { useNavigate, useParams } from "react-router-dom";
 import TaskLabel from "./TaskLabel";
-import { Grid2X2Plus, ListPlus, SquarePlusIcon } from "lucide-react";
+import {
+  BadgeCheck,
+  Grid2X2Plus,
+  ListPlus,
+  SquarePlusIcon,
+} from "lucide-react";
+import { useAppStore } from "../stores/useAppStore";
 
 type TaskCropProps = {
   task: TaskCropWeeklyPlan;
@@ -9,6 +15,7 @@ type TaskCropProps = {
 
 export default function TaskCrop({ task }: TaskCropProps) {
   const { weekly_plan_id } = useParams();
+  const openModal = useAppStore((state) => state.openModal);
   const navigate = useNavigate();
 
   return (
@@ -20,7 +27,11 @@ export default function TaskCrop({ task }: TaskCropProps) {
       </div>
 
       <div className="col-start-7 space-y-5">
-        {!task.assigment_today ? (
+        {task.closed && <BadgeCheck className="text-green-500" />}
+        {!task.closed && <BadgeCheck className="cursor-pointer hover:text-gray-400"/>}
+        
+
+        {!task.assigment_today && !task.closed && (
           <SquarePlusIcon
             className="cursor-pointer hover:text-gray-400"
             onClick={() =>
@@ -34,7 +45,9 @@ export default function TaskCrop({ task }: TaskCropProps) {
               )
             }
           />
-        ) : (
+        )}
+
+        {!task.finished_assigment_today && (
           <ListPlus
             className="cursor-pointer hover:text-gray-400"
             onClick={() =>
@@ -50,8 +63,8 @@ export default function TaskCrop({ task }: TaskCropProps) {
           />
         )}
 
-        {task.finished_assigment_today && (
-          <Grid2X2Plus className="cursor-pointer hover:text-gray-500" />
+        {task.finished_assigment_today && task.incomplete && (
+          <Grid2X2Plus className="cursor-pointer hover:text-gray-500" onClick={() => openModal(task.id)}/>
         )}
       </div>
     </div>

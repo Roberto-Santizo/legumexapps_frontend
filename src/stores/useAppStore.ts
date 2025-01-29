@@ -10,8 +10,9 @@ import { LoteSliceType, createLoteSlice } from './LoteSlice';
 import { FincaSliceType, createFincaSlice } from './fincaSlice';
 import { WeeklyPlansSliceType, createWeeklyPlansSlice } from './weeklyPlansSlice';
 import { TaskWeeklyPlanSliceType, createTaskWeeklyPlanSlice } from './taskWeeklyPlanSlice';
+import { TaskCropWeeklyPlanSliceType, createTaskCropWeeklyPlanSlice } from './taskCropWeeklyPlanSlice';
 
-export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType & TareasSliceType & ControlPlantationSliceType & LoteSliceType & FincaSliceType & WeeklyPlansSliceType & TaskWeeklyPlanSliceType>()(devtools((...a) => ({
+export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType & TareasSliceType & ControlPlantationSliceType & LoteSliceType & FincaSliceType & WeeklyPlansSliceType & TaskWeeklyPlanSliceType & TaskCropWeeklyPlanSliceType>()(devtools((...a) => ({
     ...createUsersSlice(...a),
     ...createAuthSlice(...a),
     ...createRolesSlice(...a),
@@ -21,5 +22,6 @@ export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceTyp
     ...createLoteSlice(...a),
     ...createFincaSlice(...a),
     ...createWeeklyPlansSlice(...a),
-    ...createTaskWeeklyPlanSlice(...a)
+    ...createTaskWeeklyPlanSlice(...a),
+    ...createTaskCropWeeklyPlanSlice(...a),
 })))

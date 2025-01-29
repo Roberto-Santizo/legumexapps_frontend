@@ -1,17 +1,13 @@
-import { StateCreator } from "zustand"
-import clienteAxios from "../config/axios"
-import { DraftTaskWeeklyPlan, Employee, TaskCropWeeklyPlan, TasksCropWeeklyPlan, TasksWeeklyPlan, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "../types"
-import {  TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from "../utils/taskWeeklyPlan-schema";
+import { StateCreator } from "zustand";
+import clienteAxios from "../config/axios";
+import { DraftTaskWeeklyPlan, Employee, TasksWeeklyPlan, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "../types";
+import { TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from "../utils/taskWeeklyPlan-schema";
 import { EmployeesSchema } from "../utils/employee-schema";
-import { EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema, } from "../utils/taskCropWeeklyPlan-schema";
 
 export type TaskWeeklyPlanSliceType = {
     tasks: TasksWeeklyPlan;
-    tasksCrops: TasksCropWeeklyPlan;
     task: TaskWeeklyPlan;
-    taskCrop: TaskCropWeeklyPlan;
     employees: Employee[];
-    CropEmployees: Employee[];
 
     loadingGetTasks: boolean;
     loadingPartialClosure: boolean;
@@ -22,7 +18,7 @@ export type TaskWeeklyPlanSliceType = {
     loadingGetTaskDetail: boolean;
     loadingCloseTask: boolean;
     loadingDeleteTask: boolean;
-    loadingEditTask:boolean;
+    loadingEditTask: boolean;
 
     errorGetTasks: boolean;
     errorCreatePartialClosure: boolean;
@@ -33,33 +29,28 @@ export type TaskWeeklyPlanSliceType = {
     errorGetTaskDetails: boolean;
 
     getTasks: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
-    getTasksCrop: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     reloadTasks: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     createPartialClosure: (id: TaskWeeklyPlan['id']) => Promise<void>
     closePartialClosure: (id: TaskWeeklyPlan['id']) => Promise<void>
     getTask: (id: TaskWeeklyPlan['id']) => Promise<void>
-    getTaskCrop: (id : TaskCropWeeklyPlan['id']) => Promise<void>
     getEmployees: (id: TaskWeeklyPlan['finca_id']) => Promise<void>
-    getCropEmployees: (id : TaskCropWeeklyPlan['id']) => Promise<void>
     reduceSlots: (task: TaskWeeklyPlan) => void
     addSlots: (task: TaskWeeklyPlan) => void
     closeAssigment: (Employees: Employee[], task_id: TaskWeeklyPlan['id']) => Promise<void>
-    closeCropAssigment:(Employees: Employee[], task_crop_id : TaskCropWeeklyPlan['id']) => Promise<void>
     getTaskDetailsById: (id: TaskWeeklyPlan['id']) => Promise<TaskWeeklyPlanDetails>
+
     closeTask: (id: TaskWeeklyPlan['id']) => Promise<void>
+
     deteleteTask: (id: TaskWeeklyPlan['id']) => Promise<void>
     cleanTask: (id: TaskWeeklyPlan['id']) => Promise<void>
-    editTask: (data : DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id']) => Promise<void>
+    editTask: (data: DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id']) => Promise<void>
 }
 
 
 export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = (set) => ({
     tasks: {} as TasksWeeklyPlan,
-    tasksCrops: {} as TasksCropWeeklyPlan,
     task: {} as TaskWeeklyPlan,
-    taskCrop: {} as TaskCropWeeklyPlan,
     employees: [],
-    CropEmployees: [],
 
     loadingGetTasks: false,
     loadingPartialClosure: false,
@@ -70,7 +61,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
     loadingGetTaskDetail: false,
     loadingCloseTask: false,
     loadingDeleteTask: false,
-    loadingEditTask:false,
+    loadingEditTask: false,
 
     errorGetTasks: false,
     errorCreatePartialClosure: false,
@@ -80,32 +71,16 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
     errorCloseAssignment: false,
     errorGetTaskDetails: false,
 
-    getTasks: async (id,plan_id) => {
+    getTasks: async (id, plan_id) => {
         set({ loadingGetTasks: true });
         try {
             const url = `/api/tasks-lotes`;
             const { data } = await clienteAxios(url, {
-                params: { id : id, weekly_plan_id:plan_id }
+                params: { id: id, weekly_plan_id: plan_id }
             });
             const result = TasksWeeklyPlanSchema.safeParse(data);
             if (result.success) {
                 set({ loadingGetTasks: false, tasks: result.data, errorGetTasks: false });
-            }
-        } catch (error) {
-            set({ loadingGetTasks: false, errorGetTasks: true });
-            throw error;
-        }
-    },
-    getTasksCrop: async (lote_plantation_control_id,weekly_plan_id) => {
-        set({ loadingGetTasks: true });
-        try {
-            const url = `/api/tasks-crops-lotes`;
-            const { data } = await clienteAxios(url, {
-                params: { lote_plantation_control_id, weekly_plan_id }
-            });
-            const result = TasksCropWeeklyPlanSchema.safeParse(data);
-            if (result.success) {
-                set({ loadingGetTasks: false, tasksCrops: result.data, errorGetTasks: false });
             }
         } catch (error) {
             set({ loadingGetTasks: false, errorGetTasks: true });
@@ -127,21 +102,6 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             throw error;
         }
     },
-    getTaskCrop: async (id) => {
-        set({ loadingGetTask: true });
-        try {
-            const url = `/api/tasks-crops-lotes/${id}`;
-            const { data } = await clienteAxios(url);
-            const result = TaskCropWeeklyPlanSchema.safeParse(data.data);
-            if (result.success) {
-                set({ loadingGetTask: false, taskCrop: result.data, errorGetTask: false });
-            }
-        } catch (error) {
-            set({ loadingGetTask: false, errorGetTask: true });
-            throw error;
-        }
-    },
-
     createPartialClosure: async (id) => {
         set({ loadingPartialClosure: true });
         try {
@@ -167,7 +127,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
         }
     },
 
-    reloadTasks: async (id,weekly_plan_id) => {
+    reloadTasks: async (id, weekly_plan_id) => {
         set({ loadingUpdateTask: true });
         try {
             const url = `/api/tasks-lotes`;
@@ -200,40 +160,11 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             throw error;
         }
     },
-    getCropEmployees: async (id) => {
-        set({ loadingGetEmployees: true });
-        try {
-            const url = `/api/tasks-crops-lotes/employees/${id}`;
-            const { data } = await clienteAxios(url);
 
-            const result = EmployeesTaskCropPlanSchema.safeParse(data);
-            
-            console.log(result);
-            // if (result.success) {
-            //     set({ loadingGetEmployees: false, CropEmployees: result.data.data, errorgetEmployees: false });
-            // }
-        } catch (error) {
-            set({ loadingGetEmployees: false, errorgetEmployees: true });
-            throw error;
-        }
-    },
     closeAssigment: async (Employees, task_id) => {
         set({ loadingCloseAssigment: true })
         try {
             const url = `/api/tasks-lotes/close-assignment/${task_id}`
-            await clienteAxios.post(url, {
-                data: Employees
-            });
-            set({ loadingCloseAssigment: false });
-        } catch (error) {
-            set({ loadingCloseAssigment: false, errorCloseAssignment: true })
-            throw error;
-        }
-    },
-    closeCropAssigment: async (Employees, task_crop_id) => {
-        set({ loadingCloseAssigment: true })
-        try {
-            const url = `/api/tasks-crops-lotes/close-assignment/${task_crop_id}`
             await clienteAxios.post(url, {
                 data: Employees
             });
@@ -298,14 +229,14 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             throw new Error("Hubo un problema para limpiar la asignación");
         }
     },
-    editTask: async (data,id) =>{
-        set({loadingEditTask: true});
+    editTask: async (data, id) => {
+        set({ loadingEditTask: true });
         try {
             const url = `/api/tasks-lotes/${id}`
-            await clienteAxios.put(url,data);
-            set({loadingEditTask: false});
+            await clienteAxios.put(url, data);
+            set({ loadingEditTask: false });
         } catch (error) {
-            set({loadingEditTask: false});
+            set({ loadingEditTask: false });
             throw new Error("Hubo un problema para limpiar la asignación");
         }
     }
