@@ -5,14 +5,21 @@ import { AuthUser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import Error from "../../components/Error";
 import Spinner from "../../components/Spinner";
+import { useEffect } from "react";
 
 function Login() {
   const { handleSubmit, control } = useForm<AuthUser>();
   const login = useAppStore((state) => state.login);
   const loadingAuth = useAppStore((state) => state.loadingAuth);
+  const logedIn = useAppStore((state) => state.logedIn);
   const errors = useAppStore((state) => state.Autherrors);
   const navigate = useNavigate();
 
+  useEffect(()=>{
+    if(logedIn){
+      navigate('/dashboard');
+    }
+  },[])
   const createUser = async (data: AuthUser) => {
     await login(data).then(() => {
       navigate("/dashboard");

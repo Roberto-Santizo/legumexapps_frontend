@@ -6,8 +6,10 @@ import Spinner from "./Spinner";
 import { formatDate } from "../helpers";
 import ShowErrorAPI from "./ShowErrorAPI";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 export default function ModalTomaLibras() {
+  const { lote_plantation_control_id, weekly_plan_id } = useParams();
   const modalTomaLibras = useAppStore((state) => state.modalTomaLibras);
   const idTakeLbsData = useAppStore((state) => state.idTakeLbsData);
   const errorGetTask = useAppStore((state) => state.errorGetTask);
@@ -70,6 +72,9 @@ export default function ModalTomaLibras() {
       completeAssigments(completedAssigments).then(()=>{
         closeModal();
         toast.success('Registro Guardado Correctamente');
+        if (lote_plantation_control_id && weekly_plan_id) {
+          getTasksCrop(lote_plantation_control_id, weekly_plan_id)
+        }
       });
       
     } catch (error) {

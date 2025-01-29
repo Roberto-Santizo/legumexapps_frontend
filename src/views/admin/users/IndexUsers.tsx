@@ -47,44 +47,44 @@ export default function IndexUsers() {
           {error && <ShowErrorAPI />}
           {!loading && !error && (
             <table className="table">
-              <thead className="bg-gray-400">
-                <tr className="text-xs md:text-sm rounded">
-                  <th scope="col" className="table-header">
+              <thead>
+                <tr className="thead-tr">
+                  <th scope="col" className="thead-th">
                     Nombre
                   </th>
-                  <th scope="col" className="table-header">
+                  <th scope="col" className="thead-th">
                     Nombre de Usuario
                   </th>
-                  <th scope="col" className="table-header">
+                  <th scope="col" className="thead-th">
                     Correo
                   </th>
-                  <th scope="col" className="table-header">
+                  <th scope="col" className="thead-th">
                     Rol
                   </th>
-                  <th scope="col" className="table-header">
+                  <th scope="col" className="thead-th">
                     Estado
                   </th>
-                  <th scope="col" className="table-header">
+                  <th scope="col" className="thead-th">
                     Acciones
                   </th>
                 </tr>
               </thead>
-              <tbody className="table-body">
+              <tbody>
                 {users.map((user) => (
-                  <tr className="text-xl" key={user.id}>
-                    <td className="record">
+                  <tr className="tbody-tr" key={user.id}>
+                    <td className="tbody-td">
                       <p>{user.name}</p>
                     </td>
-                    <td className="record">
+                    <td className="tbody-td">
                       <p>{user.username}</p>
                     </td>
-                    <td className="record">
+                    <td className="tbody-td">
                       <p>{user.email}</p>
                     </td>
-                    <td className="record">
+                    <td className="tbody-td">
                       <p>{user.roles}</p>
                     </td>
-                    <td className="record"  onClick={() => handleChangeUserStatus(user.id)}>
+                    <td className="tbody-td"  onClick={() => handleChangeUserStatus(user.id)}>
                       <span
                         className={
                           user.status
@@ -110,7 +110,7 @@ export default function IndexUsers() {
                         </button>
                       </span>
                     </td>
-                    <td className="record">
+                    <td className="tbody-td">
                       <Link to={`/usuarios/editar/${user.id}`}>
                         <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
                       </Link>

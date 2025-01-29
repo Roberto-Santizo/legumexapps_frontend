@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
-import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
-import { TasksCropIncompleteSchema, TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema } from "../utils/taskCropWeeklyPlan-schema";
+import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
+import { TasksCropIncompleteSchema, TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema } from "../utils/taskCropWeeklyPlan-schema";
 
 export type TaskCropWeeklyPlanSliceType = {
     tasksCrops: TasksCropWeeklyPlan;
@@ -15,6 +15,7 @@ export type TaskCropWeeklyPlanSliceType = {
     loadingCloseAssigment: boolean;
     loadingCloseTask: boolean;
     loadingRegisterDailyAssigments: boolean;
+    loadingReloadTasks:boolean;
 
     modalTomaLibras: boolean;
 
@@ -25,11 +26,15 @@ export type TaskCropWeeklyPlanSliceType = {
 
     getTasksCrop: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     getTaskCrop: (id: TaskCropWeeklyPlan['id']) => Promise<void>
+    getTaskCropDetails: (id: TaskCropWeeklyPlan['id']) => Promise<TaskCropWeeklyPlanDetail>
+
     getCropEmployees: (id: TaskCropWeeklyPlan['finca_id']) => Promise<void>
     closeCropAssigment: (Employees: Employee[], task_crop_id: TaskCropWeeklyPlan['id']) => Promise<void>
 
     closeDailyAssignment: (id: TaskCropWeeklyPlan['id'], data: EmployeeCrop[], plants: Number) => Promise<void>
+    closeWeekAssignment: (id: TaskCropWeeklyPlan['id']) => Promise<void>;
 
+    reloadTasks: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     getIncompleteAssigments: (id: TaskCropWeeklyPlan['id']) => Promise<TaskCropIncomplete[]>
     completeAssigments: (data : TaskCropIncomplete[]) => Promise<void>
     openModal: (id: TaskCropWeeklyPlan['id']) => void
@@ -50,6 +55,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
     loadingCloseAssigment: false,
     loadingCloseTask: false,
     loadingRegisterDailyAssigments: false,
+    loadingReloadTasks: false,
 
     errorGetTasks: false,
     errorGetTask: false,
@@ -68,7 +74,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 set({ loadingGetTasks: false, tasksCrops: result.data, errorGetTasks: false });
             }
         } catch (error) {
-            set({ loadingGetTasks: false, errorGetTasks: true });
+            set({loadingGetTask: false, errorGetTask: true});
             throw error;
         }
     },
@@ -85,6 +91,41 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
         } catch (error) {
             set({ loadingGetTask: false, errorGetTask: true });
             throw error;
+        }
+    },
+    getTaskCropDetails: async (id) => {
+        set({ loadingGetTask: true });
+        try {
+            const url = `/api/tasks-crops-lotes/details/${id}`;
+            const { data } = await clienteAxios(url);
+            const result = TaskCropWeeklyPlanDetailSchema.safeParse(data);
+            if (result.success) {
+                set({ loadingGetTask: false });
+                return result.data;
+            } else {
+                set({ loadingGetTask: false });
+                throw new Error('Invalid data');
+            }
+        } catch (error) {
+            set({ loadingGetTask: false });
+            throw error;
+        }
+    },
+
+    reloadTasks: async (lote_plantation_control_id, weekly_plan_id) => {
+        set({ loadingReloadTasks: true });
+        try {
+            const url = `/api/tasks-crops-lotes`;
+            const { data } = await clienteAxios(url, {
+                params: { lote_plantation_control_id, weekly_plan_id }
+            });
+            const result = TasksCropWeeklyPlanSchema.safeParse(data);
+            if (result.success) {
+                set({ loadingReloadTasks: false, tasksCrops: result.data, errorGetTasks: false });
+            }
+        } catch (error) {
+            set({ loadingReloadTasks: false, errorGetTasks: true });
+            throw new Error;
         }
     },
 
@@ -121,6 +162,17 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
             throw error;
         }
 
+    },
+
+    closeWeekAssignment: async(id) => {
+        set({loadingCloseTask: true});
+        try {
+            const url = `/api/tasks-crops-lotes/${id}`;
+            await clienteAxios.patch(url);
+            set({loadingCloseTask: false});
+        } catch (error) {
+            throw error;
+        }
     },
     getIncompleteAssigments: async (id) => {
         set({ loadingGetTask: true });

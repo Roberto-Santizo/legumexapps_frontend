@@ -28,56 +28,59 @@ export default function ShowPlanSemanal() {
             Plan Semanal {plan.data.finca} Semana {plan.data.week} -{" "}
             {plan.data.year}
           </h2>
-          <div>
-            <h2 className="text-xl font-bold uppercase">Tareas Generales</h2>
-            <table className="table mt-10">
-              <thead className="bg-gray-400">
-                <tr className="text-xs md:text-sm rounded">
-                  <th scope="col" className="table-header">
-                    Lote
-                  </th>
-                  <th scope="col" className="table-header">
-                    Personas
-                  </th>
-                  <th scope="col" className="table-header">
-                    Presupuesto
-                  </th>
-                  <th scope="col" className="table-header">
-                    Horas
-                  </th>
-                  <th scope="col" className="table-header">
-                    Control de tareas
-                  </th>
-                  <th scope="col" className="table-header">
-                    Tareas
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="table-body">
-                {plan.data.summary_tasks.map((task, index) => (
-                  <tr className="even:bg-gray-100 shadow" key={index}>
-                    <td className="record">{task.lote}</td>
-                    <td className="record">{task.total_workers}</td>
-                    <td className="record text-green-500 font-bold">{`Q${task.total_budget}`}</td>
-                    <td className="record">{task.total_hours}</td>
-                    <td className="record">{`${task.finished_tasks}/${task.total_tasks}`}</td>
-                    <td className="record w-1/6">
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/planes-semanales/tareas-lote/${id}/${task.lote_plantation_control_id}`
-                          )
-                        }
-                        className="button bg-gray-400 hover:bg-gray-500"
-                      >
-                        <p>Ver Tareas de Lote</p>
-                      </button>
-                    </td>
+
+          {plan.data.summary_tasks.length > 0 && (
+            <div>
+              <h2 className="text-xl font-bold uppercase">Tareas Generales</h2>
+              <table className="table mt-10">
+                <thead>
+                  <tr className="thead-tr">
+                    <th scope="col" className="thead-th">
+                      Lote
+                    </th>
+                    <th scope="col" className="thead-th">
+                      Personas
+                    </th>
+                    <th scope="col" className="thead-th">
+                      Presupuesto
+                    </th>
+                    <th scope="col" className="thead-th">
+                      Horas
+                    </th>
+                    <th scope="col" className="thead-th">
+                      Control de tareas
+                    </th>
+                    <th scope="col" className="thead-th">
+                      Tareas
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {plan.data.summary_tasks.map((task, index) => (
+                    <tr className="tbody-tr" key={index}>
+                      <td className="tbody-td">{task.lote}</td>
+                      <td className="tbody-td">{task.total_workers}</td>
+                      <td className="tbody-td text-green-500 font-bold">{`Q${task.total_budget}`}</td>
+                      <td className="tbody-td">{task.total_hours}</td>
+                      <td className="tbody-td">{`${task.finished_tasks}/${task.total_tasks}`}</td>
+                      <td className="tbody-td w-1/6">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/planes-semanales/tareas-lote/${id}/${task.lote_plantation_control_id}`
+                            )
+                          }
+                          className="button bg-gray-400 hover:bg-gray-500"
+                        >
+                          <p>Ver Tareas de Lote</p>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {plan.data.summary_crops.length > 0 && (
             <div>
@@ -85,21 +88,21 @@ export default function ShowPlanSemanal() {
                 Cosechas Asignadas
               </h2>
               <table className="table mt-10">
-                <thead className="bg-gray-400">
-                  <tr className="text-xs md:text-sm rounded">
-                    <th scope="col" className="table-header">
+                <thead>
+                  <tr className="thead-tr">
+                    <th scope="col" className="thead-th">
                       Lote
                     </th>
-                    <th scope="col" className="table-header">
+                    <th scope="col" className="thead-th">
                       Accion
                     </th>
                   </tr>
                 </thead>
-                <tbody className="table-body">
+                <tbody>
                   {plan.data.summary_crops.map((task, index) => (
-                    <tr className="even:bg-gray-100 shadow" key={index}>
-                      <td className="record">{task.lote}</td>
-                      <td className="record w-1/6">
+                    <tr className="tbody-tr" key={index}>
+                      <td className="tbody-td">{task.lote}</td>
+                      <td className="tbody-td w-1/6">
                         <button
                           onClick={() =>
                             navigate(

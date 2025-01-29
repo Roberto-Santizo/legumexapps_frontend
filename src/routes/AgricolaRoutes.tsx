@@ -3,7 +3,6 @@ import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "../components/Spinner";
 import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
-import TomarLibrasPersonal from "../views/agricola/tareas-cosecha/TomarLibrasPersonal";
 
 
 //PLANES SEMANALES
@@ -34,6 +33,9 @@ const EditarTareaLote = lazy(() => import( "../views/agricola/tareas-lote/Editar
 //TAREAS COSECHA LOTE
 const IndexTareasCosechaLote = lazy(() => import("../views/agricola/tareas-cosecha/IndexTareasCosechaLote"));
 const AsignarTareaCosechaLote   = lazy(() => import("../views/agricola/tareas-cosecha/AsignarTareaCosechaLote"));
+const TomarLibrasPersonal = lazy(() => import("../views/agricola/tareas-cosecha/TomarLibrasPersonal")) ;
+const ResumenTareaCosechaLote = lazy(() => import( "../views/agricola/tareas-cosecha/ResumenTareaCosechaLote"));
+
 
 export default function AgricolaRoutes() {
   return (
@@ -274,6 +276,20 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
                 <TomarLibrasPersonal />
+              </ProtectedAgricolaRoutes>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/planes-semanales/tareas-cosecha-lote/resumen/:task_crop_id"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedAgricolaRoutes>
+                <ResumenTareaCosechaLote />
               </ProtectedAgricolaRoutes>
             </Suspense>
           }

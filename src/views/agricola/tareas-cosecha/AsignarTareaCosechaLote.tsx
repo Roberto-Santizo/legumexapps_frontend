@@ -17,7 +17,7 @@ export default function AsignarTareaCosechaLote() {
   const [assignedEmployees, setAssignedEmployees] = useState<Employee[]>([]);
   const [query, setQuery] = useState<string>("");
 
-  const getCropEmployees = useAppStore((state) => state.getCropEmployees);
+  const getEmployees = useAppStore((state) => state.getEmployees);
   const loadingGetTask = useAppStore((state) => state.loadingGetTask);
   const loadingGetEmployees = useAppStore((state) => state.loadingGetEmployees);
   const loadingCloseAssigment = useAppStore(
@@ -34,7 +34,7 @@ export default function AsignarTareaCosechaLote() {
   useEffect(() => {
     if (finca_id && task_crop_id) {
       getTaskCrop(task_crop_id);
-      getCropEmployees(finca_id);
+      getEmployees(finca_id);
     }
   }, []);
 

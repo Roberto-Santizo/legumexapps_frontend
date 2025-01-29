@@ -34,41 +34,41 @@ export default function IndexLotes() {
       {!loading && errorFetchLoading && <ShowErrorAPI />}
       {!loading && !errorFetchLoading && (
         <table className="table mt-10">
-          <thead className="bg-gray-400">
-            <tr className="text-xs md:text-sm rounded">
-              <th scope="col" className="table-header">
+          <thead>
+            <tr className="thead-tr">
+              <th scope="col" className="thead-th">
                 ID
               </th>
-              <th scope="col" className="table-header">
+              <th scope="col" className="thead-th">
                 Nombre
               </th>
-              <th scope="col" className="table-header">
+              <th scope="col" className="thead-th">
                 Finca
               </th>
-              <th scope="col" className="table-header">
+              <th scope="col" className="thead-th">
                 CDP Activo
               </th>
-              <th scope="col" className="table-header">
+              <th scope="col" className="thead-th">
                 Acciones
               </th>
             </tr>
           </thead>
-          <tbody className="table-body">
+          <tbody>
             {lotes.map((lote) => (
-              <tr className="text-xl" key={lote.id}>
-                <td className="record">
+              <tr className="tbody-tr" key={lote.id}>
+                <td className="tbody-td">
                     {lote.id}
                 </td>
-                <td className="record">
+                <td className="tbody-td">
                     {lote.name}
                 </td>
-                <td className="record">
+                <td className="tbody-td">
                     {lote.finca}
                 </td>
-                <td className="record">
+                <td className="tbody-td">
                     {lote.cdp}
                 </td>
-                <td className="record">
+                <td className="tbody-td">
                   <Link to={`/`}>
                     <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
                   </Link>

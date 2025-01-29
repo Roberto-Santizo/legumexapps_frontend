@@ -9,7 +9,7 @@ import { Finca } from '../utils/fincas-schema';
 import { SummaryWeeklyPlan, WeeklyPlan } from '../utils/weekly_plans-schema';
 import { EditTaskWeeklySchema,TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
 import { EmployeeSchema } from '../utils/employee-schema';
-import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema } from '../utils/taskCropWeeklyPlan-schema';
+import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema';
 import  {TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema} from "../utils/taskCropWeeklyPlan-schema";
 
 
@@ -70,6 +70,7 @@ export type TaskWeeklyPlanDetails = z.infer<typeof TaskWeeklyPlanDetailsSchema>
 export type TasksCropWeeklyPlan = z.infer<typeof TasksCropWeeklyPlanSchema>
 export type TaskCropIncomplete = z.infer<typeof TaskCropIncompleteSchema>
 export type TaskCropWeeklyPlan = z.infer<typeof TaskCropWeeklyPlanSchema>
+export type TaskCropWeeklyPlanDetail = z.infer<typeof TaskCropWeeklyPlanDetailSchema>
 
 //EMPLEADOS
 export type Employee = z.infer<typeof EmployeeSchema>;

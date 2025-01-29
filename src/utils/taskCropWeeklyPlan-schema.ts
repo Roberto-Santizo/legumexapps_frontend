@@ -3,7 +3,7 @@ import { z } from "zod";
 export const TaskCropIncompleteSchema = z.object({
     id: z.string(),
     lbs_finca: z.number(),
-    lbs_planta: z.union([z.null(),z.number()]),
+    lbs_planta: z.union([z.null(), z.number()]),
     date: z.string()
 });
 
@@ -19,7 +19,33 @@ export const TaskCropWeeklyPlanSchema = z.object({
     assigment_today: z.boolean(),
     finished_assigment_today: z.boolean(),
     closed: z.boolean(),
-    incomplete: z.boolean()
+    incomplete: z.boolean(),
+    has_assigments: z.boolean(),
+});
+
+export const TaskCropWeeklyPlanDetailSchema = z.object({
+    finca: z.string(),
+    week: z.number(),
+    lote: z.string(),
+    cdp: z.string(),
+    assigments: z.array(z.object({
+        id: z.number(),
+        lbs_planta: z.number(),
+        lbs_finca: z.number(),
+        plants: z.number(),
+        start_hour: z.string(),
+        end_hour: z.string(),
+        date: z.string()
+    })),
+    employees: z.array(z.object({
+        id: z.number(),
+        daily_assignment_id: z.number(),
+        name: z.string(),
+        code: z.string(),
+        lbs: z.number(),
+        date: z.string()
+    })
+    )
 });
 
 export const TasksCropWeeklyPlanSchema = z.object({
@@ -33,7 +59,7 @@ export const EmployeeTaskCropPlanSchema = z.object({
     id: z.string(),
     name: z.string(),
     code: z.string(),
-    lbs: z.union([z.number(),z.null()])
+    lbs: z.union([z.number(), z.null()])
 
 });
 

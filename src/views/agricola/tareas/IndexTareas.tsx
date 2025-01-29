@@ -37,35 +37,35 @@ export default function IndexTareas() {
         {!loadingTareas && errorTareas && <ShowErrorAPI />}
         {!loadingTareas && !errorTareas && (
           <table className="table">
-            <thead className="bg-gray-400">
-              <tr className="text-xs md:text-sm rounded">
-                <th scope="col" className="table-header">
+            <thead>
+              <tr className="thead-tr">
+                <th scope="col" className="thead-th">
                   ID
                 </th>
-                <th scope="col" className="table-header">
+                <th scope="col" className="thead-th">
                   Tarea
                 </th>
-                <th scope="col" className="table-header">
+                <th scope="col" className="thead-th">
                   Codigo
                 </th>
-                <th scope="col" className="table-header">
+                <th scope="col" className="thead-th">
                   Acción
                 </th>
               </tr>
             </thead>
-            <tbody className="table-body">
+            <tbody>
               {tareas.map((tarea) => (
-                <tr className="text-xl" key={tarea.id}>
-                  <td className="record">
+                <tr className="tbody-tr" key={tarea.id}>
+                  <td className="tbody-td">
                     <p>{tarea.id}</p>
                   </td>
-                  <td className="record">
+                  <td className="tbody-td">
                     <p>{tarea.name}</p>
                   </td>
-                  <td className="record">
+                  <td className="tbody-td">
                     <p>{tarea.code}</p>
                   </td>
-                  <td className="record flex gap-2">
+                  <td className="tbody-td flex gap-2">
                     <Link
                       to={`/tareas/edit/${tarea.id}`}
                       className="hover:text-gray-400"
