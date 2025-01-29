@@ -6,16 +6,21 @@ import { Tarea as TareaSchema, Tareas } from "../utils/tareas-schema";
 import { DraftTarea, Tarea } from "../types";
 
 export type TareasSliceType = {
+    
+    //TREAR TAREAS
+    fetchTareas: () => Promise<Tarea[]>
     loadingTareas: boolean
-    loadingUpdateTarea:boolean
     errorFetchTareas: boolean
+    tareas: Tarea[]
+
+
+    loadingUpdateTarea:boolean
     errorCreateTarea: boolean
     errorUpdateTarea: boolean
     errorGetTarea: boolean
     errorsTareas: string[]
-    tareas: Tarea[]
     editingTarea: Tarea
-    fetchTareas: () => Promise<void>
+    
     createTarea: (Tarea: DraftTarea) => Promise<void>
     getTarea: (id: Tarea['id']) => Promise<void>
     updateTarea: (id: Tarea['id'], Tarea: DraftTarea) => Promise<void>
@@ -39,10 +44,14 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             const { data } = await clienteAxios(url);
             const result = Tareas.safeParse(data);
             if (result.success) {
-                set({ tareas: data.data, loadingTareas: false })
+                set({loadingTareas: false })
+                return result.data.data;
+            }else{
+                return [];
             }
         } catch (error) {
-            set({ errorFetchTareas: true, loadingTareas: false })
+            set({ errorFetchTareas: true, loadingTareas: false });
+            return [];
         }
     },
 

@@ -1,5 +1,5 @@
 //HOOKS
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
 import { Link } from "react-router-dom";
 
@@ -7,15 +7,16 @@ import { Link } from "react-router-dom";
 import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { Edit, PlusIcon } from "lucide-react";
+import { Tarea } from "../../../types";
 
 export default function IndexTareas() {
+  const [tareas, setTareas] = useState<Tarea[]>();
   const fetchTareas = useAppStore((state) => state.fetchTareas);
   const loadingTareas = useAppStore((state) => state.loadingTareas);
   const errorTareas = useAppStore((state) => state.errorFetchTareas);
-  const tareas = useAppStore((state) => state.tareas);
 
   useEffect(() => {
-    fetchTareas();
+    fetchTareas().then(data => setTareas(data));
   }, []);
 
   return (
@@ -35,7 +36,7 @@ export default function IndexTareas() {
       <div className="mt-10">
         {loadingTareas && <Spinner />}
         {!loadingTareas && errorTareas && <ShowErrorAPI />}
-        {!loadingTareas && !errorTareas && (
+        {(!loadingTareas && !errorTareas && tareas) && (
           <table className="table">
             <thead>
               <tr className="thead-tr">
