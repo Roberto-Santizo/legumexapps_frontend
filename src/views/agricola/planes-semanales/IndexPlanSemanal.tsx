@@ -8,18 +8,38 @@ import Spinner from "../../../components/Spinner";
 import { Link } from "react-router-dom";
 import { PlusIcon, Sheet } from "lucide-react";
 import { WeeklyPlan } from "../../../types";
+import Pagination from "../../../components/Pagination";
 
 export default function IndexPlanSemanal() {
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
   const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const getAllPlans = useAppStore((state) => state.getAllPlans);
-  const loading = useAppStore((state) => state.loadinggetAllPlans);
-  const error = useAppStore((state) => state.errorgetAllPlans);
+
+  const handleGetPlans = async (page: number) => {
+    setLoading(true);
+    try {
+      const plans = await getAllPlans(page);
+      setWeeklyPlans(plans.data);
+      setPageCount(plans.meta.last_page);
+      setCurrentPage(plans.meta.current_page);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected + 1);
+  };
 
   useEffect(() => {
-    getAllPlans().then((plans) => setWeeklyPlans(plans));
-  }, []);
+    handleGetPlans(currentPage);
+  }, [currentPage]);
   return (
     <>
       <h2 className="font-bold text-4xl">Planes Semanales</h2>
@@ -97,7 +117,7 @@ export default function IndexPlanSemanal() {
                 <td className="tbody-td">{plan.tasks_crop}</td>
                 <td className="tbody-td w-1/5">
                   <Link
-                     to={`/planes-semanales/${plan.finca}/${plan.id}`}
+                    to={`/planes-semanales/${plan.finca}/${plan.id}`}
                     className="button bg-indigo-500 hover:bg-indigo-600 w-auto"
                   >
                     Tareas del Plan
@@ -117,7 +137,10 @@ export default function IndexPlanSemanal() {
                   </Link>
                 </td>
                 <td className="tbody-td">
-                  <Link to={`/planes-semanales/${plan.id}`} title="Reporte de Insumos">
+                  <Link
+                    to={`/planes-semanales/${plan.id}`}
+                    title="Reporte de Insumos"
+                  >
                     <Sheet className="hover:text-gray-400" />
                   </Link>
                 </td>
@@ -126,6 +149,15 @@ export default function IndexPlanSemanal() {
           </tbody>
         </table>
       )}
+      <div className="mb-10 flex justify-end">
+        {!loading && (
+          <Pagination
+            currentPage={currentPage}
+            pageCount={pageCount}
+            handlePageChange={handlePageChange}
+          />
+        )}
+      </div>
     </>
   );
 }

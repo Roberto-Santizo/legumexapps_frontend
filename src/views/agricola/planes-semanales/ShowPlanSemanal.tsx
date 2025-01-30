@@ -9,23 +9,35 @@ export default function ShowPlanSemanal() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [summaryPlan, setSummaryPlan] = useState<SummaryWeeklyPlanType>({} as SummaryWeeklyPlanType);
+  const [loading,setLoading] = useState<boolean>(false);
+  const [error,setError] = useState<boolean>(false);
   
-  const loadingFetchPlan = useAppStore((state) => state.loadingFetchPlan);
-  const errorFetchPlan = useAppStore((state) => state.errorFetchPlan);
   const getPlanById = useAppStore((state) => state.getPlanById);
-  
-  useEffect(() => {
-    if (id) {
-      getPlanById(id).then(data => setSummaryPlan(data));
+
+  const handleGetPlanById = async () => {
+    setLoading(true);
+    try {
+      if(id){
+        const plan = await getPlanById(id);
+        setSummaryPlan(plan);
+      }
+    } catch (error) {
+      setError(true);
+    }finally{
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
+    handleGetPlanById()
   }, []);
 
 
   return (
     <>
-      {loadingFetchPlan && <Spinner />}
-      {errorFetchPlan && <ShowErrorAPI />}
-      {!loadingFetchPlan && !errorFetchPlan && summaryPlan?.data && (
+      {loading && <Spinner />}
+      {error && <ShowErrorAPI />}
+      {!loading && !error && summaryPlan?.data && (
         <div className="space-y-10">
           <h2 className="text-4xl font-bold">
             Plan Semanal {summaryPlan.data.finca} Semana {summaryPlan.data.week} -{" "}
