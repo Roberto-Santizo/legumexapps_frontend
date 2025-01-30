@@ -6,88 +6,67 @@ import { Tarea as TareaSchema, Tareas } from "../utils/tareas-schema";
 import { DraftTarea, Tarea } from "../types";
 
 export type TareasSliceType = {
-    
-    //TREAR TAREAS
-    fetchTareas: () => Promise<Tarea[]>
-    loadingTareas: boolean
-    errorFetchTareas: boolean
-    tareas: Tarea[]
 
-
-    loadingUpdateTarea:boolean
-    errorCreateTarea: boolean
-    errorUpdateTarea: boolean
-    errorGetTarea: boolean
-    errorsTareas: string[]
-    editingTarea: Tarea
+    errorsTareas: string[];
     
+    getAllTareas: () => Promise<Tarea[]>
     createTarea: (Tarea: DraftTarea) => Promise<void>
-    getTarea: (id: Tarea['id']) => Promise<void>
+    getTareaById: (id: Tarea['id']) => Promise<Tarea>
     updateTarea: (id: Tarea['id'], Tarea: DraftTarea) => Promise<void>
 }
 
-
 export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
-    loadingTareas: false,
-    loadingUpdateTarea: false,
-    errorFetchTareas: false,
-    errorCreateTarea: false,
-    errorUpdateTarea: false,
-    errorGetTarea: false,
     errorsTareas: [],
-    editingTarea: {} as Tarea,
-    tareas: [],
-    fetchTareas: async () => {
-        set({ loadingTareas: true });
+
+    getAllTareas: async () => {
         const url = '/api/tareas';
         try {
             const { data } = await clienteAxios(url);
             const result = Tareas.safeParse(data);
             if (result.success) {
-                set({loadingTareas: false })
                 return result.data.data;
             }else{
                 return [];
             }
-        } catch (error) {
-            set({ errorFetchTareas: true, loadingTareas: false });
+        } catch (error : any) {
             return [];
         }
     },
 
     createTarea: async (tarea) => {
-        set({ loadingTareas: true })
         const url = '/api/tareas';
-
         try {
             await clienteAxios.post(url, tarea)
-
+            set({errorsTareas: []});
         } catch (error: any) {
-            set({ errorsTareas: Object.values(error.response.data.errors), errorCreateTarea: true, loadingTareas: false });
+            set({ errorsTareas: Object.values(error.response.data.errors)});
             throw error;
         }
     },
-    getTarea: async (id) => {
-        set({ loadingTareas: true });
+
+
+    getTareaById: async (id) => {
         const url = `/api/tareas/${id}`
         try {
             const { data } = await clienteAxios(url, {
             });
             const result = TareaSchema.safeParse(data.data);
-            set({ loadingTareas: false, editingTarea: result.data });
-        } catch (error) {
-            set({ loadingTareas: false, errorGetTarea: true })
+            if(result.success){
+                return result.data
+            }else{
+                throw new Error('Datos no válidos');
+            }
+        } catch (error : any) {
+            throw error;
         }
     },
     updateTarea: async (id, tarea) => {
-        set({ loadingUpdateTarea: true });
         const url = `/api/tareas/${id}`
-
         try {
             await clienteAxios.put(url, tarea);
-            set({ loadingUpdateTarea: false, editingTarea: {} as Tarea, errorsTareas: []});
+            set({errorsTareas: []});
         } catch (error : any) {
-            set({ errorsTareas: Object.values(error.response.data.errors), errorUpdateTarea: true, loadingUpdateTarea: false });
+            set({ errorsTareas: Object.values(error.response.data.errors)});
             throw error;
         }
     }

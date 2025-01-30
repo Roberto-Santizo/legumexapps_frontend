@@ -1,6 +1,6 @@
 //DEPENDENCIAS
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -11,34 +11,61 @@ import { useAppStore } from "../../../stores/useAppStore";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import Spinner from "../../../components/Spinner";
 import { Button } from "@mui/material";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Error from "../../../components/Error";
 
 //TYPES
-import { DraftTarea } from "../../../types";
+import { DraftTarea, Tarea } from "../../../types";
 
 export default function EditTarea() {
-  //FETCH TAREA
+  
   const { id } = useParams();
-  const getTarea = useAppStore((state) => state.getTarea);
+  const navigate = useNavigate();
+  const [editingTarea, setEditingTarea] = useState<Tarea>({} as Tarea);
+  const [loadingGet, setLoadingGet] = useState<boolean>(false);
+  const [errorGet, setErrorGet] = useState<boolean>(false);
+  const [loadingPost, setLoadingPost] = useState<boolean>(false);
+  const [errorPost, setErrorPost] = useState<boolean>(false);
 
-  //LOADING STATES
-  const loadingTarea = useAppStore((state) => state.loadingTareas);
-  const loadingUpdateTarea = useAppStore((state) => state.loadingUpdateTarea);
 
-  //ERROR STATES
-  const errorGetTarea = useAppStore((state) => state.errorGetTarea);
-  const errorUpdateTarea = useAppStore((state) => state.errorUpdateTarea);
+  const getTareaById = useAppStore((state) => state.getTareaById);
   const errorsTareas = useAppStore((state) => state.errorsTareas);
 
-  const tarea = useAppStore((state) => state.editingTarea);
   const update = useAppStore((state) => state.updateTarea);
-  const navigate = useNavigate();
+
+  const handleGetTareaById = async () =>{
+    setLoadingGet(true);
+    setErrorGet(false);
+    try {
+      if(id){
+        const tarea = await getTareaById(id)
+        setEditingTarea(tarea);
+        setLoadingGet(false);
+      }
+    } catch (error) {
+      setErrorGet(true);
+    }
+  }
+
+  const handleUpdateTarea = async (data : DraftTarea) => {
+    setLoadingPost(true);
+    setErrorPost(false);
+    try {
+      if(id){
+        await update(id,data);
+        toast.success("Tarea actualizada correctamente");
+        navigate("/tareas");
+      }
+    } catch (error) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setErrorPost(true);
+    } finally {
+      setLoadingPost(false);
+      
+    }
+  }
 
   useEffect(() => {
-    if (id) {
-      getTarea(id);
-    }
+    handleGetTareaById();
   }, []);
 
   const {
@@ -49,43 +76,32 @@ export default function EditTarea() {
   } = useForm<DraftTarea>();
 
   useEffect(() => {
-    if (tarea) {
-      setValue("name", tarea.name || "");
-      setValue("code", tarea.code || "");
-      setValue("description", tarea.description || "");
+    if (editingTarea) {
+      setValue("name", editingTarea.name || "");
+      setValue("code", editingTarea.code || "");
+      setValue("description", editingTarea.description || "");
     }
-  }, [tarea, setValue]);
+  }, [editingTarea, setValue]);
 
-  const updateTarea = (data: DraftTarea) => {
-    if (id) {
-      update(id, data)
-        .then(() => {
-          toast.success("Tarea actualizada correctamente");
-          navigate("/tareas");
-        })
-        .catch(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    }
-  };
+
   return (
     <>
-      {!loadingTarea && !errorGetTarea && (
+      {!loadingGet && !errorGet && (
         <>
-          <h2 className="text-4xl font-bold">Editar Tarea {tarea.name}</h2>
+          <h2 className="text-4xl font-bold">Editar Tarea {editingTarea.name}</h2>
         </>
       )}
-      {loadingTarea && <Spinner />}
+      {loadingGet && <Spinner />}
 
-      {!loadingTarea && errorGetTarea && <ShowErrorAPI />}
+      {!loadingGet && errorGet && <ShowErrorAPI />}
 
-      {!loadingTarea && !errorGetTarea && (
+      {!loadingGet && !errorGet && (
         <div>
           <form
             className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
-            onSubmit={handleSubmit(updateTarea)}
+            onSubmit={handleSubmit(handleUpdateTarea)}
           >
-            {errorUpdateTarea &&
+            {errorPost &&
               (errorsTareas
                 ? errorsTareas.map((error, index) => (
                     <Error key={index}>{error}</Error>
@@ -142,14 +158,14 @@ export default function EditTarea() {
             </div>
 
             <Button
-              disabled={loadingUpdateTarea}
+              disabled={loadingPost}
               type="submit"
               variant="contained"
               color="primary"
               fullWidth
               sx={{ marginTop: 2 }}
             >
-              {loadingUpdateTarea ? (
+              {loadingPost ? (
                 <Spinner />
               ) : (
                 <p className="font-bold text-lg">Actualizar Tarea</p>

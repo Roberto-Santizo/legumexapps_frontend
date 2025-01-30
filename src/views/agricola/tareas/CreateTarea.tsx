@@ -3,17 +3,20 @@ import { useAppStore } from "../../../stores/useAppStore";
 
 //COMPONENTES
 import { Button } from "@mui/material";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Spinner from "../../../components/Spinner";
 import Error from "../../../components/Error";
 import { useForm } from "react-hook-form";
 import { DraftTarea } from "../../../types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 export default function CreateTarea() {
-  const loadingTareas = useAppStore((state) => state.loadingTareas);
+
+  const [loading, setLoading] = useState<boolean>(false);
+
   const errorsTareas = useAppStore((state) => state.errorsTareas);
+
   const createTarea = useAppStore((state) => state.createTarea);
   const navigate = useNavigate();
 
@@ -23,15 +26,22 @@ export default function CreateTarea() {
     formState: { errors },
   } = useForm<DraftTarea>();
 
+  const handleCreateTarea = async (data: DraftTarea) => {
+    setLoading(true);
+
+    try {
+      await createTarea(data);
+      toast.success('Tarea Creada Correctamente');
+      navigate('/tareas');
+    } catch (error) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const RegisterTarea = (data: DraftTarea) => {
-    createTarea(data)
-      .then(() => {
-        toast.success("Tarea creada correctamente");
-        navigate("/tareas");
-      })
-      .catch(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+    handleCreateTarea(data);
   };
 
   return (
@@ -43,8 +53,8 @@ export default function CreateTarea() {
       >
         {errorsTareas
           ? errorsTareas.map((error, index) => (
-              <Error key={index}>{error}</Error>
-            ))
+            <Error key={index}>{error}</Error>
+          ))
           : null}
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="name">
@@ -96,14 +106,14 @@ export default function CreateTarea() {
         </div>
 
         <Button
-          disabled={loadingTareas}
+          disabled={loading}
           type="submit"
           variant="contained"
           color="primary"
           fullWidth
           sx={{ marginTop: 2 }}
         >
-          {loadingTareas ? (
+          {loading ? (
             <Spinner />
           ) : (
             <p className="font-bold text-lg">Crear Tarea</p>

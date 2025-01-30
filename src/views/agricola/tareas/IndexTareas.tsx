@@ -11,12 +11,27 @@ import { Tarea } from "../../../types";
 
 export default function IndexTareas() {
   const [tareas, setTareas] = useState<Tarea[]>();
-  const fetchTareas = useAppStore((state) => state.fetchTareas);
-  const loadingTareas = useAppStore((state) => state.loadingTareas);
-  const errorTareas = useAppStore((state) => state.errorFetchTareas);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAllTareas = useAppStore((state) => state.getAllTareas);
+
+  const handleGetAllTareas = async() =>{
+    setLoading(true);
+    setError(false);
+
+    try {
+      const tareas = await getAllTareas();
+      setTareas(tareas);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    fetchTareas().then(data => setTareas(data));
+    handleGetAllTareas()
   }, []);
 
   return (
@@ -34,9 +49,9 @@ export default function IndexTareas() {
       </div>
 
       <div className="mt-10">
-        {loadingTareas && <Spinner />}
-        {!loadingTareas && errorTareas && <ShowErrorAPI />}
-        {(!loadingTareas && !errorTareas && tareas) && (
+        {loading && <Spinner />}
+        {!loading && error && <ShowErrorAPI />}
+        {(!loading && !error && tareas) && (
           <table className="table">
             <thead>
               <tr className="thead-tr">
