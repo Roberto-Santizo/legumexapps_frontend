@@ -7,7 +7,6 @@ import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
 //PLANES SEMANALES
 const IndexPlanSemanal = lazy(() => import("../views/agricola/planes-semanales/IndexPlanSemanal"));
-
 const CreatePlanSemanal  = lazy(() => import( "../views/agricola/planes-semanales/CreatePlanSemanal"));
 const ShowPlanSemanal = lazy(() => import( "../views/agricola/planes-semanales/ShowPlanSemanal"));
 
@@ -15,6 +14,8 @@ const ShowPlanSemanal = lazy(() => import( "../views/agricola/planes-semanales/S
 const IndexTareas = lazy(() => import("../views/agricola/tareas/IndexTareas"));
 const CreateTarea = lazy(() => import("../views/agricola/tareas/CreateTarea"));
 const EditTarea = lazy(() => import("../views/agricola/tareas/EditTarea"));
+const CargaMasivaTareas = lazy(() => import( "../views/agricola/tareas/CargaMasivaTareas"));
+
 
 //CDPS
 const IndexCdps = lazy(() => import("../views/agricola/cdps/IndexCdps"));
@@ -103,6 +104,20 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
                 <CreateTarea />
+              </ProtectedAgricolaRoutes>
+            </Suspense>
+          }
+          index
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/tareas/carga-masiva"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedAgricolaRoutes>
+                <CargaMasivaTareas />
               </ProtectedAgricolaRoutes>
             </Suspense>
           }

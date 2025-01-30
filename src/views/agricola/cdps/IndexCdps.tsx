@@ -1,21 +1,44 @@
 import { Edit, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
+import { Plantation } from "../../../types";
+import Pagination from "../../../components/Pagination";
 
 export default function IndexCdps() {
+  const [cdps, setCdps] = useState<Plantation[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const fetchControlPlantations = useAppStore(
-    (state) => state.fetchControlPlantations
+    (state) => state.fetchControlPlantationsPaginate
   );
-  const loading = useAppStore((state) => state.loadingfetchControlPlantations);
-  const error = useAppStore((state) => state.errorFetchControlPlantations);
-  const cdps = useAppStore((state) => state.plantations);
+
+  const handleGetCDPS = async (page: number) => {
+    setLoading(true);
+    try {
+      const cdps = await fetchControlPlantations(page);
+      setCdps(cdps.data);
+      setPageCount(cdps.meta.last_page);
+      setCurrentPage(cdps.meta.current_page);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected + 1);
+  };
 
   useEffect(() => {
-    fetchControlPlantations();
-  }, []);
+    handleGetCDPS(currentPage);
+  }, [currentPage]);
 
   return (
     <>
@@ -100,10 +123,20 @@ export default function IndexCdps() {
                   <p>{cdp.end_date}</p>
                 </td>
                 <td className="tbody-td">
-                  <p>{(cdp.aplication_week > 0) ? cdp.aplication_week  : 'SIN INCIO' }</p>
+                  <p>
+                    {cdp.aplication_week > 0
+                      ? cdp.aplication_week
+                      : "SIN INCIO"}
+                  </p>
                 </td>
                 <td className="tbody-td">
-                  <p className={`button text-center ${cdp.status ? 'bg-red-500' : ' bg-green-500'}`}>{cdp.status ? 'CERRADO' : 'ACTIVO'}</p>
+                  <p
+                    className={`button text-center ${
+                      cdp.status ? "bg-red-500" : " bg-green-500"
+                    }`}
+                  >
+                    {cdp.status ? "CERRADO" : "ACTIVO"}
+                  </p>
                 </td>
                 <td className="tbody-td flex gap-2">
                   <Link
@@ -118,6 +151,16 @@ export default function IndexCdps() {
           </tbody>
         </table>
       )}
+
+      <div className="mb-10 flex justify-end">
+        {!loading && (
+          <Pagination
+            currentPage={currentPage}
+            pageCount={pageCount}
+            handlePageChange={handlePageChange}
+          />
+        )}
+      </div>
     </>
   );
 }

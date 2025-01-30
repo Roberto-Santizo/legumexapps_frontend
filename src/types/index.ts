@@ -2,9 +2,9 @@ import {z} from 'zod';
 import { UserCollectionSchema, UserSchema, } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
-import { Tarea } from '../utils/tareas-schema';
-import { Crop, DraftCDP, Plantation, Recipe } from '../utils/plantation-schema';
-import { DraftLote, Lote } from '../utils/lotes-schema';
+import { TareaSchema, TareasSchema } from '../utils/tareas-schema';
+import { Crop, DraftCDP, Plantation, PlantationsSchema, Recipe } from '../utils/plantation-schema';
+import { DraftLote, Lote, LotesSchema } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
 import { SummaryWeeklyPlan, WeeklyPlan } from '../utils/weekly_plans-schema';
 import { EditTaskWeeklySchema,TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
@@ -36,7 +36,10 @@ export type AuthUser = {
 }
 
 //TAREAS
-export type Tarea = z.infer<typeof Tarea>
+export type Tarea = z.infer<typeof TareaSchema>
+export type Tareas = z.infer<typeof TareasSchema>
+
+
 export type DraftTarea = Omit<Tarea, 'id' >
 
 //CULTIVOS
@@ -46,11 +49,14 @@ export type Crop = z.infer<typeof Crop>
 export type Recipe = z.infer<typeof Recipe >;
 
 export type Plantation = z.infer<typeof Plantation>;
+export type Plantations = z.infer<typeof PlantationsSchema>;
 export type DraftCDP = z.infer<typeof DraftCDP>;
 
 
 //LOTES
 export type Lote = z.infer<typeof Lote >
+export type Lotes = z.infer<typeof LotesSchema>
+
 export type DraftLote = z.infer<typeof DraftLote>
 
 //FINCAS

@@ -14,6 +14,10 @@ export const DraftLote = z.object({
 });
 
 
-export const Lotes = z.object({
-    data: z.array(Lote)
+export const LotesSchema = z.object({
+    data: z.array(Lote),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    })
 });

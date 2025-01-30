@@ -45,8 +45,12 @@ export const Crops = z.object({
     data: z.array(Crop)
 });
 
-export const Plantations = z.object({
-    data: z.array(Plantation)
+export const PlantationsSchema = z.object({
+    data: z.array(Plantation),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    })
 });
 
 

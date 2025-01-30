@@ -4,32 +4,22 @@ import { Finca } from "../types";
 import { Fincas } from "../utils/fincas-schema";
 
 export type FincaSliceType = {
-    fincas: Finca[];
-
-    loadingFetchFincas: boolean;
-    errorFetchFincas: boolean;
-
-    fetchFincas: () => Promise<void>;
+    fetchFincas: () => Promise<Finca[]>;
 }
 
-export const createFincaSlice: StateCreator<FincaSliceType> = (set) => ({
-    fincas: [],
-    loadingFetchFincas: false,
-    errorFetchFincas: false,
-
+export const createFincaSlice: StateCreator<FincaSliceType> = () => ({
     fetchFincas: async () => {
-        set({loadingFetchFincas: true});
-
         try {
             const url = '/api/fincas';
             const { data } = await clienteAxios(url)
             const result = Fincas.safeParse(data);
             if(result.success){
-                set({loadingFetchFincas: false, errorFetchFincas:false, fincas: result.data.data })
+                return result.data.data
+            }else{
+                throw new Error("Existe un error al traer las fincas");
             }
         } catch (error) {
-            set({loadingFetchFincas: false, errorFetchFincas:true })
+            throw error;
         }
     }
-
 })

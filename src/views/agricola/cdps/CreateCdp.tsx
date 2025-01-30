@@ -1,22 +1,25 @@
-import { useEffect } from "react";
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
+import { useEffect, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
 import Spinner from "../../../components/Spinner";
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { DraftCDP } from "../../../types";
+import { Crop, DraftCDP, Recipe } from "../../../types";
 import Error from "../../../components/Error";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function CreateCdp() {
+  const [loadingGetCrops, setLoadingGetCrops] = useState<boolean>(false);
+  const [crops, setCrops] = useState<Crop[]>([]);
+
+  const [loadingGetRecipes, setLoadingGetRecipes] = useState<boolean>(false);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+
+  const [loadingCreateCDP, setLoadingCreateCDP] = useState<boolean>(false);
+
   const fetchCrops = useAppStore((state) => state.fetchCrops);
   const fetchRecipes = useAppStore((state) => state.fetchRecipes);
-  const loadingFetchCrops = useAppStore((state) => state.loadingFetchCrop);
-  const loadingFetchRecipes = useAppStore((state) => state.loadingFetchRecipes);
-  const loadingCreateCDP = useAppStore((state) => state.loadingCreateCDP);
-  const crops = useAppStore((state) => state.crops);
-  const recipes = useAppStore((state) => state.recipes);
+
   const create = useAppStore((state) => state.createControlPlantation);
   const navigate = useNavigate();
   const errorsCreateCDP = useAppStore((state) => state.errorsCreateCDP);
@@ -27,21 +30,51 @@ export default function CreateCdp() {
     formState: { errors },
   } = useForm<DraftCDP>();
 
-  useEffect(() => {
-    fetchCrops();
-    fetchRecipes();
-  }, []);
-
-  const createCDP = (data: DraftCDP) => {
-    create(data)
-      .then(() => {
-        navigate("/cdps");
-        toast.success("Control de Plantación creado exitosamente");
-      })
-      .catch(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+  const handleGetCrops = async () => {
+    setLoadingGetCrops(true);
+    try {
+      const crops = await fetchCrops();
+      setCrops(crops);
+    } catch (error) {
+      toast.error(
+        "Hubo un error al traer las recetas, intentelo de nuevo más tarde"
+      );
+    } finally {
+      setLoadingGetCrops(false);
+    }
   };
+
+  const handleGetRecipes = async () => {
+    setLoadingGetRecipes(true);
+    try {
+      const recipes = await fetchRecipes();
+      setRecipes(recipes);
+    } catch (error) {
+      toast.error(
+        "Hubo un error al traer las recetas, intentelo de nuevo más tarde"
+      );
+    } finally {
+      setLoadingGetRecipes(false);
+    }
+  };
+
+  const handleCreateCDP = async (data: DraftCDP) => {
+    setLoadingCreateCDP(true);
+    try {
+      await create(data);
+      navigate("/cdps");
+      toast.success("Control de Plantación creado exitosamente");
+    } catch (error) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }finally{
+      setLoadingCreateCDP(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetCrops();
+    handleGetRecipes();
+  }, []);
 
   return (
     <>
@@ -50,7 +83,7 @@ export default function CreateCdp() {
       <form
         action=""
         className="space-y-5 w-2/3 mx-auto p-5"
-        onSubmit={handleSubmit(createCDP)}
+        onSubmit={handleSubmit(handleCreateCDP)}
       >
         {errorsCreateCDP
           ? errorsCreateCDP.map((error, index) => (
@@ -137,7 +170,7 @@ export default function CreateCdp() {
           )}
         </div>
 
-        {loadingFetchCrops && loadingFetchRecipes ? (
+        {loadingGetCrops && loadingGetRecipes ? (
           <Spinner />
         ) : (
           <>

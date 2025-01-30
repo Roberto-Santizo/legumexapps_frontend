@@ -1,96 +1,88 @@
 import { StateCreator } from 'zustand';
 import clienteAxios from '../config/axios';
-import { Crops, Plantations, Recipes } from '../utils/plantation-schema';
-import { Crop, DraftCDP, Plantation, Recipe } from '../types';
+import { Crops, PlantationsSchema, Recipes } from '../utils/plantation-schema';
+import { Crop, DraftCDP, Plantation, Plantations, Recipe } from '../types';
 
 export type ControlPlantationSliceType = {
-    plantations: Plantation[];
-    crops: Crop[];
-    recipes: Recipe[];
-
-    loadingfetchControlPlantations: boolean;
-    loadingFetchCrop: boolean;
-    loadingFetchRecipes: boolean;
-    loadingCreateCDP: boolean;
-
-    errorFetchControlPlantations: boolean;
-    errorFetchCrops: boolean;
-    errorFetchRecipes: boolean;
-    errorCreateCDP:boolean;
-
     errorsCreateCDP: string[]
 
-    fetchCrops: () => Promise<void>;
-    fetchRecipes: () => Promise<void>;
-    fetchControlPlantations: () => Promise<void>;
+    fetchCrops: () => Promise<Crop[]>;
+    fetchRecipes: () => Promise<Recipe[]>;
+    fetchControlPlantationsPaginate: (page: number) => Promise<Plantations>;
+    fetchControlPlantations: () => Promise<Plantation[]>
     createControlPlantation: (cdp : DraftCDP) => Promise<void>;
 }
 
 export const createControlPlantationSlice: StateCreator<ControlPlantationSliceType> = ((set) => ({
-    plantations: [],
-    crops: [],
-    recipes: [],
-
-    loadingfetchControlPlantations: false,
-    loadingFetchCrop: false,
-    loadingFetchRecipes: false,
-    loadingCreateCDP: false,
-
-    errorFetchControlPlantations: false,
-    errorFetchCrops: false,
-    errorFetchRecipes: false,
-    errorCreateCDP: false,
-
     errorsCreateCDP: [],
 
-    fetchControlPlantations: async () => {
-        set({ loadingfetchControlPlantations: true });
-        const url = '/api/cdps';
+    fetchControlPlantationsPaginate: async (page) => {
+        const url = `/api/cdps?page=${page}`;
         try {
             const { data } = await clienteAxios(url);
-            const result = Plantations.safeParse(data);
+            const result = PlantationsSchema.safeParse(data);
             if (result.success) {
-                set({ loadingfetchControlPlantations: false, plantations: result.data.data });
+                return result.data
+            }else{
+                throw new Error("Error al traer los cdps");
             }
         } catch (error: any) {
-            set({ loadingfetchControlPlantations: false, errorFetchControlPlantations: true });
+            throw error;
         }
     },
+
+    fetchControlPlantations: async () => {
+        const url = `/api/cdps`;
+        try {
+            const { data } = await clienteAxios(url);
+            const result = PlantationsSchema.safeParse(data);
+            if (result.success) {
+                return result.data.data
+            }else{
+                throw new Error("Error al traer los cdps");
+            }
+        } catch (error: any) {
+            throw error;
+        }
+    },
+
     fetchCrops: async () => {
-        set({ loadingFetchCrop: true });
         const url = '/api/crops'
         try {
             const { data } = await clienteAxios(url)
             const result = Crops.safeParse(data);
             if (result.success) {
-                set({ loadingFetchCrop: false, crops: result.data.data });
+                return result.data.data
+            }else{
+                throw new Error("Información no válida");
             }
         } catch (error: any) {
-            set({ loadingFetchCrop: false, errorFetchCrops: true })
+            throw error;
         }
     },
+
     fetchRecipes: async () => {
-        set({ loadingFetchRecipes: true });
         const url = '/api/recipes'
         try {
             const { data } = await clienteAxios(url)
             const result = Recipes.safeParse(data);
             if (result.success) {
-                set({ loadingFetchRecipes: false, recipes: result.data.data });
+                return result.data.data
+            }else{
+                throw new Error("La información no es válida");
             }
         } catch (error: any) {
-            set({ loadingFetchRecipes: false, errorFetchRecipes: true })
+            throw error;
         }
     },
 
     createControlPlantation: async (cdp) => {
-        set({ loadingCreateCDP: true });
         const url = '/api/cdps'
         try {
             await clienteAxios.post(url,cdp)
-            set({ loadingCreateCDP: false});
+            set({ errorsCreateCDP: []});
         } catch (error: any) {
-            set({ loadingCreateCDP: false, errorCreateCDP: true, errorsCreateCDP: Object.values(error.response.data.errors) })
+            set({errorsCreateCDP: Object.values(error.response.data.errors) })
             throw error;
         }
     }

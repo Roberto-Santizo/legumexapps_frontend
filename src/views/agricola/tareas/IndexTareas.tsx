@@ -7,32 +7,42 @@ import { Link } from "react-router-dom";
 import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { Edit, PlusIcon } from "lucide-react";
-import { Tarea } from "../../../types";
+import { Tareas } from "../../../types";
+import Pagination from "../../../components/Pagination";
 
 export default function IndexTareas() {
-  const [tareas, setTareas] = useState<Tarea[]>();
+  const [tareas, setTareas] = useState<Tareas>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [error, setError] = useState<boolean>(false);
 
   const getAllTareas = useAppStore((state) => state.getAllTareas);
 
-  const handleGetAllTareas = async() =>{
+  const handleGetAllTareas = async (page: number) => {
     setLoading(true);
     setError(false);
 
     try {
-      const tareas = await getAllTareas();
+      const tareas = await getAllTareas(page);
       setTareas(tareas);
+      setPageCount(tareas.meta.last_page);
+      setCurrentPage(tareas.meta.current_page);
     } catch (error) {
       setError(true);
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected + 1);
+  };
 
   useEffect(() => {
-    handleGetAllTareas()
-  }, []);
+    handleGetAllTareas(currentPage);
+  }, [currentPage]);
+
 
   return (
     <>
@@ -46,12 +56,20 @@ export default function IndexTareas() {
           <PlusIcon className="w-8" />
           <p>Crear Tarea</p>
         </Link>
+
+        <Link
+          to="/tareas/carga-masiva"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+        >
+          <PlusIcon className="w-8" />
+          <p>Carga Masiva de Tareas</p>
+        </Link>
       </div>
 
       <div className="mt-10">
         {loading && <Spinner />}
         {!loading && error && <ShowErrorAPI />}
-        {(!loading && !error && tareas) && (
+        {!loading && !error && tareas && (
           <table className="table">
             <thead>
               <tr className="thead-tr">
@@ -70,7 +88,7 @@ export default function IndexTareas() {
               </tr>
             </thead>
             <tbody>
-              {tareas.map((tarea) => (
+              {tareas.data.map((tarea) => (
                 <tr className="tbody-tr" key={tarea.id}>
                   <td className="tbody-td">
                     <p>{tarea.id}</p>
@@ -95,6 +113,11 @@ export default function IndexTareas() {
           </table>
         )}
       </div>
+
+      <div className="mb-10 flex justify-end">
+        {!loading && <Pagination currentPage={currentPage} pageCount={pageCount} handlePageChange={handlePageChange}/>}
+        
+       </div>
     </>
   );
 }

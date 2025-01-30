@@ -2,34 +2,36 @@ import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
 
 //TYPES
-import { Tarea as TareaSchema, Tareas } from "../utils/tareas-schema";
-import { DraftTarea, Tarea } from "../types";
+import { TareasSchema, TareaSchema} from "../utils/tareas-schema";
+import { DraftTarea, Tarea, Tareas } from "../types";
 
 export type TareasSliceType = {
 
     errorsTareas: string[];
     
-    getAllTareas: () => Promise<Tarea[]>
+    getAllTareas: (page : number) => Promise<Tareas>
     createTarea: (Tarea: DraftTarea) => Promise<void>
     getTareaById: (id: Tarea['id']) => Promise<Tarea>
     updateTarea: (id: Tarea['id'], Tarea: DraftTarea) => Promise<void>
+    uploadTareas: (file: File[]) => Promise<void>
 }
 
 export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
     errorsTareas: [],
 
-    getAllTareas: async () => {
-        const url = '/api/tareas';
+    getAllTareas: async (page) => {
+        const url = `/api/tareas?page=${page}`;
         try {
             const { data } = await clienteAxios(url);
-            const result = Tareas.safeParse(data);
+            const result = TareasSchema.safeParse(data);
+
             if (result.success) {
-                return result.data.data;
+                return result.data;
             }else{
-                return [];
+                return {data: [], meta: { last_page: 0, current_page: 0 }};
             }
         } catch (error : any) {
-            return [];
+            return {data: [], meta: { last_page: 0, current_page: 0 }};
         }
     },
 
@@ -69,6 +71,20 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             set({ errorsTareas: Object.values(error.response.data.errors)});
             throw error;
         }
+    },
+    uploadTareas: async (file) => {
+        try {
+            const url = '/api/tareas/upload';
+            const formData = new FormData();
+            formData.append("file", file[0]);
+            await clienteAxios.post(url, formData);
+            set({ errorsTareas: []})
+        } catch (error: any) {
+            console.log(error);
+            set({ errorsTareas: error.response.data.message})
+            throw error;
+        }
+        
     }
 
 })
