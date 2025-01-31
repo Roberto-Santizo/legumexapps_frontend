@@ -1,7 +1,7 @@
 //EXTERNOS
 import { Link } from "react-router-dom";
 import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 //LOCAL
 import { useAppStore } from "../../../stores/useAppStore";
@@ -9,23 +9,48 @@ import { useAppStore } from "../../../stores/useAppStore";
 //COMPONENTES
 import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import { User } from "../../../types";
+import { User, Users } from "../../../types";
+import { toast } from "react-toastify";
 
 export default function IndexUsers() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingUpdateStatus,setLoadingUpdateStatus] = useState<boolean>(false);
+  const [updatingId, setUpdatingId] = useState<string>('');
+  const [error, setError] = useState<boolean>(false);
+  const [users, setUsers] = useState<Users>();
+
   const fetchUsers = useAppStore((state) => state.fetchUsers);
   const changeActiveUser = useAppStore((state) => state.changeActiveUser);
-  const loadingChangeStatus = useAppStore((state) => state.loadingChangeStatus);
-  const updatingId = useAppStore((state) => state.updatingId);
-  const users = useAppStore((state) => state.users);
-  const loading = useAppStore((state) => state.loadingUser);
-  const error = useAppStore((state) => state.UserError);
 
+  const handleGetUsers = async () => {
+    setLoading(true);
+    try {
+      const users = await fetchUsers();
+      setUsers(users);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    fetchUsers();
+    handleGetUsers();
   }, []);
 
-  const handleChangeUserStatus = (id: User["id"]) => {
-    changeActiveUser(id);
+  const handleChangeUserStatus = async (id: User["id"]) => {
+    setUpdatingId(id);
+    setLoadingUpdateStatus(true);
+    try {
+      await changeActiveUser(id);
+      const users = await fetchUsers();
+      setUsers(users);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoadingUpdateStatus(false);
+      setUpdatingId('');
+      toast.success("Estatus actualizado correctamente");
+    }
   };
 
   return (
@@ -44,7 +69,7 @@ export default function IndexUsers() {
 
         <div className="p-2 h-96 overflow-y-auto mt-10">
           {loading && <Spinner />}
-          {error && <ShowErrorAPI />}
+          {(!loading && error) && <ShowErrorAPI />}
           {!loading && !error && (
             <table className="table">
               <thead>
@@ -70,7 +95,7 @@ export default function IndexUsers() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {users?.data.map((user) => (
                   <tr className="tbody-tr" key={user.id}>
                     <td className="tbody-td">
                       <p>{user.name}</p>
@@ -84,7 +109,10 @@ export default function IndexUsers() {
                     <td className="tbody-td">
                       <p>{user.roles}</p>
                     </td>
-                    <td className="tbody-td"  onClick={() => handleChangeUserStatus(user.id)}>
+                    <td
+                      className="tbody-td"
+                      onClick={() => handleChangeUserStatus(user.id)}
+                    >
                       <span
                         className={
                           user.status
@@ -93,14 +121,14 @@ export default function IndexUsers() {
                         }
                       >
                         <button
-                          disabled={loadingChangeStatus} 
+                          disabled={loadingUpdateStatus}
                           className={`w-24 ${
-                            loadingChangeStatus
+                            loadingUpdateStatus
                               ? "opacity-50 cursor-not-allowed"
                               : ""
                           }`}
                         >
-                          {(loadingChangeStatus && updatingId === user.id) ? (
+                          {loadingUpdateStatus && updatingId == user.id ? (
                             <Spinner />
                           ) : user.status ? (
                             "ACTIVO"

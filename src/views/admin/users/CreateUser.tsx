@@ -5,30 +5,57 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 //HOOKS
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
 
 //TYPES
-import { DraftUser } from "../../../types";
+import { DraftUser, Permission, Role } from "../../../types";
 
 //COMPONENTES
-import ReturnLink from "../../../components/utilities-components/ReturnLink";
 import Error from "../../../components/Error";
 import Spinner from "../../../components/Spinner";
 
 export default function CreateUser() {
+  const [loadingGetRoles, setLoadingGetRoles] = useState<boolean>(false);
+  const [loadingGetPermissions, setLoadingGetPermissions] = useState<boolean>(false);
+
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [permissions, setPermissions] = useState<Permission[]>([]);
+
   const createUser = useAppStore((state) => state.createUser);
   const fetchRoles = useAppStore((state) => state.fetchRoles);
   const fetchPermissions = useAppStore((state) => state.fetchPermissions);
-  const permissions = useAppStore((state) => state.permissions);
-  const roles = useAppStore((state) => state.roles);
   const UserErrors = useAppStore((state) => state.usersErrors);
   const loadingUser = useAppStore((state) => state.loadingUser);
   const navigate = useNavigate();
 
+  const handleGetRoles = async () => {
+    setLoadingGetRoles(true);
+    try {
+      const roles = await fetchRoles();
+      setRoles(roles);
+    } catch (error) {
+      toast.error("Hubo un error a traer los roles");
+    } finally {
+      setLoadingGetRoles(false);
+    }
+  };
+
+  const handleGetPermissions = async () => {
+    setLoadingGetPermissions(true);
+    try {
+      const permissions = await fetchPermissions();
+      setPermissions(permissions);
+    } catch (error) {
+      toast.error("Hubo un error a traer los permisos");
+    } finally {
+      setLoadingGetPermissions(false);
+    }
+  };
+
   useEffect(() => {
-    fetchRoles();
-    fetchPermissions();
+    handleGetRoles();
+    handleGetPermissions();
   }, []);
 
   const {
@@ -135,54 +162,65 @@ export default function CreateUser() {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="role">
-            Rol:
-          </label>
+        {loadingGetRoles ? (
+          <Spinner />
+        ) : (
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="role">
+              Rol:
+            </label>
 
-          <select
-            id="role"
-            className="border border-black p-3"
-            {...register("roles", { required: "El rol es obligatorio" })}
-          >
-            <option value="">--SELECCIONE UNA OPCIÓN--</option>
-            {roles.map((role) => (
-              <option value={role.name} key={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
+            <select
+              id="role"
+              className="border border-black p-3"
+              {...register("roles", { required: "El rol es obligatorio" })}
+            >
+              <option value="">--SELECCIONE UNA OPCIÓN--</option>
+              {roles.map((role) => (
+                <option value={role.name} key={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
 
-          {errors.roles && <Error>{errors.roles?.message?.toString()}</Error>}
-        </div>
-
-        <fieldset className="shadow p-5">
-          <legend className="text-3xl font-bold">Permisos</legend>
-          {errors.permissions && (
-            <Error>{errors.permissions.message?.toString()}</Error>
-          )}
-          <div className="flex flex-col gap-5 mt-5">
-            {permissions.map((permission) => (
-              <div
-                className="w-full flex flex-row gap-5 p-5 odd:bg-gray-300 odd:text-white shadow-xl"
-                key={permission.id}
-              >
-                <input
-                  type="checkbox"
-                  id={permission.name}
-                  value={permission.id}
-                  {...register("permissions", {
-                    required: "Selecciona al menos un permiso",
-                  })}
-                  className="w-10"
-                />
-                <label className="font-bold text-xl" htmlFor={permission.name}>
-                  {permission.name}
-                </label>
-              </div>
-            ))}
+            {errors.roles && <Error>{errors.roles?.message?.toString()}</Error>}
           </div>
-        </fieldset>
+        )}
+
+        {loadingGetPermissions ? (
+          <Spinner />
+        ) : (
+          <fieldset className="shadow p-5">
+            <legend className="text-3xl font-bold">Permisos</legend>
+            {errors.permissions && (
+              <Error>{errors.permissions.message?.toString()}</Error>
+            )}
+            <div className="flex flex-col gap-5 mt-5">
+              {permissions.map((permission) => (
+                <div
+                  className="w-full flex flex-row gap-5 p-5 odd:bg-gray-300 odd:text-white shadow-xl"
+                  key={permission.id}
+                >
+                  <input
+                    type="checkbox"
+                    id={permission.name}
+                    value={permission.id}
+                    {...register("permissions", {
+                      required: "Selecciona al menos un permiso",
+                    })}
+                    className="w-10"
+                  />
+                  <label
+                    className="font-bold text-xl"
+                    htmlFor={permission.name}
+                  >
+                    {permission.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+        )}
 
         <Button
           disabled={loadingUser}

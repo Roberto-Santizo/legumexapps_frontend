@@ -11,7 +11,7 @@ export const userRoleSchema = z.object({
     name: z.string()
 });
 
-export const Roles = z.object({
+export const RolesSchema = z.object({
     data: z.array(Role)
 })
 

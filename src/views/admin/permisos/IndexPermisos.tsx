@@ -1,5 +1,5 @@
 //HOOKS
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
 import { formatDate } from "../../../helpers";
 
@@ -8,15 +8,29 @@ import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
+import { Permission } from "../../../types";
 
 export default function IndexPermisos() {
-  const fetchPermissions = useAppStore((state) => state.fetchPermissions);
-  const loadingPermissions = useAppStore((state) => state.loadingPermissions);
-  const permissionsError = useAppStore((state) => state.permissionError);
-  const permissions = useAppStore((state) => state.permissions);
+  const [loading,setLoading] = useState<boolean>(false);
+  const [error,setError] = useState<boolean>(false);
 
+  const [permissions,setPermissions] = useState<Permission[]>([]);
+
+  const fetchPermissions = useAppStore((state) => state.fetchPermissions);
+
+  const handleGetPermissions = async () => {
+    setLoading(true);
+    try {
+      const permissions = await fetchPermissions();
+      setPermissions(permissions);
+    } catch (error) {
+      setError(true);
+    }finally {
+      setLoading(false);
+    }
+  }
   useEffect(() => {
-    fetchPermissions();
+    handleGetPermissions();
   }, []);
 
   return (
@@ -33,39 +47,39 @@ export default function IndexPermisos() {
       </div>
 
       <div className="mt-10">
-        {loadingPermissions && <Spinner />}
-        {permissionsError && <ShowErrorAPI />}
-        {!loadingPermissions && !permissionsError && (
+        {loading && <Spinner />}
+        {!loading && error && <ShowErrorAPI />}
+        {!loading && !error && (
           <table className="table">
-            <thead className="bg-gray-400">
-              <tr className="text-xs md:text-sm rounded">
-                <th scope="col" className="table-header">
+            <thead>
+              <tr className="thead-tr">
+                <th scope="col" className="thead-th">
                   No.
                 </th>
-                <th scope="col" className="table-header">
+                <th scope="col" className="thead-th">
                   Permiso
                 </th>
-                <th scope="col" className="table-header">
+                <th scope="col" className="thead-th">
                   Fecha de Creación
                 </th>
-                <th scope="col" className="table-header">
+                <th scope="col" className="thead-th">
                   Última fecha de Modificación
                 </th>
               </tr>
             </thead>
-            <tbody className="table-body">
+            <tbody>
               {permissions.map((permission) => (
-                <tr className="text-xl" key={permission.id}>
-                  <td className="record">
+                <tr className="tbody-tr" key={permission.id}>
+                  <td className="tbody-td">
                     <p>{permission.id}</p>
                   </td>
-                  <td className="record">
+                  <td className="tbody-td">
                     <p>{permission.name}</p>
                   </td>
-                  <td className="record">
+                  <td className="tbody-td">
                     <p>{formatDate(permission.created_at)}</p>
                   </td>
-                  <td className="record">
+                  <td className="tbody-td">
                     <p>{formatDate(permission.updated_at)}</p>
                   </td>
                 </tr>

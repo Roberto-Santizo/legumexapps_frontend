@@ -3,7 +3,7 @@ import { useAppStore } from "../../../stores/useAppStore";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Spinner from "../../../components/Spinner";
 import { formatDate } from "../../../helpers";
-import { EmployeeCrop } from "../../../types";
+import { EmployeeCrop, EmployeesCrop } from "../../../types";
 import EmployeeTaskCrop from "../../../components/EmployeeTaskCrop";
 import { AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
@@ -12,23 +12,39 @@ export default function TomarLibrasPersonal() {
   const { task_crop_id } = useParams();
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
+
+  const [loadingGetEmployees, setLoadingGetEmployees] =useState<boolean>(false);
+  const [errorGetEmployees, setErrorGetEmployees] = useState<boolean>(false);
+  const [CropEmployees, setCropEmployees] = useState<EmployeesCrop>({} as EmployeesCrop);
+
+  const [loadingCloseTask, setLoadigCloseTask] = useState<boolean>(false);
+
   const getCropEmployees = useAppStore((state) => state.getCropEmployees);
-  const loadingGetEmployees = useAppStore((state) => state.loadingGetEmployees);
-  const CropEmployees = useAppStore((state) => state.CropEmployees);
-  const errorgetEmployees = useAppStore((state) => state.errorgetEmployees);
   const closeDailyAssignment = useAppStore(
     (state) => state.closeDailyAssignment
   );
-  const loadingCloseTask = useAppStore((state) => state.loadingCloseTask);
 
   const navigate = useNavigate();
 
   const [dataEmployees, setDataEmployees] = useState<EmployeeCrop[]>([]);
   const [plants, setPlants] = useState<number>(0);
-  useEffect(() => {
-    if (task_crop_id) {
-      getCropEmployees(task_crop_id);
+
+  const handleGetEmployees = async () => {
+    setLoadingGetEmployees(true);
+    try {
+      if (task_crop_id) {
+        const employees = await getCropEmployees(task_crop_id);
+        setCropEmployees(employees);
+      }
+    } catch (error) {
+      setErrorGetEmployees(true);
+    } finally {
+      setLoadingGetEmployees(false);
     }
+  };
+
+  useEffect(() => {
+    handleGetEmployees();
   }, []);
 
   useEffect(() => {
@@ -49,27 +65,31 @@ export default function TomarLibrasPersonal() {
     setPlants(value);
   };
 
-  const handleSaveAssignment = () => {
+  const handleSaveAssignment = async () => {
     if (plants <= 0) {
       toast.error("Las plantas cosechadas deben ser mayor a 0");
       return;
     }
 
-    if (task_crop_id) {
-      try {
-        closeDailyAssignment(task_crop_id, dataEmployees, plants).then(() => {
-          navigate(previousUrl);
-          toast.success('Datos Guardados Correctamente');
-        });
-      } catch (error) {
-        toast.error('Hubo un error al guardar la asignación, intentelo de nuevo más tarde');
+    setLoadigCloseTask(true);
+
+    try {
+      if (task_crop_id) {
+        await closeDailyAssignment(task_crop_id, dataEmployees, plants);
+        navigate(previousUrl);
+        toast.success("Datos Guardados Correctamente");
       }
+    } catch (error) {
+      toast.error("Hubo un error al cerrar la asignación, intentelo de nuevo más tarde");
+    } finally {
+      setLoadigCloseTask(false);
     }
+
   };
   return (
     <>
       {loadingGetEmployees && <Spinner />}
-      {!loadingGetEmployees && !errorgetEmployees && dataEmployees && (
+      {!loadingGetEmployees && !errorGetEmployees && dataEmployees && (
         <>
           <div>
             <p className="font-bold text-3xl">

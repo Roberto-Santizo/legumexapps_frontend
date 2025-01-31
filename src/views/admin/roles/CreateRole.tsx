@@ -6,11 +6,13 @@ import Error from "../../../components/Error";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../../../components/Spinner";
+import { useState } from "react";
 
 export default function CreateRole() {
+  const [loading,setLoading] = useState<boolean>(false);
+
   const createUser = useAppStore((state) => state.createRole);
   const roleErrores = useAppStore((state) => state.rolesErrors);
-  const loadingRoles = useAppStore((state) => state.loadingRoles);
   const navigate = useNavigate();
 
   const {
@@ -19,15 +21,18 @@ export default function CreateRole() {
     formState: { errors },
   } = useForm<DraftRole>();
 
-  const RegisterUser = (data: DraftRole) => {
-    createUser(data)
-      .then(() => {
-        toast.success("Usuario creado correctamente");
-        navigate("/roles");
-      })
-      .catch(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+  const handleCreateRole = async (data: DraftRole) => {
+    setLoading(true);
+    try {
+      await createUser(data);
+      toast.success("Usuario creado correctamente");
+      navigate("/roles");
+    } catch (error) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      toast.error('Hubo un error al crear el rol, intentelo de nuevo más tarde');
+    }finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,7 +42,7 @@ export default function CreateRole() {
       <div>
         <form
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
-          onSubmit={handleSubmit(RegisterUser)}
+          onSubmit={handleSubmit(handleCreateRole)}
         >
           {roleErrores
             ? roleErrores.map((error, index) => (
@@ -61,14 +66,14 @@ export default function CreateRole() {
           </div>
 
           <Button
-            disabled={loadingRoles}
+            disabled={loading}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loadingRoles ? (
+            {loading ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Rol</p>

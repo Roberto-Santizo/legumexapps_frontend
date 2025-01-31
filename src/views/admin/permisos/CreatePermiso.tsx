@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
 import { toast } from "react-toastify";
 
-
 //TYPES
 import { DraftPermssion } from "../../../types";
 
@@ -12,11 +11,12 @@ import { DraftPermssion } from "../../../types";
 import { Button } from "@mui/material";
 import Error from "../../../components/Error";
 import Spinner from "../../../components/Spinner";
+import { useState } from "react";
 
 export default function CreatePermiso() {
+  const [loading, setLoading] = useState<boolean>(false);
   const createPermiso = useAppStore((state) => state.createPermission);
   const permisosErrores = useAppStore((state) => state.permissionsErrors);
-  const loadingPermission = useAppStore((state) => state.loadingPermissions);
   const navigate = useNavigate();
 
   const {
@@ -25,16 +25,20 @@ export default function CreatePermiso() {
     formState: { errors },
   } = useForm<DraftPermssion>();
 
-  const RegisterPermission = (data: DraftPermssion) => {
-    createPermiso(data)
-      .then(() => {
-        toast.success("Permiso creado correctamente");
-        navigate("/permisos");
-      })
-      .catch(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+  const handleCreatePermission = async (data: DraftPermssion) => {
+    setLoading(true);
+
+    try {
+      await createPermiso(data);
+      toast.success("Permiso creado correctamente");
+      navigate("/permisos");
+    } catch (error) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <>
@@ -43,7 +47,7 @@ export default function CreatePermiso() {
       <div>
         <form
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
-          onSubmit={handleSubmit(RegisterPermission)}
+          onSubmit={handleSubmit(handleCreatePermission)}
         >
           {permisosErrores
             ? permisosErrores.map((error, index) => (
@@ -67,14 +71,14 @@ export default function CreatePermiso() {
           </div>
 
           <Button
-            disabled={loadingPermission}
+            disabled={loading}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loadingPermission ? (
+            {loading ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Permiso</p>

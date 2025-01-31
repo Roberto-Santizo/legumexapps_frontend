@@ -1,20 +1,32 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import Spinner from "../../../components/Spinner";
-import { PencilIcon } from "@heroicons/react/16/solid";
 import { formatDate } from "../../../helpers";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Role } from "../../../types";
 
 export default function IndexRoles() {
+  const [loading,setLoading] = useState<boolean>(false);
+  const [error,setError] = useState<boolean>(false);
+  const [roles, setRoles] = useState<Role[]>([]);
   const fetchRoles = useAppStore((state) => state.fetchRoles);
-  const loadingRoles = useAppStore((state) => state.loadingRoles);
-  const rolesError = useAppStore((state) => state.rolesError);
-  const roles = useAppStore((state) => state.roles);
 
+
+  const handleGetRoles = async () => {
+    setLoading(true);
+    try {
+      const roles = await fetchRoles();
+      setRoles(roles);
+    } catch (error) {
+      setError(true);
+    }finally {
+      setLoading(false);
+    }
+  }
   useEffect(() => {
-    fetchRoles();
+    handleGetRoles();
   }, []);
   return (
     <>
@@ -33,46 +45,40 @@ export default function IndexRoles() {
 
 
         <div className="p-2 h-96 overflow-y-auto mt-10">
-          {loadingRoles && <Spinner />}
-          {rolesError && <ShowErrorAPI />}
-          {!loadingRoles && !rolesError && (
+          {loading && <Spinner />}
+          {(!loading && error) && <ShowErrorAPI />}
+          {!loading && !error && (
             <table className="table">
-              <thead className="bg-gray-400">
-                <tr className="text-xs md:text-sm rounded">
-                  <th scope="col" className="table-header">
+              <thead>
+                <tr className="thead-tr">
+                  <th scope="col" className="thead-th">
                     No.
                   </th>
-                  <th scope="col" className="table-header">
+                  <th scope="col" className="thead-th">
                     Rol
                   </th>
-                  <th scope="col" className="table-header">
+                  <th scope="col" className="thead-th">
                     Fecha de Creación
                   </th>
-                  <th scope="col" className="table-header">
-                    Última fecha de Modificación
-                  </th>
-                  <th scope="col" className="table-header">
-                    Acciones
+                  <th scope="col" className="thead-th">
+                    Fecha de Creación
                   </th>
                 </tr>
               </thead>
-              <tbody className="table-body">
+              <tbody>
                 {roles.map((role) => (
-                  <tr className="text-xl" key={role.id}>
-                    <td className="record">
+                  <tr className="tbody-tr" key={role.id}>
+                    <td className="tbody-td">
                       <p>{role.id}</p>
                     </td>
-                    <td className="record">
+                    <td className="tbody-td">
                       <p>{role.name}</p>
                     </td>
-                    <td className="record">
+                    <td className="tbody-td">
                       <p>{formatDate(role.created_at)}</p>
                     </td>
-                    <td className="record">
+                    <td className="tbody-td">
                       <p>{formatDate(role.updated_at)}</p>
-                    </td>
-                    <td className="record">
-                      <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
                     </td>
                   </tr>
                 ))}

@@ -3,7 +3,7 @@ import { useAppStore } from "../../../stores/useAppStore";
 import { ChangeEvent, useEffect, useState } from "react";
 import Spinner from "../../../components/Spinner";
 import TaskLabel from "../../../components/TaskLabel";
-import { Employee } from "../../../types";
+import { Employee, TaskCropWeeklyPlan } from "../../../types";
 import { Trash2Icon } from "lucide-react";
 import Fuse from "fuse.js";
 import Worker from "../../../components/Worker";
@@ -13,29 +13,60 @@ export default function AsignarTareaCosechaLote() {
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
   const { task_crop_id, finca_id } = useParams();
+  const [loadingGetEmployees,setLoadingGetEmployees] = useState<boolean>(false); 
+  const [errorGetEmployees,setErrorGetEmployees] = useState<boolean>(false);
+  const [employees,setEmployees] = useState<Employee[]>([]);
+
+  const [loadingGetTaskCrop,setLoadingGetTaskCrop] = useState<boolean>(false);
+  const [errorGetTaskCrop,setErrorGetTaskCrop] = useState<boolean>(false);
+  const [taskCrop, setTaskCrop] = useState<TaskCropWeeklyPlan>({} as TaskCropWeeklyPlan);
+
 
   const [assignedEmployees, setAssignedEmployees] = useState<Employee[]>([]);
   const [query, setQuery] = useState<string>("");
 
   const getEmployees = useAppStore((state) => state.getEmployees);
-  const loadingGetTask = useAppStore((state) => state.loadingGetTask);
-  const loadingGetEmployees = useAppStore((state) => state.loadingGetEmployees);
-  const loadingCloseAssigment = useAppStore(
-    (state) => state.loadingCloseAssigment
-  );
+  const loadingCloseAssigment = useAppStore((state) => state.loadingCloseAssigment);
   const getTaskCrop = useAppStore((state) => state.getTaskCrop);
-  const employees = useAppStore((state) => state.employees);
-  const taskCrop = useAppStore((state) => state.taskCrop);
   const closeCropAssigment = useAppStore((state) => state.closeCropAssigment);
 
   const [results, setResults] = useState<Employee[]>(employees);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (finca_id && task_crop_id) {
-      getTaskCrop(task_crop_id);
-      getEmployees(finca_id);
+
+  const handleGetEmployees = async () => {
+    setLoadingGetEmployees(true);
+    try {
+      if(finca_id){
+        const employees = await getEmployees(finca_id);
+        setEmployees(employees);
+
+      }
+    } catch (error) {
+      setErrorGetEmployees(true);
+    }finally{
+      setLoadingGetEmployees(false);
     }
+  }
+
+  const handleGetTaskCrop = async () => {
+    setLoadingGetTaskCrop(true);
+    try {
+      if(task_crop_id){
+        const task = await getTaskCrop(task_crop_id);
+        setTaskCrop(task);
+      }
+    } catch (error) {
+        setErrorGetTaskCrop(true);
+        toast.error('Hubo un error al traer la información de la tarea');
+    }finally {
+      setLoadingGetTaskCrop(false);
+    }
+  }
+
+  useEffect(() => {
+    handleGetEmployees();
+    handleGetTaskCrop();
   }, []);
 
   useEffect(() => {
@@ -81,8 +112,8 @@ export default function AsignarTareaCosechaLote() {
   return (
     <>
       <h1 className="text-4xl font-bold">Asignación de Empleados</h1>
-      {loadingGetTask && <Spinner />}
-      {!loadingGetTask && (
+      {loadingGetTaskCrop && <Spinner />}
+      {(!loadingGetTaskCrop && !errorGetTaskCrop) && (
         <div className="grid grid-cols-6 mt-10">
           <div className="col-span-4 space-y-5">
             <h2 className="font-bold text-2xl">Información de la tarea:</h2>
@@ -128,7 +159,7 @@ export default function AsignarTareaCosechaLote() {
           </div>
 
           {loadingGetEmployees && <Spinner />}
-          {!loadingGetEmployees && (
+          {(!loadingGetEmployees && !errorGetEmployees) && (
             <div className="col-start-5 col-span-2">
               <div className="mt-5 overflow-y-auto h-5/6 shadow-lg rounded-md p-5 space-y-2">
                 <p className="font-bold text-2xl text-center">

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 //TYPES
-import { DraftUser } from "../../../types";
+import { DraftUser, Permission, Role, UserDetail } from "../../../types";
 
 //COMPONENTES
 import Spinner from "../../../components/Spinner";
@@ -15,24 +15,69 @@ import { toast } from "react-toastify";
 
 export default function EditUser() {
   const { id } = useParams();
+  const [loadingGetRoles, setLoadingGetRoles] = useState<boolean>(false);
+  const [loadingGetPermissions, setLoadingGetPermissions] = useState<boolean>(false);
+  const [loadingGetUser,setLoadingGetUser] = useState<boolean>(false);
+  const [loadingUpdateUser,setLoadingUpdateUser] = useState<boolean>(false);
+
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [permissions, setPermissions] = useState<Permission[]>([]);
+
+  const [userEditing, setUserEditing] = useState<UserDetail>({} as UserDetail);
+
   const getUser = useAppStore((state) => state.getUser);
   const fetRoles = useAppStore((state) => state.fetchRoles);
   const fetchPermissions = useAppStore((state) => state.fetchPermissions);
 
-  useEffect(() => {
-    if (id) {
-      getUser(id);
-      fetRoles();
-      fetchPermissions();
+  const handleGetRoles = async () => {
+    setLoadingGetRoles(true);
+    try {
+      const roles = await fetRoles();
+      setRoles(roles);
+    } catch (error) {
+      toast.error(
+        "Hubo un error al traer los roles, intentelo de nuevo más tarde"
+      );
+    } finally {
+      setLoadingGetRoles(false);
     }
+  };
+
+  const handleGetPermissions = async () => {
+    setLoadingGetPermissions(true);
+    try {
+      const permssions = await fetchPermissions();
+      setPermissions(permssions);
+    } catch (error) {
+      toast.error(
+        "Hubo un error al traer los permisos, intentelo de nuevo más tarde"
+      );
+    } finally {
+      setLoadingGetPermissions(false);
+    }
+  };
+
+  const handleGetUser = async () => {
+    setLoadingGetUser(true);
+    try {
+      if(id){
+        const user = await getUser(id);
+        setUserEditing(user);
+      }
+    } catch (error) {
+      toast.error("Hubo un error al traer el usuario, intentelo de nuevo más tarde");
+    }finally {
+      setLoadingGetUser(false);
+    }
+  }
+
+  useEffect(() => {
+      handleGetUser();
+      handleGetPermissions();
+      handleGetRoles();
   }, []);
 
-  const userEditing = useAppStore((state) => state.userEditing);
-  const loadingUser = useAppStore((state) => state.loadingUser);
-  const userError = useAppStore((state) => state.UserError);
   const UserErrors = useAppStore((state) => state.usersErrors);
-  const permissions = useAppStore((state) => state.permissions);
-  const roles = useAppStore((state) => state.roles);
   const updateUser = useAppStore((state) => state.updateUser);
   const navigate = useNavigate();
 
@@ -68,22 +113,25 @@ export default function EditUser() {
     );
   };
 
-  const editUser = (data: DraftUser) => {
-    if (id) {
-      updateUser(id, data)
-        .then(() => {
-          toast.success("Usuario actualizado correctamente");
-          navigate("/usuarios");
-        })
-        .catch(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
+  const editUser = async (data: DraftUser) => {
+    setLoadingUpdateUser(true);
+    try {
+      if(id){
+        await updateUser(id, data);
+        toast.success("Usuario actualizado correctamente");
+        navigate("/usuarios");
+      }
+    } catch (error) {
+      toast.error("Error al actualizar el usuario");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }finally {
+      setLoadingUpdateUser(false);
     }
   };
 
   return (
     <>
-      {!loadingUser && !userError && userEditing && (
+      {!loadingGetUser && userEditing && (
         <div>
           <h2 className="text-4xl font-bold">
             Edición de Usuario: {userEditing.name}
@@ -91,14 +139,14 @@ export default function EditUser() {
         </div>
       )}
 
-      {loadingUser && <Spinner />}
+      {loadingGetUser && <Spinner />}
 
-      {!loadingUser && userEditing && (
+      {!loadingGetUser && userEditing && (
         <form
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(editUser)}
         >
-          {UserErrors && userError
+          {UserErrors 
             ? UserErrors.map((error, index) => (
                 <Error key={index}>{error}</Error>
               ))
@@ -178,69 +226,79 @@ export default function EditUser() {
             )}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="role">
-              Rol:
-            </label>
+          {loadingGetRoles ? (
+            <Spinner />
+          ) : (
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-bold uppercase" htmlFor="role">
+                Rol:
+              </label>
 
-            <select
-              id="role"
-              className="border border-black p-3"
-              {...register("roles", { required: "El rol es obligatorio" })}
-            >
-              <option value="">--SELECCIONE UNA OPCIÓN--</option>
-              {roles.map((role) => (
-                <option value={role.name} key={role.id}>
-                  {role.name}
-                </option>
-              ))}
-            </select>
+              <select
+                id="role"
+                className="border border-black p-3"
+                {...register("roles", { required: "El rol es obligatorio" })}
+              >
+                <option value="">--SELECCIONE UNA OPCIÓN--</option>
+                {roles.map((role) => (
+                  <option value={role.name} key={role.id}>
+                    {role.name}
+                  </option>
+                ))}
+              </select>
 
-            {errors.roles && <Error>{errors.roles?.message?.toString()}</Error>}
-          </div>
-
-          <fieldset className="shadow p-5">
-            <legend className="text-3xl font-bold">Permisos</legend>
-            {errors.permissions && (
-              <Error>{errors.permissions.message?.toString()}</Error>
-            )}
-            <div className="flex flex-col gap-5 mt-5">
-              {permissions.map((permission) => (
-                <div
-                  className="w-full flex flex-row gap-5 p-5 odd:bg-gray-300 odd:text-white shadow-xl"
-                  key={permission.id}
-                >
-                  <input
-                    type="checkbox"
-                    id={permission.name}
-                    value={permission.id}
-                    {...register("permissions", {
-                      required: "Selecciona al menos un permiso",
-                    })}
-                    className="w-10"
-                    checked={selectedPermissions.includes(permission.id)}
-                    onChange={() => handleCheckboxChange(permission.id)}
-                  />
-                  <label
-                    className="font-bold text-xl"
-                    htmlFor={permission.name}
-                  >
-                    {permission.name}
-                  </label>
-                </div>
-              ))}
+              {errors.roles && (
+                <Error>{errors.roles?.message?.toString()}</Error>
+              )}
             </div>
-          </fieldset>
+          )}
+
+          {loadingGetPermissions ? (
+            <Spinner />
+          ) : (
+            <fieldset className="shadow p-5">
+              <legend className="text-3xl font-bold">Permisos</legend>
+              {errors.permissions && (
+                <Error>{errors.permissions.message?.toString()}</Error>
+              )}
+              <div className="flex flex-col gap-5 mt-5">
+                {permissions.map((permission) => (
+                  <div
+                    className="w-full flex flex-row gap-5 p-5 odd:bg-gray-300 odd:text-white shadow-xl"
+                    key={permission.id}
+                  >
+                    <input
+                      type="checkbox"
+                      id={permission.name}
+                      value={permission.id}
+                      {...register("permissions", {
+                        required: "Selecciona al menos un permiso",
+                      })}
+                      className="w-10"
+                      checked={selectedPermissions.includes(permission.id)}
+                      onChange={() => handleCheckboxChange(permission.id)}
+                    />
+                    <label
+                      className="font-bold text-xl"
+                      htmlFor={permission.name}
+                    >
+                      {permission.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </fieldset>
+          )}
 
           <Button
-            disabled={loadingUser}
+            disabled={loadingUpdateUser}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loadingUser ? (
+            {loadingUpdateUser ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Actualizar Usuario</p>

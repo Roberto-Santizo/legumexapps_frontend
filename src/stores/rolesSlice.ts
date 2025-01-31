@@ -1,15 +1,12 @@
 import { StateCreator } from "zustand"
 import { DraftRole, Role } from "../types"
-import { getRoles } from "../services/rolesServices"
 import clienteAxios from "../config/axios"
+import { RolesSchema } from "../utils/roles-schema"
 
 export type RolesSliceType = {
-    roles: Role[],
-    loadingRoles: boolean,
-    rolesError: boolean,
     rolesErrors: string[],
-    fetchRoles: () => Promise<void>,
-    createRole: (rol : DraftRole) => Promise<void>
+    fetchRoles: () => Promise<Role[]>,
+    createRole: (rol: DraftRole) => Promise<void>
 }
 
 
@@ -20,29 +17,27 @@ export const createRolesSlice: StateCreator<RolesSliceType> = (set) => ({
     rolesError: false,
     fetchRoles: async () => {
         try {
-            set({loadingRoles: true});
-            const response = await getRoles();
-            set({
-                roles: response?.data,
-                loadingRoles: false,
-                rolesError: false
-            })
-            set({loadingRoles:false, rolesError:false});
+            const url = '/api/roles';
+            const { data } = await clienteAxios(url);
+            const result = RolesSchema.safeParse(data)
+            if (result.success) {
+                return result.data.data
+            }else{
+                throw new Error("Información no válida");
+            }
         } catch (error) {
-            console.log(error);
-            set({loadingRoles:false, rolesError:true});
+            throw error;
         }
-        
-        
+
+
     },
     createRole: async (rol) => {
         try {
-            set({loadingRoles:true});
             const url = '/api/roles';
             await clienteAxios.post(url, rol);
-            set({ loadingRoles: false, rolesErrors: [], rolesError: false });
-        } catch (error : any) {
-            set({rolesErrors: Object.values(error.response.data.errors), rolesError:true ,loadingRoles:false});
+            set({ rolesErrors: [] });
+        } catch (error: any) {
+            set({ rolesErrors: Object.values(error.response.data.errors)});
             throw error;
         }
     },

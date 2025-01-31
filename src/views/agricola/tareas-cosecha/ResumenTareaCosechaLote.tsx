@@ -7,26 +7,34 @@ import { formatDate } from "../../../helpers";
 
 export default function ResumenTareaCosechaLote() {
   const { task_crop_id } = useParams();
-  const getTaskCropDetails = useAppStore((state) => state.getTaskCropDetails);
-  const loadingGetTask = useAppStore((state) => state.loadingGetTask);
-  const [taskCropDetail, setTaskCropDetail] =
-    useState<TaskCropWeeklyPlanDetail>();
+  const [loading,setLoading] = useState<boolean>(false);
+  const [error,setError] = useState<boolean>(false);
+  const [taskCropDetail,setTaskCropDetail] = useState<TaskCropWeeklyPlanDetail>({} as TaskCropWeeklyPlanDetail);
 
-  const fetchTaskCropDetails = async () => {
-    if (task_crop_id) {
-      const details = await getTaskCropDetails(task_crop_id);
-      setTaskCropDetail(details);
+  const getTaskCropDetails = useAppStore((state) => state.getTaskCropDetails);
+
+  const handleGetTaskCropDetails = async () => {
+    setLoading(true);
+    try {
+      if(task_crop_id){
+        const task = await getTaskCropDetails(task_crop_id);
+        setTaskCropDetail(task);
+      }
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTaskCropDetails();
+    handleGetTaskCropDetails();
   }, []);
 
   return (
     <>
-      {loadingGetTask && <Spinner />}
-      {!loadingGetTask && taskCropDetail && (
+      {loading && <Spinner />}
+      {(!loading && !error && taskCropDetail.assigments) && (
         <div className="space-y-10 mb-10">
           <div>
             <h2 className="font-bold text-3xl">Resumen de Cosecha</h2>

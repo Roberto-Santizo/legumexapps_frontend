@@ -51,7 +51,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -65,7 +64,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -79,7 +77,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -93,7 +90,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -107,7 +103,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -121,7 +116,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -135,7 +129,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -150,7 +143,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -164,7 +156,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -180,7 +171,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -194,7 +184,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -209,7 +198,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -223,7 +211,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -237,7 +224,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -251,7 +237,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -266,7 +251,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -280,7 +264,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -294,7 +277,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
 
@@ -308,7 +290,6 @@ export default function AgricolaRoutes() {
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
-          index
         />
       </Route>
     </>

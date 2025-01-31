@@ -10,15 +10,20 @@ import { useParams } from "react-router-dom";
 
 export default function ModalTomaLibras() {
   const { lote_plantation_control_id, weekly_plan_id } = useParams();
+
+  const [loadingGetTask, setLoadingGetTask] = useState<boolean>(false);
+  const [errorGetTask, setErrorGetTask] = useState<boolean>(false);
+
+  const [loadingCompleteAssigments, setLoadingCompleteAssigments] = useState<boolean>(false);
+
   const modalTomaLibras = useAppStore((state) => state.modalTomaLibras);
   const idTakeLbsData = useAppStore((state) => state.idTakeLbsData);
-  const errorGetTask = useAppStore((state) => state.errorGetTask);
+
   const getIncompleteAssigments = useAppStore(
     (state) => state.getIncompleteAssigments
   );
   const getTasksCrop = useAppStore((state) => state.getTasksCrop);
   const completeAssigments = useAppStore((state) => state.completeAssigments);
-  const loadingGetTask = useAppStore((state) => state.loadingGetTask);
   const [modal, useModal] = useState(modalTomaLibras);
   const [incompleteAssigments, setIncompleteAssigments] = useState<
     TaskCropIncomplete[]
@@ -32,20 +37,29 @@ export default function ModalTomaLibras() {
         (assignment) =>
           assignment.lbs_planta !== null && assignment.lbs_planta > 0
       ),
-
     [incompleteAssigments]
   );
+
+  const handleGerIncompleteAssigments = async () => {
+    setLoadingGetTask(true);
+    try {
+      if (modalTomaLibras) {
+        const assigments = await getIncompleteAssigments(idTakeLbsData);
+        setIncompleteAssigments(assigments);
+      }
+    } catch (error) {
+      setErrorGetTask(true);
+    } finally {
+      setLoadingGetTask(false);
+    }
+  };
 
   useEffect(() => {
     useModal(modalTomaLibras);
   }, [modalTomaLibras]);
 
   useEffect(() => {
-    if (modalTomaLibras) {
-      getIncompleteAssigments(idTakeLbsData).then((data: TaskCropIncomplete[]) => {
-        setIncompleteAssigments(data);
-      });
-    }
+    handleGerIncompleteAssigments();
   }, [modalTomaLibras]);
 
   const handleChange = (
@@ -64,21 +78,22 @@ export default function ModalTomaLibras() {
     );
   };
 
-  const SaveData = () => {
+  const SaveData = async () => {
     const completedAssigments = incompleteAssigments.filter(
       (item) => item.lbs_planta != null && item.lbs_planta > 0
     );
+    setLoadingCompleteAssigments(true);
     try {
-      completeAssigments(completedAssigments).then(()=>{
-        closeModal();
-        toast.success('Registro Guardado Correctamente');
-        if (lote_plantation_control_id && weekly_plan_id) {
-          getTasksCrop(lote_plantation_control_id, weekly_plan_id)
-        }
-      });
-      
+      await completeAssigments(completedAssigments);
+      closeModal();
+      toast.success("Registro Guardado Correctamente");
+      if (lote_plantation_control_id && weekly_plan_id) {
+        await getTasksCrop(lote_plantation_control_id,weekly_plan_id);
+      }
     } catch (error) {
-      toast.error('Hubo un error al cerrar la asignación, intentelo de nuevo más tarde');
+      toast.error("Hubo un error al cerrar la asignación, intentelo de nuevo más tarde");
+    }finally {
+      setLoadingCompleteAssigments(false);
     }
   };
 
@@ -166,11 +181,11 @@ export default function ModalTomaLibras() {
                     }`}
                     onClick={() => SaveData()}
                   >
-                    {/* {loadingCloseTask ? (
+                    {loadingCompleteAssigments ? (
                       <Spinner />
-                    ) : ( */}
-                      <p className="font-bold text-lg">Registrar Libras</p>
-                    {/* )} */}
+                    ) : (
+                    <p className="font-bold text-lg">Registrar Libras</p>
+                    )}
                   </button>
                 </div>
               </Dialog.Panel>

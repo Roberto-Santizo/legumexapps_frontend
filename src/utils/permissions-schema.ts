@@ -8,6 +8,6 @@ export const Permission = z.object({
 });
 
 
-export const Permissions = z.object({
+export const PermissionsSchema = z.object({
     data: z.array(Permission)
 })

@@ -16,9 +16,9 @@ export default function ProtectedAdminRoutes({ children }: ProtectedAdminRoutesP
       return <Navigate to="/login" replace />;
     }
   
-    if (userRole !== "admin") {
-      return <Navigate to="/dashboard" replace />;
-    }
+    // if (userRole !== "admin") {
+    //   return <Navigate to="/dashboard" replace />;
+    // }
   }
 
   return children;

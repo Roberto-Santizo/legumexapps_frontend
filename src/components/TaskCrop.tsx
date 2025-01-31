@@ -2,8 +2,7 @@ import { TaskCropWeeklyPlan } from "../types";
 import { useNavigate, useParams } from "react-router-dom";
 import TaskLabel from "./TaskLabel";
 import {
-  BadgeCheck, CircleAlert,
-  FileText,
+  BadgeCheck, FileText,
   Grid2X2Plus,
   ListPlus,
   SquarePlusIcon
@@ -11,6 +10,7 @@ import {
 import { useAppStore } from "../stores/useAppStore";
 import Spinner from "./Spinner";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 type TaskCropProps = {
   task: TaskCropWeeklyPlan;
@@ -18,19 +18,27 @@ type TaskCropProps = {
 
 export default function TaskCrop({ task }: TaskCropProps) {
   const { weekly_plan_id, lote_plantation_control_id } = useParams();
+  const [loading, setLoading] = useState<boolean>(false);
+  const loadingReloadTasks = useAppStore((state) => state.loadingReloadTasks);
+
   const openModal = useAppStore((state) => state.openModal);
   const navigate = useNavigate();
   const closeWeekAssignment = useAppStore((state) => state.closeWeekAssignment);
-  const loadingReloadTasks = useAppStore((state) => state.loadingReloadTasks);
-  const reloadTasks = useAppStore((state) => state.reloadTasks);
+  const getTasksCrop = useAppStore((state) => state.getTasksCrop);
 
-  const handleCloseTask = (task_id: TaskCropWeeklyPlan["id"]) => {
-    closeWeekAssignment(task_id).then(() => {
+  const handleCloseTask = async (task_id: TaskCropWeeklyPlan["id"]) => {
+    setLoading(true);
+    try {
+      await closeWeekAssignment(task_id);
       if (weekly_plan_id && lote_plantation_control_id) {
-        reloadTasks(lote_plantation_control_id, weekly_plan_id);
+        await getTasksCrop(lote_plantation_control_id, weekly_plan_id);
         toast.success("Tarea cerrada semanalmente");
       }
-    });
+    } catch (error) {
+      toast.error("Hubo un error al cerrar la tarea, intentelo de nuevo más tarde");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,7 +49,7 @@ export default function TaskCrop({ task }: TaskCropProps) {
         <TaskLabel label={"CULTIVO"} text={task.cultivo} />
       </div>
 
-      {loadingReloadTasks ? (
+      {(loading || loadingReloadTasks) ? (
         <Spinner />
       ) : (
         <div className="col-start-7 space-y-5">

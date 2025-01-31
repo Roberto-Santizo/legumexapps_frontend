@@ -1,5 +1,5 @@
-import {z} from 'zod';
-import { UserCollectionSchema, UserSchema, } from '../utils/users-schema';
+import { z } from 'zod';
+import { DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
 import { TareaSchema, TareasSchema } from '../utils/tareas-schema';
@@ -7,10 +7,10 @@ import { Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchem
 import { DraftLote, Lote, LotesSchema } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
 import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansSchema } from '../utils/weekly_plans-schema';
-import { EditTaskWeeklySchema,TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
+import { EditTaskWeeklySchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
 import { EmployeeSchema } from '../utils/employee-schema';
 import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema';
-import  {TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema} from "../utils/taskCropWeeklyPlan-schema";
+import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema";
 
 
 //PERMISOS
@@ -23,11 +23,11 @@ export type DraftRole = Omit<Role, 'id'>;
 
 //USUARIOS
 export type User = z.infer<typeof UserSchema>;
-export type UserCreated = z.infer<typeof UserCollectionSchema>;
-export type DraftUser = Omit<UserCreated, 'id'>;
+export type Users = z.infer<typeof UsersSchema>;
+export type DraftUser = z.infer<typeof DraftUserSchema>;
+export type UserDetail = z.infer<typeof UserDetailsSchema>;
 
-
-export type UserCollection = z.infer<typeof UserCollectionSchema>;
+// export type UserCollection = z.infer<typeof UserCollectionSchema>;
 
 
 export type AuthUser = {
