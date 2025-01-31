@@ -5,7 +5,7 @@ import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useAppStore } from "../../../stores/useAppStore";
 import Swal from "sweetalert2";
 // TYPES
-import { Employee } from "../../../types";
+import { Employee, TaskWeeklyPlan } from "../../../types";
 
 // COMPONENTS
 import { Trash2Icon } from "lucide-react";
@@ -14,29 +14,24 @@ import Worker from "../../../components/Worker";
 import { toast } from "react-toastify";
 
 export default function AsignarTareaLote() {
-  const { finca_id,task_id } = useParams();
+  const { finca_id, task_id } = useParams();
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
+
+  const [loadingGetTask, setLoadingGetTask] = useState<boolean>(false);
+  const [loadingGetEmployees, setLoadingGetEmployees] = useState<boolean>(false);
+  const [loadingCloseTask, setLoadingCloseTask] = useState<boolean>(false);
+  const [task, setTask] = useState<TaskWeeklyPlan>({} as TaskWeeklyPlan);
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
   const [query, setQuery] = useState<string>("");
   const [assignedEmployees, setAssignedEmployees] = useState<Employee[]>([]);
 
-
-  //TRAER TAREA Y EMPLEADOS
   const getTask = useAppStore((state) => state.getTask);
   const getEmployees = useAppStore((state) => state.getEmployees);
 
-
-  const task = useAppStore((state) => state.task);
-  const reduceSlots = useAppStore((state) => state.reduceSlots);
-  const addSlots = useAppStore((state) => state.addSlots);
-  const employees = useAppStore((state) => state.employees);
-
   const closeAssigment = useAppStore((state) => state.closeAssigment);
   const navigate = useNavigate();
-
-  const loadingGetTask = useAppStore((state) => state.loadingGetTask);
-  const loadingGetEmployees = useAppStore((state) => state.loadingGetEmployees);
 
   const necesarySlots = useMemo(() => {
     return assignedEmployees.length >= task.minimum_slots;
@@ -49,17 +44,63 @@ export default function AsignarTareaLote() {
 
   const [results, setResults] = useState<Employee[]>(employees);
 
+
+  const handleGetTask = async () => {
+    setLoadingGetTask(true);
+    try {
+      if (task_id) {
+        const task = await getTask(task_id);
+        setTask(task);
+      }
+    } catch (error) {
+      toast.error('Error al traer la tarea, intentelo de nuevo más tarde');
+    } finally {
+      setLoadingGetTask(false);
+    }
+  }
+
+  const handleGetEmployees = async () => {
+    setLoadingGetEmployees(true);
+    try {
+      if (finca_id) {
+        const employees = await getEmployees(finca_id);
+        setEmployees(employees)
+      }
+    } catch (error) {
+      toast.error('Error al traer a los empleados, intentelo de nuevo más tarde');
+    } finally {
+      setLoadingGetEmployees(false);
+    }
+  }
+
+  const isValidTask = () => {
+    if (task.start_date != null) {
+      return false
+    }
+
+    return true;
+  }
+
+  const reduceSlots = (task: TaskWeeklyPlan) => {
+    const updatedTask = { ...task, slots: task.slots - 1 };
+    setTask(updatedTask);
+  }
+
+  const addSlots = (task : TaskWeeklyPlan) => {
+    const updatedTask = { ...task, slots: task.slots + 1 };
+    setTask(updatedTask);
+  }
+
   useEffect(() => {
-    if (finca_id && task_id) {
-      getTask(task_id);
-      getEmployees(finca_id);
+    handleGetTask();
+    handleGetEmployees();
+    if (!isValidTask()) {
+      navigate('/planes-semanales')
+      toast.error('La tarea ya cuenta con asignación');
     }
   }, []);
-  
-  if(task.start_date != null){
-    navigate(previousUrl);
-    toast.error('La tarea ya cuenta con una asignación');
-  }
+
+
 
   useEffect(() => {
     setResults(employees);
@@ -107,12 +148,15 @@ export default function AsignarTareaLote() {
         confirmButtonText: "Cerrar Asignación",
       }).then((result) => {
         if (result.isConfirmed) {
+          setLoadingCloseTask(true)
           try {
             closeAssigment(assignedEmployees, task.id);
             toast.success("Asignación cerrada correctamente");
             navigate(previousUrl);
           } catch (error) {
             toast.error("Hubo un error al cerrar la asignación");
+          }finally{
+            setLoadingCloseTask(false);
           }
         }
       });
@@ -125,6 +169,8 @@ export default function AsignarTareaLote() {
       navigate(previousUrl);
     } catch (error) {
       toast.error("Hubo un error al cerrar la asignación");
+    } finally {
+      setLoadingCloseTask(true);
     }
   };
 
@@ -179,15 +225,14 @@ export default function AsignarTareaLote() {
             </div>
 
             <button
-              className={`p-2 rounded mt-5 uppercase font-bold transition-colors w-1/2 ${
-                assignedEmployees.length === 0
-                  ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                  : "bg-indigo-500 text-white hover:bg-indigo-600"
-              }`}
+              className={`p-2 rounded mt-5 uppercase font-bold transition-colors w-1/2 ${(assignedEmployees.length === 0 || loadingCloseTask)
+                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                : "bg-indigo-500 text-white hover:bg-indigo-600"
+                }`}
               onClick={handleCloseAssignment}
-              disabled={assignedEmployees.length === 0}
+              disabled={assignedEmployees.length === 0 || loadingCloseTask}
             >
-              Cerrar Asignación
+              {loadingCloseTask ? <Spinner /> : (<p>Cerrar Asignación</p>)}
             </button>
           </div>
 

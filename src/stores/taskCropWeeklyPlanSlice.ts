@@ -34,7 +34,6 @@ export type TaskCropWeeklyPlanSliceType = {
     closeDailyAssignment: (id: TaskCropWeeklyPlan['id'], data: EmployeeCrop[], plants: Number) => Promise<void>
     closeWeekAssignment: (id: TaskCropWeeklyPlan['id']) => Promise<void>;
 
-    reloadTasks: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     getIncompleteAssigments: (id: TaskCropWeeklyPlan['id']) => Promise<TaskCropIncomplete[]>
     completeAssigments: (data : TaskCropIncomplete[]) => Promise<void>
     openModal: (id: TaskCropWeeklyPlan['id']) => void
@@ -112,22 +111,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
         }
     },
 
-    reloadTasks: async (lote_plantation_control_id, weekly_plan_id) => {
-        set({ loadingReloadTasks: true });
-        try {
-            const url = `/api/tasks-crops-lotes`;
-            const { data } = await clienteAxios(url, {
-                params: { lote_plantation_control_id, weekly_plan_id }
-            });
-            const result = TasksCropWeeklyPlanSchema.safeParse(data);
-            if (result.success) {
-                set({ loadingReloadTasks: false, tasksCrops: result.data, errorGetTasks: false });
-            }
-        } catch (error) {
-            set({ loadingReloadTasks: false, errorGetTasks: true });
-            throw new Error;
-        }
-    },
+    
 
     closeCropAssigment: async (Employees, task_crop_id) => {
         set({ loadingCloseAssigment: true })

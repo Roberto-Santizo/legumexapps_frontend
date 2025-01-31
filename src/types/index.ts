@@ -3,7 +3,7 @@ import { UserCollectionSchema, UserSchema, } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
 import { TareaSchema, TareasSchema } from '../utils/tareas-schema';
-import { Crop, DraftCDP, Plantation, PlantationsSchema, Recipe } from '../utils/plantation-schema';
+import { Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchema, Recipe } from '../utils/plantation-schema';
 import { DraftLote, Lote, LotesSchema } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
 import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansSchema } from '../utils/weekly_plans-schema';
@@ -49,7 +49,10 @@ export type Crop = z.infer<typeof Crop>
 export type Recipe = z.infer<typeof Recipe >;
 
 export type Plantation = z.infer<typeof Plantation>;
-export type Plantations = z.infer<typeof PlantationsSchema>;
+export type Plantations = z.infer<typeof PlantationsSchema>
+export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>;
+
+
 export type DraftCDP = z.infer<typeof DraftCDP>;
 
 

@@ -14,7 +14,6 @@ export default function IndexTareasLote() {
   const [error,setError] = useState<boolean>(false);
   const [tasks, setTasks] = useState<TasksWeeklyPlan>({} as TasksWeeklyPlan);
 
-  //ASYNC FUNCTION
   const getTasks = useAppStore((state) => state.getTasks);
 
   const handleGetTasks = async () =>{
@@ -42,7 +41,7 @@ export default function IndexTareasLote() {
       {(!loading && error) && <ShowErrorAPI />}
       <div className="flex flex-col gap-10 mt-10">
         {(!loading && !error && tasks.data) && (
-          tasks.data.map(task => <Task key={task.id} task={task} />)
+          tasks.data.map(task => <Task key={task.id} task={task} setTasks={setTasks}/>)
         )}
       </div>
     </>

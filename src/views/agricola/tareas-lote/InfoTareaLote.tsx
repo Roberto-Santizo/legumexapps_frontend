@@ -7,30 +7,38 @@ import { Trash } from "lucide-react";
 
 export default function InfoTareaLote() {
   const { id } = useParams();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error,setError] = useState<boolean>(false);
 
   const getTaskDetailsById = useAppStore((state) => state.getTaskDetailsById);
-  const loadingGetTaskDetail = useAppStore(
-    (state) => state.loadingGetTaskDetail
-  );
-  const errorGetTaskDetail = useAppStore((state) => state.errorGetTaskDetails);
 
   const [taskDetail, setTaskDetail] = useState<TaskWeeklyPlanDetails>(
     {} as TaskWeeklyPlanDetails
   );
 
-  useEffect(() => {
-    if (id) {
-      (async () => {
+  const handleGetTaskDetail = async () => {
+    setLoading(true);
+
+    try {
+      if(id){
         const taskDetails = await getTaskDetailsById(id);
         setTaskDetail(taskDetails);
-      })();
+      }
+    } catch (error) {
+      setError(true);
+    }finally{
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
+    handleGetTaskDetail()
   }, []);
 
   return (
     <>
-      {loadingGetTaskDetail && <Spinner />}
-      {!loadingGetTaskDetail && !errorGetTaskDetail && (
+      {loading && <Spinner />}
+      {!loading && !error && (
         <div className="text-xl space-y-10 mt-5">
           <div className="shadow p-5">
             <h2 className="font-bold text-3xl text-center">
@@ -95,21 +103,21 @@ export default function InfoTareaLote() {
 
                   {taskDetail.closures?.length > 0 && (
                     <table className="table mt-5">
-                      <thead className="bg-gray-400">
-                        <tr className="text-xs md:text-sm rounded">
-                          <th scope="col" className="table-header">
+                      <thead>
+                        <tr className="thead-tr">
+                          <th scope="col" className="thead-th">
                             Fecha de Cierre Parcial
                           </th>
-                          <th scope="col" className="table-header">
+                          <th scope="col" className="thead-th">
                             Fecha de Reapertura
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="table-body">
+                      <tbody>
                         {taskDetail.closures.map((closure,index) => (
-                          <tr key={index}>
-                            <td className="record">{closure.start_date}</td>
-                            <td className="record">{closure.end_date}</td>
+                          <tr className="tbody-tr" key={index}>
+                            <td className="tbody-td">{closure.start_date}</td>
+                            <td className="tbody-td">{closure.end_date}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -127,26 +135,26 @@ export default function InfoTareaLote() {
 
             <div className="mt-5">
               <table className="table">
-                <thead className="bg-gray-400">
-                  <tr className="text-xs md:text-sm rounded">
-                    <th scope="col" className="table-header">
+                <thead>
+                  <tr className="thead-tr">
+                    <th scope="col" className="thead-th">
                       Codigo
                     </th>
-                    <th scope="col" className="table-header">
+                    <th scope="col" className="thead-th">
                       Nombre de Usuario
                     </th>
-                    <th scope="col" className="table-header">
+                    <th scope="col" className="thead-th">
                       Acción
                     </th>
                   </tr>
                 </thead>
-                <tbody className="table-body">
+                <tbody>
                   {taskDetail.employees?.map((employee) => (
-                    <tr className="text-xl" key={employee.code}>
-                      <td className="record">
+                    <tr className="tbody-tr" key={employee.code}>
+                      <td className="tbody-td">
                         <p>{employee.code}</p>
                       </td>
-                      <td className="record">
+                      <td className="tbody-td">
                         <p>{employee.name}</p>
                       </td>
                       <td>

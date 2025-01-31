@@ -1,14 +1,14 @@
 import { StateCreator } from 'zustand';
 import clienteAxios from '../config/axios';
-import { Crops, PlantationsSchema, Recipes } from '../utils/plantation-schema';
-import { Crop, DraftCDP, Plantation, Plantations, Recipe } from '../types';
+import { Crops, PlantationsPaginateSchema,PlantationsSchema, Recipes } from '../utils/plantation-schema';
+import { Crop, DraftCDP, Plantation, PlantationsPaginate, Recipe } from '../types';
 
 export type ControlPlantationSliceType = {
     errorsCreateCDP: string[]
 
     fetchCrops: () => Promise<Crop[]>;
     fetchRecipes: () => Promise<Recipe[]>;
-    fetchControlPlantationsPaginate: (page: number) => Promise<Plantations>;
+    fetchControlPlantationsPaginate: (page: number) => Promise<PlantationsPaginate>;
     fetchControlPlantations: () => Promise<Plantation[]>
     createControlPlantation: (cdp : DraftCDP) => Promise<void>;
 }
@@ -20,7 +20,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
         const url = `/api/cdps?page=${page}`;
         try {
             const { data } = await clienteAxios(url);
-            const result = PlantationsSchema.safeParse(data);
+            const result = PlantationsPaginateSchema.safeParse(data);
             if (result.success) {
                 return result.data
             }else{
@@ -32,8 +32,8 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
     },
 
     fetchControlPlantations: async () => {
-        const url = `/api/cdps`;
         try {
+            const url = `/api/cdps-list/all`;
             const { data } = await clienteAxios(url);
             const result = PlantationsSchema.safeParse(data);
             if (result.success) {

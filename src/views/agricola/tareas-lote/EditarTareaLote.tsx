@@ -1,9 +1,9 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "../../../components/Spinner";
 import { useForm } from "react-hook-form";
-import { DraftTaskWeeklyPlan } from "../../../types";
+import { DraftTaskWeeklyPlan, Plantation, TaskWeeklyPlan, WeeklyPlan } from "../../../types";
 import Error from "../../../components/Error";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
@@ -12,18 +12,24 @@ export default function EditarTareaLote() {
   const { id } = useParams();
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
+
+  const [loadingGetPlans, setLoadingGetPlans] = useState<boolean>(false);
+  const [loadingGetTask, setLoadingGetTask] = useState<boolean>(false);
+  const [loadingEditTask, setLoadingEditTask] = useState<boolean>(false);
+
+  const [errorGetTask, setErrorGetTask] = useState<boolean>(false);
+  const [errorGetPlans, setErrorGetPlans] = useState<boolean>(false);
+
+  const [plans, setPlans] = useState<WeeklyPlan[]>({} as WeeklyPlan[]);
+  const [task, setTask] = useState<TaskWeeklyPlan>({} as TaskWeeklyPlan);
+  // const [error]
+
   const getTask = useAppStore((state) => state.getTask);
-  const loadingGetTask = useAppStore((state) => state.loadingGetTask);
-  const errorGetTask = useAppStore((state) => state.errorGetTask);
   const getAllPlans = useAppStore((state) => state.getAllPlans);
-  const loadingEditTask = useAppStore((state) => state.loadingEditTask);
   const userRole = useAppStore((state) => state.userRole);
-  const loadinggetAllPlans = useAppStore((state) => state.loadinggetAllPlans);
-  const errorgetAllPlans = useAppStore((state) => state.errorgetAllPlans);
   const navigate = useNavigate();
   const editTask = useAppStore((state) => state.editTask);
-  const plans = useAppStore((state) => state.weeklyPlans);
-  const task = useAppStore((state) => state.task);
+
 
   const {
     register,
@@ -32,13 +38,37 @@ export default function EditarTareaLote() {
     setValue,
   } = useForm<DraftTaskWeeklyPlan>();
 
-  useEffect(() => {
-    if (id) {
-      (async () => {
-        await getTask(id);
-      })();
+  const handleGetPlans = async () => {
+    setLoadingGetPlans(true)
+    try {
+      const plans = await getAllPlans();
+      setPlans(plans)
+    } catch (error) {
+      setErrorGetPlans(true);
+      toast.error("Hubo un error al cargar los planes, intentelo de nuevo más tarde");
+    } finally {
+      setLoadingGetPlans(false);
     }
-    getAllPlans();
+  }
+
+  const handleGetTask = async () => {
+    setLoadingGetTask(true);
+    try {
+      if (id) {
+        const task = await getTask(id);
+        setTask(task);
+      }
+    } catch (error) {
+      setErrorGetTask(true);
+      toast.error("Hubo un error al cargar los planes, intentelo de nuevo más tarde");
+    } finally {
+      setLoadingGetTask(false);
+    }
+  }
+
+  useEffect(() => {
+    handleGetPlans();
+    handleGetTask();
   }, []);
 
   useEffect(() => {
@@ -54,12 +84,19 @@ export default function EditarTareaLote() {
   }, [task]);
 
   const editTaskForm = (data: DraftTaskWeeklyPlan) => {
-    if (id) {
-      editTask(data, id).then(() => {
+    setLoadingEditTask(true);
+    try {
+      if (id) {
+        editTask(data, id)
         navigate(previousUrl);
         toast.success("Tarea Editada Correctamente");
-      });
+      }
+    } catch (error) {
+      toast.error('Hubo un error al editar la tarea');
+    } finally {
+      setLoadingEditTask(false);
     }
+
   };
   return (
     <>
@@ -106,8 +143,8 @@ export default function EditarTareaLote() {
             {errors.hours && <Error>{errors.hours?.message?.toString()}</Error>}
           </div>
 
-          {loadinggetAllPlans && <Spinner />}
-          {!loadinggetAllPlans && !errorgetAllPlans && (
+          {loadingGetPlans && <Spinner />}
+          {(!loadingGetPlans && !errorGetPlans && plans.length > 0) && (
             <div className="flex flex-col gap-2">
               <label
                 className="text-lg font-bold uppercase"

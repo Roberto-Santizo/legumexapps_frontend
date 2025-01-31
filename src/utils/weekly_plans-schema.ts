@@ -41,10 +41,15 @@ export const SummaryWeeklyPlan = z.object({
 
 });
 
-export const WeeklyPlansSchema = z.object({
+export const WeeklyPlansPaginateSchema = z.object({
     data: z.array(WeeklyPlan),
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
     })
 });
+
+export const WeeklyPlansSchema = z.object({
+    data: z.array(WeeklyPlan),
+});
+

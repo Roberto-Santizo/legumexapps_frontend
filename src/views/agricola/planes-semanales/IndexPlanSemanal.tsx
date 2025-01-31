@@ -17,7 +17,7 @@ export default function IndexPlanSemanal() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const getAllPlans = useAppStore((state) => state.getAllPlans);
+  const getAllPlans = useAppStore((state) => state.getAllPlansPagination);
 
   const handleGetPlans = async (page: number) => {
     setLoading(true);
