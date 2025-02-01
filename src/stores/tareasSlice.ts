@@ -28,10 +28,10 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             if (result.success) {
                 return result.data;
             }else{
-                return {data: [], meta: { last_page: 0, current_page: 0 }};
+                throw new Error('Hubo un error al trear las tareas');
             }
         } catch (error : any) {
-            return {data: [], meta: { last_page: 0, current_page: 0 }};
+            throw error;
         }
     },
 

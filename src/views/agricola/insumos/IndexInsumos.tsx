@@ -50,6 +50,14 @@ export default function IndexInsumos() {
           <PlusIcon className="w-8" />
           <p>Crear Insumo</p>
         </Link>
+
+        <Link
+          to="/insumos/carga-masiva"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+        >
+          <PlusIcon className="w-8" />
+          <p>Carga Masiva de Insumos</p>
+        </Link>
       </div>
 
 

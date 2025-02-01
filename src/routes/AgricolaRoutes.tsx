@@ -4,10 +4,11 @@ import Layout from "../layouts/Layout";
 import Spinner from "../components/Spinner";
 import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
+
 //INSUMOS
 const IndexInsumos = lazy(() => import("../views/agricola/insumos/IndexInsumos")) ;
 const CrearInsumo = lazy(() => import("../views/agricola/insumos/CrearInsumo"));
-
+const CargaMasivaInsumos = lazy(() => import( "../views/agricola/insumos/CargaMasivaInsumos"));
 
 //PLANES SEMANALES
 const IndexPlanSemanal = lazy(() => import("../views/agricola/planes-semanales/IndexPlanSemanal"));
@@ -319,6 +320,19 @@ export default function AgricolaRoutes() {
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes>
                 <CrearInsumo />
+              </ProtectedAgricolaRoutes>
+            </Suspense>
+          }
+        />
+      </Route>
+
+      <Route element={<Layout />}>
+        <Route
+          path="/insumos/carga-masiva"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ProtectedAgricolaRoutes>
+                <CargaMasivaInsumos />
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
