@@ -11,6 +11,7 @@ import { EditTaskWeeklySchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchem
 import { EmployeeSchema } from '../utils/employee-schema';
 import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema';
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema";
+import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema';
 
 
 //PERMISOS
@@ -81,6 +82,11 @@ export type TasksCropWeeklyPlan = z.infer<typeof TasksCropWeeklyPlanSchema>
 export type TaskCropIncomplete = z.infer<typeof TaskCropIncompleteSchema>
 export type TaskCropWeeklyPlan = z.infer<typeof TaskCropWeeklyPlanSchema>
 export type TaskCropWeeklyPlanDetail = z.infer<typeof TaskCropWeeklyPlanDetailSchema>
+
+//INSUMOS
+export type Insumo = z.infer<typeof InsumoSchema>
+export type DraftInsumo = Omit<Insumo,'id'>
+export type Insumos = z.infer<typeof InsumosSchema>
 
 //EMPLEADOS
 export type Employee = z.infer<typeof EmployeeSchema>;
