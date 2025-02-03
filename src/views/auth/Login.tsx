@@ -1,30 +1,37 @@
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Button, Box } from "@mui/material";
 import { useAppStore } from "../../stores/useAppStore";
-import { AuthUser } from "../../types";
+import { LoginUser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import Error from "../../components/Error";
 import Spinner from "../../components/Spinner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function Login() {
-  const { handleSubmit, control } = useForm<AuthUser>();
+  const { handleSubmit, control } = useForm<LoginUser>();
+  const [loading, setLoading] = useState<boolean>(false);
   const login = useAppStore((state) => state.login);
-  const loadingAuth = useAppStore((state) => state.loadingAuth);
   const logedIn = useAppStore((state) => state.logedIn);
   const errors = useAppStore((state) => state.Autherrors);
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(logedIn){
+  useEffect(() => {
+    if (logedIn) {
       navigate('/dashboard');
     }
-  },[])
-  const createUser = async (data: AuthUser) => {
-    await login(data).then(() => {
+  }, [])
+  const handleLogin = async (data: LoginUser) => {
+    setLoading(true);
+    try {
+      await login(data);
       navigate("/dashboard");
       window.location.reload();
-    });
+    } catch (error) {
+      toast.error('Hubo un error con el inicio de sesión, vuelva a intentarlo más tarde');
+    }finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,7 +49,7 @@ function Login() {
         Iniciar Sesión
       </h2>
 
-      <form onSubmit={handleSubmit(createUser)}>
+      <form onSubmit={handleSubmit(handleLogin)}>
         {errors &&
           errors.map((error, index) => <Error key={index}>{error}</Error>)}
 
@@ -95,7 +102,7 @@ function Login() {
 
         {/* Botón de Inicio de Sesión */}
         <Button
-          disabled={loadingAuth}
+          disabled={loading}
           type="submit"
           variant="contained"
           fullWidth
@@ -106,7 +113,7 @@ function Login() {
             "&:hover": { backgroundColor: "#1565C0" },
           }}
         >
-          {loadingAuth ? <Spinner /> : "Iniciar Sesión"}
+          {loading ? <Spinner /> : "Iniciar Sesión"}
         </Button>
       </form>
     </Box>

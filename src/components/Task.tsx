@@ -36,6 +36,8 @@ export default function Task({ task, setTasks }: TaskProps) {
   const cleanTask = useAppStore((state) => state.cleanTask);
   const getTasks = useAppStore((state) => state.getTasks);
   const deteleteTask = useAppStore((state) => state.deteleteTask);
+  const openModalAction = useAppStore((state) => state.openModalAction);
+
 
   const navigate = useNavigate();
   const userRole = useAppStore((state) => state.userRole);
@@ -73,19 +75,24 @@ export default function Task({ task, setTasks }: TaskProps) {
   }
 
   const handleCloseTask = async (idTask: TaskWeeklyPlan["id"]) => {
-    setLoading(true);
-    try {
-      await closeTask(idTask);
-      toast.success("Tarea Cerrada Correctamente");
-      if ((lote_plantation_control_id && weekly_plan_id)) {
-        const tasks = await getTasks(lote_plantation_control_id, weekly_plan_id);
-        setTasks(tasks);
+    if (task.insumos.length > 0) {
+      openModalAction(idTask);
+    } else {
+      setLoading(true);
+      try {
+        await closeTask(idTask);
+        toast.success("Tarea Cerrada Correctamente");
+        if ((lote_plantation_control_id && weekly_plan_id)) {
+          const tasks = await getTasks(lote_plantation_control_id, weekly_plan_id);
+          setTasks(tasks);
+        }
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false)
     }
+
   };
 
   const handleDeleteTask = async (idTask: TaskWeeklyPlan["id"]) => {
@@ -133,7 +140,7 @@ export default function Task({ task, setTasks }: TaskProps) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await cleanTask(idTask); 
+          await cleanTask(idTask);
 
           if (lote_plantation_control_id && weekly_plan_id) {
             const tasks = await getTasks(lote_plantation_control_id, weekly_plan_id);

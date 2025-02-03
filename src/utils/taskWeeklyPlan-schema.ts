@@ -18,6 +18,14 @@ export const TaskWeeklyPlanSchema = z.object({
   end_date: z.union([z.string(), z.null()]),
   start_time: z.union([z.string(), z.null()]),
   end_time: z.union([z.string(), z.null()]),
+  insumos: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      assigned_quantity: z.number(),
+      measure: z.string(),
+    })
+  ),
 });
 
 export const EditTaskWeeklySchema = z.object({

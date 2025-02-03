@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '../utils/users-schema';
+import { AuthUserSchema, DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
 import { TareaSchema, TareasSchema } from '../utils/tareas-schema';
@@ -27,11 +27,12 @@ export type User = z.infer<typeof UserSchema>;
 export type Users = z.infer<typeof UsersSchema>;
 export type DraftUser = z.infer<typeof DraftUserSchema>;
 export type UserDetail = z.infer<typeof UserDetailsSchema>;
+export type AuthUser = z.infer<typeof AuthUserSchema>
 
 // export type UserCollection = z.infer<typeof UserCollectionSchema>;
 
 
-export type AuthUser = {
+export type LoginUser = {
     username: string,
     password: string,
 }

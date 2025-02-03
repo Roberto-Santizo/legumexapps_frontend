@@ -75,10 +75,10 @@ export default function AsignarTareaLote() {
 
   const isValidTask = () => {
     if (task.start_date != null) {
-      return false
+      return true
     }
 
-    return true;
+    return false;
   }
 
   const reduceSlots = (task: TaskWeeklyPlan) => {
@@ -86,7 +86,7 @@ export default function AsignarTareaLote() {
     setTask(updatedTask);
   }
 
-  const addSlots = (task : TaskWeeklyPlan) => {
+  const addSlots = (task: TaskWeeklyPlan) => {
     const updatedTask = { ...task, slots: task.slots + 1 };
     setTask(updatedTask);
   }
@@ -155,7 +155,7 @@ export default function AsignarTareaLote() {
             navigate(previousUrl);
           } catch (error) {
             toast.error("Hubo un error al cerrar la asignación");
-          }finally{
+          } finally {
             setLoadingCloseTask(false);
           }
         }
@@ -179,61 +179,82 @@ export default function AsignarTareaLote() {
       <h1 className="text-4xl font-bold">Asignación de Empleados</h1>
 
       {loadingGetTask && <Spinner />}
-      {!loadingGetTask && (
-        <div className="grid grid-cols-6 mt-10">
-          <div className="col-span-4 space-y-5">
-            <div>
-              <h2 className="font-bold text-2xl">Información de la tarea:</h2>
-              <p className="text-lg">
-                <span className="font-bold">Cupos Dispoibles:</span>{" "}
-                {task.slots}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Tarea:</span> {task.task}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Finca:</span> {task.lote}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Semana:</span> {task.week}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Cupos Minimos:</span>{" "}
-                {task.minimum_slots}
-              </p>
-            </div>
-
-            <div className="mt-10 space-y-2 w-1/2 h-96 overflow-y-auto shadow-lg rounded-md p-5">
-              <h2 className="font-bold text-xl">Empleados Asignados</h2>
-              {assignedEmployees.length === 0 && (
-                <p className="text-lg text-center">
-                  No hay empleados asignados
+      {(!loadingGetTask && task.insumos) && (
+        <div className="flex flex-col md:grid md:grid-cols-6 mt-10">
+          <div className="grid md:grid-cols-2 col-span-4 gap-5">
+            <div className="space-y-5">
+              <div>
+                <h2 className="font-bold text-2xl">Información de la tarea:</h2>
+                <p className="text-lg">
+                  <span className="font-bold">Cupos Dispoibles:</span>{" "}
+                  {task.slots}
                 </p>
-              )}
-              {assignedEmployees.map((employee) => (
-                <div
-                  className="flex gap-2 p-2 justify-between bg-indigo-500 text-white rounded-md font-bold"
-                  key={employee.emp_id}
-                >
-                  <p>{employee.name}</p>
-                  <Trash2Icon
-                    className="hover:text-red-500 cursor-pointer"
-                    onClick={() => handleRemoveEmployee(employee)}
-                  />
-                </div>
-              ))}
+                <p className="text-lg">
+                  <span className="font-bold">Tarea:</span> {task.task}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Finca:</span> {task.lote}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Semana:</span> {task.week}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Cupos Minimos:</span>{" "}
+                  {task.minimum_slots}
+                </p>
+              </div>
+
+              <div>
+                <h2 className="font-bold text-2xl">Insumos Asignados:</h2>
+                <table className="table">
+                  <thead>
+                    <tr className="thead-tr">
+                      <th scope="col" className="thead-th">
+                        Insumo
+                      </th>
+                      <th scope="col" className="thead-th">
+                        Cantidad Asignada
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {task.insumos.map((insumo) => (
+                      <tr className="tbody-tr" key={insumo.id}>
+                        <td className="tbody-td">
+                          <p>{insumo.name} </p>
+                        </td>
+                        <td className="tbody-td">
+                          <p>{insumo.assigned_quantity} {insumo.measure}</p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            <button
-              className={`p-2 rounded mt-5 uppercase font-bold transition-colors w-1/2 ${(assignedEmployees.length === 0 || loadingCloseTask)
-                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                : "bg-indigo-500 text-white hover:bg-indigo-600"
-                }`}
-              onClick={handleCloseAssignment}
-              disabled={assignedEmployees.length === 0 || loadingCloseTask}
-            >
-              {loadingCloseTask ? <Spinner /> : (<p>Cerrar Asignación</p>)}
-            </button>
+            <div>
+              <h2 className="font-bold text-xl">Empleados Asignados</h2>
+              <div className="mt-10 space-y-2 h-96 overflow-y-auto shadow-lg rounded-md p-5">
+                {assignedEmployees.length === 0 && (
+                  <p className="text-lg text-center">
+                    No hay empleados asignados
+                  </p>
+                )}
+                {assignedEmployees.map((employee) => (
+                  <div
+                    className="flex gap-2 p-2 justify-between bg-indigo-500 text-white rounded-md font-bold"
+                    key={employee.emp_id}
+                  >
+                    <p>{employee.name}</p>
+                    <Trash2Icon
+                      className="hover:text-red-500 cursor-pointer"
+                      onClick={() => handleRemoveEmployee(employee)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {loadingGetEmployees && <Spinner />}
@@ -266,6 +287,17 @@ export default function AsignarTareaLote() {
           )}
         </div>
       )}
+
+      <button
+        className={`p-2 rounded mt-5 uppercase font-bold transition-colors w-1/2 mx-auto flex justify-center items-center ${(assignedEmployees.length === 0 || loadingCloseTask)
+          ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+          : "bg-indigo-500 text-white hover:bg-indigo-600"
+          }`}
+        onClick={handleCloseAssignment}
+        disabled={assignedEmployees.length === 0 || loadingCloseTask}
+      >
+        {loadingCloseTask ? <Spinner /> : (<p>Cerrar Asignación</p>)}
+      </button>
     </>
   );
 }

@@ -6,6 +6,9 @@ import { EmployeesSchema } from "../utils/employee-schema";
 
 export type TaskWeeklyPlanSliceType = {
 
+    OpenModalInsumos: boolean;
+    idTask: string
+
     getTasks: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<TasksWeeklyPlan>
     getTask: (id: TaskWeeklyPlan['id']) => Promise<TaskWeeklyPlan>
     getEmployees: (id: TaskWeeklyPlan['finca_id']) => Promise<Employee[]>
@@ -17,10 +20,15 @@ export type TaskWeeklyPlanSliceType = {
     deteleteTask: (id: TaskWeeklyPlan['id']) => Promise<void>
     cleanTask: (id: TaskWeeklyPlan['id']) => Promise<void>
     editTask: (data: DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id']) => Promise<void>
+    openModalAction: (id: TaskWeeklyPlan['id']) => void
+    closeModalAction: () => void
 }
 
 
-export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = () => ({
+export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = (set) => ({
+    OpenModalInsumos: false,
+    tasksWeeklyPlan: {} as TasksWeeklyPlan,
+    idTask: '',
     getTasks: async (id, plan_id) => {
         try {
             const url = `/api/tasks-lotes`;
@@ -147,5 +155,13 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             throw error;
         }
     },
+
+    openModalAction: (id) =>{
+        set({OpenModalInsumos: true, idTask: id});
+    },
+
+    closeModalAction: () => {
+        set({OpenModalInsumos: false,idTask: ''});
+    }
 
 })

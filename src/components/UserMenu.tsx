@@ -1,6 +1,6 @@
 //EXTERNAS
 import { XCircleIcon } from "@heroicons/react/16/solid";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
 
 //HOOK
@@ -16,12 +16,20 @@ type UserMobileProps = {
 
 export default function UserMenu({ setOpen }: UserMobileProps) {
 
+  const [loading,setLoading] = useState<boolean>(false);
   const logout = useAppStore((state) => state.logOut);
   const user = useAppStore((state) => state.AuthUser);
-  const loadingAuth = useAppStore((state) => state.loadingAuth);
 
-  const handleClick = () => {
-    logout().then(() => toast.success("Sesión cerrada correctamente"));
+  const handleClick = async () => {
+    setLoading(true);
+    try {
+      await  logout();
+      toast.success("Sesión cerrada correctamente")
+    } catch (error) {
+      toast.error("Hubo un error al cerrar sesión, intentelo de nuevo más tarde");
+    } finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,7 +65,7 @@ export default function UserMenu({ setOpen }: UserMobileProps) {
           className="bg-blue-500 hover:bg-blue-600 button mt-10"
           onClick={() => handleClick()}
         >
-          {loadingAuth ? <Spinner /> : "Cerrar Sesión"}
+          {loading ? <Spinner /> : "Cerrar Sesión"}
         </button>
       </div>
     </div>

@@ -1,11 +1,10 @@
-import { StateCreator } from "zustand"
-import { AuthUser, User } from "../types"
+import { StateCreator } from "zustand";
+import { AuthUser, LoginUser, User } from "../types";
 import clienteAxios from "../config/axios";
-import { UserSchema } from "../utils/users-schema";
+import { AuthUserSchema, UserSchema } from "../utils/users-schema";
 import { userRoleSchema } from "../utils/roles-schema";
 
 export type AuthSliceType = {
-    loadingAuth: boolean;
     loadingGetUser: boolean;
     loadingGetRole: boolean;
 
@@ -16,10 +15,11 @@ export type AuthSliceType = {
     getUserByTokenError: boolean;
     errorgetRole: boolean;
     
-    AuthUser: User;
+    AuthUser: AuthUser;
+    
     userRole: string;
 
-    login: (user: AuthUser) => Promise<void>;
+    login: (user: LoginUser) => Promise<void>;
     logOut: () => Promise<void>;
     getUserByToken: () => Promise<void>;
     getUserRoleByToken: () => Promise<void>;
@@ -27,7 +27,6 @@ export type AuthSliceType = {
 
 
 export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
-    loadingAuth: false,
     loadingGetUser: false,
     loadingGetRole: false,
 
@@ -42,25 +41,24 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
     login: async (user) => {
         const url = '/api/login';
         try {
-            set({ loadingAuth: true });
             const { data } = await clienteAxios.post(url, user);
             localStorage.setItem('AUTH_TOKEN', data.token);
-            set({ logedIn: true, loadingAuth: false, Autherrors:[] });
+            localStorage.setItem('AUTH_USER', JSON.stringify(data.user));
+            set({ logedIn: true, Autherrors:[]});
             return Promise.resolve(data); 
         } catch (error : any) {
-            set({ Autherrors: Object.values(error.response.data.errors) , loadingAuth: false });
+            set({ Autherrors: Object.values(error.response.data.errors)});
+            throw error;
         }
     },
     logOut: async () => {
-
         try {
-            set({ loadingAuth: true });
             await clienteAxios.post('/api/logout',null);
             localStorage.removeItem('AUTH_TOKEN');
             localStorage.removeItem('AUTH_USER');
-            set({ logedIn: false, loadingAuth: false });
+            set({ logedIn: false});
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
     getUserByToken: async () => { 
@@ -69,7 +67,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
             const url = '/api/user';
             const { data } = await clienteAxios(url);
 
-            const result = UserSchema.safeParse(data.data);
+            const result = AuthUserSchema.safeParse(data.data);
             if(result.success){
                 set({ AuthUser: result.data, loadingGetUser: false });
             }
