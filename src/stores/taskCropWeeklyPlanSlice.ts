@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
-import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
+import { DraftTaskCropWeeklyPlan, Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
 import { TasksCropIncompleteSchema, TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema } from "../utils/taskCropWeeklyPlan-schema";
 
 export type TaskCropWeeklyPlanSliceType = {
@@ -9,6 +9,7 @@ export type TaskCropWeeklyPlanSliceType = {
     loadingReloadTasks:boolean;
     modalTomaLibras: boolean;
 
+    createTaskCropWeeklyPlan: (data : DraftTaskCropWeeklyPlan) => Promise<void>
     getTasksCrop: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     getTaskCrop: (id: TaskCropWeeklyPlan['id']) => Promise<TaskCropWeeklyPlan>
     getCropEmployees: (id: TaskCropWeeklyPlan['finca_id']) => Promise<EmployeesCrop>
@@ -30,6 +31,14 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
 
     loadingReloadTasks: false,
 
+    createTaskCropWeeklyPlan: async (data) => {
+        try {
+            const url = '/api/tasks-crops-lotes';
+            await clienteAxios.post(url,data);
+        } catch (error) {
+            throw error;
+        }
+    },
     getTasksCrop: async (lote_plantation_control_id, weekly_plan_id) => {
         set({loadingReloadTasks: true});
         try {

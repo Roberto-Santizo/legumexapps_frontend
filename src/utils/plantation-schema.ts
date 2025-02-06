@@ -14,6 +14,15 @@ export const Plantation = z.object({
 
 });
 
+export const CDPSchema = z.object({
+    id: z.string(),
+    cdp: z.string()
+});
+
+export const CDPsSchema = z.object({
+    data: z.array(CDPSchema)
+});
+
 export const DraftCDP = z.object({
     crop_id: z.string(),
     id: z.string(),

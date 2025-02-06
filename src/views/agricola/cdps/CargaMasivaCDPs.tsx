@@ -1,19 +1,18 @@
-import { useCallback, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
-import { useNavigate } from "react-router-dom";
-import { useDropzone } from "react-dropzone";
-import { toast } from "react-toastify";
-import Error from "../../../components/Error";
 import { Button } from "@mui/material";
+import { useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Spinner from "../../../components/Spinner";
+import { useAppStore } from "../../../stores/useAppStore";
+import Error from "../../../components/Error";
 
-export default function CargaMasivaTareas() {
+export default function CargaMasivaCDPs() {
   const [file, setFile] = useState<File[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
-  const errorsTareas = useAppStore((state) => state.errorsTareas);
-  const uploadTareas = useAppStore((state) => state.uploadTareas);
+  const errorsCreateCDP = useAppStore((state) => state.errorsCreateCDP);
+  const uploadCDPS = useAppStore((state) => state.uploadCDPS);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -28,10 +27,10 @@ export default function CargaMasivaTareas() {
     setLoading(true);
     setError(false);
     try {
-      if(file){
-        await uploadTareas(file);
-        navigate("/tareas");
-        toast.success("Tareas Creadas Correctamente");
+      if (file) {
+        await uploadCDPS(file);
+        navigate("/cdps");
+        toast.success("CDPS creados correctamente");
       }
     } catch (error) {
       setError(true);
@@ -44,12 +43,11 @@ export default function CargaMasivaTareas() {
     e.preventDefault();
     handleUploadFile();
   };
-
   return (
     <>
-      <h2 className="font-bold text-4xl">Carga Masiva de Tareas</h2>
+      <h2 className="font-bold text-4xl">Carga Masiva de CDPS</h2>
       <form className="w-1/2 mx-auto mt-5" onSubmit={handleSubmit}>
-        {error && <Error>{errorsTareas}</Error>}
+        {error && <Error>{errorsCreateCDP}</Error>}
         <div
           className="mt-5"
           {...getRootProps()}
@@ -88,7 +86,7 @@ export default function CargaMasivaTareas() {
           {loading ? (
             <Spinner />
           ) : (
-            <p className="font-bold text-lg">Crear Tareas</p>
+            <p className="font-bold text-lg">Crear CDPS</p>
           )}
         </Button>
       </form>

@@ -6,6 +6,7 @@ import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { Plantation } from "../../../types";
 import Pagination from "../../../components/Pagination";
+import { toast } from "react-toastify";
 
 export default function IndexCdps() {
   const [cdps, setCdps] = useState<Plantation[]>([]);
@@ -13,6 +14,21 @@ export default function IndexCdps() {
   const [error, setError] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [role, setRole] = useState<string>("");
+  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
+
+  const handleGetUserRole = async () => {
+    setLoading(true);
+    try {
+      const role = await getUserRoleByToken();
+      setRole(role);
+    } catch (error) {
+      toast.error("Error al cargar el contenido");
+      setError(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchControlPlantations = useAppStore(
     (state) => state.fetchControlPlantationsPaginate
@@ -38,21 +54,31 @@ export default function IndexCdps() {
 
   useEffect(() => {
     handleGetCDPS(currentPage);
+    handleGetUserRole();
   }, [currentPage]);
 
   return (
     <>
       <h2 className="font-bold text-4xl">Control de Plantaciones</h2>
 
-      <div className="flex flex-row justify-end gap-5">
-        <Link
-          to="/cdps/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-        >
-          <PlusIcon className="w-8" />
-          <p>Crear CDP</p>
-        </Link>
-      </div>
+      {(role === "admin" || role === "adminagricola") && (
+        <div className="flex flex-row justify-end gap-5">
+          <Link
+            to="/cdps/crear"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          >
+            <PlusIcon className="w-8" />
+            <p>Crear CDP</p>
+          </Link>
+
+          <Link
+            to="/cdps/carga-masiva"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          >
+            <p>Carga Masiva</p>
+          </Link>
+        </div>
+      )}
 
       {loading && <Spinner />}
       {!loading && error && <ShowErrorAPI />}
@@ -90,9 +116,11 @@ export default function IndexCdps() {
               <th scope="col" className="thead-th">
                 Estado
               </th>
-              <th scope="col" className="thead-th">
-                Acción
-              </th>
+              {role === "admin" && (
+                <th scope="col" className="thead-th">
+                  Acción
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -138,14 +166,16 @@ export default function IndexCdps() {
                     {cdp.status ? "CERRADO" : "ACTIVO"}
                   </p>
                 </td>
-                <td className="tbody-td flex gap-2">
-                  <Link
-                    to={`/cdps/edit/${cdp.id}`}
-                    className="hover:text-gray-400"
-                  >
-                    <Edit />
-                  </Link>
-                </td>
+                {role === "admin" && (
+                  <td className="tbody-td flex gap-2">
+                    <Link
+                      to={`/cdps/edit/${cdp.id}`}
+                      className="hover:text-gray-400"
+                    >
+                      <Edit />
+                    </Link>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

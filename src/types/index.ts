@@ -2,16 +2,17 @@ import { z } from 'zod';
 import { AuthUserSchema, DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '../utils/users-schema';
 import { Role } from '../utils/roles-schema';
 import { Permission } from '../utils/permissions-schema';
-import { TareaSchema, TareasSchema } from '../utils/tareas-schema';
-import { Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchema, Recipe } from '../utils/plantation-schema';
-import { DraftLote, Lote, LotesSchema } from '../utils/lotes-schema';
+import { TareaSchema, TareasPaginateSchema } from '../utils/tareas-schema';
+import { CDPSchema, Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchema, Recipe } from '../utils/plantation-schema';
+import { DraftLote, LoteSchema, LotesPaginateSchema } from '../utils/lotes-schema';
 import { Finca } from '../utils/fincas-schema';
-import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansSchema } from '../utils/weekly_plans-schema';
-import { EditTaskWeeklySchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
+import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '../utils/weekly_plans-schema';
+import { DraftTaskWeeklyPlan, EditTaskWeeklySchema, TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
 import { EmployeeSchema } from '../utils/employee-schema';
-import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema';
+import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema';
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema";
 import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema';
+import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema';
 
 
 //PERMISOS
@@ -39,8 +40,10 @@ export type LoginUser = {
 
 //TAREAS
 export type Tarea = z.infer<typeof TareaSchema>
-export type Tareas = z.infer<typeof TareasSchema>
+export type TareasPaginate = z.infer<typeof TareasPaginateSchema>
 
+//TAREA COSECHA
+export type TaskCrop = z.infer<typeof TaskCropSchema >
 
 export type DraftTarea = Omit<Tarea, 'id' >
 
@@ -51,6 +54,7 @@ export type Crop = z.infer<typeof Crop>
 export type Recipe = z.infer<typeof Recipe >;
 
 export type Plantation = z.infer<typeof Plantation>;
+export type CDP = z.infer<typeof CDPSchema>
 export type Plantations = z.infer<typeof PlantationsSchema>
 export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>;
 
@@ -59,8 +63,9 @@ export type DraftCDP = z.infer<typeof DraftCDP>;
 
 
 //LOTES
-export type Lote = z.infer<typeof Lote >
-export type Lotes = z.infer<typeof LotesSchema>
+export type Lote = z.infer<typeof LoteSchema>
+export type Lotes = z.infer<typeof LotesPaginateSchema>
+export type loteCDPDetails = z.infer<typeof LoteCDPDetailsSchema>
 
 export type DraftLote = z.infer<typeof DraftLote>
 
@@ -70,11 +75,13 @@ export type Finca = z.infer<typeof Finca >
 //PLANES
 export type WeeklyPlan = z.infer<typeof WeeklyPlan>
 export type WeeklyPlans = z.infer<typeof WeeklyPlansSchema>
+export type WeeklyPlansPaginate = z.infer<typeof WeeklyPlansPaginateSchema>
 export type SummaryWeeklyPlanType = z.infer<typeof SummaryWeeklyPlan>
 
 //TAREA LOTE
 export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>
 export type DraftTaskWeeklyPlan = z.infer<typeof EditTaskWeeklySchema>
+export type DraftCreateTaskWeeklyPlan = z.infer<typeof DraftTaskWeeklyPlan>
 export type TasksWeeklyPlan = z.infer<typeof TasksWeeklyPlanSchema>
 export type TaskWeeklyPlanDetails = z.infer<typeof TaskWeeklyPlanDetailsSchema>
 
@@ -83,11 +90,14 @@ export type TasksCropWeeklyPlan = z.infer<typeof TasksCropWeeklyPlanSchema>
 export type TaskCropIncomplete = z.infer<typeof TaskCropIncompleteSchema>
 export type TaskCropWeeklyPlan = z.infer<typeof TaskCropWeeklyPlanSchema>
 export type TaskCropWeeklyPlanDetail = z.infer<typeof TaskCropWeeklyPlanDetailSchema>
+export type DraftTaskCropWeeklyPlan = z.infer<typeof DraftTaskCropWeeklyPlanSchema>
 
 //INSUMOS
 export type Insumo = z.infer<typeof InsumoSchema>
 export type DraftInsumo = Omit<Insumo,'id'>
 export type Insumos = z.infer<typeof InsumosSchema>
+
+export type TaskInsumo = z.infer<typeof TaskInsumoSchema>;
 
 //EMPLEADOS
 export type Employee = z.infer<typeof EmployeeSchema>;

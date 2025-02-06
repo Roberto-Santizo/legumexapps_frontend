@@ -12,7 +12,8 @@ export const WeeklyPlan = z.object({
     used_total_budget_ext: z.number(),
     total_tasks: z.number(),
     finished_total_tasks: z.number(),
-    tasks_crop: z.string()
+    total_tasks_crop: z.number(),
+    finished_total_tasks_crops: z.number()
 
 });
 

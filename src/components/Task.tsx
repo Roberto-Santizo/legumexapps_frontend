@@ -9,7 +9,7 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { useAppStore } from "../stores/useAppStore";
-import { TasksWeeklyPlan, TaskWeeklyPlan } from "../types";
+import { TaskWeeklyPlan } from "../types";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,16 +21,17 @@ import ShowErrorAPI from "./ShowErrorAPI";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
-  setTasks: React.Dispatch<React.SetStateAction<TasksWeeklyPlan>>
+  role: string;
 };
 
-export default function Task({ task, setTasks }: TaskProps) {
+export default function Task({ task, role }: TaskProps) {
   const { lote_plantation_control_id, weekly_plan_id } = useParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-
-  const createPartialClosure = useAppStore((state) => state.createPartialClosure);
+  const createPartialClosure = useAppStore(
+    (state) => state.createPartialClosure
+  );
   const closePartialClosure = useAppStore((state) => state.closePartialClosure);
   const closeTask = useAppStore((state) => state.closeTask);
   const cleanTask = useAppStore((state) => state.cleanTask);
@@ -38,17 +39,17 @@ export default function Task({ task, setTasks }: TaskProps) {
   const deteleteTask = useAppStore((state) => state.deteleteTask);
   const openModalAction = useAppStore((state) => state.openModalAction);
 
-
   const navigate = useNavigate();
-  const userRole = useAppStore((state) => state.userRole);
+ 
 
-  const handleClickCreatePartialClosure = async (idTask: TaskWeeklyPlan["id"]) => {
+  const handleClickCreatePartialClosure = async (
+    idTask: TaskWeeklyPlan["id"]
+  ) => {
     setLoading(true);
     try {
       await createPartialClosure(idTask);
-      if ((lote_plantation_control_id && weekly_plan_id)) {
-        const tasks = await getTasks(lote_plantation_control_id, weekly_plan_id);
-        setTasks(tasks);
+      if (lote_plantation_control_id && weekly_plan_id) {
+        await getTasks(lote_plantation_control_id, weekly_plan_id);
       }
       toast.success("Tarea cerrada parcialmente");
     } catch (error) {
@@ -58,13 +59,14 @@ export default function Task({ task, setTasks }: TaskProps) {
     }
   };
 
-  const handleClickClosePartialClosure = async (idTask: TaskWeeklyPlan["id"]) => {
+  const handleClickClosePartialClosure = async (
+    idTask: TaskWeeklyPlan["id"]
+  ) => {
     setLoading(true);
     try {
       await closePartialClosure(idTask);
-      if ((lote_plantation_control_id && weekly_plan_id)) {
-        const tasks = await getTasks(lote_plantation_control_id, weekly_plan_id);
-        setTasks(tasks);
+      if (lote_plantation_control_id && weekly_plan_id) {
+        await getTasks(lote_plantation_control_id, weekly_plan_id);
       }
       toast.success("Tarea reabierta");
     } catch (error) {
@@ -72,7 +74,7 @@ export default function Task({ task, setTasks }: TaskProps) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleCloseTask = async (idTask: TaskWeeklyPlan["id"]) => {
     if (task.insumos.length > 0) {
@@ -82,17 +84,15 @@ export default function Task({ task, setTasks }: TaskProps) {
       try {
         await closeTask(idTask);
         toast.success("Tarea Cerrada Correctamente");
-        if ((lote_plantation_control_id && weekly_plan_id)) {
-          const tasks = await getTasks(lote_plantation_control_id, weekly_plan_id);
-          setTasks(tasks);
+        if (lote_plantation_control_id && weekly_plan_id) {
+          await getTasks(lote_plantation_control_id, weekly_plan_id);
         }
       } catch (error) {
         setError(true);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-
   };
 
   const handleDeleteTask = async (idTask: TaskWeeklyPlan["id"]) => {
@@ -137,24 +137,25 @@ export default function Task({ task, setTasks }: TaskProps) {
       cancelButtonColor: "#d33",
       cancelButtonText: "Cancelar",
       confirmButtonText: "Limpiar Tarea",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await cleanTask(idTask);
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await cleanTask(idTask);
 
-          if (lote_plantation_control_id && weekly_plan_id) {
-            const tasks = await getTasks(lote_plantation_control_id, weekly_plan_id);
-            setTasks(tasks);
+            if (lote_plantation_control_id && weekly_plan_id) {
+              await getTasks(lote_plantation_control_id, weekly_plan_id);
+            }
+
+            toast.success("Asignación Eliminada Correctamente");
+          } catch (error) {
+            toast.error("Hubo un error al cerrar la asignación");
           }
-
-          toast.success("Asignación Eliminada Correctamente");
-        } catch (error) {
-          toast.error("Hubo un error al cerrar la asignación");
         }
-      }
-    }).finally(() => {
-      setLoading(false);
-    });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -202,7 +203,7 @@ export default function Task({ task, setTasks }: TaskProps) {
                     )
                   }
                 />
-                {(userRole === "admin" || userRole === "adminagricola") && (
+                {(role === "admin" || role === "adminagricola") && (
                   <TrashIcon
                     className="cursor-pointer hover:text-red-400"
                     onClick={() => handleDeleteTask(task.id)}
@@ -235,7 +236,7 @@ export default function Task({ task, setTasks }: TaskProps) {
                   onClick={() => handleClickCreatePartialClosure(task.id)}
                 />
 
-                {(userRole === "admin" || userRole === "adminagricola") && (
+                {(role === "admin" || role === "adminagricola") && (
                   <Eraser
                     className="cursor-pointer text-red-500 hover:text-red-800"
                     onClick={() => handleEraseTask(task.id)}
@@ -264,7 +265,7 @@ export default function Task({ task, setTasks }: TaskProps) {
               </>
             )}
 
-            {(userRole === "admin" || userRole === "adminagricola") && (
+            {(role === "admin" || role === "adminagricola") && (
               <Edit
                 className="cursor-pointer hover:text-gray-400"
                 onClick={() => {

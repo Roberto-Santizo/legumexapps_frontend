@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import { AuthUser, LoginUser, User } from "../types";
 import clienteAxios from "../config/axios";
-import { AuthUserSchema, UserSchema } from "../utils/users-schema";
+import { AuthUserSchema } from "../utils/users-schema";
 import { userRoleSchema } from "../utils/roles-schema";
 
 export type AuthSliceType = {
@@ -22,7 +22,7 @@ export type AuthSliceType = {
     login: (user: LoginUser) => Promise<void>;
     logOut: () => Promise<void>;
     getUserByToken: () => Promise<void>;
-    getUserRoleByToken: () => Promise<void>;
+    getUserRoleByToken: () => Promise<string>;
 }
 
 
@@ -77,17 +77,17 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
         }
     },
     getUserRoleByToken: async () => {
-        set({loadingGetRole: true, userRole: ''});
         try {
             const url = '/api/roles/user';
             const { data } = await clienteAxios(url);
 
             const result = userRoleSchema.safeParse(data);
             if(result.success){
-                set({ userRole: result.data.name, loadingGetRole: false });
+                return result.data.name
+            }else{
+                throw new Error("Información no válida");
             }
         } catch (error) {
-            set({ loadingGetRole: false, errorgetRole: true });
             throw error;
         }
     }

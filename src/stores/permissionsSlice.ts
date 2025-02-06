@@ -7,6 +7,7 @@ export type PermissionsSliceType = {
     permissionsErrors: string[],
     fetchPermissions: () => Promise<Permission[]>,
     createPermission: (permisson: DraftPermssion) => Promise<void>
+    getUserPermissionsByToken: () => Promise<Permission[]>;
 }
 
 export const createPermissionsSlice: StateCreator<PermissionsSliceType> = (set) => ({
@@ -33,6 +34,21 @@ export const createPermissionsSlice: StateCreator<PermissionsSliceType> = (set) 
             set({permissionsErrors: [] });
         } catch (error: any) {
             set({permissionsErrors: Object.values(error.response.data.errors) })
+            throw error;
+        }
+    },
+    getUserPermissionsByToken: async () => {
+        try {
+            const url = '/api/permissions/user';
+            const { data } =  await clienteAxios(url);
+            const result = PermissionsSchema.safeParse(data);
+            if(result.success){
+                return result.data.data
+            }else{
+                throw new Error("Información no válida");
+            }
+            
+        } catch (error) {
             throw error;
         }
     }

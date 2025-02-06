@@ -4,13 +4,13 @@ import { Crops, PlantationsPaginateSchema,PlantationsSchema, Recipes } from '../
 import { Crop, DraftCDP, Plantation, PlantationsPaginate, Recipe } from '../types';
 
 export type ControlPlantationSliceType = {
-    errorsCreateCDP: string[]
-
+    errorsCreateCDP: string[];
     fetchCrops: () => Promise<Crop[]>;
     fetchRecipes: () => Promise<Recipe[]>;
     fetchControlPlantationsPaginate: (page: number) => Promise<PlantationsPaginate>;
-    fetchControlPlantations: () => Promise<Plantation[]>
+    fetchControlPlantations: () => Promise<Plantation[]>;
     createControlPlantation: (cdp : DraftCDP) => Promise<void>;
+    uploadCDPS: (file : File[]) => Promise<void>;
 }
 
 export const createControlPlantationSlice: StateCreator<ControlPlantationSliceType> = ((set) => ({
@@ -83,6 +83,19 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
             set({ errorsCreateCDP: []});
         } catch (error: any) {
             set({errorsCreateCDP: Object.values(error.response.data.errors) })
+            throw error;
+        }
+    },
+    uploadCDPS: async (file) => {
+        try {
+            const url = '/api/cdps/upload';
+            const formData = new FormData();
+            formData.append("file", file[0]);
+            await clienteAxios.post(url, formData);
+            set({ errorsCreateCDP: []})
+        } catch (error: any) {
+            console.log(error);
+            set({ errorsCreateCDP: error.response.data.message})
             throw error;
         }
     }

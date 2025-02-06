@@ -1,4 +1,4 @@
-import { PencilIcon, PlusIcon } from "lucide-react";
+import { EyeIcon, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import Spinner from "../../../components/Spinner";
 import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { Lote } from "../../../types";
 import Pagination from "../../../components/Pagination";
+import { toast } from "react-toastify";
 
 export default function IndexLotes() {
   const [lotes, setLotes] = useState<Lote[]>([]);
@@ -13,8 +14,23 @@ export default function IndexLotes() {
   const [error, setError] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const fetchLotes = useAppStore((state) => state.fetchLotes);
+
+  const [role, setRole] = useState<string>("");
+  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
+
+  const handleGetUserRole = async () => {
+    setLoading(true);
+    try {
+      const role = await getUserRoleByToken();
+      setRole(role);
+    } catch (error) {
+      toast.error("Error al cargar el contenido");
+      setError(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGetLotes = async (page: number) => {
     setLoading(true);
@@ -37,21 +53,38 @@ export default function IndexLotes() {
 
   useEffect(() => {
     handleGetLotes(currentPage);
+    handleGetUserRole();
   }, [currentPage]);
 
   return (
     <>
       <h2 className="font-bold text-4xl">Lotes</h2>
 
-      <div className="flex flex-row justify-end gap-5">
-        <Link
-          to="/lotes/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-        >
-          <PlusIcon className="w-8" />
-          <p>Crear Lote</p>
-        </Link>
-      </div>
+      {(role === "admin" || role === "adminagricola") && (
+        <div className="flex flex-row justify-end gap-10 mb-10">
+          <Link
+            to="/lotes/crear"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          >
+            <PlusIcon className="w-8" />
+            <p>Crear Lote</p>
+          </Link>
+
+          <Link
+            to="/lotes/consulta"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          >
+            <p>Consulta de Información de Lote</p>
+          </Link>
+
+          <Link
+            to="/lotes/actualizacion"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          >
+            <p>Actualización masiva de lotes</p>
+          </Link>
+        </div>
+      )}
 
       {loading && <Spinner />}
       {!loading && error && <ShowErrorAPI />}
@@ -72,7 +105,7 @@ export default function IndexLotes() {
                 CDP Activo
               </th>
               <th scope="col" className="thead-th">
-                Acciones
+                Historial de lote
               </th>
             </tr>
           </thead>
@@ -85,7 +118,7 @@ export default function IndexLotes() {
                 <td className="tbody-td">{lote.cdp}</td>
                 <td className="tbody-td">
                   <Link to={`/`}>
-                    <PencilIcon className="w-8 cursor-pointer hover:text-gray-500" />
+                    <EyeIcon className="w-8 cursor-pointer hover:text-gray-500" />
                   </Link>
                 </td>
               </tr>

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const Lote = z.object({
-    id: z.number(),
+export const LoteSchema = z.object({
+    id: z.string(),
     name: z.string(),
     finca: z.string(),
     cdp: z.string()
@@ -13,9 +13,17 @@ export const DraftLote = z.object({
     cdp_id: z.string()
 });
 
+export const LotesSchemaSelect = z.object({
+    data: z.array(LoteSchema)
+});
 
 export const LotesSchema = z.object({
-    data: z.array(Lote),
+    data: z.array(LoteSchema)
+});
+
+
+export const LotesPaginateSchema = z.object({
+    data: z.array(LoteSchema),
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()

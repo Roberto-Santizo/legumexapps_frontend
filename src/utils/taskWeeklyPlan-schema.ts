@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+
+export const TaskInsumoSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  assigned_quantity: z.number(),
+  measure: z.string(),
+  used_quantity: z.union([z.number(), z.null()])
+});
+
+
 export const TaskWeeklyPlanSchema = z.object({
   id: z.string(),
   cdp: z.string(),
@@ -24,6 +34,7 @@ export const TaskWeeklyPlanSchema = z.object({
       name: z.string(),
       assigned_quantity: z.number(),
       measure: z.string(),
+      used_quantity: z.union([z.number(), z.null()])
     })
   ),
 });
@@ -64,6 +75,7 @@ export const TaskWeeklyPlanDetailsSchema = z.object({
       end_date: z.string(),
     })
   ),
+  insumos: z.array(TaskInsumoSchema)
 });
 
 export const TasksWeeklyPlanSchema = z.object({
@@ -71,4 +83,14 @@ export const TasksWeeklyPlanSchema = z.object({
   week: z.number(),
   lote: z.string(),
   data: z.array(TaskWeeklyPlanSchema),
+});
+
+export const DraftTaskWeeklyPlan = z.object({
+  weekly_plan_id: z.string(),
+  lote_id: z.string(),
+  tarea_id: z.string(),
+  workers_quantity: z.string(),
+  budget: z.string(),
+  hours: z.string(),
+  extraordinary: z.string()
 });

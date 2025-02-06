@@ -1,4 +1,4 @@
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { TaskWeeklyPlanDetails } from "../../../types";
@@ -8,7 +8,7 @@ import { Trash } from "lucide-react";
 export default function InfoTareaLote() {
   const { id } = useParams();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error,setError] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const getTaskDetailsById = useAppStore((state) => state.getTaskDetailsById);
 
@@ -20,19 +20,19 @@ export default function InfoTareaLote() {
     setLoading(true);
 
     try {
-      if(id){
+      if (id) {
         const taskDetails = await getTaskDetailsById(id);
         setTaskDetail(taskDetails);
       }
     } catch (error) {
       setError(true);
-    }finally{
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    handleGetTaskDetail()
+    handleGetTaskDetail();
   }, []);
 
   return (
@@ -45,7 +45,7 @@ export default function InfoTareaLote() {
               Información de la tarea
             </h2>
 
-            <div className="grid grid-cols-2 gap-2 justify-between mt-5">
+            <div className="grid md:grid-cols-2 gap-2 justify-between mt-5">
               <div className="grid grid-cols-2 gap-2">
                 <p className="p-5 shadow bg-gray-200">
                   <span className="font-bold">Nombre de la Tarea: </span>
@@ -114,7 +114,7 @@ export default function InfoTareaLote() {
                         </tr>
                       </thead>
                       <tbody>
-                        {taskDetail.closures.map((closure,index) => (
+                        {taskDetail.closures.map((closure, index) => (
                           <tr className="tbody-tr" key={index}>
                             <td className="tbody-td">{closure.start_date}</td>
                             <td className="tbody-td">{closure.end_date}</td>
@@ -128,44 +128,83 @@ export default function InfoTareaLote() {
             </div>
           </div>
 
-          <div className="shadow p-5">
-            <h2 className="font-bold text-3xl text-center">
-              Empleados Asignados
-            </h2>
+          {(taskDetail.insumos && taskDetail.employees) && (
+            <div className="grid md:grid-cols-2">
+              <div className="shadow p-5">
+                <h2 className="font-bold text-3xl text-center">
+                  Información de insumos
+                </h2>
 
-            <div className="mt-5">
-              <table className="table">
-                <thead>
-                  <tr className="thead-tr">
-                    <th scope="col" className="thead-th">
-                      Codigo
-                    </th>
-                    <th scope="col" className="thead-th">
-                      Nombre de Usuario
-                    </th>
-                    <th scope="col" className="thead-th">
-                      Acción
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {taskDetail.employees?.map((employee) => (
-                    <tr className="tbody-tr" key={employee.code}>
-                      <td className="tbody-td">
-                        <p>{employee.code}</p>
-                      </td>
-                      <td className="tbody-td">
-                        <p>{employee.name}</p>
-                      </td>
-                      <td>
-                        <Trash />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                <div className="mt-5">
+                  <table className="table">
+                    <thead>
+                      <tr className="thead-tr">
+                        <th scope="col" className="thead-th">
+                          Insumo
+                        </th>
+                        <th scope="col" className="thead-th">
+                          Cantidad Asignada
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {taskDetail.insumos.map((insumo) => (
+                        <tr className="tbody-tr" key={insumo.id}>
+                          <td className="tbody-td">
+                            <p>{insumo.name} </p>
+                          </td>
+                          <td className="tbody-td">
+                            <p>
+                              {insumo.assigned_quantity} {insumo.measure}
+                            </p>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="shadow p-5">
+                <h2 className="font-bold text-3xl text-center">
+                  Empleados Asignados
+                </h2>
+
+                <div className="mt-5">
+                  <table className="table">
+                    <thead>
+                      <tr className="thead-tr">
+                        <th scope="col" className="thead-th">
+                          Codigo
+                        </th>
+                        <th scope="col" className="thead-th">
+                          Nombre de Usuario
+                        </th>
+                        <th scope="col" className="thead-th">
+                          Acción
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {taskDetail.employees?.map((employee) => (
+                        <tr className="tbody-tr" key={employee.code}>
+                          <td className="tbody-td">
+                            <p>{employee.code}</p>
+                          </td>
+                          <td className="tbody-td">
+                            <p>{employee.name}</p>
+                          </td>
+                          <td>
+                            <Trash />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </>

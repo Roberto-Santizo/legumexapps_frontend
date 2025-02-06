@@ -69,7 +69,20 @@ export const EmployeesTaskCropPlanSchema = z.object({
     finca: z.string(),
     date_assignment: z.string(),
     data: z.array(EmployeeTaskCropPlanSchema),
-
 });
 
+export const DraftTaskCropWeeklyPlanSchema = z.object({
+    weekly_plan_id: z.string(),
+    lote_id: z.string(),
+    task_crop_id: z.string()
+});
 
+export const TaskCropSchema = z.object({
+    id: z.string(),
+    code: z.string(),
+    name: z.string()
+});
+
+export const TasksCropSchema = z.object({
+    data: z.array(TaskCropSchema)
+});

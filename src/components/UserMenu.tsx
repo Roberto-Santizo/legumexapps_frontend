@@ -23,7 +23,7 @@ export default function UserMenu({ setOpen }: UserMobileProps) {
   const handleClick = async () => {
     setLoading(true);
     try {
-      await  logout();
+      await logout();
       toast.success("Sesión cerrada correctamente")
     } catch (error) {
       toast.error("Hubo un error al cerrar sesión, intentelo de nuevo más tarde");

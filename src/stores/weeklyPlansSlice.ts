@@ -1,26 +1,33 @@
 import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
-import { SummaryWeeklyPlanType, WeeklyPlan, WeeklyPlans } from "../types";
+import { Permission, SummaryWeeklyPlanType, WeeklyPlan, WeeklyPlansPaginate } from "../types";
 import { SummaryWeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from "../utils/weekly_plans-schema";
+import { ReportSchema } from "../utils/reports-schema";
+import { downloadBase64File } from "../helpers";
 
 export type WeeklyPlansSliceType = {
 
     errorsCreatePlan: string[];
     
     getPlanById: (id: WeeklyPlan['id']) => Promise<SummaryWeeklyPlanType>;
-    getAllPlansPagination: (page : number) => Promise<WeeklyPlans>;
+    getAllPlansPagination: (page : number, permission : Permission['name']) => Promise<WeeklyPlansPaginate>;
     getAllPlans: () => Promise<WeeklyPlan[]>
     createPlan: (file: File[]) => Promise<void>;
+    downloadReport: (data : WeeklyPlan['id'][]) => Promise<void>;
 }
 
 
 export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) => ({
     errorsCreatePlan: [],
 
-    getAllPlansPagination: async (page) => {
+    getAllPlansPagination: async (page,permission) => {
         try {
             const url = `/api/plans?page=${page}`;
-            const { data } = await clienteAxios(url);
+            const { data } = await clienteAxios(url,{
+                params:{
+                    permission: permission
+                }
+            });
             const result = WeeklyPlansPaginateSchema.safeParse(data);
             if (result.success) {
                 return result.data
@@ -75,5 +82,21 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
             throw error;
         }
     },
+    downloadReport: async (weekly_plans_ids) => {
+        try {
+            const url = '/api/report/plans';
+            const { data } = await clienteAxios.post(url,{
+                data: weekly_plans_ids
+            });
+            const result = ReportSchema.safeParse(data);
+            if(result.success){
+                downloadBase64File(result.data.file,result.data.fileName)
+            }else{
+                throw new Error('Información no válida');
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
 
 })

@@ -3,7 +3,7 @@ import { z } from "zod";
 export const UserSchema = z.object({
   id: z.string(),
   name: z.string(),
-  email: z.string() || z.null(),
+  email: z.string().nullable(),
   username: z.string(),
   status: z.number(),
   roles: z.string(),
@@ -12,7 +12,7 @@ export const UserSchema = z.object({
 export const AuthUserSchema = z.object({
   id: z.string(),
   name: z.string(),
-  email: z.string() || z.null(),
+  email: z.string().nullable(),
   username: z.string(),
 });
 
@@ -34,7 +34,7 @@ export const DraftUserSchema = z.object({
 export const UserDetailsSchema = z.object({
   id: z.string(),
   name: z.string(),
-  email: z.string() || z.null(),
+  email: z.string().nullable(),
   username: z.string(),
   status: z.boolean(),
   roles: z.string(),

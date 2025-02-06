@@ -1,16 +1,43 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAppStore } from "../stores/useAppStore";
 import AdminNavegation from "./menus-navegations/AdminNavegation";
 import AgricolaNavegation from "./menus-navegations/AgricolaNavegation";
-import MantoNavegation from "./menus-navegations/MantoNavegation";
 import { HomeIcon } from "lucide-react";
 import Spinner from "./Spinner";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export function Sidebar() {
-  
-  const userRole = useAppStore((state) => state.userRole);
-  const loadingGetRole = useAppStore((state) => state.loadingGetRole);
+  const navigations = {
+    admin: (
+      <>
+        <AdminNavegation /> <AgricolaNavegation />
+      </>
+    ),
+    adminagricola: <AgricolaNavegation />,
+    auxagricola: <AgricolaNavegation />
+  };
 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [role, setRole] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
+
+  useEffect(() => {
+    const handleGetUserRoleByToken = async () => {
+      try {
+        const userRole = await getUserRoleByToken();
+        setRole(userRole);
+      } catch (error) {
+        toast.error("Hubo un error al cargar el contenido");
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleGetUserRoleByToken();
+  }, []);
   return (
     <div className="pb-12 h-screen w-64 bg-gray-100 ">
       <div className="space-y-4 py-4">
@@ -31,14 +58,9 @@ export function Sidebar() {
               <p className="text-sm font-bold">Dashboard</p>
             </NavLink>
 
-            {loadingGetRole && <Spinner />}
-            
-            {userRole === "admin" && <AdminNavegation />}
-            {(userRole === "adminagricola" || 
-              userRole === "auxagricola" || userRole === 'admin') && <AgricolaNavegation />}
-            {(userRole === "adminmanto" || userRole === "auxmanto" || userRole==="admin") && (
-              <MantoNavegation />
-            )}
+            {loading && <Spinner />}
+
+            {!loading && navigations[role as keyof typeof navigations]}
           </nav>
         </div>
       </div>

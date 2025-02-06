@@ -18,7 +18,7 @@ import Spinner from "../../../components/Spinner";
 export default function CreateUser() {
   const [loadingGetRoles, setLoadingGetRoles] = useState<boolean>(false);
   const [loadingGetPermissions, setLoadingGetPermissions] = useState<boolean>(false);
-
+  const [loading,setLoading] = useState<boolean>(false);
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
 
@@ -26,7 +26,6 @@ export default function CreateUser() {
   const fetchRoles = useAppStore((state) => state.fetchRoles);
   const fetchPermissions = useAppStore((state) => state.fetchPermissions);
   const UserErrors = useAppStore((state) => state.usersErrors);
-  const loadingUser = useAppStore((state) => state.loadingUser);
   const navigate = useNavigate();
 
   const handleGetRoles = async () => {
@@ -64,15 +63,17 @@ export default function CreateUser() {
     formState: { errors },
   } = useForm<DraftUser>();
 
-  const RegisterUser = (data: DraftUser) => {
-    createUser(data)
-      .then(() => {
-        toast.success("Usuario creado correctamente");
+  const RegisterUser = async (data: DraftUser) => {
+    setLoading(true);
+    try {
+      await createUser(data);
+      toast.success("Usuario creado correctamente");
         navigate("/usuarios");
-      })
-      .catch(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+    } catch (error) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -223,14 +224,14 @@ export default function CreateUser() {
         )}
 
         <Button
-          disabled={loadingUser}
+          disabled={loading}
           type="submit"
           variant="contained"
           color="primary"
           fullWidth
           sx={{ marginTop: 2 }}
         >
-          {loadingUser ? (
+          {loading ? (
             <Spinner />
           ) : (
             <p className="font-bold text-lg">Crear Usuario</p>

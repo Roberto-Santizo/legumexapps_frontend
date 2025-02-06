@@ -19,7 +19,8 @@ export default function AsignarTareaLote() {
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
 
   const [loadingGetTask, setLoadingGetTask] = useState<boolean>(false);
-  const [loadingGetEmployees, setLoadingGetEmployees] = useState<boolean>(false);
+  const [loadingGetEmployees, setLoadingGetEmployees] =
+    useState<boolean>(false);
   const [loadingCloseTask, setLoadingCloseTask] = useState<boolean>(false);
   const [task, setTask] = useState<TaskWeeklyPlan>({} as TaskWeeklyPlan);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -44,7 +45,6 @@ export default function AsignarTareaLote() {
 
   const [results, setResults] = useState<Employee[]>(employees);
 
-
   const handleGetTask = async () => {
     setLoadingGetTask(true);
     try {
@@ -53,54 +53,54 @@ export default function AsignarTareaLote() {
         setTask(task);
       }
     } catch (error) {
-      toast.error('Error al traer la tarea, intentelo de nuevo más tarde');
+      toast.error("Error al traer la tarea, intentelo de nuevo más tarde");
     } finally {
       setLoadingGetTask(false);
     }
-  }
+  };
 
   const handleGetEmployees = async () => {
     setLoadingGetEmployees(true);
     try {
       if (finca_id) {
         const employees = await getEmployees(finca_id);
-        setEmployees(employees)
+        setEmployees(employees);
       }
     } catch (error) {
-      toast.error('Error al traer a los empleados, intentelo de nuevo más tarde');
+      toast.error(
+        "Error al traer a los empleados, intentelo de nuevo más tarde"
+      );
     } finally {
       setLoadingGetEmployees(false);
     }
-  }
+  };
 
   const isValidTask = () => {
     if (task.start_date != null) {
-      return true
+      return true;
     }
 
     return false;
-  }
+  };
 
   const reduceSlots = (task: TaskWeeklyPlan) => {
     const updatedTask = { ...task, slots: task.slots - 1 };
     setTask(updatedTask);
-  }
+  };
 
   const addSlots = (task: TaskWeeklyPlan) => {
     const updatedTask = { ...task, slots: task.slots + 1 };
     setTask(updatedTask);
-  }
+  };
 
   useEffect(() => {
     handleGetTask();
     handleGetEmployees();
-    if (!isValidTask()) {
-      navigate('/planes-semanales')
-      toast.error('La tarea ya cuenta con asignación');
+    if (isValidTask()) {
+      navigate("/planes-semanales");
+      toast.error("La tarea ya cuenta con asignación");
     }
   }, []);
-
-
 
   useEffect(() => {
     setResults(employees);
@@ -148,7 +148,7 @@ export default function AsignarTareaLote() {
         confirmButtonText: "Cerrar Asignación",
       }).then((result) => {
         if (result.isConfirmed) {
-          setLoadingCloseTask(true)
+          setLoadingCloseTask(true);
           try {
             closeAssigment(assignedEmployees, task.id);
             toast.success("Asignación cerrada correctamente");
@@ -179,7 +179,7 @@ export default function AsignarTareaLote() {
       <h1 className="text-4xl font-bold">Asignación de Empleados</h1>
 
       {loadingGetTask && <Spinner />}
-      {(!loadingGetTask && task.insumos) && (
+      {!loadingGetTask && task.insumos && (
         <div className="flex flex-col md:grid md:grid-cols-6 mt-10">
           <div className="grid md:grid-cols-2 col-span-4 gap-5">
             <div className="space-y-5">
@@ -204,33 +204,37 @@ export default function AsignarTareaLote() {
                 </p>
               </div>
 
-              <div>
-                <h2 className="font-bold text-2xl">Insumos Asignados:</h2>
-                <table className="table">
-                  <thead>
-                    <tr className="thead-tr">
-                      <th scope="col" className="thead-th">
-                        Insumo
-                      </th>
-                      <th scope="col" className="thead-th">
-                        Cantidad Asignada
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {task.insumos.map((insumo) => (
-                      <tr className="tbody-tr" key={insumo.id}>
-                        <td className="tbody-td">
-                          <p>{insumo.name} </p>
-                        </td>
-                        <td className="tbody-td">
-                          <p>{insumo.assigned_quantity} {insumo.measure}</p>
-                        </td>
+              {task.insumos.length > 0 && (
+                <div>
+                  <h2 className="font-bold text-2xl">Insumos Asignados:</h2>
+                  <table className="table">
+                    <thead>
+                      <tr className="thead-tr">
+                        <th scope="col" className="thead-th">
+                          Insumo
+                        </th>
+                        <th scope="col" className="thead-th">
+                          Cantidad Asignada
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {task.insumos.map((insumo) => (
+                        <tr className="tbody-tr" key={insumo.id}>
+                          <td className="tbody-td">
+                            <p>{insumo.name} </p>
+                          </td>
+                          <td className="tbody-td">
+                            <p>
+                              {insumo.assigned_quantity} {insumo.measure}
+                            </p>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             <div>
@@ -289,14 +293,15 @@ export default function AsignarTareaLote() {
       )}
 
       <button
-        className={`p-2 rounded mt-5 uppercase font-bold transition-colors w-1/2 mx-auto flex justify-center items-center ${(assignedEmployees.length === 0 || loadingCloseTask)
-          ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-          : "bg-indigo-500 text-white hover:bg-indigo-600"
-          }`}
+        className={`p-2 rounded mt-5 uppercase font-bold transition-colors w-1/2 mx-auto flex justify-center items-center ${
+          assignedEmployees.length === 0 || loadingCloseTask
+            ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+            : "bg-indigo-500 text-white hover:bg-indigo-600"
+        }`}
         onClick={handleCloseAssignment}
         disabled={assignedEmployees.length === 0 || loadingCloseTask}
       >
-        {loadingCloseTask ? <Spinner /> : (<p>Cerrar Asignación</p>)}
+        {loadingCloseTask ? <Spinner /> : <p>Cerrar Asignación</p>}
       </button>
     </>
   );
