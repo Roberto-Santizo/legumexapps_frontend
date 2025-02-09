@@ -9,17 +9,17 @@ const routes = [
   { path: "/planes-semanales/crear", component: lazy(() => import("../views/agricola/planes-semanales/CreatePlanSemanal")), roles: ['admin','adminagricola'] },
   { path: "/planes-semanales/:finca/:id", component: lazy(() => import("../views/agricola/planes-semanales/ShowPlanSemanal")), roles: ['admin','adminagricola','auxagricola'] },
   
-  { path: "/tareas", component: lazy(() => import("../views/agricola/tareas/IndexTareas")), roles: ['admin','adminagricola','auxagricola'] },
+  { path: "/tareas", component: lazy(() => import("../views/agricola/tareas/IndexTareas")), roles: ['admin','adminagricola'] },
   { path: "/tareas/crear", component: lazy(() => import("../views/agricola/tareas/CreateTarea")), roles: ['admin','adminagricola'] },
   { path: "/tareas/carga-masiva", component: lazy(() => import("../views/agricola/tareas/CargaMasivaTareas")), roles: ['admin','adminagricola'] },
   { path: "/tareas/edit/:id", component: lazy(() => import("../views/agricola/tareas/EditTarea")), roles: ['admin','adminagricola'] },
 
-  { path: "/cdps", component: lazy(() => import("../views/agricola/cdps/IndexCdps")), roles: ['admin','adminagricola','auxagricola'] },
+  { path: "/cdps", component: lazy(() => import("../views/agricola/cdps/IndexCdps")), roles: ['admin','adminagricola'] },
   { path: "/cdps/crear", component: lazy(() => import("../views/agricola/cdps/CreateCdp")), roles: ['admin','adminagricola'] },
   { path: "/cdps/carga-masiva", component: lazy(() => import("../views/agricola/cdps/CargaMasivaCDPs")), roles: ['admin','adminagricola'] },
 
 
-  { path: "/lotes", component: lazy(() => import("../views/agricola/lotes/IndexLotes")), roles: ['admin','adminagricola','auxagricola'] },
+  { path: "/lotes", component: lazy(() => import("../views/agricola/lotes/IndexLotes")), roles: ['admin','adminagricola'] },
   { path: "/lotes/crear", component: lazy(() => import("../views/agricola/lotes/CreateLote")), roles: ['admin','adminagricola'] },
   { path: "/lotes/consulta", component: lazy(() => import("../views/agricola/lotes/ConsultaLote")), roles: ['admin','adminagricola'] },
   { path: "/lotes/actualizacion", component: lazy(() => import("../views/agricola/lotes/ActualizacionMasiva")), roles: ['admin','adminagricola'] },
@@ -35,9 +35,9 @@ const routes = [
   { path: "/planes-semanales/tareas-cosecha-lote/asignar/:task_crop_id/:finca_id", component: lazy(() => import("../views/agricola/tareas-cosecha/AsignarTareaCosechaLote")), roles: ['admin','adminagricola','auxagricola'] },
   { path: "/planes-semanales/tareas-cosecha-lote/toma-rendimiento/:task_crop_id", component: lazy(() => import("../views/agricola/tareas-cosecha/TomarLibrasPersonal")), roles: ['admin','adminagricola','auxagricola']},
 
-  {path: "/insumos", component: lazy(() => import("../views/agricola/insumos/IndexInsumos")), roles: ['admin','adminagricola','auxagricola']},
-  {path: "/insumos/crear", component: lazy(() => import("../views/agricola/insumos/CrearInsumo")), roles: ['admin','adminagricola','auxagricola']},
-  {path: "/insumos/carga-masiva", component: lazy(() => import("../views/agricola/insumos/CargaMasivaInsumos")), roles: ['admin','adminagricola','auxagricola']},
+  {path: "/insumos", component: lazy(() => import("../views/agricola/insumos/IndexInsumos")), roles: ['admin','adminagricola']},
+  {path: "/insumos/crear", component: lazy(() => import("../views/agricola/insumos/CrearInsumo")), roles: ['admin','adminagricola']},
+  {path: "/insumos/carga-masiva", component: lazy(() => import("../views/agricola/insumos/CargaMasivaInsumos")), roles: ['admin','adminagricola']},
 ];
 
 export default function AgricolaRoutes() {

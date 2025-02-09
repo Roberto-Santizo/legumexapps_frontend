@@ -5,7 +5,11 @@ import { toast } from "react-toastify";
 import { Eye } from "lucide-react";
 import Spinner from "../Spinner";
 
-export default function FinishedTasksCrop() {
+type Props = {
+  permission: string
+}
+
+export default function FinishedTasksCrop({permission} : Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<FinishedTask[]>([]);
   const getTasksCropFinished = useAppStore(
@@ -15,7 +19,7 @@ export default function FinishedTasksCrop() {
   const handleGetInfo = async () => {
     setLoading(true);
     try {
-      const tasks = await getTasksCropFinished();
+      const tasks = await getTasksCropFinished(permission);
       setTasks(tasks);
     } catch (error) {
       toast.error("Hubo un error al traer la información");

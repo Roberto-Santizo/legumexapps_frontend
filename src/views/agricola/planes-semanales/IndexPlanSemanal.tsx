@@ -16,8 +16,10 @@ import LoadingOverlay from "../../../components/LoadingOverlay";
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingDownloadReport, setLoadingDownloadReport] =useState<boolean>(false);
-  const [loadingDownloadSingleReport,setLoadingSingleReport] = useState<boolean>(false);
+  const [loadingDownloadReport, setLoadingDownloadReport] =
+    useState<boolean>(false);
+  const [loadingDownloadSingleReport, setLoadingSingleReport] =
+    useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [plansId, setPlansId] = useState<WeeklyPlan["id"][]>([]);
   const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);
@@ -28,7 +30,9 @@ export default function IndexPlanSemanal() {
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
   const downloadReport = useAppStore((state) => state.downloadReport);
   const getAllPlans = useAppStore((state) => state.getAllPlansPagination);
-  const getUserPermissionsByToken = useAppStore((state) => state.getUserPermissionsByToken);
+  const getUserPermissionsByToken = useAppStore(
+    (state) => state.getUserPermissionsByToken
+  );
 
   const handleGetUserPermissions = async () => {
     try {
@@ -110,7 +114,7 @@ export default function IndexPlanSemanal() {
     }
   };
 
-  const handleDownloadSingleReport = async  (data : string[]) => {
+  const handleDownloadSingleReport = async (data: string[]) => {
     setLoadingSingleReport(true);
     try {
       await downloadReport(data);
@@ -119,11 +123,11 @@ export default function IndexPlanSemanal() {
     } finally {
       setLoadingSingleReport(false);
     }
-  }
+  };
 
   return (
     <>
-      {loadingDownloadSingleReport && (<LoadingOverlay />)}
+      {loadingDownloadSingleReport && <LoadingOverlay />}
       <h2 className="font-bold text-4xl">Planes Semanales</h2>
       {(role === "admin" || role === "adminagricola") && (
         <div className="flex flex-row justify-end gap-5 mb-5">
@@ -201,12 +205,17 @@ export default function IndexPlanSemanal() {
                 <th scope="col" className="thead-th">
                   Fecha de Creación
                 </th>
-                <th scope="col" className="thead-th">
-                  Control de Presupuesto
-                </th>
-                <th scope="col" className="thead-th">
-                  Monto Extraordinario
-                </th>
+                {(role === "admin" || role === "adminagricola") && (
+                  <>
+                    <th scope="col" className="thead-th">
+                      Control de Presupuesto
+                    </th>
+                    <th scope="col" className="thead-th">
+                      Monto Extraordinario
+                    </th>
+                  </>
+                )}
+
                 <th scope="col" className="thead-th">
                   Control de Tareas
                 </th>
@@ -222,9 +231,9 @@ export default function IndexPlanSemanal() {
                 {/* <th scope="col" className="thead-th">
                   Planilla Semanal
                 </th> */}
-                <th scope="col" className="thead-th">
+                {/* <th scope="col" className="thead-th">
                   Reporte de Insumos
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -237,7 +246,10 @@ export default function IndexPlanSemanal() {
                   {selectingReport && (
                     <td className="p-5">
                       {plansId.some((p) => p === plan.id) && (
-                        <CheckCircle className="text-green-600 cursor-pointer hover:text-green-800" onClick={() => handleDobleClick(plan.id)}/>
+                        <CheckCircle
+                          className="text-green-600 cursor-pointer hover:text-green-800"
+                          onClick={() => handleDobleClick(plan.id)}
+                        />
                       )}
                     </td>
                   )}
@@ -245,12 +257,16 @@ export default function IndexPlanSemanal() {
                   <td className="tbody-td">{plan.week}</td>
                   <td className="tbody-td">{plan.year}</td>
                   <td className="tbody-td">{plan.created_at}</td>
-                  <td className="tbody-td font-bold text-green-500">
-                    {`Q${plan.used_budget}/${plan.total_budget}`}
-                  </td>
-                  <td className="tbody-td font-bold text-green-500">
-                    {`Q${plan.used_total_budget_ext}/${plan.total_budget_ext}`}
-                  </td>
+                  {(role === "admin" || role === "adminagricola") && (
+                    <>
+                      <td className="tbody-td font-bold text-green-500">
+                        {`Q${plan.used_budget}/${plan.total_budget}`}
+                      </td>
+                      <td className="tbody-td font-bold text-green-500">
+                        {`Q${plan.used_total_budget_ext}/${plan.total_budget_ext}`}
+                      </td>
+                    </>
+                  )}
                   <td className="tbody-td">
                     {`${plan.finished_total_tasks}/${plan.total_tasks}`}
                   </td>
@@ -264,23 +280,25 @@ export default function IndexPlanSemanal() {
                     </Link>
                   </td>
                   <td className="tbody-td">
-                      <button onClick={() => handleDownloadSingleReport([plan.id])}>
-                        <Sheet className="hover:text-gray-400" />
-                      </button>
+                    <button
+                      onClick={() => handleDownloadSingleReport([plan.id])}
+                    >
+                      <Sheet className="hover:text-gray-400" />
+                    </button>
                   </td>
                   {/* <td className="tbody-td">
                     <Link to={"/tareas-semanales"} title="Planilla Semanal">
                       <Sheet className="hover:text-gray-400" />
                     </Link>
                   </td> */}
-                  <td className="tbody-td">
+                  {/* <td className="tbody-td">
                     <Link
                       to={`/planes-semanales/${plan.id}`}
                       title="Reporte de Insumos"
                     >
                       <Sheet className="hover:text-gray-400" />
                     </Link>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

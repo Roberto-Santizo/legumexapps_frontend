@@ -42,3 +42,15 @@ export const FinishedTaskSchema = z.object({
 export const FinishedTasksSchema = z.object({
     data: z.array(FinishedTaskSchema)
 });
+
+export const SummaryFincaTasksSchema = z.object({
+    id: z.string(),
+    finca: z.string(),
+    finished_tasks: z.number(),
+    total_tasks: z.number(),
+    percentage: z.number()
+});
+
+export const FinishedTasksByFincaSchema = z.object({
+    data: z.array(SummaryFincaTasksSchema)
+})

@@ -6,7 +6,6 @@ import { useAppStore } from "../stores/useAppStore";
 export function Header() {
   const [open,setOpen] = useState<boolean>(false);
   const AuthUser = useAppStore((state) => state.AuthUser);
-  console.log(AuthUser);
 
   return (
     <header className="flex items-center justify-end py-5">

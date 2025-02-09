@@ -151,7 +151,7 @@ export default function CreateTareaLoteCosecha() {
 
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="task_crop_id">
-            TAREA COSEHCA:
+            TAREA COSECHA:
           </label>
           <Controller
             name="task_crop_id"

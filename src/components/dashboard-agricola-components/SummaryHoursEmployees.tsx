@@ -5,11 +5,7 @@ import { SummaryEmployeeHours } from "../../types";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner";
 
-type Props = {
-  week: number;
-}
-
-export default function SummaryHoursEmployees({ week }: Props) {
+export default function SummaryHoursEmployees() {
   const [employees, setEmployees] = useState<SummaryEmployeeHours[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const getSummaryHoursEmployees = useAppStore(
@@ -32,9 +28,9 @@ export default function SummaryHoursEmployees({ week }: Props) {
     handleGetData();
   }, []);
   return (
-    <div className="flex flex-col items-center shadow-xl row-start-1 col-start-6 col-span-7 rounded-xl gap-5">
+    <div className="flex flex-col items-center shadow-xl row-start-2 col-start-6 col-span-7 rounded-xl gap-5">
       <p className="uppercase w-full text-center bg-gray-400 p-3 text-white font-bold rounded-t-xl text-2xl">
-        Resumen de Horas Por Empleado Semana {week}
+        Resumen de Horas Por Empleado Semana 
       </p>
       {loading && <Spinner />}
       {!loading && (

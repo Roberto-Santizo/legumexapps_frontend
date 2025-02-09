@@ -6,7 +6,10 @@ import { FinishedTask } from "../../types";
 import { Link } from "react-router-dom";
 import Spinner from "../Spinner";
 
-export default function FinishedTasks() {
+type Props = {
+  permission: string;
+}
+export default function FinishedTasks({permission} : Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<FinishedTask[]>([]);
   const getTasksFinished = useAppStore((state) => state.getTasksFinished);
@@ -14,7 +17,7 @@ export default function FinishedTasks() {
   const handleGetInfo = async () => {
     setLoading(true);
     try {
-      const tasks = await getTasksFinished();
+      const tasks = await getTasksFinished(permission);
       setTasks(tasks);
     } catch (error) {
       toast.error("Hubo un error al traer la información");

@@ -1,6 +1,5 @@
 import DronHours from "../../components/dashboard-agricola-components/DronHours";
 import SummaryHoursEmployees from "../../components/dashboard-agricola-components/SummaryHoursEmployees";
-import { getWeekNumber } from "../../helpers";
 import TasksInProgress from "../../components/dashboard-agricola-components/TasksInProgress";
 import FinishedTasks from "../../components/dashboard-agricola-components/FinishedTasks";
 import TasksCropInProgress from "../../components/dashboard-agricola-components/TasksCropInProgress";
@@ -10,28 +9,45 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
+import SummaryTasksFincas from "../../components/dashboard-agricola-components/SummaryTasksFincas";
+import { Permission } from "../../types";
 
 export default function AgricolaDashboard() {
-  const week = getWeekNumber();
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [role, setRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
+  const getUserPermissionsByToken = useAppStore(
+    (state) => state.getUserPermissionsByToken
+  );
+  const [permission, setPermission] = useState<Permission>({} as Permission);
+
+  const handleGetUserPermissions = async () => {
+    try {
+      const permissions = await getUserPermissionsByToken();
+      setPermission(permissions[0]);
+    } catch (error) {
+      toast.error("Error al cargar el contenido");
+      setError(false);
+    }
+  };
+
+  const handleGetUserRoleByToken = async () => {
+    try {
+      const userRole = await getUserRoleByToken();
+      setRole(userRole);
+    } catch (error) {
+      toast.error("Hubo un error al cargar el contenido");
+      navigate("/login");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const handleGetUserRoleByToken = async () => {
-      try {
-        const userRole = await getUserRoleByToken();
-        setRole(userRole);
-      } catch (error) {
-        toast.error("Hubo un error al cargar el contenido");
-        navigate("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     handleGetUserRoleByToken();
+    handleGetUserPermissions();
   }, []);
   return (
     <div>
@@ -42,14 +58,18 @@ export default function AgricolaDashboard() {
 
         {!loading && (
           <>
-            <DronHours />
-            {(role === 'admin' || role === 'adminagricola') &&(
-              <SummaryHoursEmployees week={week} />
+            {(role === "admin" || role === "adminagricola") && (
+              <>
+                <SummaryTasksFincas />
+                <SummaryHoursEmployees />
+              </>
             )}
-            <TasksInProgress />
-            <FinishedTasks />
-            <TasksCropInProgress />
-            <FinishedTasksCrop />
+            <DronHours permission={permission.name}/>
+
+            <TasksInProgress permission={permission.name}/>
+            <FinishedTasks permission={permission.name}/>
+            <TasksCropInProgress permission={permission.name}/>
+            <FinishedTasksCrop permission={permission.name}/>
           </>
         )}
       </div>
