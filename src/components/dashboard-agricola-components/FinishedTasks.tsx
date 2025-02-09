@@ -34,54 +34,57 @@ export default function FinishedTasks() {
 
       {(!loading && tasks.length === 0) && (<p className="text-center mt-1">No hay datos</p>)}
       <div className="w-full p-2">
-        {loading ? (
+        {(loading) ? (
           <Spinner />
         ) : (
-          <table className="table">
-            <thead>
-              <tr className="thead-tr">
-                <th scope="col" className="thead-th"></th>
-                <th scope="col" className="thead-th">
-                  TAREA
-                </th>
-                <th scope="col" className="thead-th">
-                  FINCA
-                </th>
-                <th scope="col" className="thead-th">
-                  LOTE
-                </th>
-                <th scope="col" className="thead-th">
-                  FECHA DE INICIO
-                </th>
-                <th scope="col" className="thead-th">
-                  FECHA DE CIERRE
-                </th>
-                <th scope="col" className="thead-th">
-                  ACCIÓN
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => (
-                <tr className="tbody-tr" key={task.id}>
-                  <td></td>
-                  <td className="tbody-td">{task.task}</td>
-                  <td className="tbody-td">{task.finca}</td>
-                  <td className="tbody-td">{task.lote}</td>
-                  <td className="tbody-td">{task.start_date}</td>
-                  <td className="tbody-td">{task.end_date}</td>
-                  <td>
-                    <Link
-                      to={`/planes-semanales/tareas-lote/informacion/${task.id}`}
-                      target="_blank"
-                    >
-                      <Eye /> 
-                    </Link>
-                  </td>
+          <>{tasks.length > 0 && (
+            <table className="table">
+              <thead>
+                <tr className="thead-tr">
+                  <th scope="col" className="thead-th"></th>
+                  <th scope="col" className="thead-th">
+                    TAREA
+                  </th>
+                  <th scope="col" className="thead-th">
+                    FINCA
+                  </th>
+                  <th scope="col" className="thead-th">
+                    LOTE
+                  </th>
+                  <th scope="col" className="thead-th">
+                    FECHA DE INICIO
+                  </th>
+                  <th scope="col" className="thead-th">
+                    FECHA DE CIERRE
+                  </th>
+                  <th scope="col" className="thead-th">
+                    ACCIÓN
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr className="tbody-tr" key={task.id}>
+                    <td></td>
+                    <td className="tbody-td">{task.task}</td>
+                    <td className="tbody-td">{task.finca}</td>
+                    <td className="tbody-td">{task.lote}</td>
+                    <td className="tbody-td">{task.start_date}</td>
+                    <td className="tbody-td">{task.end_date}</td>
+                    <td>
+                      <Link
+                        to={`/planes-semanales/tareas-lote/informacion/${task.id}`}
+                        target="_blank"
+                      >
+                        <Eye />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}</>
+
         )}
       </div>
     </div>

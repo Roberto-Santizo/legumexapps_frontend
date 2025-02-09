@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand';
 import { CDP, DraftLote, Finca, Lote, loteCDPDetails, Lotes } from '../types';
 import clienteAxios from '../config/axios';
-import { LoteSchema, LotesPaginateSchema, LotesSchema, LotesSchemaSelect } from '../utils/lotes-schema';
+import { LotesPaginateSchema, LotesSchema, LotesSchemaSelect } from '../utils/lotes-schema';
 import { CDPsSchema } from '../utils/plantation-schema';
 import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema';
 

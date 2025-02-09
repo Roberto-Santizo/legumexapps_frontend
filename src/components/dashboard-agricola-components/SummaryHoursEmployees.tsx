@@ -9,7 +9,7 @@ type Props = {
   week: number;
 }
 
-export default function SummaryHoursEmployees({week}: Props) {
+export default function SummaryHoursEmployees({ week }: Props) {
   const [employees, setEmployees] = useState<SummaryEmployeeHours[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const getSummaryHoursEmployees = useAppStore(
@@ -63,7 +63,7 @@ export default function SummaryHoursEmployees({week}: Props) {
                   <td className="tbody-td">{employee.first_name}</td>
                   <td className="tbody-td">{employee.weekly_hours} horas</td>
                   <td>
-                    {employee.assigned ? (<CheckIcon className="bg-green-500 rounded text-white p-0.5"/>) : (<XIcon className="bg-red-500 rounded text-white p-0.5"/> )}
+                    {employee.assigned ? (<CheckIcon className="bg-green-500 rounded text-white p-0.5" />) : (<XIcon className="bg-red-500 rounded text-white p-0.5" />)}
                   </td>
                 </tr>
               ))}

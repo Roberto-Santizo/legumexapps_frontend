@@ -31,9 +31,9 @@ export default function TasksInProgress() {
         Control de Tareas en Proceso y Asignaciones
       </p>
 
+      {(!loading && tasksInProgress.length === 0) && (<p className="text-center mt-2">No hay datos</p>)}
       <div className="w-full p-5 font-bold space-y-5">
         {loading && <Spinner />}
-        {(!loading && tasksInProgress.length === 0) && (<p className="text-center mt-1">No hay datos</p>)}
         {!loading && (
           <>
             {tasksInProgress.map((task) => (

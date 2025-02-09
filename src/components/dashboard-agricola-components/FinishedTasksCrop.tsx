@@ -39,42 +39,45 @@ export default function FinishedTasksCrop() {
         {loading ? (
           <Spinner />
         ) : (
-          <table className="table">
-            <thead>
-              <tr className="thead-tr">
-                <th scope="col" className="thead-th"></th>
-                <th scope="col" className="thead-th">
-                  TAREA
-                </th>
-                <th scope="col" className="thead-th">
-                  FINCA
-                </th>
-                <th scope="col" className="thead-th">
-                  LOTE
-                </th>
-                <th scope="col" className="thead-th">
-                  FECHA DE COSECHA
-                </th>
-                <th scope="col" className="thead-th">
-                  ACCIÓN
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => (
-                <tr key={task.id} className="tbody-tr">
-                  <td></td>
-                  <td className="tbody-td">{task.task}</td>
-                  <td className="tbody-td">{task.finca}</td>
-                  <td className="tbody-td">{task.lote}</td>
-                  <td className="tbody-td">{task.start_date}</td>
-                  <td>
-                    <Eye />
-                  </td>
+          <>{tasks.length > 0 && (
+            <table className="table">
+              <thead>
+                <tr className="thead-tr">
+                  <th scope="col" className="thead-th"></th>
+                  <th scope="col" className="thead-th">
+                    TAREA
+                  </th>
+                  <th scope="col" className="thead-th">
+                    FINCA
+                  </th>
+                  <th scope="col" className="thead-th">
+                    LOTE
+                  </th>
+                  <th scope="col" className="thead-th">
+                    FECHA DE COSECHA
+                  </th>
+                  <th scope="col" className="thead-th">
+                    ACCIÓN
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr key={task.id} className="tbody-tr">
+                    <td></td>
+                    <td className="tbody-td">{task.task}</td>
+                    <td className="tbody-td">{task.finca}</td>
+                    <td className="tbody-td">{task.lote}</td>
+                    <td className="tbody-td">{task.start_date}</td>
+                    <td>
+                      <Eye />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}</>
+
         )}
       </div>
     </div>
