@@ -37,7 +37,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
     Autherrors: [],
     errorgetRole: false,
     getUserByTokenError: false,
-    AuthUser: {} as User,
+    AuthUser:   localStorage.getItem('AUTH_USER') ? JSON.parse(localStorage.getItem('AUTH_USER') as string) : {} as AuthUser,
     login: async (user) => {
         const url = '/api/login';
         try {

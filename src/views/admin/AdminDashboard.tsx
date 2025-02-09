@@ -1,11 +1,9 @@
-// EXTERNAS
-import { UserIcon, PlusCircleIcon } from "@heroicons/react/16/solid";
+import { PlusCircle, UserIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AdminDashboard() {
   return (
     <div className="flex flex-col gap-5 xl:grid xl:grid-cols-8 mt-10 px-4 md:px-8">
-      {/* Manejo de Usuarios */}
       <div className="col-start-1 col-span-8 xl:col-span-5 bg-gray-200 rounded-2xl shadow-xl">
         <div className="bg-gray-300 w-full p-4 flex items-center gap-3 text-gray-600 rounded-t-2xl">
           <UserIcon className="w-6 md:w-8 lg:w-9" />
@@ -19,14 +17,17 @@ export default function AdminDashboard() {
             { to: "/administracion/usuarios/crear", text: "Crear un Usuario" },
             { to: "/administracion/usuarios/crear", text: "Crear Rol" },
             { to: "/administracion/permisos/crear", text: "Crear Permiso" },
-            { to: "/administracion/supervisores/crear", text: "Crear un Supervisor" },
+            {
+              to: "/administracion/supervisores/crear",
+              text: "Crear un Supervisor",
+            },
           ].map((item, index) => (
             <Link
               key={index}
               to={item.to}
               className="flex flex-col items-center hover:bg-gray-300 rounded-xl p-4 grow-animation-sm text-center"
             >
-              <PlusCircleIcon className="w-6 md:w-8 lg:w-9" />
+              <PlusCircle className="w-6 md:w-8 lg:w-9" />
               <p className="text-xs md:text-sm lg:text-base font-bold uppercase">
                 {item.text}
               </p>
@@ -49,7 +50,9 @@ export default function AdminDashboard() {
             <thead className="bg-gray-400">
               <tr className="rounded">
                 <th className="text-white text-left p-2">Nombre</th>
-                <th className="text-white text-left p-2">Última versión vista</th>
+                <th className="text-white text-left p-2">
+                  Última versión vista
+                </th>
                 <th className="text-white text-left p-2">Fecha de logueo</th>
               </tr>
             </thead>

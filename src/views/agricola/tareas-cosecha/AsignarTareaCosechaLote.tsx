@@ -13,6 +13,7 @@ export default function AsignarTareaCosechaLote() {
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
   const { task_crop_id, finca_id } = useParams();
+  const [loading,setLoading] = useState<boolean>(false);
   const [loadingGetEmployees,setLoadingGetEmployees] = useState<boolean>(false); 
   const [errorGetEmployees,setErrorGetEmployees] = useState<boolean>(false);
   const [employees,setEmployees] = useState<Employee[]>([]);
@@ -26,7 +27,6 @@ export default function AsignarTareaCosechaLote() {
   const [query, setQuery] = useState<string>("");
 
   const getEmployees = useAppStore((state) => state.getEmployees);
-  const loadingCloseAssigment = useAppStore((state) => state.loadingCloseAssigment);
   const getTaskCrop = useAppStore((state) => state.getTaskCrop);
   const closeCropAssigment = useAppStore((state) => state.closeCropAssigment);
 
@@ -100,12 +100,15 @@ export default function AsignarTareaCosechaLote() {
   };
 
   const handleCloseAssignment = () => {
+    setLoading(true);
     try {
       closeCropAssigment(assignedEmployees, taskCrop.id);
       toast.success("Asignación cerrada correctamente");
       navigate(previousUrl);
     } catch (error) {
       toast.error("Hubo un error al cerrar la asignación");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -148,9 +151,9 @@ export default function AsignarTareaCosechaLote() {
                   : "bg-indigo-500 text-white hover:bg-indigo-600"
               }`}
               onClick={handleCloseAssignment}
-              disabled={assignedEmployees.length === 0 || loadingCloseAssigment}
+              disabled={assignedEmployees.length === 0 || loading}
             >
-              {loadingCloseAssigment ? (
+              {loading ? (
                 <Spinner />
               ) : (
                 <p className="font-bold text-lg">Cerrar Asignación</p>
@@ -161,7 +164,7 @@ export default function AsignarTareaCosechaLote() {
           {loadingGetEmployees && <Spinner />}
           {(!loadingGetEmployees && !errorGetEmployees) && (
             <div className="col-start-5 col-span-2">
-              <div className="mt-5 overflow-y-auto h-5/6 shadow-lg rounded-md p-5 space-y-2">
+              <div className="mt-5 overflow-y-auto h-96 shadow-lg rounded-md p-5 space-y-2">
                 <p className="font-bold text-2xl text-center">
                   Empleados Disponibles
                 </p>

@@ -37,6 +37,7 @@ export const TaskWeeklyPlanSchema = z.object({
       used_quantity: z.union([z.number(), z.null()])
     })
   ),
+  use_dron: z.boolean()
 });
 
 export const EditTaskWeeklySchema = z.object({
@@ -75,7 +76,8 @@ export const TaskWeeklyPlanDetailsSchema = z.object({
       end_date: z.string(),
     })
   ),
-  insumos: z.array(TaskInsumoSchema)
+  insumos: z.array(TaskInsumoSchema),
+  use_dron: z.boolean()
 });
 
 export const TasksWeeklyPlanSchema = z.object({

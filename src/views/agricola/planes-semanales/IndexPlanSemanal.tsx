@@ -106,6 +106,7 @@ export default function IndexPlanSemanal() {
     } finally {
       setLoadingDownloadReport(false);
       setSelectingReport(false);
+      setPlansId([]);
     }
   };
 

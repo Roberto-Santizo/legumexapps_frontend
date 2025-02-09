@@ -31,3 +31,9 @@ export function downloadBase64File(base64 : string, filename : string) {
     link.click();
     document.body.removeChild(link);
 }
+export function getWeekNumber(): number {
+    const date = new Date();
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay()) / 7);
+}

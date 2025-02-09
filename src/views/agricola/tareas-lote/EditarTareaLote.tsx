@@ -75,6 +75,7 @@ export default function EditarTareaLote() {
     if (task) {
       setValue("budget", task.budget);
       setValue("hours", task.hours);
+      setValue("slots",task.slots);
       setValue("weekly_plan_id", task.weekly_plan_id);
       setValue("start_date", task.start_date || "");
       setValue("start_time", task.start_time || "");
@@ -142,6 +143,22 @@ export default function EditarTareaLote() {
             />
             {errors.hours && <Error>{errors.hours?.message?.toString()}</Error>}
           </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="slots">
+              Cupos:
+            </label>
+            <input
+              autoComplete="off"
+              id="slots"
+              type="number"
+              placeholder={"Horas Necesarias"}
+              className="border border-black p-3"
+              {...register("slots", { required: "Las horas son obligatorias" })}
+            />
+            {errors.slots && <Error>{errors.slots?.message?.toString()}</Error>}
+          </div>
+
 
           {loadingGetPlans && <Spinner />}
           {(!loadingGetPlans && !errorGetPlans && plans.length > 0) && (

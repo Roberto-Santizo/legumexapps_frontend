@@ -19,6 +19,7 @@ export default function InsumosModal() {
   const registerUsedInsumos = useAppStore((state) => state.registerUsedInsumos);
   const closeTask = useAppStore((state) => state.closeTask);
   const getTasks = useAppStore((state) => state.getTasks);
+  const closeAssigmentDron = useAppStore((state) => state.closeAssigmentDron);
   const hasValidData = useMemo(
     () =>
       taskInsumos.some(
@@ -67,7 +68,12 @@ export default function InsumosModal() {
     setLoadingClose(true);
     try {
       await registerUsedInsumos(taskInsumos);
-      await closeTask(task.id);
+
+      if(!task.use_dron){
+        await closeTask(task.id);
+      }else{
+        await closeAssigmentDron(task.id);
+      }
       toast.success("Asignación cerrada correctamente");
       closeModal();
       if (lote_plantation_control_id && weekly_plan_id) {

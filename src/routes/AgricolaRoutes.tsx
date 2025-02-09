@@ -23,6 +23,7 @@ const routes = [
   { path: "/lotes/crear", component: lazy(() => import("../views/agricola/lotes/CreateLote")), roles: ['admin','adminagricola'] },
   { path: "/lotes/consulta", component: lazy(() => import("../views/agricola/lotes/ConsultaLote")), roles: ['admin','adminagricola'] },
   { path: "/lotes/actualizacion", component: lazy(() => import("../views/agricola/lotes/ActualizacionMasiva")), roles: ['admin','adminagricola'] },
+  { path: "/lotes/historial/:lote_id", component: lazy(() => import("../views/agricola/lotes/HistorialLote")), roles: ['admin','adminagricola'] },
 
   { path: "/planes-semanales/tareas-lote/:weekly_plan_id/:lote_plantation_control_id", component: lazy(() => import("../views/agricola/tareas-lote/IndexTareasLote")), roles: ['admin','adminagricola','auxagricola'] },
   { path: "/planes-semanales/tareas-lote/asignar/:finca_id/:task_id", component: lazy(() => import("../views/agricola/tareas-lote/AsignarTareaLote")), roles: ['admin','adminagricola','auxagricola'] },
@@ -38,7 +39,6 @@ const routes = [
   {path: "/insumos/crear", component: lazy(() => import("../views/agricola/insumos/CrearInsumo")), roles: ['admin','adminagricola','auxagricola']},
   {path: "/insumos/carga-masiva", component: lazy(() => import("../views/agricola/insumos/CargaMasivaInsumos")), roles: ['admin','adminagricola','auxagricola']},
 ];
-
 
 export default function AgricolaRoutes() {
   return (

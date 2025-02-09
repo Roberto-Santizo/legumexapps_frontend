@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { TaskWeeklyPlanDetails } from "../../../types";
 import Spinner from "../../../components/Spinner";
 import { Trash } from "lucide-react";
+import DronIcon from "../../../components/DronIcon";
 
 export default function InfoTareaLote() {
   const { id } = useParams();
@@ -128,7 +129,7 @@ export default function InfoTareaLote() {
             </div>
           </div>
 
-          {(taskDetail.insumos && taskDetail.employees) && (
+          {taskDetail.insumos && taskDetail.employees && (
             <div className="grid md:grid-cols-2">
               <div className="shadow p-5">
                 <h2 className="font-bold text-3xl text-center">
@@ -136,7 +137,8 @@ export default function InfoTareaLote() {
                 </h2>
 
                 <div className="mt-5">
-                  <table className="table">
+                  {taskDetail.insumos.length > 0 ? (
+                    <table className="table">
                     <thead>
                       <tr className="thead-tr">
                         <th scope="col" className="thead-th">
@@ -162,47 +164,60 @@ export default function InfoTareaLote() {
                       ))}
                     </tbody>
                   </table>
+                  ) : (<p className="text-center">No cuenta con insumos asignados</p>)}
+                  
                 </div>
               </div>
 
-              <div className="shadow p-5">
-                <h2 className="font-bold text-3xl text-center">
-                  Empleados Asignados
-                </h2>
+              {!taskDetail.use_dron ? (
+                <div className="shadow p-5">
+                  <h2 className="font-bold text-3xl text-center">
+                    Empleados Asignados
+                  </h2>
 
-                <div className="mt-5">
-                  <table className="table">
-                    <thead>
-                      <tr className="thead-tr">
-                        <th scope="col" className="thead-th">
-                          Codigo
-                        </th>
-                        <th scope="col" className="thead-th">
-                          Nombre de Usuario
-                        </th>
-                        <th scope="col" className="thead-th">
-                          Acción
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {taskDetail.employees?.map((employee) => (
-                        <tr className="tbody-tr" key={employee.code}>
-                          <td className="tbody-td">
-                            <p>{employee.code}</p>
-                          </td>
-                          <td className="tbody-td">
-                            <p>{employee.name}</p>
-                          </td>
-                          <td>
-                            <Trash />
-                          </td>
+                  <div className="mt-5">
+                    <table className="table">
+                      <thead>
+                        <tr className="thead-tr">
+                          <th scope="col" className="thead-th">
+                            Codigo
+                          </th>
+                          <th scope="col" className="thead-th">
+                            Nombre de Usuario
+                          </th>
+                          <th scope="col" className="thead-th">
+                            Acción
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {taskDetail.employees?.map((employee) => (
+                          <tr className="tbody-tr" key={employee.code}>
+                            <td className="tbody-td">
+                              <p>{employee.code}</p>
+                            </td>
+                            <td className="tbody-td">
+                              <p>{employee.name}</p>
+                            </td>
+                            <td>
+                              <Trash />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex justify-center items-center flex-col">
+                  <DronIcon
+                    width={120}
+                    height={100}
+                    className="bg-orange-500 w-1/6 rounded-xl text-white"
+                  />
+                  <p className="font-bold uppercase">Tarea Realizada con Dron</p>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -16,6 +16,7 @@ export type TaskWeeklyPlanSliceType = {
     createTaskWeeklyPlan: (data: DraftCreateTaskWeeklyPlan) => Promise<void>
     getEmployees: (id: TaskWeeklyPlan['finca_id']) => Promise<Employee[]>
     closeAssigment: (Employees: Employee[], task_id: TaskWeeklyPlan['id']) => Promise<void>
+    closeAssigmentDron: (task_id: TaskWeeklyPlan['id']) => Promise<void>
     createPartialClosure: (id: TaskWeeklyPlan['id']) => Promise<void>
     closePartialClosure: (id: TaskWeeklyPlan['id']) => Promise<void>
     getTaskDetailsById: (id: TaskWeeklyPlan['id']) => Promise<TaskWeeklyPlanDetails>
@@ -106,6 +107,14 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             throw error;
         }
     },
+    closeAssigmentDron: async (id) => {
+        try {
+             const url = `/api/tasks-lotes/close-assignment/${id}`
+            await clienteAxios.post(url);
+        } catch (error) {
+            throw error;
+        }
+    },
     closeTask: async (id) => {
         try {
             const url = `/api/tasks-lotes/close/${id}`;
@@ -114,6 +123,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             throw error;
         }
     },
+   
     deteleteTask: async (id) => {
         try {
             const url = `/api/tasks-lotes/${id}`;

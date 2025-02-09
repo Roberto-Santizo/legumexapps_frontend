@@ -117,7 +117,7 @@ export default function IndexLotes() {
                 <td className="tbody-td">{lote.finca}</td>
                 <td className="tbody-td">{lote.cdp}</td>
                 <td className="tbody-td">
-                  <Link to={`/`}>
+                  <Link to={`/lotes/historial/${lote.id}`}>
                     <EyeIcon className="w-8 cursor-pointer hover:text-gray-500" />
                   </Link>
                 </td>

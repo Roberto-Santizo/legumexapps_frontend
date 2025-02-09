@@ -18,6 +18,7 @@ import { formatDate } from "../helpers";
 import TaskLabel from "./TaskLabel";
 import { useState } from "react";
 import ShowErrorAPI from "./ShowErrorAPI";
+import DronIcon from "./DronIcon";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
@@ -33,6 +34,7 @@ export default function Task({ task, role }: TaskProps) {
     (state) => state.createPartialClosure
   );
   const closePartialClosure = useAppStore((state) => state.closePartialClosure);
+  const closeTaskDron = useAppStore((state) => state.closeAssigmentDron);
   const closeTask = useAppStore((state) => state.closeTask);
   const cleanTask = useAppStore((state) => state.cleanTask);
   const getTasks = useAppStore((state) => state.getTasks);
@@ -40,7 +42,6 @@ export default function Task({ task, role }: TaskProps) {
   const openModalAction = useAppStore((state) => state.openModalAction);
 
   const navigate = useNavigate();
- 
 
   const handleClickCreatePartialClosure = async (
     idTask: TaskWeeklyPlan["id"]
@@ -125,6 +126,40 @@ export default function Task({ task, role }: TaskProps) {
     });
   };
 
+  const handleCloseTaskDron = async (id: TaskWeeklyPlan["id"]) => {
+    Swal.fire({
+      title: "¿Desea asignar la tarea a horas dron?",
+      text: `La asignación no contará con empleados y se realizará con dron`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Cerrar Asignación",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          if (task.insumos.length > 0) {
+            openModalAction(task.id);
+          }else{
+            await closeTaskDron(id);
+
+            if (lote_plantation_control_id && weekly_plan_id) {
+              await getTasks(lote_plantation_control_id, weekly_plan_id);
+            }
+          }
+
+          toast.success("Asignación creada Correctamente");
+        } catch (error) {
+          toast.error("Hubo un error al cerrar la asignación");
+        }
+      }
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  };
+
   const handleEraseTask = async (idTask: TaskWeeklyPlan["id"]) => {
     setLoading(true);
 
@@ -181,13 +216,14 @@ export default function Task({ task, role }: TaskProps) {
           label={"Fecha de Cierre"}
           text={task.end_date ? formatDate(task.end_date) : "Sin cierre"}
         />
+        {task.use_dron && <DronIcon width={30} height={30} className="bg-orange-500 text-white inline-block p-2 rounded mt-4"/>}
       </div>
 
       <div className="col-start-7 space-y-5">
         {loading ? (
           <Spinner />
         ) : (
-          <>
+          <div className="flex flex-col justify-center items-center gap-4">
             {!task.start_date && !task.end_date && !task.active_closure && (
               <>
                 <SquarePlusIcon
@@ -202,6 +238,12 @@ export default function Task({ task, role }: TaskProps) {
                       }
                     )
                   }
+                />
+                <DronIcon
+                  onClick={() => handleCloseTaskDron(task.id)}
+                  className="cursor-pointer hover:text-gray-500"
+                  width={35}
+                  height={35}
                 />
                 {(role === "admin" || role === "adminagricola") && (
                   <TrashIcon
@@ -277,7 +319,7 @@ export default function Task({ task, role }: TaskProps) {
                 }}
               />
             )}
-          </>
+          </div>
         )}
       </div>
     </div>

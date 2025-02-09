@@ -3,15 +3,15 @@ import { useEffect, useState } from "react";
 import { useAppStore } from "../stores/useAppStore";
 
 //COMPONENTES
-import AdminDashboard from "../views/admin/AdminDashboard";
 import AgricolaDashboard from "../views/agricola/AgricolaDashboard";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
+import GeneralDashboard from "../views/admin/GeneralDashboards";
 
 export default function Dashboard() {
   const dashboards = {
-    'admin': (<AdminDashboard />),
+    'admin': (<GeneralDashboard />),
     'adminagricola':  (<AgricolaDashboard />),
     'auxagricola': (<AgricolaDashboard />)
   };
