@@ -6,16 +6,18 @@ import { HomeIcon } from "lucide-react";
 import Spinner from "./Spinner";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import CalidadNavegation from "./menus-navegations/CalidadNavegation";
 
 export function Sidebar() {
   const navigations = {
     admin: (
       <>
-        <AdminNavegation /> <AgricolaNavegation />
+        <AdminNavegation /> <AgricolaNavegation /> <CalidadNavegation />
       </>
     ),
     adminagricola: <AgricolaNavegation />,
-    auxagricola: <AgricolaNavegation />
+    auxagricola: <AgricolaNavegation />,
+    auxcalidad: <CalidadNavegation />
   };
 
   const [loading, setLoading] = useState<boolean>(true);
