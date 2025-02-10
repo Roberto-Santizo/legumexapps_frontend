@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
-import { DraftTaskCropWeeklyPlan, Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
+import { DraftTaskCropWeeklyPlan, Employee, EmployeeCrop, EmployeesCrop, TaskCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
 import { TasksCropIncompleteSchema, TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema } from "../utils/taskCropWeeklyPlan-schema";
 
 export type TaskCropWeeklyPlanSliceType = {
@@ -13,6 +13,7 @@ export type TaskCropWeeklyPlanSliceType = {
     getTasksCrop: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     getTaskCrop: (id: TaskCropWeeklyPlan['id']) => Promise<TaskCropWeeklyPlan>
     getCropEmployees: (id: TaskCropWeeklyPlan['finca_id']) => Promise<EmployeesCrop>
+    getCropDailyEmployees: (id: TaskCropWeeklyPlan['finca_id']) => Promise<EmployeesCrop>
     getTaskCropDetails: (id: TaskCropWeeklyPlan['id']) => Promise<TaskCropWeeklyPlanDetail>
     closeCropAssigment: (Employees: Employee[], task_crop_id: TaskCropWeeklyPlan['id']) => Promise<void>
     closeDailyAssignment: (id: TaskCropWeeklyPlan['id'], data: EmployeeCrop[], plants: Number) => Promise<void>
@@ -141,6 +142,22 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
     getCropEmployees: async (id) => {
         try {
             const url = `/api/tasks-crops-lotes/employees/${id}`;
+            const { data } = await clienteAxios(url);
+
+            const result = EmployeesTaskCropPlanSchema.safeParse(data);
+
+            if (result.success) {
+                return result.data;
+            }else{
+                throw new Error("Información no válida");
+            }
+        } catch (error) {
+            throw error;
+        }
+    },
+    getCropDailyEmployees: async (id)=> {
+        try {
+            const url = `/api/tasks-crops-lotes/daily-employees/${id}`;
             const { data } = await clienteAxios(url);
 
             const result = EmployeesTaskCropPlanSchema.safeParse(data);

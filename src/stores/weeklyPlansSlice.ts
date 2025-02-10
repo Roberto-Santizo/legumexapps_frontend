@@ -28,7 +28,6 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
                     permission: permission
                 }
             });
-            console.log(permission);
             const result = WeeklyPlansPaginateSchema.safeParse(data);
             if (result.success) {
                 return result.data

@@ -45,7 +45,6 @@ export const createInsumosSlice: StateCreator<InsumosSliceType> = (set) => ({
       await clienteAxios.post(url, formData);
       set({ insumosErrors: [] });
     } catch (error: any) {
-      console.log(error);
       set({ insumosErrors: error.response.data.message });
       throw error;
     }

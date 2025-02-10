@@ -84,11 +84,11 @@ export default function EditarTareaLote() {
     }
   }, [task]);
 
-  const editTaskForm = (data: DraftTaskWeeklyPlan) => {
+  const editTaskForm = async (data: DraftTaskWeeklyPlan) => {
     setLoadingEditTask(true);
     try {
       if (id) {
-        editTask(data, id)
+        await editTask(data, id)
         navigate(previousUrl);
         toast.success("Tarea Editada Correctamente");
       }

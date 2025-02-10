@@ -112,7 +112,6 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
             await clienteAxios.post(url, formData);
             set({ errorsUpdateLote: []})
         } catch (error: any) {
-            console.log(error);
             set({ errorsUpdateLote: error.response.data.message})
             throw error;
         }

@@ -94,7 +94,6 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             await clienteAxios.post(url, formData);
             set({ errorsTareas: []})
         } catch (error: any) {
-            console.log(error);
             set({ errorsTareas: error.response.data.message})
             throw error;
         }

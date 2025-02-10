@@ -94,7 +94,6 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
             await clienteAxios.post(url, formData);
             set({ errorsCreateCDP: []})
         } catch (error: any) {
-            console.log(error);
             set({ errorsCreateCDP: error.response.data.message})
             throw error;
         }

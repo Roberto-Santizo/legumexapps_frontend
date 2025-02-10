@@ -4,6 +4,7 @@ import { FinishedTask } from "../../types";
 import { toast } from "react-toastify";
 import { Eye } from "lucide-react";
 import Spinner from "../Spinner";
+import { Link, useNavigate } from "react-router-dom";
 
 type Props = {
   permission: string
@@ -15,6 +16,7 @@ export default function FinishedTasksCrop({permission} : Props) {
   const getTasksCropFinished = useAppStore(
     (state) => state.getTasksCropFinished
   );
+  const navigate = useNavigate();
 
   const handleGetInfo = async () => {
     setLoading(true);
@@ -74,7 +76,9 @@ export default function FinishedTasksCrop({permission} : Props) {
                     <td className="tbody-td">{task.lote}</td>
                     <td className="tbody-td">{task.start_date}</td>
                     <td>
-                      <Eye />
+                      <Link to={`/planes-semanales/tareas-cosecha-lote/resumen/${task.id}`} target="_blank">
+                        <Eye />
+                      </Link>
                     </td>
                   </tr>
                 ))}

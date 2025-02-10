@@ -2,10 +2,11 @@ import { TaskCropWeeklyPlan } from "../types";
 import { useNavigate, useParams } from "react-router-dom";
 import TaskLabel from "./TaskLabel";
 import {
-  BadgeCheck, FileText,
+  BadgeCheck,
+  FileText,
   Grid2X2Plus,
   ListPlus,
-  SquarePlusIcon
+  SquarePlusIcon,
 } from "lucide-react";
 import { useAppStore } from "../stores/useAppStore";
 import Spinner from "./Spinner";
@@ -35,7 +36,9 @@ export default function TaskCrop({ task }: TaskCropProps) {
         toast.success("Tarea cerrada semanalmente");
       }
     } catch (error) {
-      toast.error("Hubo un error al cerrar la tarea, intentelo de nuevo más tarde");
+      toast.error(
+        "Hubo un error al cerrar la tarea, intentelo de nuevo más tarde"
+      );
     } finally {
       setLoading(false);
     }
@@ -49,16 +52,38 @@ export default function TaskCrop({ task }: TaskCropProps) {
         <TaskLabel label={"CULTIVO"} text={task.cultivo} />
       </div>
 
-      {(loading || loadingReloadTasks) ? (
+      {loading || loadingReloadTasks ? (
         <Spinner />
       ) : (
         <div className="col-start-7 space-y-5">
-          {task.closed && <BadgeCheck className="text-green-500" />}
+          {task.closed && (
+            <>
+              <BadgeCheck className="text-green-500" />
+              <FileText
+                className="cursor-pointer hover:text-gray-400"
+                onClick={() =>
+                  navigate(
+                    `/planes-semanales/tareas-cosecha-lote/resumen/${task.id}`
+                  )
+                }
+              />
+            </>
+          )}
           {!task.closed && task.has_assigments && !task.incomplete && (
-            <BadgeCheck
-              className="cursor-pointer hover:text-gray-400"
-              onClick={() => handleCloseTask(task.id)}
-            />
+            <>
+              <BadgeCheck
+                className="cursor-pointer hover:text-gray-400"
+                onClick={() => handleCloseTask(task.id)}
+              />
+              <FileText
+                className="cursor-pointer hover:text-gray-400"
+                onClick={() =>
+                  navigate(
+                    `/planes-semanales/tareas-cosecha-lote/resumen/${task.id}`
+                  )
+                }
+              />
+            </>
           )}
 
           {!task.assigment_today && !task.closed && (

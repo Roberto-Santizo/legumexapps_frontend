@@ -54,7 +54,7 @@ export default function AgricolaDashboard() {
       <div className="mt-10 grid grid-cols-12 gap-5">
         {loading && <Spinner />}
 
-        {!loading && (
+        {(!loading && role && permission )&& (
           <>
             {(role === "admin" || role === "adminagricola") && (
               <>

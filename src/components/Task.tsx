@@ -217,6 +217,7 @@ export default function Task({ task, role }: TaskProps) {
           text={task.end_date ? formatDate(task.end_date) : "Sin cierre"}
         />
         {task.use_dron && <DronIcon width={30} height={30} className="bg-orange-500 text-white inline-block p-2 rounded mt-4"/>}
+        {task.weekly_plan_change && <p className="bg-red-500 text-white inline-block p-2 rounded mt-4 font-bold">ATRASADA</p>}
       </div>
 
       <div className="col-start-7 space-y-5">

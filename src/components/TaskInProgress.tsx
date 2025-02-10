@@ -7,11 +7,12 @@ type Props = {
 };
 
 export default function TaskInProgress({ task }: Props) {
+  const url = task.total_employees ? `/planes-semanales/tareas-lote/informacion/${task.id}` : `/planes-semanales/tareas-cosecha-lote/informacion/${task.id}`
   return (
     <Link
       key={task.id}
       target="_blank"
-      to={`/planes-semanales/tareas-lote/informacion/${task.id}`}
+      to={url}
       className="flex justify-between p-2 rounded shadow hover:bg-gray-100 hover:scale-105 transition-all"
     >
       <div className="flex gap-2">
