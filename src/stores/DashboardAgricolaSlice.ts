@@ -13,7 +13,6 @@ import {
     SummaryFincaTasks,
     TaskInProgress,
 } from "../types";
-import { permissions } from "../data/data";
 
 export type DashboardAgricolaSliceType = {
     getDronHours: (permission : string) => Promise<number>;

@@ -7,7 +7,7 @@ export type TasksCropSliceType = {
     getAllTasksCrop: () => Promise<TaskCrop[]>
 }
 
-export const createTasksCropSlice: StateCreator<TasksCropSliceType> = (set) => ({
+export const createTasksCropSlice: StateCreator<TasksCropSliceType> = () => ({
    
     getAllTasksCrop: async () => {
         try {

@@ -6,19 +6,14 @@ interface ProtectedAdminRoutesProps {
 
 export default function ProtectedAdminRoutes({ children }: ProtectedAdminRoutesProps) {
   const logedIn = useAppStore((state) => state.logedIn);
-  const loadingAuth = useAppStore((state) => state.loadingAuth);
   const loadingGetRole = useAppStore((state) => state.loadingGetRole);
-  const userRole = useAppStore((state) => state.userRole);
 
 
-  if(!loadingAuth && !loadingGetRole){
+  if(!loadingGetRole){
     if (!logedIn) {
       return <Navigate to="/login" replace />;
     }
-  
-    // if (userRole !== "admin") {
-    //   return <Navigate to="/dashboard" replace />;
-    // }
+
   }
 
   return children;

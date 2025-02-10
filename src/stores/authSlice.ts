@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { AuthUser, LoginUser, User } from "../types";
+import { AuthUser, LoginUser } from "../types";
 import clienteAxios from "../config/axios";
 import { AuthUserSchema } from "../utils/users-schema";
 import { userRoleSchema } from "../utils/roles-schema";

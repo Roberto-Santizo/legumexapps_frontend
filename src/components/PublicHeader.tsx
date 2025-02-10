@@ -2,11 +2,24 @@ import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import { useAppStore } from "../stores/useAppStore";
 import Spinner from "./Spinner";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function PublicHeader() {
   const logedIn = useAppStore((state) => state.logedIn);
+  const [loading,setLoading] = useState<boolean>(false)
   const logOut = useAppStore((state) => state.logOut);
-  const loadingAuth = useAppStore((state) => state.loadingAuth);
+
+  const handleLogOut = async () => {
+    setLoading(true);
+    try {
+      await logOut();
+    } catch (error) {
+      toast.error('Hubo un error');
+    }finally{
+      setLoading(false);
+    }
+  }
 
   return (
     <header className="p-5 border-b bg-white shadow">
@@ -23,10 +36,10 @@ export default function PublicHeader() {
                 Adminsistración
               </Link>
               <button
-                onClick={() => logOut()}
+                onClick={() => handleLogOut()}
                 className="text-gray-500 font-bold uppercase"
               >
-                {loadingAuth ? <Spinner /> : "Cerrar Sesión"}
+                {loading ? <Spinner /> : "Cerrar Sesión"}
               </button>
             </div>
           ) : (

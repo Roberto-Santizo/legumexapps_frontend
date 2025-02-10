@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function CrearInsumo() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
   const insumosErrors = useAppStore((state) => state.insumosErrors);
   const createInsumo = useAppStore((state) => state.createInsumo);
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ export default function CrearInsumo() {
       toast.success("Insumo creado correctamente");
       navigate('/insumos');
     } catch (error) {
-      setError(true);
+      toast.error('Hubo un error al crear el insumo');
     } finally {
       setLoading(false);
     }

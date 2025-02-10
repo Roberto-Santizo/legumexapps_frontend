@@ -3,7 +3,7 @@ import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import Spinner from "../../../components/Spinner";
 import { useForm } from "react-hook-form";
-import { DraftTaskWeeklyPlan, Plantation, TaskWeeklyPlan, WeeklyPlan } from "../../../types";
+import { DraftTaskWeeklyPlan, TaskWeeklyPlan, WeeklyPlan } from "../../../types";
 import Error from "../../../components/Error";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
