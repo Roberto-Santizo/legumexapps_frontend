@@ -14,6 +14,8 @@ import { Permission } from "../../types";
 
 export default function AgricolaDashboard() {
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingPermssion, setLoadingPermisson] = useState<boolean>(true);
+
   const [role, setRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
@@ -28,6 +30,8 @@ export default function AgricolaDashboard() {
       setPermission(permissions[0]);
     } catch (error) {
       toast.error("Error al cargar el contenido");
+    }finally{
+      setLoadingPermisson(false)
     }
   };
 
@@ -54,7 +58,7 @@ export default function AgricolaDashboard() {
       <div className="mt-10 grid grid-cols-12 gap-5">
         {loading && <Spinner />}
 
-        {(!loading && role && permission )&& (
+        {(!loading && !loadingPermssion && role && permission )&& (
           <>
             {(role === "admin" || role === "adminagricola") && (
               <>
