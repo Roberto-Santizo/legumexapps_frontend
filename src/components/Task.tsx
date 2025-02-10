@@ -209,12 +209,12 @@ export default function Task({ task, role }: TaskProps) {
         <TaskLabel
           label={"Fecha de Asignación"}
           text={
-            task.start_date ? formatDate(task.start_date) : "Sin asignación"
+            task.start_date ? task.start_date : "Sin asignación"
           }
         />
         <TaskLabel
           label={"Fecha de Cierre"}
-          text={task.end_date ? formatDate(task.end_date) : "Sin cierre"}
+          text={task.end_date ? task.end_date : "Sin cierre"}
         />
         {task.use_dron && <DronIcon width={30} height={30} className="bg-orange-500 text-white inline-block p-2 rounded mt-4"/>}
         {task.weekly_plan_change && <p className="bg-red-500 text-white inline-block p-2 rounded mt-4 font-bold">ATRASADA</p>}
