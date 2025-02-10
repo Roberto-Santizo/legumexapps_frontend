@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
-import { DraftTaskCropWeeklyPlan, Employee, EmployeeCrop, EmployeesCrop, TaskCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
+import { DraftTaskCropWeeklyPlan, Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "../types";
 import { TasksCropIncompleteSchema, TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema } from "../utils/taskCropWeeklyPlan-schema";
 
 export type TaskCropWeeklyPlanSliceType = {
