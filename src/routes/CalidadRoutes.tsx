@@ -6,7 +6,7 @@ import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
 const routes = [
   { path: "/rmp", component: lazy(() => import("../views/calidad/rmp/IndexRMP")), roles: ['admin','axucalidad','pcampo'] },
-  { path: "/rmp/crear", component: lazy(() => import("../views/calidad/rmp/CampoFieldRMP")), roles: ['admin','axucalidad','pcampo'] },
+  { path: "/rmp/crear", component: lazy(() => import("../views/calidad/rmp/CampoFormRMP")), roles: ['admin','axucalidad','pcampo'] },
 
 ];
 
