@@ -1,4 +1,4 @@
-import { Clock } from "lucide-react";
+import { Clock, PlayCircleIcon } from "lucide-react";
 import { TaskInProgress as TaskInProgressType } from "../types";
 import { Link } from "react-router-dom";
 
@@ -16,7 +16,7 @@ export default function TaskInProgress({ task }: Props) {
       className="flex justify-between p-2 rounded shadow hover:bg-gray-100 hover:scale-105 transition-all"
     >
       <div className="flex gap-2">
-        <Clock className="text-orange-500"/>
+        {!task.paused ? (<Clock className="text-orange-500"/>) : (<PlayCircleIcon className="text-green-500"/>)}
         <p>
           Tarea: {task.task} - {task.finca} - {task.lote} - {task.week}
         </p>
