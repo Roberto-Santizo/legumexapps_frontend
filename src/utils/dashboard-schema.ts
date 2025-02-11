@@ -24,6 +24,7 @@ export const TaskInProgressSchema = z.object({
     week:z.number(),
     assigned_employees: z.number(),
     total_employees: z.number().nullable(),
+    paused: z.boolean()
 });
 
 export const TasksInProgressSchema = z.object({
