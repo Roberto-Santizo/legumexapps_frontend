@@ -5,7 +5,9 @@ import Spinner from "../components/Spinner";
 import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
 const routes = [
-  { path: "/recepcion-mp", component: lazy(() => import("../views/calidad/rmp/IndexRMP")), roles: ['admin','axucalidad','pcampo'] },
+  { path: "/rmp", component: lazy(() => import("../views/calidad/rmp/IndexRMP")), roles: ['admin','axucalidad','pcampo'] },
+  { path: "/rmp/crear", component: lazy(() => import("../views/calidad/rmp/CampoFieldRMP")), roles: ['admin','axucalidad','pcampo'] },
+
 ];
 
 export default function CalidadRoutes() {
@@ -25,5 +27,6 @@ export default function CalidadRoutes() {
         />
       ))}
     </Route>
+
   );
 }
