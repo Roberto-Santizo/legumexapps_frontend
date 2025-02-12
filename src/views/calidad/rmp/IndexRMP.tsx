@@ -38,7 +38,7 @@ export default function IndexRMP() {
 
                 <div className="flex flex-row justify-end gap-5">
                     <Link
-                        to="/rmp/crear"
+                        to="/rmp-produccion/grn" //Aca Modifico para ver el funcionamiento de las vistas que creo
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                     >
                         <PlusIcon className="w-8" />
