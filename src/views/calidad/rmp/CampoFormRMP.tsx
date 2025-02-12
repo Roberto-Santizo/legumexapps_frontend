@@ -1,0 +1,338 @@
+import { Button } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import SignatureCanvas from "react-signature-canvas";
+import { useEffect, useRef, useState } from 'react';
+import Error from "../../../components/Error";
+import { useAppStore } from "../../../stores/useAppStore";
+import { toast } from "react-toastify";
+import { DraftBoletaRMP, Product } from "../../../types";
+import Select from "react-select";
+import Spinner from "../../../components/Spinner";
+import { useNavigate } from "react-router-dom";
+
+export default function CampoFieldRMP() {
+  const getProducts = useAppStore((state) => state.getProducts);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [products, setProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
+  const inspector_signature = useRef({} as SignatureCanvas);
+  const prod_signature = useRef({} as SignatureCanvas);
+  const createBoletaRMP = useAppStore((state) => state.createBoletaRMP)
+
+  const productsOptions = products.map((product) => ({
+    value: product.id,
+    label: `${product.product} - ${product.variety}`,
+  }));
+
+  const handleGetProducts = async () => {
+    try {
+      const data = await getProducts();
+      setProducts(data);
+    } catch (error) {
+      toast.error('Hubo un error al traer los productos');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<DraftBoletaRMP>();
+
+  const onSubmit = async (data : DraftBoletaRMP) => {
+    setLoading(true);
+    try {
+      await createBoletaRMP(data);
+      toast.success('Boleta Registrada Correctamente');
+      navigate('/rmp');
+    } catch (error) {
+      toast.error('Hubo un error al guardar la información, intentelo de nuevo más tarde');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    handleGetProducts();
+  }, []);
+
+  return (
+    <>
+      <h2 className="text-4xl font-bold">Crear Boleta de Recepcion de Materia Prima </h2>
+
+      <div>
+        <form
+          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+           {(errors.prod_signature || errors.inspector_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
+          {/* {roleErrores.length > 0
+            ? roleErrores.map((error, index) => (
+              <Error key={index}>{error}</Error>
+            ))
+            : null} */}
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="coordinador">
+              Coordinador:
+            </label>
+            <input
+              autoComplete="off"
+              id="coordinator_name"
+              type="text"
+              placeholder={"Nombre del coordinador"}
+              className="border border-black p-3"
+              {...register("coordinator_name", { required: "El coordinador es obligatorio" })}
+            />
+            {errors.coordinator_name && <Error>{errors.coordinator_name?.message?.toString()}</Error>}
+          </div>
+
+          <div>
+            <label className="text-lg font-bold uppercase" htmlFor="coordinador">
+              TIPO DE PRODUCTO:
+            </label>
+            <Controller
+              name="product_id"
+              control={control}
+              rules={{ required: "Seleccione un producto" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={productsOptions}
+                  id="product_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  onChange={(selected) => field.onChange(selected?.value)}
+                  value={productsOptions.find(
+                    (option) => option.value === field.value
+                  )}
+                />
+              )}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="transport">
+              Transporte:
+            </label>
+            <input
+              autoComplete="off"
+              id="transport"
+              type="text"
+              placeholder={"Nombre de la empresa de transporte"}
+              className="border border-black p-3"
+              {...register("transport", { required: "El nombre de la empresa de transporte es obligatorio" })}
+            />
+            {errors.transport && <Error>{errors.transport?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="pilot_name">
+              Nombre Piloto:
+            </label>
+            <input
+              autoComplete="off"
+              id="pilot_name"
+              type="text"
+              placeholder={"Nombre del piloto"}
+              className="border border-black p-3"
+              {...register("pilot_name", { required: "El nombre del piloto es obligatorio" })}
+            />
+            {errors.pilot_name && <Error>{errors.pilot_name?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="inspector_name">
+              Nombre Inspector:
+            </label>
+            <input
+              autoComplete="off"
+              id="inspector_name"
+              type="text"
+              placeholder={"Nombre del inspector"}
+              className="border border-black p-3"
+              {...register("inspector_name", { required: "El nombre del inspector es obligatorio" })}
+            />
+            {errors.inspector_name && <Error>{errors.inspector_name?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="doc_date">
+              Fecha:
+            </label>
+            <input
+              autoComplete="off"
+              id="doc_date"
+              type="date"
+              className="border border-black p-3"
+              {...register("doc_date", { required: "La fecha es obligatoria" })}
+            />
+            {errors.doc_date && <Error>{errors.doc_date?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="cdp">
+              CDP:
+            </label>
+            <input
+              autoComplete="off"
+              id="cdp"
+              type="text"
+              placeholder={"Control de Plantación"}
+              className="border border-black p-3"
+              {...register("cdp", { required: "El CDP es obligatorio" })}
+            />
+            {errors.cdp && <Error>{errors.cdp?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="transport_plate">
+              Placa del transporte:
+            </label>
+            <input
+              autoComplete="off"
+              id="transport_plate"
+              type="text"
+              placeholder={"Numero de placa"}
+              className="border border-black p-3"
+              {...register("transport_plate", { required: "La placa es obligatoria" })}
+            />
+            {errors.transport_plate && <Error>{errors.transport_plate?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="weight">
+              Peso Bruto:
+            </label>
+            <input
+              autoComplete="off"
+              id="weight"
+              type="number"
+              placeholder={"Peso bruto"}
+              className="border border-black p-3"
+              {...register("weight", { required: "El peso bruto es obligatorio" })}
+            />
+            {errors.weight && <Error>{errors.weight?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="total_baskets">
+              Cantidad de Canastas:
+            </label>
+            <input
+              autoComplete="off"
+              id="total_baskets"
+              type="number"
+              placeholder={"Cantidad de canastas"}
+              className="border border-black p-3"
+              {...register("total_baskets", { required: "La cantidad de canastas es obligatoria" })}
+            />
+            {errors.total_baskets && <Error>{errors.total_baskets?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="quality_percentage">
+              Porcentaje De Calidad:
+            </label>
+            <input
+              autoComplete="off"
+              id="quality_percentage"
+              type="number"
+              placeholder={"Porcentaje de calidad"}
+              className="border border-black p-3"
+              {...register("quality_percentage", { required: "El porcentaje de calidad es obligatorio" })}
+            />
+            {errors.quality_percentage && <Error>{errors.quality_percentage?.message?.toString()}</Error>}
+          </div>
+
+          <div className="grid grid-cols-2 gap-5">
+            <div className="space-y-2 text-center">
+              <Controller
+                name="inspector_signature"
+                control={control}
+                rules={{ required: 'La firma del Inspector Agrícola es Obligatoria' }}
+                render={({field}) => (
+                  <div className="p-2">
+                    <SignatureCanvas
+                      ref={inspector_signature}
+                      penColor="black"
+                      canvasProps={{ className: "w-full h-40 border" }}
+                      onEnd={() => {
+                        field.onChange(inspector_signature.current.toDataURL());
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                      onClick={() => {
+                        inspector_signature.current.clear();
+                        field.onChange(""); 
+                      }}
+                    >
+                      Limpiar Firma
+                    </button>
+                  </div>
+                )}
+              />
+              <label className="block text-sm font-medium text-xl">
+                Firma Inspector agrícola
+              </label>
+            </div>
+
+            <div className="space-y-2 text-center">
+              <Controller
+                name="prod_signature"
+                control={control}
+                rules={{ required: 'La firma del productor es obligatoria'}}
+                render={({field}) => (
+                  <div className="p-2">
+                    <SignatureCanvas
+                      ref={prod_signature}
+                      penColor="black"
+                      canvasProps={{ className: "w-full h-40 border" }}
+                      onEnd={() => {
+                        field.onChange(prod_signature.current.toDataURL());
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                      onClick={() => {
+                        prod_signature.current.clear();
+                        field.onChange("");
+                      }}
+                    >
+                      Limpiar Firma
+                    </button>
+                  </div>
+                )}
+              />
+              <label className="block text-sm font-medium text-xl">
+                Firma De Productor
+              </label>
+            </div>
+          </div>
+
+
+          <Button
+            disabled={loading}
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ marginTop: 2 }}
+          >
+            {loading ? (
+              <Spinner />
+            ) : (
+              <p className="font-bold text-lg">Crear Boleta</p>
+            )}
+          </Button>
+        </form>
+      </div>
+    </>
+  );
+}
