@@ -17,7 +17,7 @@ export function Sidebar() {
     ),
     adminagricola: <AgricolaNavegation />,
     auxagricola: <AgricolaNavegation />,
-    auxcalidad: <CalidadNavegation />
+    pprod: <CalidadNavegation />
   };
 
   const [loading, setLoading] = useState<boolean>(true);

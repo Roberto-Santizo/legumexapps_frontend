@@ -16,8 +16,9 @@ import { TasksCropSliceType, createTasksCropSlice } from './tasksCropSlice';
 import { DashboardAgricolaSliceType,createDashboardAgricolaSlice } from './DashboardAgricolaSlice';
 import { BoletasRecepcionType, createBoletaRecepcionSlice } from './boletaRecepcionSlice';
 import { ProductSliceType, createProductSlice } from './productsSlice';
+import { BasketSliceType, createBasketSlice } from './basketSlice';
 
-export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType & TareasSliceType & ControlPlantationSliceType & LoteSliceType & FincaSliceType & WeeklyPlansSliceType & TaskWeeklyPlanSliceType & TaskCropWeeklyPlanSliceType & InsumosSliceType & TasksCropSliceType & DashboardAgricolaSliceType & BoletasRecepcionType & ProductSliceType>()(devtools((...a) => ({
+export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType & TareasSliceType & ControlPlantationSliceType & LoteSliceType & FincaSliceType & WeeklyPlansSliceType & TaskWeeklyPlanSliceType & TaskCropWeeklyPlanSliceType & InsumosSliceType & TasksCropSliceType & DashboardAgricolaSliceType & BoletasRecepcionType & ProductSliceType & BasketSliceType>()(devtools((...a) => ({
     ...createUsersSlice(...a),
     ...createAuthSlice(...a),
     ...createRolesSlice(...a),
@@ -34,4 +35,5 @@ export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceTyp
     ...createDashboardAgricolaSlice(...a),
     ...createBoletaRecepcionSlice(...a),
     ...createProductSlice(...a),
+    ...createBasketSlice(...a),
 })))
