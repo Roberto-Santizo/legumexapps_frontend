@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CalidadNavegation from "./menus-navegations/CalidadNavegation";
 
+
 export function Sidebar() {
   const navigations = {
     admin: (
@@ -17,7 +18,7 @@ export function Sidebar() {
     ),
     adminagricola: <AgricolaNavegation />,
     auxagricola: <AgricolaNavegation />,
-    auxcalidad: <CalidadNavegation />
+    auxcalidad: <CalidadNavegation />,
   };
 
   const [loading, setLoading] = useState<boolean>(true);
