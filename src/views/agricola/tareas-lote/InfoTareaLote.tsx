@@ -76,18 +76,26 @@ export default function InfoTareaLote() {
                     </p>
                     <p className="p-5 shadow bg-gray-200">
                       <span className="font-bold">
-                        Horas Rendimiento Teórico:{" "}
-                      </span>
-                      {taskDetail.hours}
-                    </p>
-                    <p className="p-5 shadow bg-gray-200">
-                      <span className="font-bold">
                         Horas Rendimiento Real:{" "}
                       </span>
                       {taskDetail.real_hours}
                     </p>
                   </>
                 )}
+                {taskDetail.passed_hours && (
+                  <p className="p-5 shadow bg-gray-200">
+                    <span className="font-bold">
+                      Horas Transcurridas Reales:{" "}
+                    </span>
+                    {taskDetail.passed_hours}
+                  </p>
+                )}
+                <p className="p-5 shadow bg-gray-200">
+                  <span className="font-bold">
+                    Horas Rendimiento Teórico:{" "}
+                  </span>
+                  {taskDetail.hours}
+                </p>
               </div>
 
               <div className="shadow p-5">
@@ -139,33 +147,33 @@ export default function InfoTareaLote() {
                 <div className="mt-5">
                   {taskDetail.insumos.length > 0 ? (
                     <table className="table">
-                    <thead>
-                      <tr className="thead-tr">
-                        <th scope="col" className="thead-th">
-                          Insumo
-                        </th>
-                        <th scope="col" className="thead-th">
-                          Cantidad Asignada
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {taskDetail.insumos.map((insumo) => (
-                        <tr className="tbody-tr" key={insumo.id}>
-                          <td className="tbody-td">
-                            <p>{insumo.name} </p>
-                          </td>
-                          <td className="tbody-td">
-                            <p>
-                              {insumo.assigned_quantity} {insumo.measure}
-                            </p>
-                          </td>
+                      <thead>
+                        <tr className="thead-tr">
+                          <th scope="col" className="thead-th">
+                            Insumo
+                          </th>
+                          <th scope="col" className="thead-th">
+                            Cantidad Asignada
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {taskDetail.insumos.map((insumo) => (
+                          <tr className="tbody-tr" key={insumo.id}>
+                            <td className="tbody-td">
+                              <p>{insumo.name} </p>
+                            </td>
+                            <td className="tbody-td">
+                              <p>
+                                {insumo.assigned_quantity} {insumo.measure}
+                              </p>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   ) : (<p className="text-center">No cuenta con insumos asignados</p>)}
-                  
+
                 </div>
               </div>
 

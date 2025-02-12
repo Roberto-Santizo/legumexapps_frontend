@@ -78,7 +78,8 @@ export const TaskWeeklyPlanDetailsSchema = z.object({
     })
   ),
   insumos: z.array(TaskInsumoSchema),
-  use_dron: z.boolean()
+  use_dron: z.boolean(),
+  passed_hours: z.number().nullable()
 });
 
 export const TasksWeeklyPlanSchema = z.object({
