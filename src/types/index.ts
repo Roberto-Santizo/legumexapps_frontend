@@ -15,7 +15,8 @@ import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema';
 import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema';
 import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '../utils/dashboard-schema';
 import { ProductSchema } from '../utils/product-schema';
-import { DraftBoletaSchema } from '../utils/boletarmp-schema';
+import { BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaSchema } from '../utils/boletarmp-schema';
+import { BasketSchema } from '../utils/baskets-schema';
 
 
 //PERMISOS
@@ -117,6 +118,12 @@ export type SummaryFincaTasks = z.infer<typeof SummaryFincaTasksSchema>
 //PRODUCTOS
 export type Product = z.infer<typeof ProductSchema>
 
+//CANASTAS
+export type Basket = z.infer<typeof BasketSchema>
+
 //BOLETAS
 export type DraftBoletaRMP = z.infer<typeof DraftBoletaSchema>
+export type BoletasPaginate = z.infer<typeof BoletasPaginateSchema>
+export type Boleta = z.infer<typeof BoletaSchema>
+export type BoletaDetail = z.infer<typeof BoletaRMPDetailSchema>
 

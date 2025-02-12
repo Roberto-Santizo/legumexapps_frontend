@@ -3,9 +3,14 @@ import { useForm } from "react-hook-form";
 import SignatureCanvas from "react-signature-canvas";
 import { useRef, useState } from "react";
 
-import Error from "../../../../components/Error";
+import Error from "../../../components/Error";
+import { BoletaDetail } from "../../../types";
 
-export default function ProductionFieldRMP() {
+type Props = {
+  boleta: BoletaDetail
+}
+
+export default function Boleta_form2({ boleta }: Props) {
   const {
     register,
     formState: { errors },
@@ -34,10 +39,27 @@ export default function ProductionFieldRMP() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">
-        Crear Boleta Recepción de Materia Prima
-      </h2>
+      <div>
+        <div className="space-y-10">
+          <div className="mt-5 shadow-xl p-5 space-y-5">
+            <p className="font-bold text-xl uppercase">Información de Campo</p>
+            <div className="grid grid-cols-4 gap-2 text-xl">
+              <p className="bg-gray-200 p-5"><span className="font-bold">Producto: </span>{boleta.product}</p>
+              <p className="bg-gray-200 p-5"><span className="font-bold">Variedad: </span>{boleta.variety}</p>
+              <p className="bg-gray-200 p-5"><span className="font-bold">CDP: </span>{boleta.cdp}</p>
+              <p className="bg-gray-200 p-5"><span className="font-bold">Peso Bruto: </span>{boleta.gross_weight} lbs</p>
+              <p className="bg-gray-200 p-5"><span className="font-bold">Tara: </span>{boleta.weight_baskets} lbs</p>
+              <p className="bg-gray-200 p-5"><span className="font-bold">Peso Materia Prima: </span>{boleta.net_weight} lbs</p>
+              <p className="bg-gray-200 p-5"><span className="font-bold">Porcentaje de Campo: </span>{boleta.percentage_field} %</p>
+              <p className="bg-gray-200 p-5"><span className="font-bold">Libras a pagar: </span>{boleta.valid_pounds} lbs</p>
+            </div>
+          </div>
 
+          <div>
+            <p className="font-bold text-xl uppercase">Información de Planta</p>
+          </div>
+        </div>
+      </div>
       <div>
         <form className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5">
           <div className="flex flex-col gap-2">
@@ -100,7 +122,6 @@ export default function ProductionFieldRMP() {
             )}
           </div>
 
-          {/* Firma Productor */}
           <div className="space-y-2">
             <label className="block text-sm font-medium">
               Firma Productor
@@ -108,13 +129,13 @@ export default function ProductionFieldRMP() {
                 <span className="ml-2 text-xs text-green-600">✓ Firmado</span>
               )}
             </label>
-            
+
             <div className="relative">
               <SignatureCanvas
                 ref={sigCanvasProductor}
                 penColor="black"
                 canvasProps={{
-                    id: "signature",
+                  id: "signature",
                   className:
                     "border border-gray-500 rounded-md w-full h-40 bg-white",
                 }}
