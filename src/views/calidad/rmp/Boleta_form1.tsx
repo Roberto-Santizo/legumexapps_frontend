@@ -311,7 +311,7 @@ export default function Boleta_form1() {
                   </div>
                 )}
               />
-              <label className="block text-sm font-medium text-xl">
+              <label className="block font-medium text-xl">
                 Firma Inspector agrícola
               </label>
             </div>
@@ -344,7 +344,7 @@ export default function Boleta_form1() {
                   </div>
                 )}
               />
-              <label className="block text-sm font-medium text-xl">
+              <label className="block font-medium text-xl">
                 Firma De Productor
               </label>
             </div>

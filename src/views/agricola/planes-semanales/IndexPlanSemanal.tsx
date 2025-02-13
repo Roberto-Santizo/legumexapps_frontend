@@ -16,10 +16,8 @@ import LoadingOverlay from "../../../components/LoadingOverlay";
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingDownloadReport, setLoadingDownloadReport] =
-    useState<boolean>(false);
-  const [loadingDownloadSingleReport, setLoadingSingleReport] =
-    useState<boolean>(false);
+  const [loadingDownloadReport, setLoadingDownloadReport] =useState<boolean>(false);
+  const [loadingDownloadSingleReport, setLoadingSingleReport] =useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [plansId, setPlansId] = useState<WeeklyPlan["id"][]>([]);
   const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);

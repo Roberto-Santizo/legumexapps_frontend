@@ -17,6 +17,13 @@ export const DraftBoletaSchema = z.object({
     basket_id: z.string()
 });
 
+export const DraftFormProdSchema = z.object({
+    total_baskets: z.number(),
+    basket_id: z.string(),
+    gross_weight: z.number(),
+    receptor_signature: z.string()
+});
+
 export const BoletaRMPDetailSchema = z.object({
     id: z.string(),
     plate:  z.string(),

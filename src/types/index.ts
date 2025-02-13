@@ -1,40 +1,42 @@
-import { z } from 'zod';
-import { AuthUserSchema, DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '../utils/users-schema';
-import { Role } from '../utils/roles-schema';
-import { Permission } from '../utils/permissions-schema';
-import { TareaSchema, TareasPaginateSchema } from '../utils/tareas-schema';
-import { CDPSchema, Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchema, Recipe } from '../utils/plantation-schema';
-import { DraftLote, LoteSchema, LotesPaginateSchema } from '../utils/lotes-schema';
-import { Finca } from '../utils/fincas-schema';
-import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '../utils/weekly_plans-schema';
-import { DraftTaskWeeklyPlan, EditTaskWeeklySchema, TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema';
-import { EmployeeSchema } from '../utils/employee-schema';
-import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema';
-import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema";
-import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema';
-import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema';
-import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '../utils/dashboard-schema';
-import { ProductSchema } from '../utils/product-schema';
-import { BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaSchema } from '../utils/boletarmp-schema';
-import { BasketSchema } from '../utils/baskets-schema';
+import { z } from 'zod'
+import { AuthUserSchema, DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '../utils/users-schema'
+import { Role } from '../utils/roles-schema'
+import { Permission } from '../utils/permissions-schema'
+import { TareaSchema, TareasPaginateSchema } from '../utils/tareas-schema'
+import { CDPSchema, Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchema, Recipe } from '../utils/plantation-schema'
+import { DraftLote, LoteSchema, LotesPaginateSchema } from '../utils/lotes-schema'
+import { Finca } from '../utils/fincas-schema'
+import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '../utils/weekly_plans-schema'
+import { DraftTaskWeeklyPlan, EditTaskWeeklySchema, TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema'
+import { EmployeeSchema } from '../utils/employee-schema'
+import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema'
+import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
+import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema'
+import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema'
+import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '../utils/dashboard-schema'
+import { ProductSchema } from '../utils/product-schema'
+import { BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaSchema, DraftFormProdSchema } from '../utils/boletarmp-schema'
+import { BasketSchema } from '../utils/baskets-schema'
+import { QualityVarietiesPaginateSchema, QualityVarietySchema } from '../utils/calidadVariedades-schema'
+import { DraftDefectoSchema } from '../utils/defectos-schema'
 
 
 //PERMISOS
-export type Permission = z.infer<typeof Permission>;
-export type DraftPermssion = Omit<Permission, 'id' | 'created_at' | 'updated_at'>;
+export type Permission = z.infer<typeof Permission>
+export type DraftPermssion = Omit<Permission, 'id' | 'created_at' | 'updated_at'>
 
 //ROLES
-export type Role = z.infer<typeof Role>;
-export type DraftRole = Omit<Role, 'id'>;
+export type Role = z.infer<typeof Role>
+export type DraftRole = Omit<Role, 'id'>
 
 //USUARIOS
-export type User = z.infer<typeof UserSchema>;
-export type Users = z.infer<typeof UsersSchema>;
-export type DraftUser = z.infer<typeof DraftUserSchema>;
-export type UserDetail = z.infer<typeof UserDetailsSchema>;
+export type User = z.infer<typeof UserSchema>
+export type Users = z.infer<typeof UsersSchema>
+export type DraftUser = z.infer<typeof DraftUserSchema>
+export type UserDetail = z.infer<typeof UserDetailsSchema>
 export type AuthUser = z.infer<typeof AuthUserSchema>
 
-// export type UserCollection = z.infer<typeof UserCollectionSchema>;
+// export type UserCollection = z.infer<typeof UserCollectionSchema>
 
 
 export type LoginUser = {
@@ -55,15 +57,15 @@ export type DraftTarea = Omit<Tarea, 'id' >
 export type Crop = z.infer<typeof Crop>
 
 //CPDS
-export type Recipe = z.infer<typeof Recipe >;
+export type Recipe = z.infer<typeof Recipe >
 
-export type Plantation = z.infer<typeof Plantation>;
+export type Plantation = z.infer<typeof Plantation>
 export type CDP = z.infer<typeof CDPSchema>
 export type Plantations = z.infer<typeof PlantationsSchema>
-export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>;
+export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>
 
 
-export type DraftCDP = z.infer<typeof DraftCDP>;
+export type DraftCDP = z.infer<typeof DraftCDP>
 
 
 //LOTES
@@ -101,10 +103,10 @@ export type Insumo = z.infer<typeof InsumoSchema>
 export type DraftInsumo = Omit<Insumo,'id'>
 export type Insumos = z.infer<typeof InsumosSchema>
 
-export type TaskInsumo = z.infer<typeof TaskInsumoSchema>;
+export type TaskInsumo = z.infer<typeof TaskInsumoSchema>
 
 //EMPLEADOS
-export type Employee = z.infer<typeof EmployeeSchema>;
+export type Employee = z.infer<typeof EmployeeSchema>
 export type EmployeesCrop = z.infer<typeof EmployeesTaskCropPlanSchema>
 export type EmployeeCrop = z.infer<typeof EmployeeTaskCropPlanSchema>
 
@@ -126,4 +128,13 @@ export type DraftBoletaRMP = z.infer<typeof DraftBoletaSchema>
 export type BoletasPaginate = z.infer<typeof BoletasPaginateSchema>
 export type Boleta = z.infer<typeof BoletaSchema>
 export type BoletaDetail = z.infer<typeof BoletaRMPDetailSchema>
+export type DraftFormProd = z.infer<typeof DraftFormProdSchema>
+
+//VARIEDADES CALIDADD
+export type QualityVarietiesPaginate = z.infer<typeof QualityVarietiesPaginateSchema>
+export type QualityVariety = z.infer<typeof QualityVarietySchema>
+export type DraftQualityVariety = Omit<QualityVariety, 'id'>
+
+//DEFECTOS
+export type DraftDefecto = z.infer<typeof DraftDefectoSchema>
 
