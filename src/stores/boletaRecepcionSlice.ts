@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { Boleta, BoletaDetail, BoletasPaginate, DraftBoletaRMP } from "../types";
+import { Boleta, BoletaDetail, BoletasPaginate, DraftBoletaRMP, DraftFormProd } from "../types";
 import clienteAxios from "../config/axios";
 import { BoletaRMPDetailSchema, BoletasPaginateSchema } from "../utils/boletarmp-schema";
 
@@ -7,6 +7,7 @@ export type BoletasRecepcionType = {
     getBoletasRMP: () => Promise<BoletasPaginate>;
     createBoletaRMP: (data : DraftBoletaRMP) => Promise<string[]>;
     getBoletaRMPDetail: (id : Boleta['id']) => Promise<BoletaDetail>;
+    createProdData: (data : DraftFormProd, id : Boleta['id']) => Promise<void>
 }
 
 export const createBoletaRecepcionSlice: StateCreator<BoletasRecepcionType> = () => ({
@@ -46,6 +47,14 @@ export const createBoletaRecepcionSlice: StateCreator<BoletasRecepcionType> = ()
             return[];
         } catch (error : any) {
            return Object.values(error.response.data.errors);
+        }
+    },
+    createProdData: async (data,id) => {
+        try {
+            const url =  `/api/boleta-rmp/prod/${id}`;
+            await clienteAxios.post(url,data);      
+        } catch (error) {
+            throw error;
         }
     }
 })

@@ -8,7 +8,8 @@ import { Boleta } from "../../../types";
 
 export default function IndexRMP() {
     const status: { [key: number]: string } = {
-        1: 'Pendiente de Recepción'
+        1: 'Pendiente de Recepción',
+        2: 'Pendiente de Revision Calidad'
     }
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -31,12 +32,12 @@ export default function IndexRMP() {
 
     const handleGetUserRole = async () => {
         try {
-          const role = await getUserRoleByToken();
-          setRole(role);
+            const role = await getUserRoleByToken();
+            setRole(role);
         } catch (error) {
-          toast.error("Error al cargar el contenido");
+            toast.error("Error al cargar el contenido");
         }
-      };
+    };
 
     useEffect(() => {
         handleGetBoletas();
@@ -81,6 +82,12 @@ export default function IndexRMP() {
                                         <td className="tbody-td"><span className="button bg-orange-500 text-sm">{status[boleta.status]}</span></td>
                                         <td className="tbody-td flex gap-5">
                                             {(boleta.status === 1 && role && (role === 'pprod')) && (
+                                                <Link to={`/rmp/editar/${boleta.id}`}>
+                                                    <EditIcon />
+                                                </Link>
+                                            )}
+
+                                            {(boleta.status === 2 && role && (role === 'pcalidad')) && (
                                                 <Link to={`/rmp/editar/${boleta.id}`}>
                                                     <EditIcon />
                                                 </Link>

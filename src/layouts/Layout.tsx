@@ -35,7 +35,7 @@ export default function Layout() {
       </div>
 
       <ModalTomaLibras />
-      <InsumosModal /> 
+      <InsumosModal />
 
       {/* Menú móvil */}
       {open && <UserMobile setOpen={setOpen} />}
