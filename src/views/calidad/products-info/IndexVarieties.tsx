@@ -10,7 +10,7 @@ export default function IndexVarieties() {
 
                     <div className="flex flex-row justify-end gap-5">
                         <Link
-                            to="/products-info/varieties"
+                            to="/products-info/defects"
 
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                         >
@@ -27,17 +27,6 @@ export default function IndexVarieties() {
                             <PlusIcon className="w-8" />
                             <p>Crear Variedad</p>
                         </Link>
-
-                    <div className="flex flex-row justify-end gap-5">
-                        <Link
-                            to="/products-info/varietiesDefects" 
-
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-                        >
-                            <PlusIcon className="w-8" />
-                            <p>Crear defectos de Variedad</p>
-                        </Link>
-                    </div>
                 </div>
 
                 <div className="p-2 h-96 overflow-y-auto mt-10">

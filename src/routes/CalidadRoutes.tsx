@@ -15,8 +15,12 @@ const routes = [
   
 
   { path: "/products-info/index", component: lazy(() => import("../views/calidad/products-info/IndexVarieties")), roles: ['admin','axucalidad','pcampo'] },
+
   { path: "/products-info/varieties", component: lazy(() => import("../views/calidad/products-info/Varieties")), roles: ['admin','axucalidad','pcampo'] },
-  { path: "/products-info/varietiesDefects", component: lazy(() => import("../views/calidad/products-info/VarietiesDefects")), roles: ['admin','axucalidad','pcampo'] },
+
+  { path: "/products-info/defects", component: lazy(() => import("../views/calidad/products-info/ProductsDefects")), roles: ['admin','axucalidad','pcampo'] },
+
+  { path: "/products-info/control", component: lazy(() => import("../views/calidad/rmp/control-quality/FormControlQuality")), roles: ['admin','axucalidad','pcampo'] },
 ];
 
 export default function CalidadRoutes() {
