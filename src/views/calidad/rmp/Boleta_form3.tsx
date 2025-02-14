@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import Spinner from "../../../components/Spinner";
-import { Eye } from "lucide-react";
 
 type Props = {
   boleta: BoletaDetail
@@ -26,10 +25,10 @@ export default function Boleta_form3({ boleta }: Props) {
   const getDefectsByQualityVarietyId = useAppStore((state) => state.getDefectsByQualityVarietyId)
   const {
     register,
-    handleSubmit,
+    // handleSubmit,
     control,
     setValue,
-    formState: { errors },
+    // formState: { errors },
   } = useForm();
 
   const handleGetInfo = async () => {
