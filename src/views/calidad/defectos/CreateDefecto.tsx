@@ -7,10 +7,13 @@ import { DraftDefecto, QualityVariety } from "../../../types";
 import Error from "../../../components/Error";
 import { Button } from "@mui/material";
 import Spinner from "../../../components/Spinner";
+import { useNavigate } from "react-router-dom";
 export default function CreateDefecto() {
     const [loading, setLoading] = useState<boolean>(true);
     const [varieties, setVarieties] = useState<QualityVariety[]>([]);
+    const navigate = useNavigate();
     const getAllVarieties = useAppStore((state) => state.getAllVarieties);
+    const createDefecto = useAppStore((state) => state.createDefecto)
 
     const {
         register,
@@ -41,7 +44,16 @@ export default function CreateDefecto() {
     }, []);
 
     const onSubmit = async (data: DraftDefecto) => {
-        console.log(data);
+        setLoading(true);
+        try {
+            await createDefecto(data);
+            toast.success('Defecto Creado Correctamente');
+            navigate('/defectos');
+        } catch (error) {
+            toast.error('Error al crear el defecto');
+        }finally{
+            setLoading(false);
+        }
     }
     return (
         <>
@@ -78,7 +90,6 @@ export default function CreateDefecto() {
                             className="border border-black p-3"
                             {...register('tolerance_percentage', {
                                 required: 'El porcentaje de tolerancia es obligatoria',
-                                min:{value:1, message:'El valor minimo debe de ser 1'}
                             })}
                         />
                         {errors.tolerance_percentage && <Error>{errors.tolerance_percentage?.message?.toString()}</Error>}
@@ -89,14 +100,14 @@ export default function CreateDefecto() {
                             VARIEDAD:
                         </label>
                         <Controller
-                            name="variety_id"
+                            name="quality_variety_id"
                             control={control}
                             rules={{ required: "Seleccione un tipo de varidedad" }}
                             render={({ field }) => (
                                 <Select
                                     {...field}
                                     options={varietiesOptions}
-                                    id="variety_id"
+                                    id="quality_variety_id"
                                     placeholder={"--SELECCIONE UNA OPCION--"}
                                     className="border border-black"
                                     onChange={(selected) => field.onChange(selected?.value)}
@@ -106,7 +117,7 @@ export default function CreateDefecto() {
                                 />
                             )}
                         />
-                        {errors.variety_id && <Error>{errors.variety_id?.message?.toString()}</Error>}
+                        {errors.quality_variety_id && <Error>{errors.quality_variety_id?.message?.toString()}</Error>}
                     </div>
 
                     <Button

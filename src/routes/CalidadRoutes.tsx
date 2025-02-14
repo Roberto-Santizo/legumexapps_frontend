@@ -9,8 +9,11 @@ const routes = [
   { path: "/rmp/crear", component: lazy(() => import("../views/calidad/rmp/Boleta_form1")), roles: ['admin','pcampo'] },
   { path: "/rmp/editar/:rm_reception_id", component: lazy(() => import("../views/calidad/rmp/EditRMP")), roles: ['admin','pprod','pcalidad'] },
 
-  { path: "/calidad/producers", component: lazy(() => import("../views/calidad/Producers")), roles: ['admin','axucalidad','pcampo'] },
-  { path: "/calidad/inspectors", component: lazy(() => import("../views/calidad/Inspectors")), roles: ['admin','axucalidad','pcampo'] },
+  { path: "/productores", component: lazy(() => import("../views/calidad/productores/IndexProducers")), roles: ['admin','axucalidad'] },
+  { path: "/productores/crear", component: lazy(() => import("../views/calidad/productores/CreateProducer")), roles: ['admin','axucalidad'] },
+
+
+  { path: "/inspectores", component: lazy(() => import("../views/calidad/inspectores/IndexInspectores")), roles: ['admin','axucalidad'] },
 
   { path: "/variedades", component: lazy(() => import("../views/calidad/variedades/IndexVarieties")), roles: ['admin','pcalidad'] },
   { path: "/variedades/crear", component: lazy(() => import("../views/calidad/variedades/CrearVariedad")), roles: ['admin','pcalidad'] },

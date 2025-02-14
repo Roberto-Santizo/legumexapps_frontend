@@ -41,7 +41,7 @@ export default function CalidadNavegation() {
                     </NavLink>
 
                     {(role === 'pcalidad' || role === 'admin') && (
-                        <>      
+                        <>
                             <NavLink
                                 to={"/defectos"} className={({ isActive }) =>
                                     `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
@@ -63,7 +63,7 @@ export default function CalidadNavegation() {
                             </NavLink>
 
                             <NavLink
-                                to={"/transporte"} className={({ isActive }) =>
+                                to={"/transporte/boleta"} className={({ isActive }) =>
                                     `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
                                     }`
                                 }
