@@ -19,6 +19,8 @@ const routes = [
   { path: "/defectos/crear", component: lazy(() => import("../views/calidad/defectos/CreateDefecto")), roles: ['admin','pcalidad'] },
   // { path: "/products-info/varieties", component: lazy(() => import("../views/calidad/products-info/Varieties")), roles: ['admin','axucalidad','pcampo'] },
   // { path: "/products-info/varietiesDefects", component: lazy(() => import("../views/calidad/products-info/VarietiesDefects")), roles: ['admin','axucalidad','pcampo'] },
+
+  { path: "/transporte/boleta", component: lazy(() => import("../views/calidad/transporte/BoletaCamion")), roles: ['admin','pcalidad'] },
 ];
 
 export default function CalidadRoutes() {
