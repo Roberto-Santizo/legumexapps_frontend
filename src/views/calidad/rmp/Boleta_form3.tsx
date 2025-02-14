@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { BoletaDetail, Defect, QualityVariety } from "../../../types";
+import { BoletaDetail, Defect, Producer, QualityVariety } from "../../../types";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -15,14 +15,21 @@ export default function Boleta_form3({ boleta }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [varieties, setVarieties] = useState<QualityVariety[]>([]);
   const [defects, setDefects] = useState<Defect[]>([]);
+  const [producers,setProducers] = useState<Producer[]>([]);
 
   const varietiesOptions = varieties.map((variety) => ({
     value: variety.id,
     label: variety.name,
   }));
 
+  const producersOptions = producers.map((producer) => ({
+    value: producer.id,
+    label: `${producer.name} - ${producer.code}`,
+  }));
+
   const getAllVarieties = useAppStore((state) => state.getAllVarieties);
-  const getDefectsByQualityVarietyId = useAppStore((state) => state.getDefectsByQualityVarietyId)
+  const getDefectsByQualityVarietyId = useAppStore((state) => state.getDefectsByQualityVarietyId);
+  const getAllProducers = useAppStore((state) => state.getAllProducers);
   const {
     register,
     // handleSubmit,
@@ -34,6 +41,8 @@ export default function Boleta_form3({ boleta }: Props) {
   const handleGetInfo = async () => {
     try {
       const data = await getAllVarieties();
+      const producers = await getAllProducers();
+      setProducers(producers);
       setVarieties(data);
     } catch (error) {
       toast.error('Hubo un error al traer la información');
@@ -101,6 +110,37 @@ export default function Boleta_form3({ boleta }: Props) {
                     {...field}
                     options={varietiesOptions}
                     id="quality_variety_id"
+                    placeholder={"--SELECCIONE UNA OPCION--"}
+                    className="border border-black"
+                    onChange={(selected) => {
+                      const value = selected?.value;
+                      field.onChange(value);
+                      if (value !== undefined) {
+                        handleGetDefects(value);
+                      }
+                    }}
+                    value={varietiesOptions.find(
+                      (option) => option.value === field.value
+                    )}
+                  />
+                )}
+              />
+              {/* {errors.quality_variety_id && <Error>{errors.quality_variety_id?.message?.toString()}</Error>} */}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-bold uppercase" htmlFor="producer_id">
+                PRODUCTORES:
+              </label>
+              <Controller
+                name="producer_id"
+                control={control}
+                rules={{ required: "Seleccione un productor" }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={producersOptions}
+                    id="producer_id"
                     placeholder={"--SELECCIONE UNA OPCION--"}
                     className="border border-black"
                     onChange={(selected) => {
