@@ -143,13 +143,6 @@ export default function Boleta_form3({ boleta }: Props) {
                     id="producer_id"
                     placeholder={"--SELECCIONE UNA OPCION--"}
                     className="border border-black"
-                    onChange={(selected) => {
-                      const value = selected?.value;
-                      field.onChange(value);
-                      if (value !== undefined) {
-                        handleGetDefects(value);
-                      }
-                    }}
                     value={varietiesOptions.find(
                       (option) => option.value === field.value
                     )}
