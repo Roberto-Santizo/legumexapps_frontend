@@ -18,7 +18,8 @@ import { ProductSchema } from '../utils/product-schema'
 import { BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaSchema, DraftFormProdSchema } from '../utils/boletarmp-schema'
 import { BasketSchema } from '../utils/baskets-schema'
 import { QualityVarietiesPaginateSchema, QualityVarietySchema } from '../utils/calidadVariedades-schema'
-import { DraftDefectoSchema } from '../utils/defectos-schema'
+import { DefectSchema, DefectsPaginateSchema, DraftDefectoSchema } from '../utils/defectos-schema'
+import { ProducerSchema, ProducersPaginateSchema } from '../utils/producers-schema'
 
 
 //PERMISOS
@@ -137,4 +138,11 @@ export type DraftQualityVariety = Omit<QualityVariety, 'id'>
 
 //DEFECTOS
 export type DraftDefecto = z.infer<typeof DraftDefectoSchema>
+export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
+export type Defect = z.infer<typeof DefectSchema>
+
+//PRODUCTORES
+export type Producer = z.infer<typeof ProducerSchema>
+export type DraftProducer = Omit<Producer, 'id'>
+export type ProducersPaginate = z.infer<typeof ProducersPaginateSchema>
 

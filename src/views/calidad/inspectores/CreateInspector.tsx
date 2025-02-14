@@ -1,7 +1,7 @@
 
 import { Button } from "@mui/material";
 
-export default function Inspectors() {
+export default function CreateInspector() {
   return (
     <>
       <h2 className="text-4xl font-bold">Registrar Inspector</h2>

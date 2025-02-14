@@ -5,6 +5,9 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BoletaDetail } from "../../../types";
 import Spinner from "../../../components/Spinner";
+import Boleta_form3 from "./Boleta_form3";
+
+
 
 export default function EditRMP() {
   const { rm_reception_id } = useParams();
@@ -14,7 +17,8 @@ export default function EditRMP() {
   const [loading, setLoading] = useState<boolean>(true);
   
   const forms: { [key: number]: JSX.Element } = {
-    1: <Boleta_form2 boleta={boleta}/>
+    1: <Boleta_form2 boleta={boleta}/>,
+    2: <Boleta_form3 boleta={boleta}/>
   }
   const handleGetInfo = async () => {
     try {

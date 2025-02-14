@@ -1,4 +1,4 @@
-import { FileSpreadsheet, ChartBarIncreasing, Bug } from "lucide-react";
+import { FileSpreadsheet, ChartBarIncreasing, Bug, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppStore } from "../../stores/useAppStore";
@@ -61,6 +61,26 @@ export default function CalidadNavegation() {
                                 <ChartBarIncreasing className="w-8" />
                                 <p className="text-sm font-bold">Variedades</p>
                             </NavLink>
+
+                            <NavLink
+                                to={"/productores"} className={({ isActive }) =>
+                                    `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
+                                    }`
+                                }
+                            >
+                                <Users className="w-8" />
+                                <p className="text-sm font-bold">Productores</p>
+                            </NavLink>
+
+                            {/* <NavLink
+                                to={"/inspectores"} className={({ isActive }) =>
+                                    `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
+                                    }`
+                                }
+                            >
+                                <Users className="w-8" />
+                                <p className="text-sm font-bold">Inspectores</p>
+                            </NavLink> */}
                         </>
                     )}
 
