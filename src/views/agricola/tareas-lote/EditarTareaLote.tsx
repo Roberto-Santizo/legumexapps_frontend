@@ -91,10 +91,6 @@ export default function EditarTareaLote() {
       setValue("hours", task.hours);
       setValue("slots", task.slots);
       setValue("weekly_plan_id", task.weekly_plan_id);
-      setValue("start_date", task.start_date || "");
-      setValue("start_time", task.start_time || "");
-      setValue("end_date", task.end_date || "");
-      setValue("end_time", task.end_time || "");
     }
   }, [task]);
 
