@@ -69,7 +69,7 @@ export default function TaskCrop({ task }: TaskCropProps) {
               />
             </>
           )}
-          {!task.closed && task.has_assigments && task.incomplete && (
+          {!task.closed && task.has_assigments && !task.incomplete && (
             <>
               <BadgeCheck
                 className="cursor-pointer hover:text-gray-400"
@@ -131,7 +131,7 @@ export default function TaskCrop({ task }: TaskCropProps) {
               />
             )}
 
-          {task.finished_assigment_today && task.incomplete && !task.closed && (
+          {task.incomplete && !task.closed && (
             <>
               <Grid2X2Plus
                 className="cursor-pointer hover:text-red-800 text-red-500"
