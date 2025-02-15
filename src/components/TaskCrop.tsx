@@ -69,12 +69,8 @@ export default function TaskCrop({ task }: TaskCropProps) {
               />
             </>
           )}
-          {!task.closed && task.has_assigments && !task.incomplete && (
+          {!task.closed && task.has_assigments && !task.incomplete && !task.assigment_today && (
             <>
-              <BadgeCheck
-                className="cursor-pointer hover:text-gray-400"
-                onClick={() => handleCloseTask(task.id)}
-              />
               <FileText
                 className="cursor-pointer hover:text-gray-400"
                 onClick={() =>
@@ -87,30 +83,25 @@ export default function TaskCrop({ task }: TaskCropProps) {
           )}
 
           {!task.assigment_today && !task.closed && (
-            <SquarePlusIcon
-              className="cursor-pointer hover:text-gray-400"
-              onClick={() =>
-                navigate(
-                  `/planes-semanales/tareas-cosecha-lote/asignar/${task.id}/${task.finca_id}`,
-                  {
-                    state: {
-                      previousUrl: window.location.pathname,
-                    },
-                  }
-                )
-              }
-            />
-          )}
-
-          {task.has_assigments && task.finished_assigment_today && (
-            <FileText
-              className="cursor-pointer hover:text-gray-400"
-              onClick={() =>
-                navigate(
-                  `/planes-semanales/tareas-cosecha-lote/resumen/${task.id}`
-                )
-              }
-            />
+            <>
+              <BadgeCheck
+                className="cursor-pointer hover:text-gray-400"
+                onClick={() => handleCloseTask(task.id)}
+              />
+              <SquarePlusIcon
+                className="cursor-pointer hover:text-gray-400"
+                onClick={() =>
+                  navigate(
+                    `/planes-semanales/tareas-cosecha-lote/asignar/${task.id}/${task.finca_id}`,
+                    {
+                      state: {
+                        previousUrl: window.location.pathname,
+                      },
+                    }
+                  )
+                }
+              />
+            </>
           )}
 
           {task.assigment_today &&
@@ -131,7 +122,7 @@ export default function TaskCrop({ task }: TaskCropProps) {
               />
             )}
 
-          {task.incomplete && !task.closed && (
+          {task.has_assigments && task.incomplete && !task.closed && (
             <>
               <Grid2X2Plus
                 className="cursor-pointer hover:text-red-800 text-red-500"
