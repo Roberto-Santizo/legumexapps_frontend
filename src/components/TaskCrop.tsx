@@ -69,7 +69,7 @@ export default function TaskCrop({ task }: TaskCropProps) {
               />
             </>
           )}
-          {!task.closed && task.has_assigments && !task.incomplete && (
+          {!task.closed && task.has_assigments && task.incomplete && (
             <>
               <BadgeCheck
                 className="cursor-pointer hover:text-gray-400"
