@@ -122,7 +122,7 @@ export default function TaskCrop({ task }: TaskCropProps) {
               />
             )}
 
-          {task.has_assigments && task.incomplete && !task.closed && (
+          {(task.assigment_today && task.finished_assigment_today) && task.has_assigments && task.incomplete && !task.closed && (
             <>
               <Grid2X2Plus
                 className="cursor-pointer hover:text-red-800 text-red-500"
