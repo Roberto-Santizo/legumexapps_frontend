@@ -18,6 +18,7 @@ import TaskLabel from "./TaskLabel";
 import { useState } from "react";
 import ShowErrorAPI from "./ShowErrorAPI";
 import DronIcon from "./DronIcon";
+import { formatearQuetzales } from "../helpers";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
@@ -197,12 +198,13 @@ export default function Task({ task, role }: TaskProps) {
       {error && <ShowErrorAPI />}
       <div className="col-span-5">
         <TaskLabel label={"ID"} text={task.id} />
+        <TaskLabel label={"Lote"} text={task.lote} />
         <TaskLabel label={"Semana"} text={task.week.toString()} />
-        <TaskLabel label={"Horas Teoricas"} text={task.hours.toString()} />
+        <TaskLabel label={"Horas Teoricas"} text={`${task.hours.toString()} horas`} />
         <TaskLabel label={"Tarea"} text={task.task} />
         <TaskLabel
           label={"Presupuesto"}
-          text={`Q${task.budget.toString()}`}
+          text={formatearQuetzales(task.budget)}
           text_classes="text-green-500 font-bold"
         />
         <TaskLabel
@@ -217,6 +219,7 @@ export default function Task({ task, role }: TaskProps) {
         />
         {task.use_dron && <DronIcon width={30} height={30} className="bg-orange-500 text-white inline-block p-2 rounded mt-4"/>}
         {task.weekly_plan_change && <p className="bg-red-500 text-white inline-block p-2 rounded mt-4 font-bold">ATRASADA</p>}
+        {task.extraordinary && <p className="bg-blue-500 text-white inline-block p-2 rounded mt-4 font-bold">EXTRAORDINARIA</p>}
       </div>
 
       <div className="col-start-7 space-y-5">

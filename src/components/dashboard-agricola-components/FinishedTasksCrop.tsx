@@ -10,7 +10,7 @@ type Props = {
   permission: string
 }
 
-export default function FinishedTasksCrop({permission} : Props) {
+export default function FinishedTasksCrop({ permission }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<FinishedTask[]>([]);
   const getTasksCropFinished = useAppStore(
@@ -45,46 +45,37 @@ export default function FinishedTasksCrop({permission} : Props) {
           <Spinner />
         ) : (
           <>{tasks.length > 0 && (
-            <table className="table">
-              <thead>
-                <tr className="thead-tr">
-                  <th scope="col" className="thead-th"></th>
-                  <th scope="col" className="thead-th">
-                    TAREA
-                  </th>
-                  <th scope="col" className="thead-th">
-                    FINCA
-                  </th>
-                  <th scope="col" className="thead-th">
-                    LOTE
-                  </th>
-                  <th scope="col" className="thead-th">
-                    FECHA DE COSECHA
-                  </th>
-                  <th scope="col" className="thead-th">
-                    ACCIÓN
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {tasks.map((task) => (
-                  <tr key={task.id} className="tbody-tr">
-                    <td></td>
-                    <td className="tbody-td">{task.task}</td>
-                    <td className="tbody-td">{task.finca}</td>
-                    <td className="tbody-td">{task.lote}</td>
-                    <td className="tbody-td">{task.start_date}</td>
-                    <td>
-                      <Link to={`/planes-semanales/tareas-cosecha-lote/resumen/${task.id}`} target="_blank">
-                        <Eye />
-                      </Link>
-                    </td>
+            <div className="max-h-64 overflow-y-auto">
+              <table className="table w-full">
+                <thead className="bg-gray-100 sticky top-0 z-10">
+                  <tr className="thead-tr">
+                    <th scope="col" className="thead-th"></th>
+                    <th scope="col" className="thead-th">TAREA</th>
+                    <th scope="col" className="thead-th">FINCA</th>
+                    <th scope="col" className="thead-th">LOTE</th>
+                    <th scope="col" className="thead-th">FECHA DE COSECHA</th>
+                    <th scope="col" className="thead-th">ACCIÓN</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {tasks.map((task) => (
+                    <tr key={task.id} className="tbody-tr">
+                      <td></td>
+                      <td className="tbody-td">{task.task}</td>
+                      <td className="tbody-td">{task.finca}</td>
+                      <td className="tbody-td">{task.lote}</td>
+                      <td className="tbody-td">{task.start_date}</td>
+                      <td>
+                        <Link to={`/planes-semanales/tareas-cosecha-lote/resumen/${task.id}`} target="_blank">
+                          <Eye />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}</>
-
         )}
       </div>
     </div>

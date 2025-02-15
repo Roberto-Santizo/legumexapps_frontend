@@ -172,6 +172,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             const url = `/api/tasks-lotes/${id}/details`;
             const { data } = await clienteAxios(url);
             const result = TaskWeeklyPlanDetailsSchema.safeParse(data.data);
+            console.log(result);
             if (result.success) {
                 return result.data;
             } else {

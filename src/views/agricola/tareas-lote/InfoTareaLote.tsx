@@ -19,7 +19,6 @@ export default function InfoTareaLote() {
 
   const handleGetTaskDetail = async () => {
     setLoading(true);
-
     try {
       if (id) {
         const taskDetails = await getTaskDetailsById(id);
@@ -39,7 +38,7 @@ export default function InfoTareaLote() {
   return (
     <>
       {loading && <Spinner />}
-      {!loading && !error && (
+      {!loading && !error && taskDetail && (
         <div className="text-xl space-y-10 mt-5">
           <div className="shadow p-5">
             <h2 className="font-bold text-3xl text-center">
@@ -126,7 +125,7 @@ export default function InfoTareaLote() {
                         {taskDetail.closures.map((closure, index) => (
                           <tr className="tbody-tr" key={index}>
                             <td className="tbody-td">{closure.start_date}</td>
-                            <td className="tbody-td">{closure.end_date}</td>
+                            <td className="tbody-td">{closure.end_date ?? 'SIN FECHA DE REAPERTURA'}</td>
                           </tr>
                         ))}
                       </tbody>

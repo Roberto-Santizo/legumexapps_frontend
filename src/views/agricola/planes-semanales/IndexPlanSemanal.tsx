@@ -12,6 +12,7 @@ import { Permission, WeeklyPlan } from "../../../types";
 import Pagination from "../../../components/Pagination";
 import { toast } from "react-toastify";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import { formatearQuetzales } from "../../../helpers";
 
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
@@ -202,9 +203,9 @@ export default function IndexPlanSemanal() {
                 <th scope="col" className="thead-th">
                   Año
                 </th>
-                <th scope="col" className="thead-th">
+                {/* <th scope="col" className="thead-th">
                   Fecha de Creación
-                </th>
+                </th> */}
                 {(role === "admin" || role === "adminagricola") && (
                   <>
                     <th scope="col" className="thead-th">
@@ -236,7 +237,7 @@ export default function IndexPlanSemanal() {
                 </th> */}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-sm">
               {weeklyPlans.map((plan) => (
                 <tr
                   className="tbody-tr"
@@ -256,14 +257,14 @@ export default function IndexPlanSemanal() {
                   <td className="tbody-td">{plan.finca}</td>
                   <td className="tbody-td">{plan.week}</td>
                   <td className="tbody-td">{plan.year}</td>
-                  <td className="tbody-td">{plan.created_at}</td>
+                  {/* <td className="tbody-td">{plan.created_at}</td> */}
                   {(role === "admin" || role === "adminagricola") && (
                     <>
                       <td className="tbody-td font-bold text-green-500">
-                        {`Q${plan.used_budget}/${plan.total_budget}`}
+                        {`${formatearQuetzales(plan.used_budget)}/${formatearQuetzales(plan.total_budget)}`}
                       </td>
                       <td className="tbody-td font-bold text-green-500">
-                        {`Q${plan.used_total_budget_ext}/${plan.total_budget_ext}`}
+                        {`${formatearQuetzales(plan.used_total_budget_ext)}/${formatearQuetzales(plan.total_budget_ext)}`}
                       </td>
                     </>
                   )}
