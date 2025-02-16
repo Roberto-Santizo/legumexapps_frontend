@@ -15,26 +15,22 @@ import {
 } from "../types";
 
 export type DashboardAgricolaSliceType = {
-    getDronHours: (permission : string) => Promise<number>;
+    getDronHours: () => Promise<number>;
     getSummaryHoursEmployees: () => Promise<SummaryEmployeeHours[]>;
-    getTasksInProgress: (permission : string) => Promise<TaskInProgress[]>;
-    getTasksFinished: (permission : string) => Promise<FinishedTask[]>;
-    getTasksCropFinished: (permission : string) => Promise<FinishedTask[]>;
-    getTasksCropInProgress: (permission : string) => Promise<TaskInProgress[]>;
+    getTasksInProgress: () => Promise<TaskInProgress[]>;
+    getTasksFinished: () => Promise<FinishedTask[]>;
+    getTasksCropFinished: () => Promise<FinishedTask[]>;
+    getTasksCropInProgress: () => Promise<TaskInProgress[]>;
     getFinishedTasksByFinca: () => Promise<SummaryFincaTasks[]>;
 };
 
 export const createDashboardAgricolaSlice: StateCreator<
     DashboardAgricolaSliceType
 > = () => ({
-    getDronHours: async (permission) => {
+    getDronHours: async () => {
         try {
             const url = "/api/dron-hours";
-            const { data } = await clienteAxios(url, {
-                params: {
-                    permission: permission,
-                },
-            });
+            const { data } = await clienteAxios(url);
             const result = DronHoursSchema.safeParse(data);
             if (result.success) {
                 return result.data.hours;
@@ -60,14 +56,10 @@ export const createDashboardAgricolaSlice: StateCreator<
         }
     },
 
-    getTasksInProgress: async (permission) => {
+    getTasksInProgress: async () => {
         try {
             const url = "/api/tasks-in-progress";
-            const { data } = await clienteAxios(url,{
-                params:{
-                    permission: permission
-                }
-            });
+            const { data } = await clienteAxios(url);
             const result = TasksInProgressSchema.safeParse(data);
             if (result.success) {
                 return result.data.data;
@@ -78,14 +70,10 @@ export const createDashboardAgricolaSlice: StateCreator<
             throw error;
         }
     },
-    getTasksFinished: async (permission) => {
+    getTasksFinished: async () => {
         try {
             const url = "/api/finished-tasks";
-            const { data } = await clienteAxios(url,{
-                params:{
-                    permission: permission
-                }
-            });
+            const { data } = await clienteAxios(url);
             const result = FinishedTasksSchema.safeParse(data);
             if (result.success) {
                 return result.data.data;
@@ -96,14 +84,10 @@ export const createDashboardAgricolaSlice: StateCreator<
             throw error;
         }
     },
-    getTasksCropInProgress: async (permission) => {
+    getTasksCropInProgress: async () => {
         try {
             const url = "/api/tasks-crops-in-progress";
-            const { data } = await clienteAxios(url,{
-                params:{
-                    permission: permission
-                }
-            });
+            const { data } = await clienteAxios(url);
             const result = TasksInProgressSchema.safeParse(data);
             if (result.success) {
                 return result.data.data;
@@ -114,14 +98,10 @@ export const createDashboardAgricolaSlice: StateCreator<
             throw error;
         }
     },
-    getTasksCropFinished: async (permission) => {
+    getTasksCropFinished: async () => {
         try {
             const url = "/api/finished-tasks-crop";
-            const { data } = await clienteAxios(url,{
-                params:{
-                    permission: permission
-                }
-            });
+            const { data } = await clienteAxios(url);
             const result = FinishedTasksSchema.safeParse(data);
             if (result.success) {
                 return result.data.data;

@@ -10,30 +10,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import SummaryTasksFincas from "../../components/dashboard-agricola-components/SummaryTasksFincas";
-import { Permission } from "../../types";
 
 export default function AgricolaDashboard() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingPermssion, setLoadingPermisson] = useState<boolean>(true);
 
   const [role, setRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
-  const getUserPermissionsByToken = useAppStore(
-    (state) => state.getUserPermissionsByToken
-  );
-  const [permission, setPermission] = useState<Permission>({} as Permission);
-
-  const handleGetUserPermissions = async () => {
-    try {
-      const permissions = await getUserPermissionsByToken();
-      setPermission(permissions[0]);
-    } catch (error) {
-      toast.error("Error al cargar el contenido");
-    }finally{
-      setLoadingPermisson(false)
-    }
-  };
 
   const handleGetUserRoleByToken = async () => {
     try {
@@ -49,7 +32,6 @@ export default function AgricolaDashboard() {
 
   useEffect(() => {
     handleGetUserRoleByToken();
-    handleGetUserPermissions();
   }, []);
   return (
     <div>
@@ -58,7 +40,7 @@ export default function AgricolaDashboard() {
       <div className="mt-10 grid grid-cols-12 gap-5">
         {loading && <Spinner />}
 
-        {(!loading && !loadingPermssion && role && permission )&& (
+        {(!loading && role) && (
           <>
             {(role === "admin" || role === "adminagricola") && (
               <>
@@ -66,12 +48,12 @@ export default function AgricolaDashboard() {
                 <SummaryHoursEmployees />
               </>
             )}
-            <DronHours permission={permission.name}/>
+            <DronHours />
 
-            <TasksInProgress permission={permission.name}/>
-            <FinishedTasks permission={permission.name}/>
-            <TasksCropInProgress permission={permission.name}/>
-            <FinishedTasksCrop permission={permission.name}/>
+            <TasksInProgress />
+            <FinishedTasks />
+            <TasksCropInProgress />
+            <FinishedTasksCrop />
           </>
         )}
       </div>

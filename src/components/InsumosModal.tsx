@@ -119,7 +119,7 @@ export default function InsumosModal() {
                   {loading && <Spinner />}
                   {!loading && taskInsumos && (
                     <>
-                      <h2 className="font-bold text-xl mb-5">{task.task}</h2>
+                      <h2 className="font-bold text-xl mb-5">{task.task} - {task.lote}</h2>
                       <div className="space-y-6">
                         {taskInsumos.map((item) => (
                           <div

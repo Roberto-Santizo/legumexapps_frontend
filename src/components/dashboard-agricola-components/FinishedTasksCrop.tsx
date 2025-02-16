@@ -6,11 +6,7 @@ import { Eye } from "lucide-react";
 import Spinner from "../Spinner";
 import { Link } from "react-router-dom";
 
-type Props = {
-  permission: string
-}
-
-export default function FinishedTasksCrop({ permission }: Props) {
+export default function FinishedTasksCrop() {
   const [loading, setLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<FinishedTask[]>([]);
   const getTasksCropFinished = useAppStore(
@@ -20,7 +16,7 @@ export default function FinishedTasksCrop({ permission }: Props) {
   const handleGetInfo = async () => {
     setLoading(true);
     try {
-      const tasks = await getTasksCropFinished(permission);
+      const tasks = await getTasksCropFinished();
       setTasks(tasks);
     } catch (error) {
       toast.error("Hubo un error al traer la información");

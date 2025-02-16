@@ -4,10 +4,7 @@ import { useAppStore } from "../../stores/useAppStore";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner";
 
-type Props = {
-  permission: string;
-};
-export default function DronHours({ permission }: Props) {
+export default function DronHours() {
   const [loading, setLoading] = useState<boolean>(false);
   const [dronHours, setDronHours] = useState<number>(0);
   const getDronHours = useAppStore((state) => state.getDronHours);
@@ -15,7 +12,7 @@ export default function DronHours({ permission }: Props) {
   const handleGetDronHours = async () => {
     setLoading(true);
     try {
-      const hours = await getDronHours(permission);
+      const hours = await getDronHours();
       setDronHours(hours);
     } catch (error) {
       toast.error("Error al obtener información del dron");

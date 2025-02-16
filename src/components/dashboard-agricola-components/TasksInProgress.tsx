@@ -5,11 +5,7 @@ import { TaskInProgress as TaskInProgressType } from "../../types";
 import Spinner from "../Spinner";
 import TaskInProgress from "../TaskInProgress";
 
-type Props = {
-  permission: string;
-}
-
-export default function TasksInProgress({permission} : Props) {
+export default function TasksInProgress() {
   const [loading, setLoading] = useState<boolean>(false);
   const [tasksInProgress, setTasksInProgress] = useState<TaskInProgressType[]>([]);
   const getTasksInProgress = useAppStore((state) => state.getTasksInProgress);
@@ -17,7 +13,7 @@ export default function TasksInProgress({permission} : Props) {
   const handleGetInfo = async () => {
     setLoading(true);
     try {
-      const tasks = await getTasksInProgress(permission);
+      const tasks = await getTasksInProgress();
       setTasksInProgress(tasks);
     } catch (error) {
       toast.error("Hubo un error al traer la información");
@@ -41,7 +37,7 @@ export default function TasksInProgress({permission} : Props) {
         {!loading && (
           <>
             {tasksInProgress.map((task) => (
-              <TaskInProgress key={task.id} task={task} />
+              <TaskInProgress key={task.id} task={task} handleGetInfo={handleGetInfo}/>
             ))}
           </>
         )}
