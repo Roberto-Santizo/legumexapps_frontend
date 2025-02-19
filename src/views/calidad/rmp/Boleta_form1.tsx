@@ -2,12 +2,12 @@ import { Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import SignatureCanvas from "react-signature-canvas";
 import { useEffect, useRef, useState } from 'react';
-import Error from "../../../components/Error";
-import { useAppStore } from "../../../stores/useAppStore";
+import Error from "@/components/Error";
+import { useAppStore } from "@/stores/useAppStore";
 import { toast } from "react-toastify";
-import { Basket, DraftBoletaRMP, Product } from "../../../types";
+import { Basket, DraftBoletaRMP, Product } from "@/types";
 import Select from "react-select";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
 
 export default function Boleta_form1() {

@@ -7,6 +7,13 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    "baseUrl": "src",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/stores/*": ["stores/*"],
+      "@/types": ["types/index.ts"],
+    },
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,

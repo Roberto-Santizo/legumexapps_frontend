@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 export const DraftDefectoSchema = z.object({
+    id: z.number(),
     name: z.string(),
     tolerance_percentage: z.number(),
-    quality_variety_id: z.string(),
+    status: z.boolean(),
 });
 
 export const DefectSchema = z.object({
@@ -11,12 +12,12 @@ export const DefectSchema = z.object({
     name: z.string(),
     tolerance_percentage: z.number(),
     status: z.boolean(),
-    quality_variety: z.string()
- });
+});
 
- export const DefectsSchema = z.object({
+export const DefectsSchema = z.object({
     data: z.array(DefectSchema)
- });
+});
+;
 
 export const DefectsPaginateSchema = z.object({
     data: z.array(DefectSchema),

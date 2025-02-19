@@ -17,6 +17,21 @@ export const DraftBoletaSchema = z.object({
     basket_id: z.string()
 });
 
+export const DraftBoletaControlCalidadSchema = z.object({
+    producer_id: z.string(),
+    net_weight: z.number(),
+    no_doc_cosechero: z.string(),
+    sample_units: z.number(),
+    total_baskets:z.number(),
+    ph: z.number(),
+    brix: z.number(),
+    percentage:z.number(),
+    valid_pounds:z.number(),
+    observations: z.string(),
+    isMinimunRequire: z.boolean(),
+    inspector_signature: z.string(),
+});
+
 export const DraftFormProdSchema = z.object({
     total_baskets: z.number(),
     basket_id: z.string(),
@@ -24,8 +39,16 @@ export const DraftFormProdSchema = z.object({
     receptor_signature: z.string()
 });
 
+export const ResultsQualityControlDocSchema = z.object({
+    id: z.string(),
+    result: z.number(), 
+    tolerance_percentage:z.number(), 
+    input: z.number(), 
+});
+
 export const BoletaRMPDetailSchema = z.object({
     id: z.string(),
+    product_id: z.string(),
     plate:  z.string(),
     product:  z.string(),
     variety:  z.string(),
@@ -38,7 +61,8 @@ export const BoletaRMPDetailSchema = z.object({
     net_weight:  z.number(),
     percentage_field: z.number(),
     valid_pounds: z.number(),
-    status: z.number()
+    status: z.number(),
+    minimun_percentage: z.number(),
 });
 
 export const BoletaSchema = z.object({

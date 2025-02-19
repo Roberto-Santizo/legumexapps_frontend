@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAppStore } from "../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import AdminNavegation from "./menus-navegations/AdminNavegation";
 import AgricolaNavegation from "./menus-navegations/AgricolaNavegation";
 import { HomeIcon } from "lucide-react";

@@ -1,20 +1,34 @@
-import { EditIcon, PlusIcon } from "lucide-react";
+import { EditIcon, Eye, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../../../components/Spinner";
 import { Boleta } from "../../../types";
+import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
 
 export default function IndexRMP() {
     const status: { [key: number]: string } = {
         1: 'Pendiente de Recepción',
-        2: 'Pendiente de Revision Calidad'
+        2: 'Pendiente de Revision Calidad',
+        3: 'Pendiente de GRN',
+        4: 'No aplica (pendiente de GRN)',
+        5:  'GRN Aprobado'
+    }
+
+    const classes: { [key: number]: string } = {
+        1: 'bg-orange-500',
+        2: 'bg-indigo-500',
+        3: 'bg-yellow-500',
+        4: 'bg-yellow-500',
+        5: 'bg-green-500'
     }
 
     const [loading, setLoading] = useState<boolean>(false);
     const [boletas, SetBoletas] = useState<Boleta[]>([]);
     const [role, setRole] = useState<string>();
+    const [modalGRN, setModalGRN] = useState<boolean>(false);
+    const [boletaSelected, setBoletaSelected] = useState<Boleta>();
     const getBoletasRMP = useAppStore((state) => state.getBoletasRMP);
     const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
@@ -39,6 +53,10 @@ export default function IndexRMP() {
         }
     };
 
+    const handleOpenModal = async (boleta: Boleta) => {
+        setBoletaSelected(boleta);
+        setModalGRN(true);
+    }
     useEffect(() => {
         handleGetBoletas();
         handleGetUserRole();
@@ -79,7 +97,7 @@ export default function IndexRMP() {
                                         <td className="tbody-td">{boleta.product}</td>
                                         <td className="tbody-td">{boleta.variety}</td>
                                         <td className="tbody-td">{boleta.coordinator}</td>
-                                        <td className="tbody-td"><span className="button bg-orange-500 text-sm">{status[boleta.status]}</span></td>
+                                        <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-sm`}>{status[boleta.status]}</span></td>
                                         <td className="tbody-td flex gap-5">
                                             {(boleta.status === 1 && role && (role === 'pprod')) && (
                                                 <Link to={`/rmp/editar/${boleta.id}`}>
@@ -93,17 +111,20 @@ export default function IndexRMP() {
                                                 </Link>
                                             )}
 
-                                            {/* <Eye /> */}
+                                            {((boleta.status === 3 || boleta.status === 4) && role && (role === 'pcalidad')) && (
+                                                <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
+                                            )}
+                                            <Eye />
                                         </td>
-
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 )}
-
             </div>
+
+            {boletaSelected && <BoletaGRNModal modal={modalGRN} setModal={setModalGRN} boleta={boletaSelected} handleGetBoletas={handleGetBoletas}/>}
         </>
     )
 }

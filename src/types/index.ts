@@ -14,10 +14,10 @@ import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/ta
 import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema'
 import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema'
 import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '../utils/dashboard-schema'
-import { ProductSchema } from '../utils/product-schema'
-import { BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaSchema, DraftFormProdSchema } from '../utils/boletarmp-schema'
+import { DetailProductSchema, DraftProductSchema, ProductSchema, ProductsPaginateSchema } from '../utils/product-schema'
+import { BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaControlCalidadSchema, DraftBoletaSchema, DraftFormProdSchema, ResultsQualityControlDocSchema } from '../utils/boletarmp-schema'
 import { BasketSchema } from '../utils/baskets-schema'
-import { QualityVarietiesPaginateSchema, QualityVarietySchema } from '../utils/calidadVariedades-schema'
+import { VarietiesPaginateSchema, VarietySchema } from '../utils/calidadVariedades-schema'
 import { DefectSchema, DefectsPaginateSchema, DraftDefectoSchema } from '../utils/defectos-schema'
 import { ProducerSchema, ProducersPaginateSchema } from '../utils/producers-schema'
 
@@ -119,7 +119,10 @@ export type FinishedTask = z.infer<typeof FinishedTaskSchema>
 export type SummaryFincaTasks = z.infer<typeof SummaryFincaTasksSchema>
 
 //PRODUCTOS
+export type PaginateProducts = z.infer<typeof ProductsPaginateSchema>
 export type Product = z.infer<typeof ProductSchema>
+export type DraftProduct = z.infer<typeof DraftProductSchema>
+export type ProductDetail = z.infer<typeof DetailProductSchema>
 
 //CANASTAS
 export type Basket = z.infer<typeof BasketSchema>
@@ -130,11 +133,13 @@ export type BoletasPaginate = z.infer<typeof BoletasPaginateSchema>
 export type Boleta = z.infer<typeof BoletaSchema>
 export type BoletaDetail = z.infer<typeof BoletaRMPDetailSchema>
 export type DraftFormProd = z.infer<typeof DraftFormProdSchema>
+export type DraftBoletaCalidad = z.infer<typeof DraftBoletaControlCalidadSchema>
+export type ResultBoletaCalidad = z.infer<typeof ResultsQualityControlDocSchema>
 
 //VARIEDADES CALIDADD
-export type QualityVarietiesPaginate = z.infer<typeof QualityVarietiesPaginateSchema>
-export type QualityVariety = z.infer<typeof QualityVarietySchema>
-export type DraftQualityVariety = Omit<QualityVariety, 'id'>
+export type VarietiesPaginate = z.infer<typeof VarietiesPaginateSchema>
+export type Variety = z.infer<typeof VarietySchema>
+export type DraftVariety = Omit<Variety, 'id'>
 
 //DEFECTOS
 export type DraftDefecto = z.infer<typeof DraftDefectoSchema>
