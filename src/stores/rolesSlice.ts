@@ -26,6 +26,7 @@ export const createRolesSlice: StateCreator<RolesSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
 
@@ -37,6 +38,7 @@ export const createRolesSlice: StateCreator<RolesSliceType> = (set) => ({
             await clienteAxios.post(url, rol);
             set({ rolesErrors: [] });
         } catch (error: any) {
+            console.log(error);
             set({ rolesErrors: Object.values(error.response.data.errors)});
             throw error;
         }

@@ -24,6 +24,7 @@ export const createPermissionsSlice: StateCreator<PermissionsSliceType> = (set) 
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -33,6 +34,7 @@ export const createPermissionsSlice: StateCreator<PermissionsSliceType> = (set) 
             await clienteAxios.post(url, permission);
             set({permissionsErrors: [] });
         } catch (error: any) {
+            console.log(error);
             set({permissionsErrors: Object.values(error.response.data.errors) })
             throw error;
         }
@@ -49,6 +51,7 @@ export const createPermissionsSlice: StateCreator<PermissionsSliceType> = (set) 
             }
             
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }

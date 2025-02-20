@@ -32,6 +32,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
                 throw new Error('Información no válida');
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -46,6 +47,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -60,6 +62,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -74,6 +77,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -90,6 +94,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -99,6 +104,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
             await clienteAxios.post(url, draftlote);
             set({errorsCreateLote: []});
         } catch (error: any) {
+            console.log(error);
             set({errorsCreateLote: Object.values(error.response.data.errors)});
             throw error;
         }
@@ -112,6 +118,7 @@ export const createLoteSlice: StateCreator<LoteSliceType> = (set) => ({
             await clienteAxios.post(url, formData);
             set({ errorsUpdateLote: []})
         } catch (error: any) {
+            console.log(error);
             set({ errorsUpdateLote: error.response.data.message})
             throw error;
         }

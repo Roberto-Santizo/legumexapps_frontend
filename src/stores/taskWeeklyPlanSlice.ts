@@ -49,6 +49,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
                 throw new Error("Error información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         } finally {
             set({loadingReloadTasks: false})
@@ -66,6 +67,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -83,8 +85,8 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             const url = `/api/tasks-lotes/partial-close/close/${id}`;
             await clienteAxios.patch(url);
         } catch (error: any) {
+            console.log(error);
             throw error;
-
         }
     },
 
@@ -93,6 +95,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             const url = `/api/tasks-lotes/partial-close/open/${id}`;
             await clienteAxios.patch(url);
         } catch (error: any) {
+            console.log(error);
             throw error;
 
         }
@@ -104,6 +107,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
                 data: Employees
             });
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -120,6 +124,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             const url = `/api/tasks-lotes/close/${id}`;
             await clienteAxios.patch(url);
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -129,6 +134,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             const url = `/api/tasks-lotes/${id}`;
             await clienteAxios.delete(url);
         } catch (error) {
+            console.log(error);
             throw new Error("Hubo un problema para cerrar la tarea");
         }
     },
@@ -137,6 +143,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             const url = `/api/tasks-lotes/erase/${id}`;
             await clienteAxios.delete(url);
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -145,6 +152,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
             const url = `/api/tasks-lotes/${id}`
             await clienteAxios.put(url, data);
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -163,6 +171,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
 
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -179,6 +188,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
                 throw new Error("Failed to fetch task details");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -190,6 +200,7 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
                 insumos: data
             });
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },

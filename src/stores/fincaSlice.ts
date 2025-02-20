@@ -19,6 +19,7 @@ export const createFincaSlice: StateCreator<FincaSliceType> = () => ({
                 throw new Error("Existe un error al traer las fincas");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }

@@ -27,6 +27,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
                 throw new Error("Error al traer los cdps");
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -42,6 +43,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
                 throw new Error("Error al traer los cdps");
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -57,6 +59,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
                 throw new Error("Información no válida");
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -72,6 +75,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
                 throw new Error("La información no es válida");
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -82,6 +86,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
             await clienteAxios.post(url,cdp)
             set({ errorsCreateCDP: []});
         } catch (error: any) {
+            console.log(error);
             set({errorsCreateCDP: Object.values(error.response.data.errors) })
             throw error;
         }
@@ -94,6 +99,7 @@ export const createControlPlantationSlice: StateCreator<ControlPlantationSliceTy
             await clienteAxios.post(url, formData);
             set({ errorsCreateCDP: []})
         } catch (error: any) {
+            console.log(error);
             set({ errorsCreateCDP: error.response.data.message})
             throw error;
         }

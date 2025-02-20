@@ -20,6 +20,7 @@ export const createTasksCropSlice: StateCreator<TasksCropSliceType> = () => ({
                 throw new Error('Información no válida');
             }
         } catch (error) {
+            console.log(error);
             throw error;
         };
     }

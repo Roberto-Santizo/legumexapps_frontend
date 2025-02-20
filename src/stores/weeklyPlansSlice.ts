@@ -35,6 +35,7 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
                 throw new Error('Error datos no válidos');
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -49,6 +50,7 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
                 throw new Error('Error datos no válidos');
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -64,7 +66,8 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
             }else{
                 throw new Error('Los datos no son validos');
             }
-        } catch (error) {
+        } catch (error){
+            console.log(error);
             throw error;
         }
     },
@@ -78,6 +81,7 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
             await clienteAxios.post(url, formData);
             set({ errorsCreatePlan: []})
         } catch (error: any) {
+            console.log(error);
             set({ errorsCreatePlan: error.response.data.message})
             throw error;
         }
@@ -95,6 +99,7 @@ export const createWeeklyPlansSlice: StateCreator<WeeklyPlansSliceType> = (set) 
                 throw new Error('Información no válida');
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }

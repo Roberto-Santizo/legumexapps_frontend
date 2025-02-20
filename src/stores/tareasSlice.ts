@@ -32,6 +32,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
                 throw new Error('Hubo un error al trear las tareas');
             }
         } catch (error : any) {
+            console.log(error);
             throw error;
         }
     },
@@ -46,6 +47,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -55,6 +57,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             await clienteAxios.post(url, tarea)
             set({errorsTareas: []});
         } catch (error: any) {
+            console.log(error);
             set({ errorsTareas: Object.values(error.response.data.errors)});
             throw error;
         }
@@ -73,6 +76,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
                 throw new Error('Datos no válidos');
             }
         } catch (error : any) {
+            console.log(error);
             throw error;
         }
     },
@@ -82,6 +86,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             await clienteAxios.put(url, tarea);
             set({errorsTareas: []});
         } catch (error : any) {
+            console.log(error);
             set({ errorsTareas: Object.values(error.response.data.errors)});
             throw error;
         }
@@ -94,6 +99,7 @@ export const createTareasSlice: StateCreator<TareasSliceType> = (set) => ({
             await clienteAxios.post(url, formData);
             set({ errorsTareas: []})
         } catch (error: any) {
+            console.log(error);
             set({ errorsTareas: error.response.data.message})
             throw error;
         }

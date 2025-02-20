@@ -38,6 +38,7 @@ export const createDashboardAgricolaSlice: StateCreator<
                 throw new Error("Existe un error al traer las fincas");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -52,6 +53,7 @@ export const createDashboardAgricolaSlice: StateCreator<
                 throw new Error("Existe un error al traer las fincas");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -67,6 +69,7 @@ export const createDashboardAgricolaSlice: StateCreator<
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -81,6 +84,7 @@ export const createDashboardAgricolaSlice: StateCreator<
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -95,6 +99,7 @@ export const createDashboardAgricolaSlice: StateCreator<
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -109,6 +114,7 @@ export const createDashboardAgricolaSlice: StateCreator<
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -123,6 +129,7 @@ export const createDashboardAgricolaSlice: StateCreator<
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },

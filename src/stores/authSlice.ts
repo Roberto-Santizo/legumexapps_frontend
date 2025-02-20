@@ -48,6 +48,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
             return Promise.resolve(data); 
         } catch (error : any) {
             set({ Autherrors: Object.values(error.response.data.errors)});
+            console.log(error);
             throw error;
         }
     },
@@ -58,6 +59,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
             localStorage.removeItem('AUTH_USER');
             set({ logedIn: false});
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -72,6 +74,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
                 set({ AuthUser: result.data, loadingGetUser: false });
             }
         } catch (error) {
+            console.log(error);
             set({getUserByTokenError: true, loadingGetUser: false});
             throw error;
         }
@@ -88,6 +91,7 @@ export const createAuthSlice: StateCreator<AuthSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }

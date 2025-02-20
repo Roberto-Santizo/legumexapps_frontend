@@ -27,6 +27,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
 
@@ -37,6 +38,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
             await clienteAxios.post(url, user);
 
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -52,6 +54,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
                 throw new Error("Información no válida");
             }
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     },
@@ -62,6 +65,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
            await clienteAxios.put(url, user);
            set({usersErrors:[]});
         } catch (error: any) {
+            console.log(error);
             set({usersErrors:Object.values(error.response.data.errors)});
             throw error;
         }
@@ -72,6 +76,7 @@ export const createUsersSlice: StateCreator<UsersSliceType> = (set) => ({
             await clienteAxios.patch(url, { status: 1 });
 
         } catch (error: any) {
+            console.log(error);
             throw error;
         }
     }

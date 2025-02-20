@@ -24,6 +24,7 @@ export const createInsumosSlice: StateCreator<InsumosSliceType> = (set) => ({
         throw new Error("Información no válida");
       }
     } catch (error) {
+      console.log(error);
       throw error;
     }
   },
@@ -33,6 +34,7 @@ export const createInsumosSlice: StateCreator<InsumosSliceType> = (set) => ({
       await clienteAxios.post(url, data);
       set({ insumosErrors: [] });
     } catch (error: any) {
+      console.log(error);
       set({ insumosErrors: Object.values(error.response.data.errors) });
       throw error;
     }
@@ -45,6 +47,7 @@ export const createInsumosSlice: StateCreator<InsumosSliceType> = (set) => ({
       await clienteAxios.post(url, formData);
       set({ insumosErrors: [] });
     } catch (error: any) {
+      console.log(error);
       set({ insumosErrors: error.response.data.message });
       throw error;
     }
