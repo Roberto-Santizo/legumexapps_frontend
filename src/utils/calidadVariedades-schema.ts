@@ -1,16 +1,16 @@
 import { z } from "zod";
 
-export const QualityVarietySchema = z.object({
+export const VarietySchema = z.object({
     id: z.string(),
-    name: z.string()
+    name: z.string(),
 });
 
-export const QualityVarietiesSchema = z.object({
-    data: z.array(QualityVarietySchema)
+export const VarietiesSchema = z.object({
+    data: z.array(VarietySchema)
 });
 
-export const QualityVarietiesPaginateSchema = z.object({
-    data: z.array(QualityVarietySchema),
+export const VarietiesPaginateSchema = z.object({
+    data: z.array(VarietySchema),
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()

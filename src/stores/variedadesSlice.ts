@@ -1,20 +1,28 @@
 import { StateCreator } from "zustand";
-import { DraftQualityVariety, QualityVarietiesPaginate, QualityVariety } from "../types";
+import { DraftVariety, VarietiesPaginate, Variety } from "../types";
 import clienteAxios from "../config/axios";
-import { QualityVarietiesPaginateSchema, QualityVarietiesSchema } from "../utils/calidadVariedades-schema";
+import { VarietiesPaginateSchema, VarietiesSchema } from "../utils/calidadVariedades-schema";
 
 export type VariedadesSliceType = {
-    getVarietiesPaginate: (page : number) => Promise<QualityVarietiesPaginate>;
-    getAllVarieties: () => Promise<QualityVariety[]>;
-    createCalidadVariedad: (data : DraftQualityVariety) => Promise<void>;
+    createVariety: (data : DraftVariety) => Promise<void>;
+    getVarietiesPaginate: (page : number) => Promise<VarietiesPaginate>;
+    getAllVarieties: () => Promise<Variety[]>;
 }
 
 export const createVariedadesSlice: StateCreator<VariedadesSliceType> = () => ({
+    createVariety: async(data) => {
+        try {
+            const url = '/api/variety-products';
+            await clienteAxios.post(url,data);
+        } catch (error) {
+            throw error;
+        }
+    },
     getVarietiesPaginate:async (page) => {
         try {
-            const url = `/api/quality-variety?page=${page}`;
+            const url = `/api/variety-products?page=${page}`;
             const {data} = await clienteAxios(url);
-            const result = QualityVarietiesPaginateSchema.safeParse(data);
+            const result = VarietiesPaginateSchema.safeParse(data);
             if(result.success){
                 return result.data
             }else{
@@ -26,22 +34,14 @@ export const createVariedadesSlice: StateCreator<VariedadesSliceType> = () => ({
     },
     getAllVarieties: async () => {
         try {
-            const url = '/api/quality-variety-all';
+            const url = '/api/variety-products-all';
             const {data} = await clienteAxios(url);
-            const result = QualityVarietiesSchema.safeParse(data);
+            const result = VarietiesSchema.safeParse(data);
             if(result.success){
                 return result.data.data
             }else{
                 throw new Error("Información no válida");
             }
-        } catch (error) {
-            throw error;
-        }
-    },
-    createCalidadVariedad: async (data) => {
-        try {
-            const url = '/api/quality-variety';
-            await clienteAxios.post(url,data);
         } catch (error) {
             throw error;
         }
