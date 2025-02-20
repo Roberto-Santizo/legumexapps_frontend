@@ -31,12 +31,11 @@ export default function TasksCropInProgress() {
   }, []);
   return (
     <div className="flex flex-col items-center shadow-xl row-start-5 col-start-1 col-span-12 rounded-xl gap-5">
-      {/* contenedor de resumen de horas */}
       <p className="uppercase w-full text-center bg-gray-400 p-3 text-white font-bold rounded-t-xl text-2xl">
         Control de Cosechas en Proceso
       </p>
       {(!loading && tasksInProgress.length === 0) && (<p className="text-center mt-1">No hay datos</p>)}
-      <div className="w-full p-2">
+      <div className="w-full p-2  max-h-96 overflow-y-auto">
         <div className="font-bold space-y-5">
           {loading ? (
             <Spinner />

@@ -32,7 +32,7 @@ export default function TasksInProgress() {
       </p>
 
       {(!loading && tasksInProgress.length === 0) && (<p className="text-center mt-2">No hay datos</p>)}
-      <div className="w-full p-5 font-bold space-y-5">
+      <div className="w-full p-5 font-bold space-y-5 max-h-96 overflow-y-auto">
         {loading && <Spinner />}
         {!loading && (
           <>
