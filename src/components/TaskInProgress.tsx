@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function TaskInProgress({ task, handleGetInfo }: Props) {
-  const url = task.total_employees ? `/planes-semanales/tareas-lote/informacion/${task.id}` : `/planes-semanales/tareas-cosecha-lote/informacion/${task.id}`
+  const url = `/planes-semanales/tareas-lote/informacion/${task.id}`
   const openModalAction = useAppStore((state) => state.openModalAction);
   const closeTask = useAppStore((state) => state.closeTask)
 

@@ -13,7 +13,7 @@ import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTas
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema";
 import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema';
 import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema';
-import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '../utils/dashboard-schema';
+import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskCropInProgressSchema, TaskInProgressSchema } from '../utils/dashboard-schema';
 
 
 //PERMISOS
@@ -111,4 +111,4 @@ export type SummaryEmployeeHours = z.infer<typeof SummaryHoursEmployeeSchema>
 export type TaskInProgress = z.infer<typeof TaskInProgressSchema>
 export type FinishedTask = z.infer<typeof FinishedTaskSchema>
 export type SummaryFincaTasks = z.infer<typeof SummaryFincaTasksSchema>
-
+export type TaskCropInProgress = z.infer<typeof TaskCropInProgressSchema>

@@ -28,6 +28,19 @@ export const TaskInProgressSchema = z.object({
     has_insumos: z.boolean()
 });
 
+export const TaskCropInProgressSchema = z.object({
+    id: z.string(),
+    task: z.string(),
+    finca: z.string(),
+    lote: z.string(),
+    week: z.number(),
+    assigned_employees: z.number(),
+});
+
+export const TasksCropsInProgressSchema = z.object({
+    data: z.array(TaskCropInProgressSchema)
+});
+
 export const TasksInProgressSchema = z.object({
     data: z.array(TaskInProgressSchema)
 });

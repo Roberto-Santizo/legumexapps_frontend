@@ -5,12 +5,14 @@ import {
     FinishedTasksByFincaSchema,
     FinishedTasksSchema,
     SummaryHoursEmployeesSchema,
+    TasksCropsInProgressSchema,
     TasksInProgressSchema,
 } from "../utils/dashboard-schema";
 import {
     FinishedTask,
     SummaryEmployeeHours,
     SummaryFincaTasks,
+    TaskCropInProgress,
     TaskInProgress,
 } from "../types";
 
@@ -20,7 +22,7 @@ export type DashboardAgricolaSliceType = {
     getTasksInProgress: () => Promise<TaskInProgress[]>;
     getTasksFinished: () => Promise<FinishedTask[]>;
     getTasksCropFinished: () => Promise<FinishedTask[]>;
-    getTasksCropInProgress: () => Promise<TaskInProgress[]>;
+    getTasksCropInProgress: () => Promise<TaskCropInProgress[]>;
     getFinishedTasksByFinca: () => Promise<SummaryFincaTasks[]>;
 };
 
@@ -92,7 +94,7 @@ export const createDashboardAgricolaSlice: StateCreator<
         try {
             const url = "/api/tasks-crops-in-progress";
             const { data } = await clienteAxios(url);
-            const result = TasksInProgressSchema.safeParse(data);
+            const result = TasksCropsInProgressSchema.safeParse(data);
             if (result.success) {
                 return result.data.data;
             } else {

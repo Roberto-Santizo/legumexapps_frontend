@@ -1,13 +1,13 @@
 import { useAppStore } from "../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { TaskInProgress as TaskInProgressType } from "../../types";
-import TaskInProgressComponent from "../TaskInProgress";
+import { TaskCropInProgress } from "../../types";
 import Spinner from "../Spinner";
+import TaskCropInProgressComponent from "../TaskCropInProgressComponent";
 
 export default function TasksCropInProgress() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [tasksInProgress, setTasksInProgress] = useState<TaskInProgressType[]>(
+  const [tasksInProgress, setTasksInProgress] = useState<TaskCropInProgress[]>(
     []
   );
   const getTasksCropInProgress = useAppStore(
@@ -43,7 +43,7 @@ export default function TasksCropInProgress() {
           ) : (
             <>
               {tasksInProgress.map((task) => (
-                <TaskInProgressComponent key={task.id} task={task} handleGetInfo={handleGetInfo}/>
+                <TaskCropInProgressComponent key={task.id} task={task} />
               ))}
             </>
           )}
