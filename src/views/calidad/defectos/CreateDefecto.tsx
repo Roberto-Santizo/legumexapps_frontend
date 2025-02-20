@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
+import { useAppStore } from "../../../stores/useAppStore";
 import { DraftDefecto, QualityVariety } from "../../../types";
 import Error from "../../../components/Error";
 import { Button } from "@mui/material";
 import Spinner from "../../../components/Spinner";
-import { useNavigate } from "react-router-dom";
+
 export default function CreateDefecto() {
     const [loading, setLoading] = useState<boolean>(true);
     const [varieties, setVarieties] = useState<QualityVariety[]>([]);
