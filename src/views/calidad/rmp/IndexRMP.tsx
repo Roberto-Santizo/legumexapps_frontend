@@ -1,10 +1,11 @@
 import { EditIcon, Eye, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
-import { Boleta } from "../../../types";
+
+import { useAppStore } from "@/stores/useAppStore";
+import { Boleta } from "@/types";
+import Spinner from "@/components/Spinner";
 import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
 
 export default function IndexRMP() {
@@ -13,7 +14,7 @@ export default function IndexRMP() {
         2: 'Pendiente de Revision Calidad',
         3: 'Pendiente de GRN',
         4: 'No aplica (pendiente de GRN)',
-        5:  'GRN Aprobado'
+        5: 'GRN Aprobado'
     }
 
     const classes: { [key: number]: string } = {
@@ -99,22 +100,33 @@ export default function IndexRMP() {
                                         <td className="tbody-td">{boleta.coordinator}</td>
                                         <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-sm`}>{status[boleta.status]}</span></td>
                                         <td className="tbody-td flex gap-5">
-                                            {(boleta.status === 1 && role && (role === 'pprod')) && (
-                                                <Link to={`/rmp/editar/${boleta.id}`}>
-                                                    <EditIcon />
-                                                </Link>
+                                            {loading ? <Spinner /> : (
+                                                <>
+                                                    {(boleta.status === 1 && role && (role === 'pprod')) && (
+                                                        <Link to={`/rmp/editar/${boleta.id}`}>
+                                                            <EditIcon />
+                                                        </Link>
+                                                    )}
+
+                                                    {(boleta.status === 2 && role && (role === 'pcalidad')) && (
+                                                        <Link to={`/rmp/editar/${boleta.id}`}>
+                                                            <EditIcon />
+                                                        </Link>
+                                                    )}
+
+                                                    {((boleta.status === 3 || boleta.status === 4) && role && (role === 'pprod')) && (
+                                                        <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
+                                                    )}
+
+                                                    {boleta.status === 5 && (
+                                                        <Link to={`/rmp/documentos/${boleta.id}`}>
+                                                            <Eye />
+                                                        </Link>
+                                                    )}
+
+                                                </>
                                             )}
 
-                                            {(boleta.status === 2 && role && (role === 'pcalidad')) && (
-                                                <Link to={`/rmp/editar/${boleta.id}`}>
-                                                    <EditIcon />
-                                                </Link>
-                                            )}
-
-                                            {((boleta.status === 3 || boleta.status === 4) && role && (role === 'pcalidad')) && (
-                                                <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
-                                            )}
-                                            <Eye />
                                         </td>
                                     </tr>
                                 ))}
@@ -124,7 +136,7 @@ export default function IndexRMP() {
                 )}
             </div>
 
-            {boletaSelected && <BoletaGRNModal modal={modalGRN} setModal={setModalGRN} boleta={boletaSelected} handleGetBoletas={handleGetBoletas}/>}
+            {boletaSelected && <BoletaGRNModal modal={modalGRN} setModal={setModalGRN} boleta={boletaSelected} handleGetBoletas={handleGetBoletas} />}
         </>
     )
 }

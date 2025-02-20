@@ -1,11 +1,12 @@
-import { Button } from "@mui/material";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
-import Select from "react-select";
 import { AlertCircle } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
-import { BoletaDetail, Defect, DraftBoletaCalidad, Producer, ResultBoletaCalidad } from "@/types";
+
+
+import { Button } from "@mui/material";
+import { BoletaDetail, Defect, DraftBoletaCalidad,ResultBoletaCalidad } from "@/types";
 import { useAppStore } from "@/stores/useAppStore";
 import Spinner from "@/components/Spinner";
 import Error from "@/components/Error";
@@ -18,7 +19,6 @@ type Props = {
 export default function Boleta_form3({ boleta }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [defects, setDefects] = useState<Defect[]>([]);
-  const [producers, setProducers] = useState<Producer[]>([]);
   const inspector_signature = useRef({} as SignatureCanvas);
   const [results, setResults] = useState<ResultBoletaCalidad[]>([]);
   const navigate = useNavigate();
@@ -38,13 +38,8 @@ export default function Boleta_form3({ boleta }: Props) {
     return percentage * 100 < boleta.minimun_percentage;
   }, [percentage]);
 
-  const producersOptions = producers.map((producer) => ({
-    value: producer.id,
-    label: `${producer.name} - ${producer.code}`,
-  }));
 
   const getDefectsByQualityProduct = useAppStore((state) => state.getDefectsByQualityProduct);
-  const getAllProducers = useAppStore((state) => state.getAllProducers);
   const createQualityDoc = useAppStore((state) => state.createQualityDoc)
 
   const {
@@ -54,17 +49,6 @@ export default function Boleta_form3({ boleta }: Props) {
     setValue,
     formState: { errors },
   } = useForm<DraftBoletaCalidad>();
-
-  const handleGetInfo = async () => {
-    try {
-      const producers = await getAllProducers();
-      setProducers(producers);
-    } catch (error) {
-      toast.error('Hubo un error al traer la información');
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const handleGetDefects = async () => {
     setLoading(true);
@@ -97,7 +81,6 @@ export default function Boleta_form3({ boleta }: Props) {
   }, [percentage]);
 
   useEffect(() => {
-    handleGetInfo();
     if (boleta) {
       handleGetDefects();
     }
@@ -177,30 +160,29 @@ export default function Boleta_form3({ boleta }: Props) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="producer_id">
-                PRODUCTORES:
+              <label className="text-lg font-bold uppercase">
+                PORCENTAJE DE CAMPO:
               </label>
-              <Controller
-                name="producer_id"
-                control={control}
-                rules={{ required: "Seleccione un productor" }}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={producersOptions}
-                    id="producer_id"
-                    placeholder={"--SELECCIONE UNA OPCION--"}
-                    className="border border-black"
-                    value={producersOptions.find(option => option.value === field.value) || null}
-                    onChange={(option) => {
-                      if (option) {
-                        field.onChange(option.value)
-                      }
-                    }}
-                  />
-                )}
+              <input
+                autoComplete="off"
+                disabled
+                type="text"
+                className="border border-black p-3 opacity-35 cursor-not-allowed"
+                value={`${boleta.percentage_field}%`}
               />
-              {errors.producer_id && <Error>{errors.producer_id?.message?.toString()}</Error>}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-bold uppercase">
+                PRODUCTOR:
+              </label>
+              <input
+                autoComplete="off"
+                disabled
+                type="text"
+                className="border border-black p-3 opacity-35 cursor-not-allowed"
+                value={`${boleta.coordinator} - ${boleta.producer_code}`}
+              />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -228,7 +210,7 @@ export default function Boleta_form3({ boleta }: Props) {
                 type="text"
                 placeholder={"No. hoja cosechero"}
                 className="border border-black p-3"
-                {...register("no_doc_cosechero", { required: "El No. Hoja Cosechero es obligatorio" })}
+                {...register("no_doc_cosechero")}
               />
               {errors.no_doc_cosechero && <Error>{errors.no_doc_cosechero?.message?.toString()}</Error>}
             </div>

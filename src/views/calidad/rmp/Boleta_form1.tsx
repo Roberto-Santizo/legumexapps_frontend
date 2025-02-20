@@ -1,26 +1,34 @@
-import { Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import SignatureCanvas from "react-signature-canvas";
 import { useEffect, useRef, useState } from 'react';
-import Error from "@/components/Error";
-import { useAppStore } from "@/stores/useAppStore";
 import { toast } from "react-toastify";
-import { Basket, DraftBoletaRMP, Product } from "@/types";
 import Select from "react-select";
-import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
+
+import { useAppStore } from "@/stores/useAppStore";
+import { Button } from "@mui/material";
+import { Basket, DraftBoletaRMP, Producer, Product } from "@/types";
+import Error from "@/components/Error";
+import Spinner from "@/components/Spinner";
 
 export default function Boleta_form1() {
   const getProducts = useAppStore((state) => state.getProducts);
   const [loading, setLoading] = useState<boolean>(true);
-  const [errorsCreate,setErrorsCreate] = useState<string[]>([]);
+  const [errorsCreate, setErrorsCreate] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [baskets, setBaskets] = useState<Basket[]>([]);
+  const [producers, setProducers] = useState<Producer[]>([]);
   const navigate = useNavigate();
   const inspector_signature = useRef({} as SignatureCanvas);
   const prod_signature = useRef({} as SignatureCanvas);
-  const createBoletaRMP = useAppStore((state) => state.createBoletaRMP)
-  const getAllBaskets = useAppStore((state) => state.getAllBaskets)
+  const createBoletaRMP = useAppStore((state) => state.createBoletaRMP);
+  const getAllBaskets = useAppStore((state) => state.getAllBaskets);
+  const getAllProducers = useAppStore((state) => state.getAllProducers)
+
+  const producersOptions = producers.map((producer) => ({
+    value: producer.id,
+    label: `${producer.name}`,
+  }));
 
   const productsOptions = products.map((product) => ({
     value: product.id,
@@ -35,7 +43,9 @@ export default function Boleta_form1() {
   const handleGetInfo = async () => {
     try {
       const data = await getProducts();
+      const producers = await getAllProducers();
       const data2 = await getAllBaskets();
+      setProducers(producers);
       setProducts(data);
       setBaskets(data2);
     } catch (error) {
@@ -56,7 +66,7 @@ export default function Boleta_form1() {
     setLoading(true);
     try {
       const errors = await createBoletaRMP(data);
-      if(errors.length > 0){
+      if (errors.length > 0) {
         setErrorsCreate(errors);
         return;
       }
@@ -91,18 +101,30 @@ export default function Boleta_form1() {
             : null}
 
           <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="coordinador">
-              Coordinador:
+            <label className="text-lg font-bold uppercase" htmlFor="producer_id">
+              COORDINADOR:
             </label>
-            <input
-              autoComplete="off"
-              id="coordinator_name"
-              type="text"
-              placeholder={"Nombre del coordinador"}
-              className="border border-black p-3"
-              {...register("coordinator_name", { required: "El coordinador es obligatorio" })}
+            <Controller
+              name="producer_id"
+              control={control}
+              rules={{ required: "Seleccione un productor" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={producersOptions}
+                  id="producer_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  value={producersOptions.find(option => option.value === field.value) || null}
+                  onChange={(option) => {
+                    if (option) {
+                      field.onChange(option.value)
+                    }
+                  }}
+                />
+              )}
             />
-            {errors.coordinator_name && <Error>{errors.coordinator_name?.message?.toString()}</Error>}
+            {errors.producer_id && <Error>{errors.producer_id?.message?.toString()}</Error>}
           </div>
 
           <div>

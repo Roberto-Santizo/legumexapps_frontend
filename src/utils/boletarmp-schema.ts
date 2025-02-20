@@ -2,7 +2,7 @@ import { z } from "zod";
 
 
 export const DraftBoletaSchema = z.object({
-    coordinator_name: z.string(),
+    producer_id: z.string(),
     product_id: z.string(),
     transport: z.string(),
     pilot_name: z.string(),
@@ -48,6 +48,8 @@ export const ResultsQualityControlDocSchema = z.object({
 
 export const BoletaRMPDetailSchema = z.object({
     id: z.string(),
+    producer_id: z.string(),
+    producer_code: z.number(),
     product_id: z.string(),
     plate:  z.string(),
     product:  z.string(),
@@ -63,6 +65,7 @@ export const BoletaRMPDetailSchema = z.object({
     valid_pounds: z.number(),
     status: z.number(),
     minimun_percentage: z.number(),
+    total_baskets: z.number(),
 });
 
 export const BoletaSchema = z.object({
@@ -75,6 +78,8 @@ export const BoletaSchema = z.object({
     transport: z.string(),
     status: z.number()
 });
+
+// export const Boleta
 
 export const BoletasPaginateSchema = z.object({
     data: z.array(BoletaSchema),

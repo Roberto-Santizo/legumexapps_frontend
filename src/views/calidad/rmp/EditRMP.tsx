@@ -36,6 +36,7 @@ export default function EditRMP() {
   useEffect(() => {
     handleGetInfo();
   }, [])
+
   return (
     <>
       <h2 className="font-bold text-3xl">Recepción de Materia Prima</h2>
