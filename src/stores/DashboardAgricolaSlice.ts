@@ -1,13 +1,7 @@
 import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
-import {
-    FinishedTasksByFincaSchema,
-    FinishedTasksSchema, TasksInProgressSchema
-} from "../utils/dashboard-schema";
-import {
-    FinishedTask, SummaryFincaTasks,
-    TaskInProgress
-} from "../types";
+import {FinishedTasksByFincaSchema,FinishedTasksSchema, TasksInProgressSchema} from "@/utils/dashboard-schema";
+import {FinishedTask, SummaryFincaTasks,TaskInProgress} from "@/types";
 
 export type DashboardAgricolaSliceType = {
     getTasksCropFinished: () => Promise<FinishedTask[]>;

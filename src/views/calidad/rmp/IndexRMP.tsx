@@ -10,40 +10,53 @@ import { Boleta } from "@/types";
 import Spinner from "@/components/Spinner";
 import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
 import Pagination from "@/components/Pagination";
+import FiltersRMP from "@/components/boleta-rmp/FiltersRMP";
+import { Bars3Icon } from "@heroicons/react/16/solid";
+
+const status: { [key: number]: string } = {
+    1: 'Pendiente de Recepción',
+    2: 'Pendiente de Revision Calidad',
+    3: 'Pendiente de GRN',
+    4: 'No aplica (pendiente de GRN)',
+    5: 'GRN Aprobado'
+}
+
+const classes: { [key: number]: string } = {
+    1: 'bg-orange-500',
+    2: 'bg-indigo-500',
+    3: 'bg-yellow-500',
+    4: 'bg-yellow-500',
+    5: 'bg-green-500'
+}
 
 export default function IndexRMP() {
-    const status: { [key: number]: string } = {
-        1: 'Pendiente de Recepción',
-        2: 'Pendiente de Revision Calidad',
-        3: 'Pendiente de GRN',
-        4: 'No aplica (pendiente de GRN)',
-        5: 'GRN Aprobado'
-    }
 
-    const classes: { [key: number]: string } = {
-        1: 'bg-orange-500',
-        2: 'bg-indigo-500',
-        3: 'bg-yellow-500',
-        4: 'bg-yellow-500',
-        5: 'bg-green-500'
-    }
+    const [fincaId, setFincaId] = useState<string>("");
+    const [productId, setProductId] = useState<string>("");
+    const [producerId, setProducerId] = useState<string>("");
+    const [date, setDate] = useState<string>("");
+    const [plate, setPlate] = useState<string>("");
 
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [boletas, SetBoletas] = useState<Boleta[]>([]);
+    const [boletas, setBoletas] = useState<Boleta[]>([]);
     const [role, setRole] = useState<string>();
     const [modalGRN, setModalGRN] = useState<boolean>(false);
     const [boletaSelected, setBoletaSelected] = useState<Boleta>();
-    const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
-
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
 
     const handleGetBoletas = async (page: number) => {
         setLoading(true);
         try {
-            const data = await getPaginatedBoletasRMP(page);
-            SetBoletas(data.data);
+            const filters: Record<string, string> = {};
+            if (fincaId) filters.finca_id = fincaId;
+            if (productId) filters.product_id = productId;
+
+            const data = await getPaginatedBoletasRMP(page, filters);
+            setBoletas(data.data);
             setPageCount(data.meta.last_page);
             setCurrentPage(data.meta.current_page);
         } catch (error) {
@@ -74,9 +87,45 @@ export default function IndexRMP() {
         setCurrentPage(selectedItem.selected + 1);
     };
 
+    const handleFilters = async () => {
+        try {
+            setLoading(true);
+            const filters: Record<string, string> = {};
+            if (fincaId) filters.finca_id = fincaId;
+            if (productId) filters.product_id = productId;
+            if (producerId) filters.producer_id = producerId;
+            if (date) filters.date = date;
+            if (plate) filters.plate = plate;
+
+            const data = await getPaginatedBoletasRMP(1, filters);
+            setBoletas(data.data);
+            setPageCount(data.meta.last_page);
+            setCurrentPage(data.meta.current_page);
+        } catch (error) {
+            toast.error("Error al filtrar boletas");
+        } finally {
+            setLoading(false);
+            setIsOpen(false);
+        }
+    };
+
+    const handleReset = async () => {
+        setFincaId('');
+        setProductId('');
+        setProducerId('');
+        setDate('');
+        setPlate('');
+        const data = await getPaginatedBoletasRMP(1, {});
+        setBoletas(data.data);
+        setPageCount(data.meta.last_page);
+        setCurrentPage(data.meta.current_page);
+        setIsOpen(false);
+    }
+
     useEffect(() => {
         handleGetBoletas(currentPage);
     }, [currentPage]);
+
     return (
         <>
             <div>
@@ -90,8 +139,14 @@ export default function IndexRMP() {
                         <PlusIcon className="w-8" />
                         <p>Crear Boleta Materia Prima</p>
                     </Link>
+
                 </div>
-                {(loading && !role) ? <Spinner /> : (
+
+                <div className="w-full flex justify-end mt-5">
+                    <Bars3Icon className="w-8 cursor-pointer hover:text-gray-500" onClick={() => setIsOpen(true)} />
+                </div>
+
+                {(loading) ? <Spinner /> : (
                     <>
                         <div className="p-2 h-96 overflow-y-auto mt-10">
                             <table className="table">
@@ -103,6 +158,7 @@ export default function IndexRMP() {
                                         <th scope="col" className="thead-th">Finca</th>
                                         <th scope="col" className="thead-th">Variedad</th>
                                         <th scope="col" className="thead-th">Coordinador</th>
+                                        <th scope="col" className="thead-th">Fecha</th>
                                         <th scope="col" className="thead-th">Estado</th>
                                         <th scope="col" className="thead-th">Acción</th>
                                     </tr>
@@ -116,6 +172,7 @@ export default function IndexRMP() {
                                             <td className="tbody-td">{boleta.finca}</td>
                                             <td className="tbody-td">{boleta.variety}</td>
                                             <td className="tbody-td">{boleta.coordinator}</td>
+                                            <td className="tbody-td">{boleta.date}</td>
                                             <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-sm`}>{status[boleta.status]}</span></td>
                                             <td className="tbody-td flex gap-5">
                                                 {loading ? <Spinner /> : (
@@ -163,8 +220,8 @@ export default function IndexRMP() {
                     </>
                 )}
             </div>
-
             {boletaSelected && <BoletaGRNModal modal={modalGRN} setModal={setModalGRN} boleta={boletaSelected} handleGetBoletas={handleGetBoletas} page={currentPage} />}
+            <FiltersRMP plate={plate} setPlate={setPlate} date={date} setDate={setDate} producerId={producerId} setProducerId={setProducerId} handleReset={handleReset} handleFilters={handleFilters} isOpen={isOpen} setIsOpen={setIsOpen} setBoletas={setBoletas} setProductId={setProductId} setFincaId={setFincaId} fincaId={fincaId} productId={productId} />
         </>
     )
 }

@@ -73,6 +73,7 @@ export const BoletaRMPDetailSchema = z.object({
 export const BoletaSchema = z.object({
     id: z.string(),
     finca:z.string(),
+    date:z.string(),
     plate: z.string(),
     product: z.string(),
     variety: z.string(),

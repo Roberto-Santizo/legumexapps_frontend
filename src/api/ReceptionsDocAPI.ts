@@ -13,9 +13,10 @@ export async function createBoletaRMP(data: DraftBoletaRMP): Promise<void | stri
     }
 }
 
-export async function getPaginatedBoletasRMP(page : number): Promise<BoletasPaginate> {
+export async function getPaginatedBoletasRMP(page : number, filters: Record<string, any> = {}): Promise<BoletasPaginate> {
     try {
-        const url = `/api/boleta-rmp?page=${page}`;
+        const params = new URLSearchParams({ page: page.toString(), ...filters });
+        const url = `/api/boleta-rmp?${params.toString()}`;
         const { data } = await clienteAxios(url);
         const result = BoletasPaginateSchema.safeParse(data);
         if (result.success) {
