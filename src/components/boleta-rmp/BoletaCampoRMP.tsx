@@ -1,5 +1,7 @@
 import { BoletaInfoAll } from "@/types";
 import LogoLegumex from "../LogoLegumex";
+// import { useReactToPrint } from "react-to-print";
+
 
 type Props = {
   boleta: BoletaInfoAll
@@ -23,6 +25,9 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
 
         <div className="text-center flex-1 mx-4 md:mx-8">
           <h1 className="text-xl md:text-2xl font-bold">RECIBO DE MATERIA PRIMA</h1>
+          <div className="flex justify-center mb-1">
+            <span className="p-1 text-center text-2xl font-bold text-red-600">No.{boleta.field_data.id}</span>
+          </div>
         </div>
 
         <div className="text-right text-sm md:text-base">
@@ -43,7 +48,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
       </div>
 
       {/* Sub-header Information */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6 text-sm md:text-base">
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-6 text-sm md:text-base">
         <div className="flex space-x-2">
           <span>PLANTA CONGELADORA</span>
         </div>
@@ -56,7 +61,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <span className="border-b border-black flex-grow">{boleta.field_data.pilot_name}</span>
         </div>
         <div className="flex space-x-2">
-          <span>COORDINADOR:</span>
+          <span className="uppercase">Productor:</span>
           <span className="border-b border-black flex-grow">{boleta.field_data.coordinator}</span>
         </div>
         <div className="flex space-x-2">
@@ -86,135 +91,165 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-6">
+      <div className="grid grid-cols-12 gap-4 md:gap-6 mb-4 md:mb-6">
+
         {/* Left Section - DATOS CAMPO */}
-        <div className="border border-black p-3 md:p-4">
-          <p className="text-center font-bold mb-4 md:mb-6 text-base md:text-lg">DATOS CAMPO</p>
-          <div className="space-y-4 md:space-y-6">
-            <div>
-              <p className="flex justify-between">
-                <span>A. PESO BRUTO</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.field_data.gross_weight}</span>
-              </p>
-              <div className="flex justify-between items-center mt-2 md:mt-3 gap-2 md:gap-3">
-                <div className="flex items-center space-x-2 md:space-x-3 flex-1">
-                  <span className="border border-black px-2 md:px-3 min-w-0 flex-1">{boleta.field_data.total_baskets}</span> {/*Estas  son las lineas*/}
-                  <span>X</span>
-                  <span className="border border-black px-2 md:px-3 min-w-0 flex-1">{boleta.field_data.weight_basket}</span>
+        <div className="border border-black p-6 col-span-12 md:col-span-6 bg-yellow-100">
+          <p className="text-center font-bold mb-8 text-lg uppercase">Datos Campo</p>
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <span className="w-1/3"><span className="font-bold">A.</span> PESO BRUTO</span>
+              <div className="flex-1 flex justify-end">
+                <div className="text-center w-40">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center">
+                    {boleta.field_data.gross_weight}
+                  </span>
+                  <p className="text-xs mt-0.5">PESO BRUTO</p>
                 </div>
-                <span>=</span>
-                <span className="border border-black px-2 md:px-3 min-w-0 flex-1">{boleta.field_data.weight_baskets}</span>
               </div>
-              <p className="text-xs md:text-sm text-center mt-1">CANTIDAD DE CANASTAS X PESO POR CANASTAS</p>
             </div>
 
-            <div>
-              <p className="flex justify-between">
-                <span>B. TARA</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.field_data.weight_baskets}</span>
-              </p>
+            <div className="flex items-start">
+              <span className="w-1/3"><span className="font-bold">B.</span> TARA</span>
+              <div className="flex-1 flex items-center justify-end space-x-3">
+                <div className="text-center w-28">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.field_data.total_baskets}
+                  </span>
+                  <p className="text-xs mt-0.5">CANTIDAD DE CANASTAS</p>
+                </div>
+                <div className="text-center w-28">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.field_data.weight_basket}
+                  </span>
+                  <p className="text-xs mt-0.5">X PESO POR CANASTAS</p>
+
+                </div>
+                <span className="px-1">=</span>
+                <div className="text-center w-28">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center">
+                    {boleta.field_data.weight_baskets}
+                  </span>
+                  <p className="text-xs mt-0.5">TARA</p>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <p className="flex justify-between">
-                <span>C. PESO MATERIA PRIMA (A) - (B)</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.field_data.net_weight}</span>
-              </p>
+            <div className="flex items-center">
+              <span className="w-1/3"><span className="font-bold">C.</span> PESO MATERIA PRIMA (A) - (B)</span>
+              <div className="flex-1 flex justify-end">
+                <div className="text-center w-40">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.field_data.net_weight}
+                  </span>
+                  <p className="text-xs mt-0.5">PESO NETO</p>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <p className="flex justify-between">
-                <span>D. PESO A PAGAR = % DE CALIDAD</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.field_data.percentage_field}</span>
-              </p>
+            {/* PESO A PAGAR */}
+            <div className="flex items-center">
+              <span className="w-1/3"><span className="font-bold">D.</span> PESO A PAGAR = % DE CALIDAD</span>
+              <div className="flex-1 flex items-center justify-end space-x-2">
+                <div className="text-center w-28">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.field_data.percentage_field}
+                  </span>
+                  <p className="text-xs mt-0.5">%CC A PAGAR</p>
+                </div>
+                <span className="px-2">=</span>
+                <div className="text-center w-40">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center">
+                    {boleta.field_data.valid_pounds}
+                  </span>
+                  <p className="text-xs mt-0.5">LIBRAS A PAGAR</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Middle Section - DATOS DE PLANTA */}
-        <div className="border border-black p-3 md:p-4">
-          <p className="text-center font-bold mb-4 md:mb-6 text-base md:text-lg">DATOS DE PLANTA</p>
-          <div className="space-y-4 md:space-y-6">
-            <div>
-              <p className="flex justify-between">
-                <span>PESO BRUTO</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.prod_data.gross_weight}</span>
-              </p>
-              <div className="flex justify-between items-center mt-2 md:mt-3 gap-2 md:gap-3">
-                <div className="flex items-center space-x-2 md:space-x-3 flex-1">
-                  <span className="border border-black px-2 md:px-3 min-w-0 flex-1">{boleta.prod_data.total_baskets}</span> {/*we have to fix this line*/}
-                  <span>X</span>
-                  <span className="border border-black px-2 md:px-3 min-w-0 flex-1">{boleta.field_data.weight_basket}</span>{/*we have to fix this line*/}
+        {/* Middle Section - DATOS DE PLANTA*/}
+        <div className="border border-black p-6 col-span-12 md:col-span-4 bg-yellow-100">
+          <p className="text-center font-bold mb-8 text-lg uppercase">DATOS DE PLANTA</p>
+          <div className="space-y-6">
+            {/* PESO BRUTO */}
+            <div className="flex items-center">
+              <div className="flex-1 flex justify-end">
+                <div className="text-center w-40">
+                  <span className="border border-black px-3 py-1.5 inline-block w-full text-center ">
+                    {boleta.prod_data.gross_weight}
+                  </span>
+                  <p className="text-xs mt-0.5">PESO BRUTO</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-start">
+              <div className="flex-1 flex items-center justify-end gap-2">
+                <div className="text-center w-28">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.prod_data.total_baskets}
+                  </span>
+                  <p className="text-xs mt-0.5">CANTIDAD DE CANASTAS</p>
+                </div>
+                <div className="text-center w-28">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.prod_data.weight_baskets}
+                  </span>
+                  <p className="text-xs mt-0.5">X PESO POR CANASTAS</p>
                 </div>
                 <span>=</span>
-                <span className="border border-black px-2 md:px-3 min-w-0 flex-1">{boleta.prod_data.tara}</span>{/*we have to fix this line*/}
+                <div className="text-center w-28">
+                  <span className="border border-black  py-1 inline-block w-9/12 text-center ">
+                    {boleta.prod_data.tara}
+                  </span>
+                  <p className="text-xs mt-0.5">TARA</p>
+                </div>
               </div>
-
-              <p className="text-xs md:text-sm text-center mt-1">CANTIDAD DE CANASTAS X PESO POR CANASTAS</p>
             </div>
 
-            <div>
-              <p className="flex justify-between">
-                <span>TARA</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.prod_data.tara}</span>
-              </p>
+            {/* PESO NETO */}
+            <div className="flex items-center">
+              <div className="flex-1 flex justify-end">
+                <div className="text-center w-40">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.prod_data.net_weight}
+                  </span>
+                  <p className="text-xs mt-0.5">PESO NETO</p>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <p className="flex justify-between">
-                <span>PESO NETO</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.prod_data.net_weight}</span>
-              </p>
+            {/* PESO A PAGAR */}
+            <div className="flex items-center">
+              <div className="flex-1 flex items-center justify-end gap-2">
+                <div className="text-center w-28">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.quality_doc_data.percentage}
+                  </span>
+                  <p className="text-xs mt-0.5">%CC A PAGAR</p>
+                </div>
+                <span className="px-2">=</span>
+                <div className="text-center w-40">
+                  <span className="border border-black px-3 py-1 inline-block w-full text-center ">
+                    {boleta.quality_doc_data.valid_pounds}
+                  </span>
+                  <p className="text-xs mt-0.5">LIBRAS VALIDADAS</p>
+                </div>
+              </div>
             </div>
-
-            <div>
-              <p className="flex justify-between">
-                <span>% CC VALIDACIÓN</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.quality_doc_data.percentage}</span>
-              </p>
-            </div>
-
-            <div>
-              <p className="flex justify-between">
-                <span>LIBRAS VALIDADAS</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]">{boleta.quality_doc_data.valid_pounds}</span>
-              </p>
-            </div>
-
           </div>
         </div>
 
-        {/* Right Section - DIFERENCIA */}
-        <div className="border border-black p-3 md:p-4">
-          <p className="text-center font-bold mb-4 md:mb-6 text-base md:text-lg">DIFERENCIA</p>
-          <div className="space-y-4 md:space-y-6">
-            <div>
-              <p className="flex justify-between">
-                <span>PESO BRUTO</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]"></span>
-              </p>
-            </div>
-
-            <div>
-              <p className="flex justify-between">
-                <span>TARA</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]"></span>
-              </p>
-            </div>
-
-            <div>
-              <p className="flex justify-between">
-                <span>PESO NETO</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]"></span>
-              </p>
-            </div>
-
-            <div>
-              <p className="flex justify-between">
-                <span>LIBRAS VALIDADAS</span>
-                <span className="border border-black px-2 md:px-3 min-w-[90px] md:min-w-[120px]"></span>
-              </p>
-            </div>
+        {/* Right Section - DIFERENCIA*/}
+        <div className="border border-black py-1 md:p-2 col-span-12 md:col-span-2">
+          <p className="text-center font-bold mb-2 md:mb-3 text-base md:text-lg py-5">DIFERENCIA</p>
+          <div className="space-y-2 md:space-y-12 flex flex-col items-center">
+            <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center"></div>
+            <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center"></div>
+            <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center"></div>
+            <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center"></div>
           </div>
         </div>
       </div>
@@ -228,31 +263,48 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
       {/* Footer */}
       <div className="mt-6 md:mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-sm md:text-base">
         <div className="text-center">
-          <div className="border-b border-black h-8 md:h-10">
-            <img src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.field_data.inspector_agricola_signature}`} alt="Imagen Boleta" />
+          <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
+            <img
+              src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.field_data.inspector_agricola_signature}`}
+              alt="Firma Inspector Agrícola"
+              className="max-h-25 md:max-h-25 object-contain"
+            />
           </div>
-          <p>NOMBRE INSPECTOR AGRICOLA</p>
+          <p className="mt-2">NOMBRE INSPECTOR AGRICOLA</p>
         </div>
         <div className="text-center">
-          <div className="border-b border-black h-8 md:h-10">
-          <img src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.field_data.producer_signature}`} alt="Imagen Boleta" />
+          <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
+            <img
+              src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.field_data.producer_signature}`}
+              alt="Firma Productor"
+              className="max-h-25 md:max-h-25 object-contain"
+            />
           </div>
-          <p>NOMBRE DEL PRODUCTOR</p>
+          <p className="mt-2">NOMBRE DEL PRODUCTOR</p>
         </div>
         <div className="text-center">
-          <div className="border-b border-black h-8 md:h-10">
-          <img src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.prod_data.receptor_signature}`} alt="Imagen Boleta" />
+          <div className="border-b border-black h-25 md:h-20 flex items-center justify-center">
+            <img
+              src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.prod_data.receptor_signature}`}
+              alt="Firma Receptor"
+              className="max-h-25 md:max-h-25 object-contain"
+            />
           </div>
-          <p>NOMBRE RECEPTOR</p>
+          <p className="mt-2">NOMBRE RECEPTOR</p>
         </div>
         <div className="text-center">
-          <div className="border-b border-black h-8 md:h-10">
-          <img src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data.inspector_planta_signaure}`} alt="Imagen Boleta" />
+          <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
+            <img
+              src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data.inspector_planta_signaure}`}
+              alt="Firma Inspector Planta"
+              className="max-h-25 md:max-h-25 object-contain"
+            />
           </div>
-          <p>NOMBRE INSPECTOR PLANTA</p>
+          <p className="mt-2">NOMBRE INSPECTOR PLANTA</p>
         </div>
       </div>
     </div>
+
   );
 };
 
