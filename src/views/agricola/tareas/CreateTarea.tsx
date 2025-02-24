@@ -1,12 +1,11 @@
-//HOOKS
-import { useAppStore } from "../../../stores/useAppStore";
+import { createTarea } from "@/api/TasksAPI";
 
 //COMPONENTES
 import { Button } from "@mui/material";
-import Spinner from "../../../components/Spinner";
-import Error from "../../../components/Error";
+import Spinner from "@/components/Spinner";
+import Error from "@/components/Error";
 import { useForm } from "react-hook-form";
-import { DraftTarea } from "../../../types";
+import { DraftTarea } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -15,9 +14,6 @@ export default function CreateTarea() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const errorsTareas = useAppStore((state) => state.errorsTareas);
-
-  const createTarea = useAppStore((state) => state.createTarea);
   const navigate = useNavigate();
 
   const {
@@ -30,7 +26,11 @@ export default function CreateTarea() {
     setLoading(true);
 
     try {
-      await createTarea(data);
+      const errors = await createTarea(data);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]));
+        return;
+      }
       toast.success('Tarea Creada Correctamente');
       navigate('/tareas');
     } catch (error) {
@@ -51,11 +51,6 @@ export default function CreateTarea() {
         className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
         onSubmit={handleSubmit(RegisterTarea)}
       >
-        {errorsTareas
-          ? errorsTareas.map((error, index) => (
-            <Error key={index}>{error}</Error>
-          ))
-          : null}
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="name">
             Nombre:

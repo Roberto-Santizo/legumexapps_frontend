@@ -1,38 +1,38 @@
 //HOOKS
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
+//API
+import { updateUser, getUser } from "@/api/UsersAPI";
+import { getRoles } from "@/api/RolesAPI";
+import { getPermissions } from "@/api/PermissionsAPI";
+
 //TYPES
-import { DraftUser, Permission, Role, UserDetail } from "../../../types";
+import { DraftUser, Permission, Role, UserDetail } from "@/types";
 
 //COMPONENTES
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { Button } from "@mui/material";
-import Error from "../../../components/Error";
+import Error from "@/components/Error";
 import { toast } from "react-toastify";
 
 export default function EditUser() {
   const { id } = useParams();
   const [loadingGetRoles, setLoadingGetRoles] = useState<boolean>(false);
   const [loadingGetPermissions, setLoadingGetPermissions] = useState<boolean>(false);
-  const [loadingGetUser,setLoadingGetUser] = useState<boolean>(false);
-  const [loadingUpdateUser,setLoadingUpdateUser] = useState<boolean>(false);
+  const [loadingGetUser, setLoadingGetUser] = useState<boolean>(false);
+  const [loadingUpdateUser, setLoadingUpdateUser] = useState<boolean>(false);
 
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
 
   const [userEditing, setUserEditing] = useState<UserDetail>({} as UserDetail);
 
-  const getUser = useAppStore((state) => state.getUser);
-  const fetRoles = useAppStore((state) => state.fetchRoles);
-  const fetchPermissions = useAppStore((state) => state.fetchPermissions);
-
   const handleGetRoles = async () => {
     setLoadingGetRoles(true);
     try {
-      const roles = await fetRoles();
+      const roles = await getRoles();
       setRoles(roles);
     } catch (error) {
       toast.error(
@@ -46,7 +46,7 @@ export default function EditUser() {
   const handleGetPermissions = async () => {
     setLoadingGetPermissions(true);
     try {
-      const permssions = await fetchPermissions();
+      const permssions = await getPermissions();
       setPermissions(permssions);
     } catch (error) {
       toast.error(
@@ -60,25 +60,23 @@ export default function EditUser() {
   const handleGetUser = async () => {
     setLoadingGetUser(true);
     try {
-      if(id){
+      if (id) {
         const user = await getUser(id);
         setUserEditing(user);
       }
     } catch (error) {
       toast.error("Hubo un error al traer el usuario, intentelo de nuevo más tarde");
-    }finally {
+    } finally {
       setLoadingGetUser(false);
     }
   }
 
   useEffect(() => {
-      handleGetUser();
-      handleGetPermissions();
-      handleGetRoles();
+    handleGetUser();
+    handleGetPermissions();
+    handleGetRoles();
   }, []);
 
-  const UserErrors = useAppStore((state) => state.usersErrors);
-  const updateUser = useAppStore((state) => state.updateUser);
   const navigate = useNavigate();
 
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
@@ -111,22 +109,24 @@ export default function EditUser() {
         ? prev.filter((id) => id !== permissionId)
         : [...prev, permissionId]
     );
+
   };
 
   const editUser = async (data: DraftUser) => {
     setLoadingUpdateUser(true);
-    try {
-      if(id){
-        await updateUser(id, data);
-        toast.success("Usuario actualizado correctamente");
-        navigate("/usuarios");
+    const updatedData = { ...data, permissions: selectedPermissions.map(id => ({ id, name: '' })) }
+    if (id) {
+      const errors = await updateUser(id, updatedData);
+      console.log(errors);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]))
+        setLoadingUpdateUser(false);
+        return;
       }
-    } catch (error) {
-      toast.error("Error al actualizar el usuario");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }finally {
-      setLoadingUpdateUser(false);
+      toast.success("Usuario actualizado correctamente");
+      navigate("/usuarios");
     }
+    setLoadingUpdateUser(false);
   };
 
   return (
@@ -146,11 +146,6 @@ export default function EditUser() {
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(editUser)}
         >
-          {UserErrors 
-            ? UserErrors.map((error, index) => (
-                <Error key={index}>{error}</Error>
-              ))
-            : null}
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="name">
               Nombre:

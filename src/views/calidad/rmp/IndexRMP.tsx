@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+import { getPaginatedBoletasRMP } from "@/api/ReceptionsDocAPI";
+
 import { useAppStore } from "@/stores/useAppStore";
 import { Boleta } from "@/types";
 import Spinner from "@/components/Spinner";
 import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
+import Pagination from "@/components/Pagination";
 
 export default function IndexRMP() {
     const status: { [key: number]: string } = {
@@ -30,14 +33,19 @@ export default function IndexRMP() {
     const [role, setRole] = useState<string>();
     const [modalGRN, setModalGRN] = useState<boolean>(false);
     const [boletaSelected, setBoletaSelected] = useState<Boleta>();
-    const getBoletasRMP = useAppStore((state) => state.getBoletasRMP);
     const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-    const handleGetBoletas = async () => {
+    const [pageCount, setPageCount] = useState<number>(0);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
+
+    const handleGetBoletas = async (page: number) => {
         setLoading(true);
         try {
-            const data = await getBoletasRMP();
+            const data = await getPaginatedBoletasRMP(page);
             SetBoletas(data.data);
+            setPageCount(data.meta.last_page);
+            setCurrentPage(data.meta.current_page);
         } catch (error) {
             toast.error('Hubo un error al traer la información');
         } finally {
@@ -59,9 +67,16 @@ export default function IndexRMP() {
         setModalGRN(true);
     }
     useEffect(() => {
-        handleGetBoletas();
         handleGetUserRole();
     }, []);
+
+    const handlePageChange = (selectedItem: { selected: number }) => {
+        setCurrentPage(selectedItem.selected + 1);
+    };
+
+    useEffect(() => {
+        handleGetBoletas(currentPage);
+    }, [currentPage]);
     return (
         <>
             <div>
@@ -77,66 +92,79 @@ export default function IndexRMP() {
                     </Link>
                 </div>
                 {(loading && !role) ? <Spinner /> : (
-                    <div className="p-2 h-96 overflow-y-auto mt-10">
-                        <table className="table">
-                            <thead>
-                                <tr className="thead-tr">
-                                    <th scope="col" className="thead-th">ID</th>
-                                    <th scope="col" className="thead-th">Placa</th>
-                                    <th scope="col" className="thead-th">Producto</th>
-                                    <th scope="col" className="thead-th">Variedad</th>
-                                    <th scope="col" className="thead-th">Coordinador</th>
-                                    <th scope="col" className="thead-th">Estado</th>
-                                    <th scope="col" className="thead-th">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {boletas.map(boleta => (
-                                    <tr key={boleta.id} className="tbody-tr">
-                                        <td className="tbody-td">{boleta.id}</td>
-                                        <td className="tbody-td">{boleta.plate}</td>
-                                        <td className="tbody-td">{boleta.product}</td>
-                                        <td className="tbody-td">{boleta.variety}</td>
-                                        <td className="tbody-td">{boleta.coordinator}</td>
-                                        <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-sm`}>{status[boleta.status]}</span></td>
-                                        <td className="tbody-td flex gap-5">
-                                            {loading ? <Spinner /> : (
-                                                <>
-                                                    {(boleta.status === 1 && role && (role === 'pprod')) && (
-                                                        <Link to={`/rmp/editar/${boleta.id}`}>
-                                                            <EditIcon />
-                                                        </Link>
-                                                    )}
-
-                                                    {(boleta.status === 2 && role && (role === 'pcalidad')) && (
-                                                        <Link to={`/rmp/editar/${boleta.id}`}>
-                                                            <EditIcon />
-                                                        </Link>
-                                                    )}
-
-                                                    {((boleta.status === 3 || boleta.status === 4) && role && (role === 'pprod')) && (
-                                                        <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
-                                                    )}
-
-                                                    {boleta.status === 5 && (
-                                                        <Link to={`/rmp/documentos/${boleta.id}`}>
-                                                            <Eye />
-                                                        </Link>
-                                                    )}
-
-                                                </>
-                                            )}
-
-                                        </td>
+                    <>
+                        <div className="p-2 h-96 overflow-y-auto mt-10">
+                            <table className="table">
+                                <thead>
+                                    <tr className="thead-tr">
+                                        <th scope="col" className="thead-th">ID</th>
+                                        <th scope="col" className="thead-th">Placa</th>
+                                        <th scope="col" className="thead-th">Producto</th>
+                                        <th scope="col" className="thead-th">Finca</th>
+                                        <th scope="col" className="thead-th">Variedad</th>
+                                        <th scope="col" className="thead-th">Coordinador</th>
+                                        <th scope="col" className="thead-th">Estado</th>
+                                        <th scope="col" className="thead-th">Acción</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {boletas.map(boleta => (
+                                        <tr key={boleta.id} className="tbody-tr">
+                                            <td className="tbody-td">{boleta.id}</td>
+                                            <td className="tbody-td">{boleta.plate}</td>
+                                            <td className="tbody-td">{boleta.product}</td>
+                                            <td className="tbody-td">{boleta.finca}</td>
+                                            <td className="tbody-td">{boleta.variety}</td>
+                                            <td className="tbody-td">{boleta.coordinator}</td>
+                                            <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-sm`}>{status[boleta.status]}</span></td>
+                                            <td className="tbody-td flex gap-5">
+                                                {loading ? <Spinner /> : (
+                                                    <>
+                                                        {(boleta.status === 1 && role && (role === 'pprod')) && (
+                                                            <Link to={`/rmp/editar/${boleta.id}`}>
+                                                                <EditIcon />
+                                                            </Link>
+                                                        )}
+
+                                                        {(boleta.status === 2 && role && (role === 'pcalidad')) && (
+                                                            <Link to={`/rmp/editar/${boleta.id}`}>
+                                                                <EditIcon />
+                                                            </Link>
+                                                        )}
+
+                                                        {((boleta.status === 3 || boleta.status === 4) && role && (role === 'pprod')) && (
+                                                            <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
+                                                        )}
+
+                                                        {boleta.status === 5 && (
+                                                            <Link to={`/rmp/documentos/${boleta.id}`}>
+                                                                <Eye />
+                                                            </Link>
+                                                        )}
+
+                                                    </>
+                                                )}
+
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <div className="mb-10 flex justify-end">
+                                {!loading && (
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        pageCount={pageCount}
+                                        handlePageChange={handlePageChange}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </>
                 )}
             </div>
 
-            {boletaSelected && <BoletaGRNModal modal={modalGRN} setModal={setModalGRN} boleta={boletaSelected} handleGetBoletas={handleGetBoletas} />}
+            {boletaSelected && <BoletaGRNModal modal={modalGRN} setModal={setModalGRN} boleta={boletaSelected} handleGetBoletas={handleGetBoletas} page={currentPage} />}
         </>
     )
 }

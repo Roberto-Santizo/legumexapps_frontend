@@ -1,21 +1,18 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useAppStore } from "../../../stores/useAppStore";
 import { useNavigate } from "react-router-dom";
+
+import { createPlan } from "@/api/WeeklyPlansAPI";
 
 //COMPONENTES
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
-import Error from "../../../components/Error";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 
 export default function CreatePlanSemanal() {
   const [file, setFile] = useState<File[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
 
-  const errorsCreatePlan = useAppStore((state) => state.errorsCreatePlan);
-  const createPlan = useAppStore((state) => state.createPlan);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -28,19 +25,17 @@ export default function CreatePlanSemanal() {
 
   const handleCreatePlan = async () => {
     setLoading(true);
-
-    try {
-      if (file) {
-        await createPlan(file);
-        navigate("/planes-semanales");
-        toast.success("Plan Creado Correctamente");
+    if (file) {
+      const error = await createPlan(file);
+      if (error) {
+        toast.error(error);
+        setLoading(false);
+        return;
       }
-    } catch (error) {
-      setError(true);
-      toast.error('Existe un error al crear el plan semanal');
-    } finally {
-      setLoading(false);
+      navigate("/planes-semanales");
+      toast.success("Plan Creado Correctamente");
     }
+    setLoading(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -52,7 +47,6 @@ export default function CreatePlanSemanal() {
     <>
       <h2 className="text-4xl font-bold">Crear Plan Semanal</h2>
       <form className="w-1/2 mx-auto" onSubmit={handleSubmit}>
-        {error && <Error>{errorsCreatePlan}</Error>}
         <div
           className="mt-5"
           {...getRootProps()}

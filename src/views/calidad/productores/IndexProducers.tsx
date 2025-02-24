@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
-import { Producer } from "../../../types";
+import { Producer } from "@/types";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { PlusIcon } from "lucide-react";
-import Pagination from "../../../components/Pagination";
+import Pagination from "@/components/Pagination";
 import { Link } from "react-router-dom";
+
+import { getPaginatedProducers } from "@/api/ProducersAPI";
 
 export default function IndexProducers() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [producers, setProducers] = useState<Producer[]>([]);
-  const getProducersPaginate = useAppStore((state) => state.getProducersPaginate);
 
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -19,7 +19,7 @@ export default function IndexProducers() {
   const handleGetInfo = async (page: number) => {
     setLoading(true);
     try {
-      const data = await getProducersPaginate(page);
+      const data = await getPaginatedProducers(page);
       setProducers(data.data);
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);

@@ -2,14 +2,17 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
 import Select from "react-select";
 
+import { getCDPS } from "@/api/PlantationControlAPI";
+import { getAllFincas } from "@/api/FincasAPI";
+import { createLote } from "@/api/LotesAPI";
+
 //COMPONENTES
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { Button } from "@mui/material";
-import { DraftLote, Finca, Plantation } from "../../../types";
-import Error from "../../../components/Error";
+import { DraftLote, Finca, Plantation } from "@/types";
+import Error from "@/components/Error";
 import { toast } from "react-toastify";
 
 export default function CreateLote() {
@@ -21,11 +24,6 @@ export default function CreateLote() {
 
   const [loadingCreateLote, setLoadingCreateLote] = useState<boolean>(false);
 
-  const fetchFincas = useAppStore((state) => state.fetchFincas);
-  const fetchCDPS = useAppStore((state) => state.fetchControlPlantations);
-
-  const errorsCreateLote = useAppStore((state) => state.errorsCreateLote);
-  const createLote = useAppStore((state) => state.createLote);
   const navigate = useNavigate();
 
   const cdpsOptions = cdps.map((cdp) => ({
@@ -48,7 +46,7 @@ export default function CreateLote() {
   const handleGetFincas = async () => {
     setLoadingGetFincas(true);
     try {
-      const fincas = await fetchFincas();
+      const fincas = await getAllFincas();
       setFincas(fincas);
     } catch (error) {
       toast.error("Error al trear fincas, intentelo de nuevo más tarde");
@@ -58,7 +56,7 @@ export default function CreateLote() {
   const handleGetCDPS = async () => {
     setLoadingGetCPS(true);
     try {
-      const cdps = await fetchCDPS();
+      const cdps = await getCDPS();
       setCdps(cdps);
     } catch (error) {
       toast.error(
@@ -72,7 +70,11 @@ export default function CreateLote() {
   const handleCreateLote = async (data: DraftLote) => {
     setLoadingCreateLote(true);
     try {
-      await createLote(data);
+      const errors = await createLote(data);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]));
+        return;
+      }
       toast.success("Lote creado correctamente");
       navigate("/lotes");
     } catch (error) {
@@ -94,11 +96,6 @@ export default function CreateLote() {
         className="w-1/2 mx-auto p-5 space-y-5"
         onSubmit={handleSubmit(handleCreateLote)}
       >
-        {errorsCreateLote
-          ? errorsCreateLote.map((error, index) => (
-              <Error key={index}>{error}</Error>
-            ))
-          : null}
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="name">
             Nombre:

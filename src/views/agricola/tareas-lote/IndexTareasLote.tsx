@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
 
 //COMPONENTES
-import Spinner from "../../../components/Spinner";
-import Task from "../../../components/Task";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { toast } from "react-toastify";
+import Spinner from "@/components/Spinner";
+import Task from "@/components/Task";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function IndexTareasLote() {
   const { lote_plantation_control_id, weekly_plan_id } = useParams();

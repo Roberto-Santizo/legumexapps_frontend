@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
-import {
-  DraftTaskCropWeeklyPlan,
-  Lote,
-  TaskCrop,
-  WeeklyPlan,
-} from "../../../types";
+import Spinner from "@/components/Spinner";
+import { DraftTaskCropWeeklyPlan, Lote, TaskCrop, WeeklyPlan } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import Error from "../../../components/Error";
+import Error from "@/components/Error";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
+import { getAllPlans } from "@/api/WeeklyPlansAPI";
+import { getAllLotes } from "@/api/LotesAPI";
+import { getAllTasksCrop } from "@/api/TasksCropAPI";
 
 export default function CreateTareaLoteCosecha() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,12 +19,7 @@ export default function CreateTareaLoteCosecha() {
   const [plans, setPlans] = useState<WeeklyPlan[]>([]);
   const [tasksCrop, setTasksCrop] = useState<TaskCrop[]>([]);
   const navigate = useNavigate();
-  const createTaskCropWeeklyPlan = useAppStore(
-    (state) => state.createTaskCropWeeklyPlan
-  );
-  const getAllTasksCrop = useAppStore((state) => state.getAllTasksCrop);
-  const getAllPlans = useAppStore((state) => state.getAllPlans);
-  const fetchAllLotes = useAppStore((state) => state.fetchAllLotes);
+  const createTaskCropWeeklyPlan = useAppStore((state) => state.createTaskCropWeeklyPlan);
 
   const plansOptions = plans.map((plan) => ({
     value: plan.id,
@@ -54,7 +48,7 @@ export default function CreateTareaLoteCosecha() {
     try {
       const tasksCrop = await getAllTasksCrop();
       const plans = await getAllPlans();
-      const lotes = await fetchAllLotes();
+      const lotes = await getAllLotes();
       setLotes(lotes);
       setTasksCrop(tasksCrop);
       setPlans(plans);

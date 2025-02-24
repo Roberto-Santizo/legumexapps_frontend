@@ -1,12 +1,14 @@
-import { Edit, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import { Plantation } from "../../../types";
-import Pagination from "../../../components/Pagination";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { Plantation } from "@/types";
+import Pagination from "@/components/Pagination";
 import { toast } from "react-toastify";
+
+import { getPaginatedCDPS } from "@/api/PlantationControlAPI";
 
 export default function IndexCdps() {
   const [cdps, setCdps] = useState<Plantation[]>([]);
@@ -30,14 +32,10 @@ export default function IndexCdps() {
     }
   };
 
-  const fetchControlPlantations = useAppStore(
-    (state) => state.fetchControlPlantationsPaginate
-  );
-
   const handleGetCDPS = async (page: number) => {
     setLoading(true);
     try {
-      const cdps = await fetchControlPlantations(page);
+      const cdps = await getPaginatedCDPS(page);
       setCdps(cdps.data);
       setPageCount(cdps.meta.last_page);
       setCurrentPage(cdps.meta.current_page);
@@ -116,11 +114,6 @@ export default function IndexCdps() {
               <th scope="col" className="thead-th">
                 Estado
               </th>
-              {role === "admin" && (
-                <th scope="col" className="thead-th">
-                  Acción
-                </th>
-              )}
             </tr>
           </thead>
           <tbody>
@@ -159,23 +152,12 @@ export default function IndexCdps() {
                 </td>
                 <td className="tbody-td">
                   <p
-                    className={`button text-center ${
-                      cdp.status ? "bg-red-500" : " bg-green-500"
-                    }`}
+                    className={`button text-center ${cdp.status ? "bg-red-500" : " bg-green-500"
+                      }`}
                   >
                     {cdp.status ? "CERRADO" : "ACTIVO"}
                   </p>
                 </td>
-                {role === "admin" && (
-                  <td className="tbody-td flex gap-2">
-                    <Link
-                      to={`/cdps/edit/${cdp.id}`}
-                      className="hover:text-gray-400"
-                    >
-                      <Edit />
-                    </Link>
-                  </td>
-                )}
               </tr>
             ))}
           </tbody>

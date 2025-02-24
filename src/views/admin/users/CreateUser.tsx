@@ -6,32 +6,30 @@ import { toast } from "react-toastify";
 
 //HOOKS
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
+import { createUser } from "@/api/UsersAPI";
+import { getRoles } from "@/api/RolesAPI";
+import { getPermissions } from "@/api/PermissionsAPI";
 
 //TYPES
-import { DraftUser, Permission, Role } from "../../../types";
+import { DraftUser, Permission, Role } from "@/types";
 
 //COMPONENTES
-import Error from "../../../components/Error";
-import Spinner from "../../../components/Spinner";
+import Error from "@/components/Error";
+import Spinner from "@/components/Spinner";
 
 export default function CreateUser() {
   const [loadingGetRoles, setLoadingGetRoles] = useState<boolean>(false);
   const [loadingGetPermissions, setLoadingGetPermissions] = useState<boolean>(false);
-  const [loading,setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
 
-  const createUser = useAppStore((state) => state.createUser);
-  const fetchRoles = useAppStore((state) => state.fetchRoles);
-  const fetchPermissions = useAppStore((state) => state.fetchPermissions);
-  const UserErrors = useAppStore((state) => state.usersErrors);
   const navigate = useNavigate();
 
   const handleGetRoles = async () => {
     setLoadingGetRoles(true);
     try {
-      const roles = await fetchRoles();
+      const roles = await getRoles();
       setRoles(roles);
     } catch (error) {
       toast.error("Hubo un error a traer los roles");
@@ -43,7 +41,7 @@ export default function CreateUser() {
   const handleGetPermissions = async () => {
     setLoadingGetPermissions(true);
     try {
-      const permissions = await fetchPermissions();
+      const permissions = await getPermissions();
       setPermissions(permissions);
     } catch (error) {
       toast.error("Hubo un error a traer los permisos");
@@ -65,15 +63,15 @@ export default function CreateUser() {
 
   const RegisterUser = async (data: DraftUser) => {
     setLoading(true);
-    try {
-      await createUser(data);
-      toast.success("Usuario creado correctamente");
-        navigate("/usuarios");
-    } catch (error) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }finally{
+    const errors = await createUser(data);
+    if (errors) {
+      errors.forEach(error => toast.error(error[0]))
       setLoading(false);
+      return;
     }
+    toast.success("Usuario creado correctamente");
+    navigate("/usuarios");
+    setLoading(false);
   };
 
   return (
@@ -83,9 +81,7 @@ export default function CreateUser() {
         className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
         onSubmit={handleSubmit(RegisterUser)}
       >
-        {UserErrors
-          ? UserErrors.map((error, index) => <Error key={index}>{error}</Error>)
-          : null}
+
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="name">
             Nombre:

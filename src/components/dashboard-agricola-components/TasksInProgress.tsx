@@ -1,23 +1,19 @@
-import { useAppStore } from "../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { TaskInProgress as TaskInProgressType } from "../../types";
 import Spinner from "../Spinner";
 import TaskInProgress from "../TaskInProgress";
 
-type Props = {
-  permission: string;
-}
+import { getTasksInProgress } from "@/api/DashboardAgricolaAPI";
 
-export default function TasksInProgress({permission} : Props) {
+export default function TasksInProgress() {
   const [loading, setLoading] = useState<boolean>(false);
   const [tasksInProgress, setTasksInProgress] = useState<TaskInProgressType[]>([]);
-  const getTasksInProgress = useAppStore((state) => state.getTasksInProgress);
 
   const handleGetInfo = async () => {
     setLoading(true);
     try {
-      const tasks = await getTasksInProgress(permission);
+      const tasks = await getTasksInProgress();
       setTasksInProgress(tasks);
     } catch (error) {
       toast.error("Hubo un error al traer la información");

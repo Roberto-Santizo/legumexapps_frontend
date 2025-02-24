@@ -1,14 +1,14 @@
 //HOOKS
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
 import { formatDate } from "../../../helpers";
-
-//COMPONENTES
-import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-import { Permission } from "../../../types";
+
+//COMPONENTES
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { Permission } from "@/types";
+import { getPermissions } from "@/api/PermissionsAPI";
 
 export default function IndexPermisos() {
   const [loading,setLoading] = useState<boolean>(false);
@@ -16,12 +16,10 @@ export default function IndexPermisos() {
 
   const [permissions,setPermissions] = useState<Permission[]>([]);
 
-  const fetchPermissions = useAppStore((state) => state.fetchPermissions);
-
   const handleGetPermissions = async () => {
     setLoading(true);
     try {
-      const permissions = await fetchPermissions();
+      const permissions = await getPermissions();
       setPermissions(permissions);
     } catch (error) {
       setError(true);

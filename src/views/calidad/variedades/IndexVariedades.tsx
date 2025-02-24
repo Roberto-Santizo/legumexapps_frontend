@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
-import { Variety } from "../../../types";
+import Spinner from "@/components/Spinner";
+import { Variety } from "@/types";
 import { PlusIcon } from "lucide-react";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { Link } from "react-router-dom";
-import Pagination from "../../../components/Pagination";
+import Pagination from "@/components/Pagination";
+import { getPaginatedVarieties } from "@/api/VarietiesAPI";
+
 
 export default function IndexVariedades() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [variedades, setVariedades] = useState<Variety[]>([]);
-  const getVarietiesPaginate = useAppStore((state) => state.getVarietiesPaginate);
 
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -20,7 +20,7 @@ export default function IndexVariedades() {
   const handleGetInfo = async (page: number) => {
     setLoading(true);
     try {
-      const data = await getVarietiesPaginate(page);
+      const data = await getPaginatedVarieties(page);
       setVariedades(data.data);
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
@@ -41,7 +41,7 @@ export default function IndexVariedades() {
   }, [currentPage]);
 
   useEffect(() => {
-    getVarietiesPaginate(1)
+    getPaginatedVarieties(1)
   }, []);
   return (
     <>

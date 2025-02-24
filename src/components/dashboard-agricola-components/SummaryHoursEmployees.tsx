@@ -1,16 +1,15 @@
 import { CheckIcon, XIcon } from "lucide-react";
-import { useAppStore } from "../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { SummaryEmployeeHours } from "../../types";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner";
 
+import { getSummaryHoursEmployees } from "@/api/DashboardAgricolaAPI";
+
 export default function SummaryHoursEmployees() {
   const [employees, setEmployees] = useState<SummaryEmployeeHours[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const getSummaryHoursEmployees = useAppStore(
-    (state) => state.getSummaryHoursEmployees
-  );
+
 
   const handleGetData = async () => {
     setLoading(true);
@@ -30,10 +29,9 @@ export default function SummaryHoursEmployees() {
   return (
     <div className="flex flex-col items-center shadow-xl row-start-2 col-start-6 col-span-7 rounded-xl gap-5">
       <p className="uppercase w-full text-center bg-gray-400 p-3 text-white font-bold rounded-t-xl text-2xl">
-        Resumen de Horas Por Empleado Semana 
+        Resumen de Horas Por Empleado Semana
       </p>
-      {loading && <Spinner />}
-      {!loading && (
+      {loading ? <Spinner /> : (
         <div className="w-full p-2 h-96 overflow-y-scroll">
           <table className="table">
             <thead>

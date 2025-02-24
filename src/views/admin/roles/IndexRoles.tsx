@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import Spinner from "../../../components/Spinner";
 import { formatDate } from "../../../helpers";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Role } from "../../../types";
+
+import { getRoles } from "@/api/RolesAPI";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/Spinner";
+import { Role } from "@/types";
 
 export default function IndexRoles() {
   const [loading,setLoading] = useState<boolean>(false);
   const [error,setError] = useState<boolean>(false);
   const [roles, setRoles] = useState<Role[]>([]);
-  const fetchRoles = useAppStore((state) => state.fetchRoles);
 
 
   const handleGetRoles = async () => {
     setLoading(true);
     try {
-      const roles = await fetchRoles();
+      const roles = await getRoles();
       setRoles(roles);
     } catch (error) {
       setError(true);

@@ -1,12 +1,13 @@
 import { Edit, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import Spinner from "../../../components/Spinner";
-import { Product } from "../../../types";
-import Pagination from "../../../components/Pagination";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/Spinner";
+import { Product } from "@/types";
+import Pagination from "@/components/Pagination";
+
+import { getPaginatedProducts } from "@/api/ProductsAPI";
 
 
 export default function IndexVarieties() {
@@ -15,13 +16,12 @@ export default function IndexVarieties() {
     const [products, setProducts] = useState<Product[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const getPaginateProducts = useAppStore((state) => state.getPaginateProducts);
 
 
     const handleGetInfo = async (page: number) => {
         setLoading(true);
         try {
-            const data = await getPaginateProducts(page);
+            const data = await getPaginatedProducts(page);
             setProducts(data.data);
             setPageCount(data.meta.last_page);
             setCurrentPage(data.meta.current_page);

@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { Crop, DraftCDP, Recipe } from "../../../types";
-import Error from "../../../components/Error";
+import { Crop, DraftCDP, Recipe } from "@/types";
+import Error from "@/components/Error";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
+import { getCrops } from "@/api/PlantationControlAPI";
+import { getRecipes } from "@/api/PlantationControlAPI";
+
+import { createCDP } from "@/api/PlantationControlAPI";
 
 export default function CreateCdp() {
   const [loadingGetCrops, setLoadingGetCrops] = useState<boolean>(false);
@@ -17,12 +21,8 @@ export default function CreateCdp() {
 
   const [loadingCreateCDP, setLoadingCreateCDP] = useState<boolean>(false);
 
-  const fetchCrops = useAppStore((state) => state.fetchCrops);
-  const fetchRecipes = useAppStore((state) => state.fetchRecipes);
 
-  const create = useAppStore((state) => state.createControlPlantation);
   const navigate = useNavigate();
-  const errorsCreateCDP = useAppStore((state) => state.errorsCreateCDP);
 
   const {
     register,
@@ -33,7 +33,7 @@ export default function CreateCdp() {
   const handleGetCrops = async () => {
     setLoadingGetCrops(true);
     try {
-      const crops = await fetchCrops();
+      const crops = await getCrops();
       setCrops(crops);
     } catch (error) {
       toast.error(
@@ -47,7 +47,7 @@ export default function CreateCdp() {
   const handleGetRecipes = async () => {
     setLoadingGetRecipes(true);
     try {
-      const recipes = await fetchRecipes();
+      const recipes = await getRecipes();
       setRecipes(recipes);
     } catch (error) {
       toast.error(
@@ -61,7 +61,12 @@ export default function CreateCdp() {
   const handleCreateCDP = async (data: DraftCDP) => {
     setLoadingCreateCDP(true);
     try {
-      await create(data);
+      const errors = await createCDP(data);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]));
+        setLoadingCreateCDP(false);
+        return;
+      }
       navigate("/cdps");
       toast.success("Control de Plantación creado exitosamente");
     } catch (error) {
@@ -85,11 +90,6 @@ export default function CreateCdp() {
         className="space-y-5 w-2/3 mx-auto p-5"
         onSubmit={handleSubmit(handleCreateCDP)}
       >
-        {errorsCreateCDP
-          ? errorsCreateCDP.map((error, index) => (
-              <Error key={index}>{error}</Error>
-            ))
-          : null}
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="name">
             Nombre:

@@ -1,18 +1,17 @@
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { DraftProducer } from "../../../types";
-import Error from "../../../components/Error";
+import { DraftProducer } from "@/types";
+import Error from "@/components/Error";
 import { useState } from "react";
-import Spinner from "../../../components/Spinner";
-import { useAppStore } from "../../../stores/useAppStore";
+import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
+import { createProducer } from "@/api/ProducersAPI";
 
 export default function CreateProducer() {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const createProducer = useAppStore((state) => state.createProducer);
-  const errorsCreateProductor = useAppStore((state) => state.errorsCreateProductor);
 
 
   const {
@@ -24,7 +23,11 @@ export default function CreateProducer() {
   const onSubmit = async (data: DraftProducer) => {
     setLoading(true);
     try {
-      await createProducer(data);
+      const errors = await createProducer(data);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]));
+        return;
+      }
       toast.success('Productor creado correctamente');
       navigate('/productores');
     } catch (error) {
@@ -39,11 +42,6 @@ export default function CreateProducer() {
 
       <div>
         <form className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
-          {errorsCreateProductor
-            ? errorsCreateProductor.map((error, index) => (
-              <Error key={index}>{error}</Error>
-            ))
-            : null}
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="name">
               Nombre:

@@ -1,18 +1,15 @@
 import { Button } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
-import Error from "../../../components/Error";
+
+import { uploadInsumos } from "@/api/InsumosAPI";
 
 export default function CargaMasivaInsumos() {
     const [file, setFile] = useState<File[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
-    const insumoErrors = useAppStore((state) => state.insumosErrors);
-    const uploadInsumos = useAppStore((state) => state.uploadInsumos);
     const navigate = useNavigate();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -32,7 +29,7 @@ export default function CargaMasivaInsumos() {
             toast.success("Insumos Creados Correctamente");
           }
         } catch (error) {
-          setError(true);
+            toast.error('Hubo un error al cargar los insumos');
         } finally {
           setLoading(false);
         }
@@ -47,7 +44,6 @@ export default function CargaMasivaInsumos() {
         <>
             <h2 className="font-bold text-4xl">Carga Masiva de Insumos</h2>
             <form className="w-1/2 mx-auto mt-5" onSubmit={handleSubmit}>
-                {error && <Error>{insumoErrors}</Error>}
                 <div
                     className="mt-5"
                     {...getRootProps()}

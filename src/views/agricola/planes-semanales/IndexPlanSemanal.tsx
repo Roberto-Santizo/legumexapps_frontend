@@ -1,63 +1,52 @@
 //HOOKS
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { motion } from "framer-motion";
 
+import { getPaginatedPlans } from "@/api/WeeklyPlansAPI";
+
 //COMPONENTES
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import Spinner from "../../../components/Spinner";
 import { Link } from "react-router-dom";
 import { CheckCircle, Download, PlusIcon, Sheet, XIcon } from "lucide-react";
-import { Permission, WeeklyPlan } from "../../../types";
-import Pagination from "../../../components/Pagination";
 import { toast } from "react-toastify";
-import LoadingOverlay from "../../../components/LoadingOverlay";
+
+import { downloadWeeklyPlanReport } from "@/api/WeeklyPlansAPI";
+
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/Spinner";
+import { WeeklyPlan } from "@/types";
+import Pagination from "@/components/Pagination";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingDownloadReport, setLoadingDownloadReport] =useState<boolean>(false);
-  const [loadingDownloadSingleReport, setLoadingSingleReport] =useState<boolean>(false);
+  const [loadingDownloadReport, setLoadingDownloadReport] = useState<boolean>(false);
+  const [loadingDownloadSingleReport, setLoadingSingleReport] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [plansId, setPlansId] = useState<WeeklyPlan["id"][]>([]);
   const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [role, setRole] = useState<string>("");
-  const [permission, setPermission] = useState<Permission>({} as Permission);
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
-  const downloadReport = useAppStore((state) => state.downloadReport);
-  const getAllPlans = useAppStore((state) => state.getAllPlansPagination);
-  const getUserPermissionsByToken = useAppStore(
-    (state) => state.getUserPermissionsByToken
-  );
-
-  const handleGetUserPermissions = async () => {
-    try {
-      const permissions = await getUserPermissionsByToken();
-      setPermission(permissions[0]);
-    } catch (error) {
-      toast.error("Error al cargar el contenido");
-      setError(false);
-    }
-  };
 
   const handleGetUserRole = async () => {
+    setLoading(true);
     try {
       const role = await getUserRoleByToken();
       setRole(role);
     } catch (error) {
       toast.error("Error al cargar el contenido");
       setError(false);
+    } finally {
+      setLoading(false);
     }
   };
-  const handleGetPlans = async (
-    page: number,
-    permission: Permission["name"]
-  ) => {
+  const handleGetPlans = async (page: number) => {
     setLoading(true);
     try {
-      const plans = await getAllPlans(page, permission);
+      const plans = await getPaginatedPlans(page);
       setWeeklyPlans(plans.data);
       setPageCount(plans.meta.last_page);
       setCurrentPage(plans.meta.current_page);
@@ -74,14 +63,11 @@ export default function IndexPlanSemanal() {
 
   useEffect(() => {
     handleGetUserRole();
-    handleGetUserPermissions();
   }, [currentPage]);
 
   useEffect(() => {
-    if (permission.name) {
-      handleGetPlans(currentPage, permission.name);
-    }
-  }, [permission, currentPage]);
+    handleGetPlans(currentPage);
+  }, [currentPage]);
 
   const handleDobleClick = (id: WeeklyPlan["id"]) => {
     setSelectingReport(true);
@@ -102,7 +88,7 @@ export default function IndexPlanSemanal() {
   const handleDowloadReport = async () => {
     setLoadingDownloadReport(true);
     try {
-      await downloadReport(plansId);
+      await downloadWeeklyPlanReport(plansId);
     } catch (error) {
       toast.error("Hubo un error al tratar de descargar el archivo");
     } finally {
@@ -115,7 +101,7 @@ export default function IndexPlanSemanal() {
   const handleDownloadSingleReport = async (data: string[]) => {
     setLoadingSingleReport(true);
     try {
-      await downloadReport(data);
+      await downloadWeeklyPlanReport(data);
     } catch (error) {
       toast.error("Hubo un error al tratar de descargar el archivo");
     } finally {
@@ -127,6 +113,7 @@ export default function IndexPlanSemanal() {
     <>
       {loadingDownloadSingleReport && <LoadingOverlay />}
       <h2 className="font-bold text-4xl">Planes Semanales</h2>
+
       {(role === "admin" || role === "adminagricola") && (
         <div className="flex flex-row justify-end gap-5 mb-5">
           <Link
@@ -182,9 +169,8 @@ export default function IndexPlanSemanal() {
         </motion.div>
       )}
 
-      {loading && <Spinner />}
       {!loading && error && <ShowErrorAPI />}
-      {!loading && !error && weeklyPlans.length > 0 ? (
+      {(loading && weeklyPlans.length === 0) ? <Spinner /> : (
         <>
           <table className="table mt-10">
             <thead>
@@ -226,12 +212,6 @@ export default function IndexPlanSemanal() {
                 <th scope="col" className="thead-th">
                   Reporte General
                 </th>
-                {/* <th scope="col" className="thead-th">
-                  Planilla Semanal
-                </th> */}
-                {/* <th scope="col" className="thead-th">
-                  Reporte de Insumos
-                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -284,39 +264,18 @@ export default function IndexPlanSemanal() {
                       <Sheet className="hover:text-gray-400" />
                     </button>
                   </td>
-                  {/* <td className="tbody-td">
-                    <Link to={"/tareas-semanales"} title="Planilla Semanal">
-                      <Sheet className="hover:text-gray-400" />
-                    </Link>
-                  </td> */}
-                  {/* <td className="tbody-td">
-                    <Link
-                      to={`/planes-semanales/${plan.id}`}
-                      title="Reporte de Insumos"
-                    >
-                      <Sheet className="hover:text-gray-400" />
-                    </Link>
-                  </td> */}
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="mb-10 flex justify-end">
-            {!loading && (
-              <Pagination
-                currentPage={currentPage}
-                pageCount={pageCount}
-                handlePageChange={handlePageChange}
-              />
-            )}
+            <Pagination
+              currentPage={currentPage}
+              pageCount={pageCount}
+              handlePageChange={handlePageChange}
+            />
           </div>
         </>
-      ) : (
-        !loading && (
-          <p className="text-center uppercase font-bold text-3xl mt-10">
-            Aún no existen planes semanales de esta semana
-          </p>
-        )
       )}
     </>
   );

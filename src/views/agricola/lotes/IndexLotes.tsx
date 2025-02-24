@@ -1,12 +1,14 @@
 import { EyeIcon, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import { Lote } from "../../../types";
-import Pagination from "../../../components/Pagination";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { Lote } from "@/types";
+import Pagination from "@/components/Pagination";
 import { toast } from "react-toastify";
+
+import { getPaginatedLotes } from "@/api/LotesAPI";
 
 export default function IndexLotes() {
   const [lotes, setLotes] = useState<Lote[]>([]);
@@ -14,7 +16,6 @@ export default function IndexLotes() {
   const [error, setError] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const fetchLotes = useAppStore((state) => state.fetchLotes);
 
   const [role, setRole] = useState<string>("");
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
@@ -36,7 +37,7 @@ export default function IndexLotes() {
     setLoading(true);
 
     try {
-      const lotes = await fetchLotes(page);
+      const lotes = await getPaginatedLotes(page);
       setLotes(lotes.data);
       setPageCount(lotes.meta.last_page);
       setCurrentPage(lotes.meta.current_page);

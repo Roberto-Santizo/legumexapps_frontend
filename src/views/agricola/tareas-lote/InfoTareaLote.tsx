@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import { TaskWeeklyPlanDetails } from "../../../types";
-import Spinner from "../../../components/Spinner";
+import { TaskWeeklyPlanDetails } from "@/types";
+import Spinner from "@/components/Spinner";
 import { Trash } from "lucide-react";
-import DronIcon from "../../../components/DronIcon";
+import DronIcon from "@/components/DronIcon";
 
 export default function InfoTareaLote() {
   const { id } = useParams();

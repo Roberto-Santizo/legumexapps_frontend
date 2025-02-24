@@ -17,7 +17,7 @@ export const WeeklyPlan = z.object({
 
 });
 
-export const SummaryWeeklyPlan = z.object({
+export const SummaryWeeklyPlanSchema = z.object({
     data: z.object({
         id: z.string(),
         finca: z.string(),

@@ -50,7 +50,7 @@ export const Recipes = z.object({
     data: z.array(Recipe)
 });
 
-export const Crops = z.object({
+export const CropsSchema = z.object({
     data: z.array(Crop)
 });
 

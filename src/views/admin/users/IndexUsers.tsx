@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
 import { useEffect, useState } from "react";
 
-//LOCAL
-import { useAppStore } from "../../../stores/useAppStore";
+//API
+import { getUsers, changeActiveUser } from "@/api/UsersAPI";
 
 //COMPONENTES
-import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import { User, Users } from "../../../types";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { User, Users } from "@/types";
 import { toast } from "react-toastify";
 
 export default function IndexUsers() {
@@ -19,13 +19,10 @@ export default function IndexUsers() {
   const [error, setError] = useState<boolean>(false);
   const [users, setUsers] = useState<Users>();
 
-  const fetchUsers = useAppStore((state) => state.fetchUsers);
-  const changeActiveUser = useAppStore((state) => state.changeActiveUser);
-
   const handleGetUsers = async () => {
     setLoading(true);
     try {
-      const users = await fetchUsers();
+      const users = await getUsers();
       setUsers(users);
     } catch (error) {
       setError(true);
@@ -42,7 +39,7 @@ export default function IndexUsers() {
     setLoadingUpdateStatus(true);
     try {
       await changeActiveUser(id);
-      const users = await fetchUsers();
+      const users = await getUsers();
       setUsers(users);
     } catch (error) {
       setError(true);

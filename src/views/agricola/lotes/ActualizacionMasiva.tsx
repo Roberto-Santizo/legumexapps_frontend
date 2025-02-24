@@ -3,16 +3,13 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
-import { useAppStore } from "../../../stores/useAppStore";
-import Error from "../../../components/Error";
+import Spinner from "@/components/Spinner";
+
+import { updateLotes } from "@/api/LotesAPI";
 
 export default function ActualizacionMasiva() {
   const [file, setFile] = useState<File[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const errorsUpdateLote = useAppStore((state) => state.errorsUpdateLote);
-  const updateLotes = useAppStore((state) => state.updateLotes);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -25,7 +22,6 @@ export default function ActualizacionMasiva() {
 
   const handleUploadFile = async () => {
     setLoading(true);
-    setError(false);
     try {
       if (file) {
         await updateLotes(file);
@@ -33,7 +29,6 @@ export default function ActualizacionMasiva() {
         toast.success("Lotes Actualizados Correctamente");
       }
     } catch (error) {
-      setError(true);
       toast.error('Error al actualizar los lotes');
     } finally {
       setLoading(false);
@@ -48,7 +43,6 @@ export default function ActualizacionMasiva() {
     <>
       <h2 className="font-bold text-4xl">Actualización Masiva de Lotes</h2>
       <form className="w-1/2 mx-auto mt-5" onSubmit={handleSubmit}>
-        {error && <Error>{errorsUpdateLote}</Error>}
         <div
           className="mt-5"
           {...getRootProps()}

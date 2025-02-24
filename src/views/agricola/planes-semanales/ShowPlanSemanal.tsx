@@ -1,19 +1,18 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
-import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import { SummaryWeeklyPlanType } from "../../../types";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { SummaryWeeklyPlan } from "@/types";
+
+import { getPlanById } from "@/api/WeeklyPlansAPI";
 
 export default function ShowPlanSemanal() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [summaryPlan, setSummaryPlan] = useState<SummaryWeeklyPlanType>({} as SummaryWeeklyPlanType);
+  const [summaryPlan, setSummaryPlan] = useState<SummaryWeeklyPlan>({} as SummaryWeeklyPlan);
   const [loading,setLoading] = useState<boolean>(false);
   const [error,setError] = useState<boolean>(false);
   
-  const getPlanById = useAppStore((state) => state.getPlanById);
-
   const handleGetPlanById = async () => {
     setLoading(true);
     try {

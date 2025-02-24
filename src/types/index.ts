@@ -1,25 +1,25 @@
 import { z } from 'zod'
-import { AuthUserSchema, DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '../utils/users-schema'
-import { Role } from '../utils/roles-schema'
-import { Permission } from '../utils/permissions-schema'
-import { TareaSchema, TareasPaginateSchema } from '../utils/tareas-schema'
-import { CDPSchema, Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchema, Recipe } from '../utils/plantation-schema'
-import { DraftLote, LoteSchema, LotesPaginateSchema } from '../utils/lotes-schema'
-import { Finca } from '../utils/fincas-schema'
-import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '../utils/weekly_plans-schema'
-import { DraftTaskWeeklyPlan, EditTaskWeeklySchema, TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '../utils/taskWeeklyPlan-schema'
-import { EmployeeSchema } from '../utils/employee-schema'
-import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '../utils/taskCropWeeklyPlan-schema'
+import { AuthUserSchema, DraftUserSchema, UserDetailsSchema, UserSchema, UsersSchema } from '@/utils/users-schema'
+import { Role } from '@/utils/roles-schema'
+import { Permission } from '@/utils/permissions-schema'
+import { TareaSchema, TareasPaginateSchema } from '@/utils/tareas-schema'
+import { CDPSchema, Crop, DraftCDP, Plantation, PlantationsPaginateSchema, PlantationsSchema, Recipe } from '@/utils/plantation-schema'
+import { DraftLote, LoteSchema, LotesPaginateSchema } from '@/utils/lotes-schema'
+import { Finca } from '@/utils/fincas-schema'
+import { SummaryWeeklyPlanSchema, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '@/utils/weekly_plans-schema'
+import { DraftTaskWeeklyPlan, EditTaskWeeklySchema, TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '@/utils/taskWeeklyPlan-schema'
+import { EmployeeSchema } from '@/utils/employee-schema'
+import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '@/utils/taskCropWeeklyPlan-schema'
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
-import { InsumoSchema, InsumosSchema } from '../utils/insumos-schema'
-import { LoteCDPDetailsSchema } from '../utils/loteCDPDetails-schema'
-import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '../utils/dashboard-schema'
-import { DetailProductSchema, DraftProductSchema, ProductSchema, ProductsPaginateSchema } from '../utils/product-schema'
-import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaControlCalidadSchema, DraftBoletaSchema, DraftFormProdSchema, ResultsQualityControlDocSchema } from '../utils/boletarmp-schema'
-import { BasketSchema } from '../utils/baskets-schema'
-import { VarietiesPaginateSchema, VarietySchema } from '../utils/calidadVariedades-schema'
-import { DefectSchema, DefectsPaginateSchema, DraftDefectoSchema } from '../utils/defectos-schema'
-import { ProducerSchema, ProducersPaginateSchema } from '../utils/producers-schema'
+import { InsumoSchema, InsumosSchema } from '@/utils/insumos-schema'
+import { LoteCDPDetailsSchema } from '@/utils/loteCDPDetails-schema'
+import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '@/utils/dashboard-schema'
+import { DetailProductSchema, DraftProductSchema, ProductSchema, ProductsPaginateSchema } from '@/utils/product-schema'
+import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaControlCalidadSchema, DraftBoletaSchema, DraftFormProdSchema, ResultsQualityControlDocSchema } from '@/utils/boletarmp-schema'
+import { BasketSchema } from '@/utils/baskets-schema'
+import { VarietiesPaginateSchema, VarietySchema } from '@/utils/calidadVariedades-schema'
+import { DefectSchema, DefectsPaginateSchema, DraftDefectoSchema } from '@/utils/defectos-schema'
+import { ProducerSchema, ProducersPaginateSchema } from '@/utils/producers-schema'
 
 
 //PERMISOS
@@ -71,7 +71,7 @@ export type DraftCDP = z.infer<typeof DraftCDP>
 
 //LOTES
 export type Lote = z.infer<typeof LoteSchema>
-export type Lotes = z.infer<typeof LotesPaginateSchema>
+export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
 export type loteCDPDetails = z.infer<typeof LoteCDPDetailsSchema>
 
 export type DraftLote = z.infer<typeof DraftLote>
@@ -83,7 +83,7 @@ export type Finca = z.infer<typeof Finca >
 export type WeeklyPlan = z.infer<typeof WeeklyPlan>
 export type WeeklyPlans = z.infer<typeof WeeklyPlansSchema>
 export type WeeklyPlansPaginate = z.infer<typeof WeeklyPlansPaginateSchema>
-export type SummaryWeeklyPlanType = z.infer<typeof SummaryWeeklyPlan>
+export type SummaryWeeklyPlan = z.infer<typeof SummaryWeeklyPlanSchema>
 
 //TAREA LOTE
 export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>

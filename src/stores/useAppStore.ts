@@ -1,46 +1,14 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import { UsersSliceType, createUsersSlice } from './usersSlice';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import { AuthSliceType, createAuthSlice } from './authSlice';
-import { RolesSliceType, createRolesSlice } from './rolesSlice';
-import { PermissionsSliceType, createPermissionsSlice } from './permissionsSlice';
-import { TareasSliceType, createTareasSlice } from './tareasSlice';
-import { ControlPlantationSliceType, createControlPlantationSlice } from './controlPlantationSlice';
-import { LoteSliceType, createLoteSlice } from './LoteSlice';
-import { FincaSliceType, createFincaSlice } from './fincaSlice';
-import { WeeklyPlansSliceType, createWeeklyPlansSlice } from './weeklyPlansSlice';
 import { TaskWeeklyPlanSliceType, createTaskWeeklyPlanSlice } from './taskWeeklyPlanSlice';
 import { TaskCropWeeklyPlanSliceType, createTaskCropWeeklyPlanSlice } from './taskCropWeeklyPlanSlice';
-import { InsumosSliceType, createInsumosSlice } from './insumosSlice';
-import { TasksCropSliceType, createTasksCropSlice } from './tasksCropSlice';
-import { DashboardAgricolaSliceType,createDashboardAgricolaSlice } from './DashboardAgricolaSlice';
-import { BoletasRecepcionType, createBoletaRecepcionSlice } from './boletaRecepcionSlice';
-import { ProductSliceType, createProductSlice } from './productsSlice';
-import { BasketSliceType, createBasketSlice } from './basketSlice';
-import { VariedadesSliceType,createVariedadesSlice } from './variedadesSlice';
-import { DefectoSliceType, createDefectoSliceType } from './defectoSlice';
-import { ProducersSliceType,createProducerSlice } from './producersSlice';
+import { DashboardAgricolaSliceType, createDashboardAgricolaSlice } from './DashboardAgricolaSlice';
 
 
-export const useAppStore = create<UsersSliceType & AuthSliceType & RolesSliceType & PermissionsSliceType & TareasSliceType & ControlPlantationSliceType & LoteSliceType & FincaSliceType & WeeklyPlansSliceType & TaskWeeklyPlanSliceType & TaskCropWeeklyPlanSliceType & InsumosSliceType & TasksCropSliceType & DashboardAgricolaSliceType & BoletasRecepcionType & ProductSliceType & BasketSliceType & VariedadesSliceType & DefectoSliceType & ProducersSliceType>()(devtools((...a) => ({
-    ...createUsersSlice(...a),
+export const useAppStore = create<AuthSliceType  & TaskWeeklyPlanSliceType & TaskCropWeeklyPlanSliceType & DashboardAgricolaSliceType>()(devtools((...a) => ({
     ...createAuthSlice(...a),
-    ...createRolesSlice(...a),
-    ...createPermissionsSlice(...a),
-    ...createTareasSlice(...a),
-    ...createControlPlantationSlice(...a),
-    ...createLoteSlice(...a),
-    ...createFincaSlice(...a),
-    ...createWeeklyPlansSlice(...a),
     ...createTaskWeeklyPlanSlice(...a),
     ...createTaskCropWeeklyPlanSlice(...a),
-    ...createInsumosSlice(...a),
-    ...createTasksCropSlice(...a),
     ...createDashboardAgricolaSlice(...a),
-    ...createBoletaRecepcionSlice(...a),
-    ...createProductSlice(...a),
-    ...createBasketSlice(...a),
-    ...createVariedadesSlice(...a),
-    ...createDefectoSliceType(...a),
-    ...createProducerSlice(...a),
 })))

@@ -1,16 +1,16 @@
-import { useForm } from "react-hook-form"
-import { DraftVariety } from "../../../types";
+import { useForm } from "react-hook-form";
+import { DraftVariety } from "@/types";
 import { useState } from "react";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { Button } from "@mui/material";
-import Error from "../../../components/Error";
-import { useAppStore } from "../../../stores/useAppStore";
+import Error from "@/components/Error";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+import { createVariety } from "@/api/VarietiesAPI";
+
 export default function CrearVariedad() {
     const [loading, setLoading] = useState<boolean>(false);
-    const createVariety = useAppStore((state) => state.createVariety);
     const navigate = useNavigate();
 
     const {

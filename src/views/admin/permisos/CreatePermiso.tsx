@@ -1,22 +1,21 @@
 //HOOKS
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
 import { toast } from "react-toastify";
 
+import { createPermission } from "@/api/PermissionsAPI";
+
 //TYPES
-import { DraftPermssion } from "../../../types";
+import { DraftPermssion } from "@/types";
 
 //COMPONENTES
 import { Button } from "@mui/material";
-import Error from "../../../components/Error";
-import Spinner from "../../../components/Spinner";
+import Error from "@/components/Error";
+import Spinner from "@/components/Spinner";
 import { useState } from "react";
 
 export default function CreatePermiso() {
   const [loading, setLoading] = useState<boolean>(false);
-  const createPermiso = useAppStore((state) => state.createPermission);
-  const permisosErrores = useAppStore((state) => state.permissionsErrors);
   const navigate = useNavigate();
 
   const {
@@ -28,15 +27,15 @@ export default function CreatePermiso() {
   const handleCreatePermission = async (data: DraftPermssion) => {
     setLoading(true);
 
-    try {
-      await createPermiso(data);
-      toast.success("Permiso creado correctamente");
-      navigate("/permisos");
-    } catch (error) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }finally {
+    const errors = await createPermission(data);
+    if (errors) {
+      errors.forEach(error => toast.error(error[0]))
       setLoading(false);
+      return;
     }
+    toast.success("Permiso creado correctamente");
+    navigate("/permisos");
+    setLoading(false);
   };
 
 
@@ -49,12 +48,6 @@ export default function CreatePermiso() {
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(handleCreatePermission)}
         >
-          {permisosErrores
-            ? permisosErrores.map((error, index) => (
-                <Error key={index}>{error}</Error>
-              ))
-            : null}
-
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="name">
               Nombre:

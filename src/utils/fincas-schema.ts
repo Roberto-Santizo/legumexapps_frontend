@@ -8,6 +8,6 @@ export const Finca = z.object({
 });
 
 
-export const Fincas = z.object({
+export const FincasSchema = z.object({
     data: z.array(Finca)
 });

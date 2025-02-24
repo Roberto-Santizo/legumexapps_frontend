@@ -5,38 +5,33 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 //ESTADO GLOBAL
-import { useAppStore } from "../../../stores/useAppStore";
 
 //COMPONENTES
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import Spinner from "../../../components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/Spinner";
 import { Button } from "@mui/material";
-import Error from "../../../components/Error";
+import Error from "@/components/Error";
 
 //TYPES
-import { DraftTarea, Tarea } from "../../../types";
+import { DraftTarea, Tarea } from "@/types";
+
+import { getTareaById } from "@/api/TasksAPI";
+import { updateTarea } from "@/api/TasksAPI";
 
 export default function EditTarea() {
-  
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [editingTarea, setEditingTarea] = useState<Tarea>({} as Tarea);
   const [loadingGet, setLoadingGet] = useState<boolean>(false);
   const [errorGet, setErrorGet] = useState<boolean>(false);
   const [loadingPost, setLoadingPost] = useState<boolean>(false);
-  const [errorPost, setErrorPost] = useState<boolean>(false);
 
-
-  const getTareaById = useAppStore((state) => state.getTareaById);
-  const errorsTareas = useAppStore((state) => state.errorsTareas);
-
-  const update = useAppStore((state) => state.updateTarea);
-
-  const handleGetTareaById = async () =>{
+  const handleGetTareaById = async () => {
     setLoadingGet(true);
     setErrorGet(false);
     try {
-      if(id){
+      if (id) {
         const tarea = await getTareaById(id)
         setEditingTarea(tarea);
         setLoadingGet(false);
@@ -46,22 +41,18 @@ export default function EditTarea() {
     }
   }
 
-  const handleUpdateTarea = async (data : DraftTarea) => {
+  const handleUpdateTarea = async (data: DraftTarea) => {
     setLoadingPost(true);
-    setErrorPost(false);
-    try {
-      if(id){
-        await update(id,data);
-        toast.success("Tarea actualizada correctamente");
-        navigate("/tareas");
+    if (id) {
+      const errors = await updateTarea(id, data);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]))
+        return;
       }
-    } catch (error) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setErrorPost(true);
-    } finally {
-      setLoadingPost(false);
-      
+      toast.success("Tarea actualizada correctamente");
+      navigate("/tareas");
     }
+    setLoadingPost(false);
   }
 
   useEffect(() => {
@@ -101,13 +92,6 @@ export default function EditTarea() {
             className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
             onSubmit={handleSubmit(handleUpdateTarea)}
           >
-            {errorPost &&
-              (errorsTareas
-                ? errorsTareas.map((error, index) => (
-                    <Error key={index}>{error}</Error>
-                  ))
-                : null)}
-
             <div className="flex flex-col gap-2">
               <label className="text-lg font-bold uppercase" htmlFor="name">
                 Nombre:

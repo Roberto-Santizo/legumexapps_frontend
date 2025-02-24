@@ -1,18 +1,15 @@
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { DraftRole } from "../../../types";
-import { useAppStore } from "../../../stores/useAppStore";
-import Error from "../../../components/Error";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
 import { useState } from "react";
+import { DraftRole } from "@/types";
+import Error from "@/components/Error";
+import Spinner from "@/components/Spinner";
+import { createRole } from "@/api/RolesAPI";
 
 export default function CreateRole() {
-  const [loading,setLoading] = useState<boolean>(false);
-
-  const createUser = useAppStore((state) => state.createRole);
-  const roleErrores = useAppStore((state) => state.rolesErrors);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const {
@@ -23,16 +20,15 @@ export default function CreateRole() {
 
   const handleCreateRole = async (data: DraftRole) => {
     setLoading(true);
-    try {
-      await createUser(data);
-      toast.success("Usuario creado correctamente");
-      navigate("/roles");
-    } catch (error) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      toast.error('Hubo un error al crear el rol, intentelo de nuevo más tarde');
-    }finally {
+    const errors = await createRole(data);
+    if (errors) {
+      errors.forEach(error => toast.error(error[0]))
       setLoading(false);
+      return;
     }
+    toast.success("Usuario creado correctamente");
+    navigate("/roles");
+    setLoading(false);
   };
 
   return (
@@ -44,12 +40,6 @@ export default function CreateRole() {
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(handleCreateRole)}
         >
-          {roleErrores
-            ? roleErrores.map((error, index) => (
-                <Error key={index}>{error}</Error>
-              ))
-            : null}
-
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="name">
               Nombre:

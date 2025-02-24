@@ -1,14 +1,16 @@
 //HOOKS
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { Link } from "react-router-dom";
 
+import { getPaginatedTasks } from "@/api/TasksAPI";
+
 //COMPONENTES
-import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { Edit, PlusIcon } from "lucide-react";
-import { TareasPaginate } from "../../../types";
-import Pagination from "../../../components/Pagination";
+import { TareasPaginate } from "@/types";
+import Pagination from "@/components/Pagination";
 import { toast } from "react-toastify";
 
 export default function IndexTareas() {
@@ -17,7 +19,6 @@ export default function IndexTareas() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [error, setError] = useState<boolean>(false);
-  const getAllTareas = useAppStore((state) => state.getAllTareasPaginate);
   const [role, setRole] = useState<string>("");
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
@@ -40,7 +41,7 @@ export default function IndexTareas() {
     setError(false);
 
     try {
-      const tareas = await getAllTareas(page);
+      const tareas = await getPaginatedTasks(page);
       setTareas(tareas);
       setPageCount(tareas.meta.last_page);
       setCurrentPage(tareas.meta.current_page);

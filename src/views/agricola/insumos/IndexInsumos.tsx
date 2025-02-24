@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
-import Spinner from "../../../components/Spinner";
-import { Insumos } from "../../../types";
-import Pagination from "../../../components/Pagination";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
+import Spinner from "@/components/Spinner";
+import { Insumos } from "@/types";
+import Pagination from "@/components/Pagination";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
+
+import { getPaginatedInsumos } from "@/api/InsumosAPI";
 
 export default function IndexInsumos() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -14,12 +15,10 @@ export default function IndexInsumos() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const getInsumosPaginate = useAppStore((state) => state.getInsumosPaginate);
-
   const handleGetInsumos = async (page: number) => {
     setLoading(true);
     try {
-      const insumos = await getInsumosPaginate(page);
+      const insumos = await getPaginatedInsumos(page);
       setInsumos(insumos);
       setPageCount(insumos.meta.last_page);
       setCurrentPage(insumos.meta.current_page);

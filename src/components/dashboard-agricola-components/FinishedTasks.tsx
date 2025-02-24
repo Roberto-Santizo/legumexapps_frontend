@@ -1,23 +1,20 @@
 import { Eye } from "lucide-react";
-import { useAppStore } from "../../stores/useAppStore";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FinishedTask } from "../../types";
 import { Link } from "react-router-dom";
 import Spinner from "../Spinner";
 
-type Props = {
-  permission: string;
-}
-export default function FinishedTasks({permission} : Props) {
+import { getTasksFinished } from "@/api/DashboardAgricolaAPI";
+
+export default function FinishedTasks() {
   const [loading, setLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<FinishedTask[]>([]);
-  const getTasksFinished = useAppStore((state) => state.getTasksFinished);
 
   const handleGetInfo = async () => {
     setLoading(true);
     try {
-      const tasks = await getTasksFinished(permission);
+      const tasks = await getTasksFinished();
       setTasks(tasks);
     } catch (error) {
       toast.error("Hubo un error al traer la información");

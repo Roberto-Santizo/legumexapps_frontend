@@ -2,14 +2,17 @@ import { Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import SignatureCanvas from "react-signature-canvas";
 
+import { createProdData } from "@/api/ReceptionsDocAPI";
+
 import Error from "@/components/Error";
 import { Basket, BoletaDetail, DraftFormProd } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { useAppStore } from "@/stores/useAppStore";
 import Select from "react-select";
 import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
+
+import { getAllBaskets } from "@/api/BasketsAPI";
 
 type Props = {
   boleta: BoletaDetail
@@ -20,9 +23,7 @@ export default function Boleta_form2({ boleta }: Props) {
   const receptor_signature = useRef({} as SignatureCanvas);
   const [baskets, setBaskets] = useState<Basket[]>([]);
   const navigate = useNavigate();
-  const getAllBaskets = useAppStore((state) => state.getAllBaskets);
-  const createProdData = useAppStore((state) => state.createProdData)
-
+  
   const basketsOptions = baskets.map((basket) => ({
     value: basket.id,
     label: `${basket.code} - ${basket.weight}lbs`,

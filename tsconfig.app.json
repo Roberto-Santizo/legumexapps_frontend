@@ -13,6 +13,10 @@
       "@/stores/*": ["stores/*"],
       "@/public*": ["public/*"],
       "@/types": ["types/index.ts"],
+      "@/utils/*": ["utils/*"],
+      "@/api/*": ["api/*"],
+      "@/config/*": ["config/*"],
+      "@/helpers": ["helpers/index.ts"]
     },
 
     /* Bundler mode */

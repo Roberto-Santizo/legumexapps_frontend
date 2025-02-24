@@ -1,17 +1,16 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
-import { DraftInsumo } from "../../../types";
-import Spinner from "../../../components/Spinner";
+import { DraftInsumo } from "@/types";
+import Spinner from "@/components/Spinner";
 import { useForm } from "react-hook-form";
-import Error from "../../../components/Error";
-import { useAppStore } from "../../../stores/useAppStore";
+import Error from "@/components/Error";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+import { createInsumo } from "@/api/InsumosAPI";
+
 export default function CrearInsumo() {
   const [loading, setLoading] = useState<boolean>(false);
-  const insumosErrors = useAppStore((state) => state.insumosErrors);
-  const createInsumo = useAppStore((state) => state.createInsumo);
   const navigate = useNavigate();
 
   const {
@@ -23,7 +22,11 @@ export default function CrearInsumo() {
   const handleCreateInsumo = async (data: DraftInsumo) => {
     setLoading(true);
     try {
-      await createInsumo(data);
+      const errors = await createInsumo(data);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]));
+        return;
+      }
       toast.success("Insumo creado correctamente");
       navigate('/insumos');
     } catch (error) {
@@ -41,11 +44,6 @@ export default function CrearInsumo() {
         className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
         onSubmit={handleSubmit(handleCreateInsumo)}
       >
-        {insumosErrors
-          ? insumosErrors.map((error, index) => (
-            <Error key={index}>{error}</Error>
-          ))
-          : null}
         <div className="flex flex-col gap-2">
           <label className="text-lg font-bold uppercase" htmlFor="name">
             Nombre del Insumo:

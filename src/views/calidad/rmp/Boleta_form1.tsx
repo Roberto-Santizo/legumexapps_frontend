@@ -5,25 +5,32 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 
-import { useAppStore } from "@/stores/useAppStore";
+import { getAllBaskets } from "@/api/BasketsAPI";
+import { createBoletaRMP } from "@/api/ReceptionsDocAPI";
+import { getAllProducers } from "@/api/ProducersAPI";
+import { getProducts } from "@/api/ProductsAPI";
+import { getAllFincas } from "@/api/FincasAPI";
+
 import { Button } from "@mui/material";
-import { Basket, DraftBoletaRMP, Producer, Product } from "@/types";
+import { Basket, DraftBoletaRMP, Finca, Producer, Product } from "@/types";
 import Error from "@/components/Error";
 import Spinner from "@/components/Spinner";
 
 export default function Boleta_form1() {
-  const getProducts = useAppStore((state) => state.getProducts);
   const [loading, setLoading] = useState<boolean>(true);
-  const [errorsCreate, setErrorsCreate] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [baskets, setBaskets] = useState<Basket[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
+  const [fincas,setFincas] = useState<Finca[]>([]);
   const navigate = useNavigate();
-  const inspector_signature = useRef({} as SignatureCanvas);
-  const prod_signature = useRef({} as SignatureCanvas);
-  const createBoletaRMP = useAppStore((state) => state.createBoletaRMP);
-  const getAllBaskets = useAppStore((state) => state.getAllBaskets);
-  const getAllProducers = useAppStore((state) => state.getAllProducers)
+  // const inspector_signature = useRef({} as SignatureCanvas);
+  // const prod_signature = useRef({} as SignatureCanvas);
+  const calidad_signature = useRef({} as SignatureCanvas);
+
+  const fincasOptions = fincas.map((finca) => ({
+    value: finca.id,
+    label: `${finca.name}`,
+  }));
 
   const producersOptions = producers.map((producer) => ({
     value: producer.id,
@@ -45,6 +52,8 @@ export default function Boleta_form1() {
       const data = await getProducts();
       const producers = await getAllProducers();
       const data2 = await getAllBaskets();
+      const data3 = await getAllFincas();
+      setFincas(data3);
       setProducers(producers);
       setProducts(data);
       setBaskets(data2);
@@ -66,8 +75,9 @@ export default function Boleta_form1() {
     setLoading(true);
     try {
       const errors = await createBoletaRMP(data);
-      if (errors.length > 0) {
-        setErrorsCreate(errors);
+      if (errors) {
+        errors.forEach(error => toast.error(error[0]))
+        setLoading(false);
         return;
       }
       toast.success('Boleta Registrada Correctamente');
@@ -93,13 +103,6 @@ export default function Boleta_form1() {
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
-          {(errors.prod_signature || errors.inspector_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
-          {errorsCreate.length > 0
-            ? errorsCreate.map((error, index) => (
-              <Error key={index}>{error}</Error>
-            ))
-            : null}
-
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="producer_id">
               COORDINADOR:
@@ -150,6 +153,31 @@ export default function Boleta_form1() {
               )}
             />
             {errors.product_id && <Error>{errors.product_id?.message?.toString()}</Error>}
+          </div>
+
+          <div>
+            <label className="text-lg font-bold uppercase" htmlFor="finca_id">
+              FINCA:
+            </label>
+            <Controller
+              name="finca_id"
+              control={control}
+              rules={{ required: "Seleccione una finca" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={fincasOptions}
+                  id="finca_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  onChange={(selected) => field.onChange(selected?.value)}
+                  value={fincasOptions.find(
+                    (option) => option.value === field.value
+                  )}
+                />
+              )}
+            />
+            {errors.finca_id && <Error>{errors.finca_id?.message?.toString()}</Error>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -304,7 +332,42 @@ export default function Boleta_form1() {
             {errors.quality_percentage && <Error>{errors.quality_percentage?.message?.toString()}</Error>}
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
+          <div className="space-y-2 text-center">
+            <Controller
+              name="calidad_signature"
+              control={control}
+              rules={{ required: 'Asegurese de haber firmado' }}
+              render={({ field }) => (
+                <div className="p-2">
+                  <SignatureCanvas
+                    ref={calidad_signature}
+                    penColor="black"
+                    canvasProps={{ className: "w-full h-40 border" }}
+                    onEnd={() => {
+                      field.onChange(calidad_signature.current.toDataURL());
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                    onClick={() => {
+                      calidad_signature.current.clear();
+                      field.onChange("");
+                    }}
+                  >
+                    Limpiar Firma
+                  </button>
+                </div>
+              )}
+            />
+            <label className="block font-medium text-xl">
+              Firma de Calidad
+            </label>
+
+            {(errors.calidad_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
+          </div>
+
+          {/* <div className="grid grid-cols-2 gap-5">
             <div className="space-y-2 text-center">
               <Controller
                 name="inspector_signature"
@@ -370,7 +433,7 @@ export default function Boleta_form1() {
                 Firma De Productor
               </label>
             </div>
-          </div>
+          </div> */}
 
 
           <Button

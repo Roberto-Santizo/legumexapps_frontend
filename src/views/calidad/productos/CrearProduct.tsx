@@ -7,12 +7,14 @@ import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
 
 
 import { DraftDefecto, DraftProduct, Variety } from "@/types";
-import { useAppStore } from "@/stores/useAppStore";
 import { Button } from "@mui/material";
 import Spinner from "@/components/Spinner";
 import Error from "@/components/Error";
 import CreateDefectoModal from "@/components/defectos/CreateDefectoModal";
 import EditDefectoModal from "@/components/defectos/EditDefectoModal";
+
+import { createProduct } from "@/api/ProductsAPI";
+import { getAllVarieties } from "@/api/VarietiesAPI";
 
 export default function CrearVariedad() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -21,8 +23,6 @@ export default function CrearVariedad() {
   const [editModal, setEditModal] = useState<boolean>(false);
   const [defects, setDefects] = useState<DraftDefecto[]>([]);
   const [editingId, setEditingId] = useState<number>(0);
-  const getAllVarieties = useAppStore((state) => state.getAllVarieties);
-  const createProduct = useAppStore((state) => state.createProduct)
   const navigate = useNavigate();
 
   const varietiesOptions = varieties.map((variety) => ({

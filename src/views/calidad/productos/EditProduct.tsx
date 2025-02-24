@@ -5,13 +5,18 @@ import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
 
+import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
+import { getProductById } from "@/api/ProductsAPI";
+
 import { DraftDefecto, DraftProduct, ProductDetail, Variety } from "@/types";
-import { useAppStore } from "@/stores/useAppStore";
 import { Button } from "@mui/material";
 import Spinner from "@/components/Spinner";
 import Error from "@/components/Error";
 import CreateDefectoModal from "@/components/defectos/CreateDefectoModal";
 import EditDefectoModal from "@/components/defectos/EditDefectoModal";
+
+import { editProduct } from "@/api/ProductsAPI";
+import { getAllVarieties } from "@/api/VarietiesAPI";
 
 export default function EditProduct() {
   const { product_id } = useParams();
@@ -22,10 +27,6 @@ export default function EditProduct() {
   const [modal, setModal] = useState<boolean>(false);
   const [editingId, setEditingId] = useState<number>(0);
   const [editModal, setEditModal] = useState<boolean>(false);
-  const getProductById = useAppStore((state) => state.getProductById);
-  const getAllVarieties = useAppStore((state) => state.getAllVarieties);
-  const getDefectsByQualityProduct = useAppStore((state) => state.getDefectsByQualityProduct);
-  const editProduct = useAppStore((state) => state.editProduct);
   const navigate = useNavigate();
 
   const varietiesOptions = varieties.map((variety) => ({
@@ -113,7 +114,7 @@ export default function EditProduct() {
     <>
       <h2 className="font-bold text-3xl">Editar Producto</h2>
 
-      {(loading && !product) ? <Spinner /> : (
+      {(loading) ? <Spinner /> : (
         <form className="w-1/2 mx-auto mt-10 space-y-5" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="name">

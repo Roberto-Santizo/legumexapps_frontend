@@ -1,13 +1,16 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { CDP, Finca, loteCDPDetails } from "../../../types";
-import { useAppStore } from "../../../stores/useAppStore";
+import { CDP, Finca, loteCDPDetails } from "@/types";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
-import { Lote } from "../../../types";
+import Spinner from "@/components/Spinner";
+import { Lote } from "@/types";
 import { Button } from "@mui/material";
-import TaskLabel from "../../../components/TaskLabel";
-import { formatDate } from "../../../helpers";
+import TaskLabel from "@/components/TaskLabel";
+import { formatDate } from "@/helpers";
 import { EyeIcon } from "lucide-react";
+
+import { getAllFincas } from "@/api/FincasAPI";
+import { getAllLotesByFincaId, getAllCdpsByLoteId, getCDPInfoByCDPId } from "@/api/LotesAPI";
+
 
 export default function ConsultaLote() {
   const [fincas, setFincas] = useState<Finca[]>([]);
@@ -19,20 +22,11 @@ export default function ConsultaLote() {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<loteCDPDetails>({} as loteCDPDetails);
-  const fetchFincas = useAppStore((state) => state.fetchFincas);
-  const fetchAllLotesByFincaId = useAppStore(
-    (state) => state.fetchAllLotesByFincaId
-  );
-  const fetchAllCdpsByLoteId = useAppStore(
-    (state) => state.fetchAllCdpsByLoteId
-  );
-
-  const fetchCDPInfo = useAppStore((state) => state.fetchCDPInfo);
 
   const handleGetFincas = async () => {
     setLoading(true);
     try {
-      const fincas = await fetchFincas();
+      const fincas = await getAllFincas();
       setFincas(fincas);
     } catch (error) {
       toast.error("Error al trear fincas, intentelo de nuevo más tarde");
@@ -44,7 +38,7 @@ export default function ConsultaLote() {
   const handleGetLotes = async (id: string) => {
     setLoading(true);
     try {
-      const lotes = await fetchAllLotesByFincaId(id);
+      const lotes = await getAllLotesByFincaId(id);
       setLotes(lotes);
     } catch (error) {
       toast.error(
@@ -58,7 +52,7 @@ export default function ConsultaLote() {
   const handleGetCDPS = async (id: Lote["id"]) => {
     setLoading(true);
     try {
-      const cdps = await fetchAllCdpsByLoteId(id);
+      const cdps = await getAllCdpsByLoteId(id);
       setCDPS(cdps);
     } catch (error) {
       toast.error(
@@ -92,7 +86,7 @@ export default function ConsultaLote() {
     }
     setLoading(true);
     try {
-      const data = await fetchCDPInfo(search.cdp_id);
+      const data = await getCDPInfoByCDPId(search.cdp_id);
       setData(data);
     } catch (error) {
       toast.warning(

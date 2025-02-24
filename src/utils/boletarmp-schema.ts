@@ -4,6 +4,7 @@ import { z } from "zod";
 export const DraftBoletaSchema = z.object({
     producer_id: z.string(),
     product_id: z.string(),
+    finca_id: z.string(),
     transport: z.string(),
     pilot_name: z.string(),
     inspector_name: z.string(),
@@ -12,8 +13,9 @@ export const DraftBoletaSchema = z.object({
     weight: z.number(),
     total_baskets: z.number(),
     quality_percentage: z.number(),
-    inspector_signature: z.string(),
-    prod_signature: z.string(),
+    // inspector_signature: z.string(),
+    // prod_signature: z.string(),
+    calidad_signature: z.string(),
     basket_id: z.string()
 });
 
@@ -70,6 +72,7 @@ export const BoletaRMPDetailSchema = z.object({
 
 export const BoletaSchema = z.object({
     id: z.string(),
+    finca:z.string(),
     plate: z.string(),
     product: z.string(),
     variety: z.string(),

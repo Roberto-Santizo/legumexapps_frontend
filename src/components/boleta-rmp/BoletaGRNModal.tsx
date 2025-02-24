@@ -6,23 +6,24 @@ import { Button } from "@mui/material";
 import { Boleta } from "@/types";
 import Error from "@/components/Error";
 import Spinner from "../Spinner";
-import { useAppStore } from "@/stores/useAppStore";
 import { toast } from "react-toastify";
+
+import { updateGRN } from "@/api/ReceptionsDocAPI";
 
 type Props = {
     modal: boolean;
     setModal: React.Dispatch<React.SetStateAction<boolean>>;
     boleta: Boleta;
-    handleGetBoletas: () => Promise<void>
+    handleGetBoletas: (page : number) => Promise<void>
+    page: number;
 }
 
 type GRN = {
     grn: string;
 }
 
-export default function BoletaGRNModal({ modal, boleta, setModal, handleGetBoletas }: Props) {
+export default function BoletaGRNModal({ modal, boleta, setModal, handleGetBoletas, page }: Props) {
     const [loading, setLoading] = useState<boolean>(false);
-    const updateGRN = useAppStore((state) => state.updateGRN)
 
     const {
         register,
@@ -43,7 +44,7 @@ export default function BoletaGRNModal({ modal, boleta, setModal, handleGetBolet
         }finally{
             setLoading(false);
             setModal(!modal);
-            await handleGetBoletas();
+            await handleGetBoletas(page);
         }
     }
     return (

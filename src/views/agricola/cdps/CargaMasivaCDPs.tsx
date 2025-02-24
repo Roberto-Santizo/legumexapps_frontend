@@ -3,16 +3,13 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "../../../components/Spinner";
-import { useAppStore } from "../../../stores/useAppStore";
-import Error from "../../../components/Error";
+import Spinner from "@/components/Spinner";
+
+import { uploadCDPS } from "@/api/PlantationControlAPI";
 
 export default function CargaMasivaCDPs() {
   const [file, setFile] = useState<File[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const errorsCreateCDP = useAppStore((state) => state.errorsCreateCDP);
-  const uploadCDPS = useAppStore((state) => state.uploadCDPS);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -25,15 +22,17 @@ export default function CargaMasivaCDPs() {
 
   const handleUploadFile = async () => {
     setLoading(true);
-    setError(false);
     try {
       if (file) {
-        await uploadCDPS(file);
+        const errors = await uploadCDPS(file);
+        if (errors) {
+          toast.error(errors);
+          return;
+        }
         navigate("/cdps");
         toast.success("CDPS creados correctamente");
       }
     } catch (error) {
-      setError(true);
     } finally {
       setLoading(false);
     }
@@ -47,7 +46,6 @@ export default function CargaMasivaCDPs() {
     <>
       <h2 className="font-bold text-4xl">Carga Masiva de CDPS</h2>
       <form className="w-1/2 mx-auto mt-5" onSubmit={handleSubmit}>
-        {error && <Error>{errorsCreateCDP}</Error>}
         <div
           className="mt-5"
           {...getRootProps()}

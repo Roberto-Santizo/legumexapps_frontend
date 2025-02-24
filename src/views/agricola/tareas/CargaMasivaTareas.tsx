@@ -1,19 +1,16 @@
 import { useCallback, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
-import Error from "../../../components/Error";
 import { Button } from "@mui/material";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
+
+import { uploadTareas } from "@/api/TasksAPI";
 
 export default function CargaMasivaTareas() {
   const [file, setFile] = useState<File[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
 
-  const errorsTareas = useAppStore((state) => state.errorsTareas);
-  const uploadTareas = useAppStore((state) => state.uploadTareas);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -26,7 +23,6 @@ export default function CargaMasivaTareas() {
 
   const handleUploadFile = async () => {
     setLoading(true);
-    setError(false);
     try {
       if(file){
         await uploadTareas(file);
@@ -34,7 +30,7 @@ export default function CargaMasivaTareas() {
         toast.success("Tareas Creadas Correctamente");
       }
     } catch (error) {
-      setError(true);
+      toast.error('Hubo un error al cargar las tareas');
     } finally {
       setLoading(false);
     }
@@ -49,7 +45,6 @@ export default function CargaMasivaTareas() {
     <>
       <h2 className="font-bold text-4xl">Carga Masiva de Tareas</h2>
       <form className="w-1/2 mx-auto mt-5" onSubmit={handleSubmit}>
-        {error && <Error>{errorsTareas}</Error>}
         <div
           className="mt-5"
           {...getRootProps()}

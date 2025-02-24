@@ -4,10 +4,11 @@ import { Controller, useForm } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
 
+import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
 
 import { Button } from "@mui/material";
 import { BoletaDetail, Defect, DraftBoletaCalidad,ResultBoletaCalidad } from "@/types";
-import { useAppStore } from "@/stores/useAppStore";
+import { createQualityDoc } from "@/api/ReceptionsDocAPI";
 import Spinner from "@/components/Spinner";
 import Error from "@/components/Error";
 import { useNavigate } from "react-router-dom";
@@ -38,9 +39,6 @@ export default function Boleta_form3({ boleta }: Props) {
     return percentage * 100 < boleta.minimun_percentage;
   }, [percentage]);
 
-
-  const getDefectsByQualityProduct = useAppStore((state) => state.getDefectsByQualityProduct);
-  const createQualityDoc = useAppStore((state) => state.createQualityDoc)
 
   const {
     register,

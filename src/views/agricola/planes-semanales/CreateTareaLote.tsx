@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
-import {
-  DraftCreateTaskWeeklyPlan,
-  Lote,
-  Tarea,
-  WeeklyPlan,
-} from "../../../types";
+import { useAppStore } from "@/stores/useAppStore";
+import { DraftCreateTaskWeeklyPlan, Lote, Tarea, WeeklyPlan } from "@/types";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import Error from "../../../components/Error";
+import Error from "@/components/Error";
 import { Button } from "@mui/material";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
+
+import { getAllPlans } from "@/api/WeeklyPlansAPI";
+import { getAllLotes } from "@/api/LotesAPI";
+import { getAllTasks } from "@/api/TasksAPI";
 
 export default function CreateTareaLote() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -20,9 +19,6 @@ export default function CreateTareaLote() {
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [plans, setPlans] = useState<WeeklyPlan[]>([]);
   const navigate = useNavigate();
-  const fetchAllLotes = useAppStore((state) => state.fetchAllLotes);
-  const getAllTareas = useAppStore((state) => state.getAllTareas);
-  const getAllPlans = useAppStore((state) => state.getAllPlans);
   const createTaskWeeklyPlan = useAppStore(
     (state) => state.createTaskWeeklyPlan
   );
@@ -48,8 +44,8 @@ export default function CreateTareaLote() {
 
   const handleGetInfo = async () => {
     try {
-      const lotes = await fetchAllLotes();
-      const tareas = await getAllTareas();
+      const lotes = await getAllLotes();
+      const tareas = await getAllTasks();
       const plans = await getAllPlans();
       setLotes(lotes);
       setTareas(tareas);

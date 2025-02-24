@@ -1,12 +1,14 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useAppStore } from "../../../stores/useAppStore";
+import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import Spinner from "../../../components/Spinner";
+import Spinner from "@/components/Spinner";
 import { useForm } from "react-hook-form";
-import { DraftTaskWeeklyPlan, TaskWeeklyPlan, WeeklyPlan } from "../../../types";
-import Error from "../../../components/Error";
+import { DraftTaskWeeklyPlan, TaskWeeklyPlan, WeeklyPlan } from "@/types";
+import Error from "@/components/Error";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
+
+import { getAllPlans } from "@/api/WeeklyPlansAPI";
 
 export default function EditarTareaLote() {
   const { id } = useParams();
@@ -25,7 +27,6 @@ export default function EditarTareaLote() {
   // const [error]
 
   const getTask = useAppStore((state) => state.getTask);
-  const getAllPlans = useAppStore((state) => state.getAllPlans);
   const userRole = useAppStore((state) => state.userRole);
   const navigate = useNavigate();
   const editTask = useAppStore((state) => state.editTask);
