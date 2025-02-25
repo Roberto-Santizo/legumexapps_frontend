@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import GeneralDashboard from "../views/admin/GeneralDashboards";
+import CalidadDashboard from "../views/calidad/CalidadDashboard";
 
 export default function Dashboard() {
   const dashboards = {
     'admin': (<GeneralDashboard />),
     'adminagricola':  (<AgricolaDashboard />),
-    'auxagricola': (<AgricolaDashboard />)
+    'auxagricola': (<AgricolaDashboard />),
+    'pcalidad': (<CalidadDashboard />)
   };
 
   const [loading, setLoading] = useState<boolean>(true);

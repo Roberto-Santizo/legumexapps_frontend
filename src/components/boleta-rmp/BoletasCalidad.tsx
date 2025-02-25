@@ -9,16 +9,12 @@ type Props = {
 export default function BoletasCalidad({ boleta }: Props) {
 
   const contentRef = useRef<HTMLDivElement>(null);
-  // const reactToPrintFn = useReactToPrint({ contentRef });
-  
-
-  
 
   return (
     <>
       <div ref={contentRef}> {/*Esta es la parte que quiero imprimir */}
         {boleta && (
-          <div className="w-full max-w-7xl mx-auto p-8 bg-sky-100 border border-grya-300 mt-10
+          <div className="w-full max-w-7xl mx-auto p-10 shadow-xl border border-grya-300 mt-10
                     print:w-[297mm] print:h-[210mm] print:max-w-none print:mx-0 print:mt-0 
                     print:bg-white print:p-4 print:shadow-none">
 
@@ -62,13 +58,13 @@ export default function BoletasCalidad({ boleta }: Props) {
                 <div className="border-r border-b border-l border-black p-2">
                   <label className="text-base font-bold block mb-1">
                     Producto:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.variety}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.variety}</span>
                   </label>
                 </div>
                 <div className="border-r border-b border-black p-2">
                   <label className="text-base font-bold block mb-1">
                     PRODUCTOR:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.producer_name}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.producer_name}</span>
                   </label>
                 </div>
                 <div className="border-r border-b border-black p-2">
@@ -80,37 +76,37 @@ export default function BoletasCalidad({ boleta }: Props) {
                 <div className="border-r border-b border-l border-black p-2">
                   <label className="text-base font-bold block mb-1">
                     No. De Canastas:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.total_baskets}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.total_baskets}</span>
                   </label>
                 </div>
                 <div className="border-r border-b border-black p-2">
                   <label className="text-base font-bold block mb-1 uppercase">
                     Peso neto:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.net_weight}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.net_weight}</span>
                   </label>
                 </div>
                 <div className="border-r border-b border-black p-2">
                   <label className="text-base font-bold block mb-1 uppercase">
                     Tamaño de la muestra:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.sample_units}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.sample_units}</span>
                   </label>
                 </div>
                 <div className="border-r border-b border-l border-black p-2 col-span-2">
                   <label className="text-base font-bold block mb-1">
                     CODIGO PRODUCTOR:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.producer_code}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.producer_code}</span>
                   </label>
                 </div>
                 <div className="border-r border-b border-black p-2">
                   <label className="text-base font-bold block mb-1">
                     % A PAGAR:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.percentage}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.percentage}</span>
                   </label>
                 </div>
                 <div className="border-r border-b border-l border-black p-2 col-start-3">
                   <label className="text-base font-bold block mb-1">
                     LIBRAS PAGABLES:
-                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data.valid_pounds}</span>
+                    <span className="p-1 text-center text-sm font-normal">{boleta.quality_doc_data?.valid_pounds}</span>
                   </label>
                 </div>
               </div>
@@ -129,19 +125,19 @@ export default function BoletasCalidad({ boleta }: Props) {
                 <tbody>
                   <tr>
                     <td className="w-1/6 border border-black p-2 uppercase font-bold">Peso bruto</td>
-                    <td className="border border-black p-2">{boleta.prod_data.gross_weight}</td>
+                    <td className="border border-black p-2">{boleta.prod_data?.gross_weight}</td>
                     <td className="border border-black p-2"></td>
                   </tr>
 
                   <tr>
                     <td className="w-1/6 border border-black p-2 font-bold">PESO NETO</td>
-                    <td className="border border-black p-2">{boleta.quality_doc_data.net_weight}</td>
+                    <td className="border border-black p-2">{boleta.quality_doc_data?.net_weight}</td>
                     <td className="border border-black p-2"></td>
                     <td className="border border-black p-2 font-bold w-2/12 uppercase">Tolerancia</td>
                     <td className="border border-black p-2 font-bold w-2/12 uppercase">Resultado</td>
                   </tr>
 
-                  {/* {boleta.quality_doc_data.defects.map((defect, index) => (
+                  {/* {boleta.quality_doc_data?.defects.map((defect, index) => (
                     <tr key={index}>
                       <td className="w-1/6 border border-black p-2">{defect.name.toUpperCase()}</td>
                       <td className="border border-black p-2">{defect.pounds || ''}</td>
@@ -157,13 +153,13 @@ export default function BoletasCalidad({ boleta }: Props) {
 
             <div className="mt-6">
               <p className="text-sm font-bold mb-2">OBSERVACIONES:</p>
-              <p className="p-2 border border-black min-h-[6rem]">{boleta.quality_doc_data.observations}</p>
+              <p className="p-2 border border-black min-h-[6rem]">{boleta.quality_doc_data?.observations}</p>
             </div>
 
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center my-6 mx-auto w-6/12">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data.inspector_planta_signaure}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data?.inspector_planta_signaure}`}
                   alt="Firma Inspector Planta"
                   className="max-h-20 md:max-h-20 object-contain"
                 />
