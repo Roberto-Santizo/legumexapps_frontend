@@ -20,6 +20,11 @@ const routes = [
   { path: "/productos/variedades/crear", component: lazy(() => import("../views/calidad/variedades/CrearVariedad")), roles: ['admin','pcalidad'] },
 
   { path: "/transporte/boleta", component: lazy(() => import("../views/calidad/transporte/BoletaCamion")), roles: ['admin','pcalidad'] },
+  { path: "/transporte/index", component: lazy(() => import("../views/calidad/transporte/IndexCamion")), roles: ['admin','pcalidad'] },
+
+
+  { path: "/prueba/camion", component: lazy(() => import("../components/boleta-camion/InspeccionTransporte")), roles: ['admin','pcalidad'] },
+
 ];
 
 export default function CalidadRoutes() {
