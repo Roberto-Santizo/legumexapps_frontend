@@ -124,8 +124,9 @@ export const fieldDataSchema = z.object({
   status: z.number(),
   minimun_percentage: z.number(),
   total_baskets: z.number(),
-  inspector_agricola_signature: z.string(),
-  producer_signature: z.string(),
+  calidad_signature: z.string()
+  // inspector_agricola_signature: z.string(),
+  // producer_signature: z.string(),
 });
 
 export const prodDataSchema = z.object({
@@ -147,7 +148,7 @@ export const qualityDocDataSchema = z.object({
   time: z.string(),
   producer_name: z.string(),
   variety: z.string(),
-  grn: z.string(),
+  grn: z.string().nullable(),
   net_weight: z.number(),
   no_hoja_cosechero: z.nullable(z.string()),
   sample_units: z.string(),
@@ -163,10 +164,11 @@ export const qualityDocDataSchema = z.object({
 
 export const BoletaInfoAllSchema = z.object({
   status: z.number(),
-  grn: z.string(),
+  finca: z.string(),
+  grn: z.string().nullable(),
   field_data: fieldDataSchema,
-  prod_data: prodDataSchema,
-  quality_doc_data: qualityDocDataSchema,
+  prod_data: prodDataSchema.nullable(),
+  quality_doc_data: qualityDocDataSchema.nullable(),
 });
 
 

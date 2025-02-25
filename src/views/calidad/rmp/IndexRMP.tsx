@@ -193,11 +193,9 @@ export default function IndexRMP() {
                                                             <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
                                                         )}
 
-                                                        {boleta.status === 5 && (
-                                                            <Link to={`/rmp/documentos/${boleta.id}`}>
-                                                                <Eye />
-                                                            </Link>
-                                                        )}
+                                                        <Link to={`/rmp/documentos/${boleta.id}`}>
+                                                            <Eye />
+                                                        </Link>
 
                                                     </>
                                                 )}

@@ -39,7 +39,9 @@ export default function ShowRMP() {
       {(loading && boleta)? <Spinner /> : (
         <section className="flex flex-col gap-10 mt-10">
           <BoletaCampoRMP boleta={boleta}/>
-          <BoletasCalidad boleta={boleta}/>
+          {boleta.quality_doc_data && (
+            <BoletasCalidad boleta={boleta}/>
+          )}
         </section>
       )}
 
