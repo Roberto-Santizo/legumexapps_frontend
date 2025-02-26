@@ -4,26 +4,46 @@ import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
-
-
+import { useMutation } from "@tanstack/react-query";
 import { DraftDefecto, DraftProduct, Variety } from "@/types";
 import { Button } from "@mui/material";
 import Spinner from "@/components/Spinner";
 import Error from "@/components/Error";
 import CreateDefectoModal from "@/components/defectos/CreateDefectoModal";
 import EditDefectoModal from "@/components/defectos/EditDefectoModal";
-
 import { createProduct } from "@/api/ProductsAPI";
 import { getAllVarieties } from "@/api/VarietiesAPI";
+import { useQuery } from "@tanstack/react-query";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function CrearVariedad() {
-  const [loading, setLoading] = useState<boolean>(true);
   const [varieties, setVarieties] = useState<Variety[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [editModal, setEditModal] = useState<boolean>(false);
   const [defects, setDefects] = useState<DraftDefecto[]>([]);
   const [editingId, setEditingId] = useState<number>(0);
   const navigate = useNavigate();
+
+  const { mutate } = useMutation({
+    mutationFn: ({ data, defects }: { data: DraftProduct; defects: DraftDefecto[] }) => createProduct(data, defects),
+    onError: () => {
+      toast.error('Hubo un error al crear el producto, intentelo de nuevo más tarde');
+    },
+    onSuccess: () => {
+      toast.success('Producto creado correctamente');
+      navigate('/productos');
+    }
+  });
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['getAllVarieties'],
+    queryFn: getAllVarieties
+  });
+
+  useEffect(() => {
+    if (data) {
+      setVarieties(data);
+    }
+  }, [data]);
 
   const varietiesOptions = varieties.map((variety) => ({
     value: variety.id,
@@ -37,48 +57,26 @@ export default function CrearVariedad() {
     formState: { errors }
   } = useForm<DraftProduct>();
 
-  const handleGetInfo = async () => {
-    try {
-      const data = await getAllVarieties();
-      setVarieties(data);
-    } catch (error) {
-      toast.error('Hubo un error al traer la información');
-    } finally {
-      setLoading(false);
-    }
-  }
 
-  const handleEditDefect = (id: number) => {  
+  const handleEditDefect = (id: number) => {
     setEditingId(id);
     setEditModal(!editModal);
-  }
-
-  useEffect(() => {
-    handleGetInfo();
-  }, []);
-
-  const onSubmit = async (data: DraftProduct) => {
-    setLoading(true);
-    if(defects.length === 0) {
-      toast.error('Debe relacionar al menos un defecto al producto');
-      setLoading(false);
-      return;
-    }
-    try {
-      await createProduct(data, defects);
-      toast.success('Producto creado correctamente');
-      navigate('/productos');
-    } catch (error) {
-      toast.error('Hubo un error al crear el producto, intentelo de nuevo más tarde');
-    } finally {
-      setLoading(false);
-    }
   }
 
   const deleteDefect = (id: DraftDefecto['id']) => {
     setDefects((prev) => prev.filter((defect) => defect.id !== id));
   }
 
+  const onSubmit = async (data: DraftProduct) => {
+    if (defects.length === 0) {
+      toast.error('Debe relacionar al menos un defecto al producto');
+      return;
+    }
+    mutate({ data, defects });
+  }
+
+  if (isError) return <ShowErrorAPI />
+  if (isLoading) return <Spinner />
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Producto</h2>
@@ -170,8 +168,8 @@ export default function CrearVariedad() {
                       <td className="tbody-td">{defect.name}</td>
                       <td className="tbody-td">{defect.tolerance_percentage}</td>
                       <td className="tbody-td flex gap-5">
-                        <Edit className="cursor-pointer hover:text-gray-500" onClick={() => handleEditDefect(defect.id)}/>
-                        <DeleteIcon className="cursor-pointer hover:text-gray-500" onClick={() => deleteDefect(defect.id)}/>
+                        <Edit className="cursor-pointer hover:text-gray-500" onClick={() => handleEditDefect(defect.id)} />
+                        <DeleteIcon className="cursor-pointer hover:text-gray-500" onClick={() => deleteDefect(defect.id)} />
                       </td>
                     </tr>
                   ))}
@@ -181,14 +179,14 @@ export default function CrearVariedad() {
           </fieldset>
 
           <Button
-            disabled={loading}
+            disabled={isLoading}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loading ? (
+            {isLoading ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Producto</p>
@@ -197,8 +195,8 @@ export default function CrearVariedad() {
         </form>
       </div>
 
-      <CreateDefectoModal modal={modal} setModal={setModal} setDefects={setDefects} defects={defects}/>
-      <EditDefectoModal modal={editModal} setModal={setEditModal} setDefects={setDefects} defects={defects} id={editingId}/>
+      <CreateDefectoModal modal={modal} setModal={setModal} setDefects={setDefects} defects={defects} />
+      <EditDefectoModal modal={editModal} setModal={setEditModal} setDefects={setDefects} defects={defects} id={editingId} />
     </>
   )
 }

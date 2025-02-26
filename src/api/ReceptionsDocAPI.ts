@@ -65,7 +65,7 @@ export async function createQualityDoc(data: DraftBoletaCalidad, id: Boleta['id'
     }
 }
 
-export async function updateGRN(grn : string, id : Boleta['id']) {
+export async function updateGRN (grn : string, id : Boleta['id']) {
     try {
         const url = `/api/boleta-rmp/generate-grn/${id}`;
         await clienteAxios.post(url, { grn });

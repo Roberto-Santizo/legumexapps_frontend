@@ -80,7 +80,8 @@ export const BoletaSchema = z.object({
     coordinator: z.string(),
     cdp: z.string(),
     transport: z.string(),
-    status: z.number()
+    status: z.number(),
+    consignacion: z.boolean()
 });
 
 export const BoletasPaginateSchema = z.object({
@@ -145,6 +146,9 @@ export const qualityDocDataSchema = z.object({
   valid_pounds: z.number(),
   inspector_planta_signaure: z.string(),
   date: z.string(), 
+  day: z.string(), 
+  month: z.string(), 
+  year: z.string(), 
   time: z.string(),
   producer_name: z.string(),
   variety: z.string(),
@@ -165,6 +169,7 @@ export const qualityDocDataSchema = z.object({
 export const BoletaInfoAllSchema = z.object({
   status: z.number(),
   finca: z.string(),
+  consignacion: z.boolean(),
   grn: z.string().nullable(),
   field_data: fieldDataSchema,
   prod_data: prodDataSchema.nullable(),

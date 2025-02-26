@@ -20,6 +20,7 @@ import { BasketSchema } from '@/utils/baskets-schema'
 import { VarietiesPaginateSchema, VarietySchema } from '@/utils/calidadVariedades-schema'
 import { DefectSchema, DefectsPaginateSchema, DraftDefectoSchema } from '@/utils/defectos-schema'
 import { ProducerSchema, ProducersPaginateSchema } from '@/utils/producers-schema'
+import { FiletrsBoletaRMPSchema } from '@/utils/filters-schema'
 
 
 //PERMISOS
@@ -151,4 +152,7 @@ export type Defect = z.infer<typeof DefectSchema>
 export type Producer = z.infer<typeof ProducerSchema>
 export type DraftProducer = Omit<Producer, 'id'>
 export type ProducersPaginate = z.infer<typeof ProducersPaginateSchema>
+
+//FILTROS
+export type FiletrsBoletaRMP = z.infer<typeof FiletrsBoletaRMPSchema>
 

@@ -15,18 +15,32 @@ import { Button } from "@mui/material";
 import { Basket, DraftBoletaRMP, Finca, Producer, Product } from "@/types";
 import Error from "@/components/Error";
 import Spinner from "@/components/Spinner";
+import { useMutation, useQueries } from "@tanstack/react-query";
 
 export default function Boleta_form1() {
-  const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [baskets, setBaskets] = useState<Basket[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
-  const [fincas,setFincas] = useState<Finca[]>([]);
+  const [fincas, setFincas] = useState<Finca[]>([]);
   const navigate = useNavigate();
-  // const inspector_signature = useRef({} as SignatureCanvas);
-  // const prod_signature = useRef({} as SignatureCanvas);
   const calidad_signature = useRef({} as SignatureCanvas);
 
+  const results = useQueries({
+    queries: [
+      { queryKey: ['getProducts'], queryFn: getProducts },
+      { queryKey: ['getAllProducers'], queryFn: getAllProducers },
+      { queryKey: ['getAllBaskets'], queryFn: getAllBaskets },
+      { queryKey: ['getAllFincas'], queryFn: getAllFincas }
+    ]
+  });
+  
+  useEffect(() => {
+    if (results[0].data) setProducts(results[0].data);
+    if (results[1].data) setProducers(results[1].data);
+    if (results[2].data) setBaskets(results[2].data);
+    if (results[3].data) setFincas(results[3].data);
+  }, [results]);
+  
   const fincasOptions = fincas.map((finca) => ({
     value: finca.id,
     label: `${finca.name}`,
@@ -47,22 +61,16 @@ export default function Boleta_form1() {
     label: `${basket.code} - ${basket.weight}lbs`,
   }));
 
-  const handleGetInfo = async () => {
-    try {
-      const data = await getProducts();
-      const producers = await getAllProducers();
-      const data2 = await getAllBaskets();
-      const data3 = await getAllFincas();
-      setFincas(data3);
-      setProducers(producers);
-      setProducts(data);
-      setBaskets(data2);
-    } catch (error) {
-      toast.error('Hubo un error al traer los productos');
-    } finally {
-      setLoading(false);
+  const { mutate, isPending } = useMutation({
+    mutationFn: createBoletaRMP,
+    onError: () => {
+      toast.error('Hubo un error al crear la boleta');
+    },
+    onSuccess: () => {
+      toast.success('Boleta creada correctamente');
+      navigate('/rmp');
     }
-  }
+  });
 
   const {
     register,
@@ -71,27 +79,7 @@ export default function Boleta_form1() {
     formState: { errors },
   } = useForm<DraftBoletaRMP>();
 
-  const onSubmit = async (data: DraftBoletaRMP) => {
-    setLoading(true);
-    try {
-      const errors = await createBoletaRMP(data);
-      if (errors) {
-        errors.forEach(error => toast.error(error[0]))
-        setLoading(false);
-        return;
-      }
-      toast.success('Boleta Registrada Correctamente');
-      navigate('/rmp');
-    } catch (error) {
-      toast.error('Hubo un error al guardar la información, intentelo de nuevo más tarde');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    handleGetInfo();
-  }, []);
+  const onSubmit = async (data: DraftBoletaRMP) => mutate(data)
 
   return (
     <>
@@ -367,84 +355,15 @@ export default function Boleta_form1() {
             {(errors.calidad_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
           </div>
 
-          {/* <div className="grid grid-cols-2 gap-5">
-            <div className="space-y-2 text-center">
-              <Controller
-                name="inspector_signature"
-                control={control}
-                rules={{ required: 'La firma del Inspector Agrícola es Obligatoria' }}
-                render={({ field }) => (
-                  <div className="p-2">
-                    <SignatureCanvas
-                      ref={inspector_signature}
-                      penColor="black"
-                      canvasProps={{ className: "w-full h-40 border" }}
-                      onEnd={() => {
-                        field.onChange(inspector_signature.current.toDataURL());
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
-                      onClick={() => {
-                        inspector_signature.current.clear();
-                        field.onChange("");
-                      }}
-                    >
-                      Limpiar Firma
-                    </button>
-                  </div>
-                )}
-              />
-              <label className="block font-medium text-xl">
-                Firma Inspector agrícola
-              </label>
-            </div>
-
-            <div className="space-y-2 text-center">
-              <Controller
-                name="prod_signature"
-                control={control}
-                rules={{ required: 'La firma del productor es obligatoria' }}
-                render={({ field }) => (
-                  <div className="p-2">
-                    <SignatureCanvas
-                      ref={prod_signature}
-                      penColor="black"
-                      canvasProps={{ className: "w-full h-40 border" }}
-                      onEnd={() => {
-                        field.onChange(prod_signature.current.toDataURL());
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
-                      onClick={() => {
-                        prod_signature.current.clear();
-                        field.onChange("");
-                      }}
-                    >
-                      Limpiar Firma
-                    </button>
-                  </div>
-                )}
-              />
-              <label className="block font-medium text-xl">
-                Firma De Productor
-              </label>
-            </div>
-          </div> */}
-
-
           <Button
-            disabled={loading}
+            disabled={isPending}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loading ? (
+            {isPending ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Boleta</p>

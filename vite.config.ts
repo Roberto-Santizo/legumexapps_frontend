@@ -12,5 +12,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '#': fileURLToPath(new URL('./public', import.meta.url)),
     }
-  }
+  },
+  optimizeDeps: { include: ['@tanstack/react-query'] }
+
 })

@@ -1,57 +1,68 @@
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { getAllFincas } from "@/api/FincasAPI";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Boleta, Finca, Producer, Product } from "@/types";
-import { toast } from "react-toastify";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
+import { FiletrsBoletaRMP, Finca, Producer, Product } from "@/types";
 import { getProducts } from "@/api/ProductsAPI";
 import Spinner from "../Spinner";
 
 import { getAllProducers } from "@/api/ProducersAPI";
+import { useQueries } from "@tanstack/react-query";
 
 type Props = {
-    isOpen: boolean;
+    filters: FiletrsBoletaRMP;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    setBoletas: Dispatch<SetStateAction<Boleta[]>>;
-    setFincaId: Dispatch<SetStateAction<Finca['id']>>;
-    setProductId: Dispatch<SetStateAction<Product['id']>>;
-    setProducerId: Dispatch<SetStateAction<Producer['id']>>;
-    setDate: Dispatch<SetStateAction<string>>;
-    setPlate: Dispatch<SetStateAction<string>>;
-    fincaId: Finca['id'];
-    productId: Product['id'];
-    producerId: Producer['id'];
-    date: string;
-    plate: string;
-    handleFilters: () => Promise<void>;
-    handleReset: () => Promise<void>;
+    setFilters: Dispatch<SetStateAction<FiletrsBoletaRMP>>;
+    isOpen: boolean;
 
 };
 
-export default function FiltersRMP({ isOpen, setIsOpen, setFincaId, setProductId, fincaId, productId, handleFilters, handleReset, producerId, setProducerId, date, setDate, plate, setPlate }: Props) {
+export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: Props) {
     const [fincas, setFincas] = useState<Finca[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [producers, setProducers] = useState<Producer[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [tempFilters, setTempFilters] = useState<FiletrsBoletaRMP>({} as FiletrsBoletaRMP);
+
+    const results = useQueries({
+        queries: [
+            { queryKey: ['getAllFincas'], queryFn: getAllFincas },
+            { queryKey: ['getProducts'], queryFn: getProducts },
+            { queryKey: ['getAllProducers'], queryFn: getAllProducers }
+        ]
+    });
 
     useEffect(() => {
-        const handleGetInfo = async () => {
-            try {
-                const data = await getAllFincas();
-                const data2 = await getProducts();
-                const data3 = await getAllProducers();
-                setFincas(data);
-                setProducts(data2);
-                setProducers(data3);
-            } catch (error) {
-                toast.error("Hubo un error al traer las fincas");
-            } finally {
-                setLoading(false);
-            }
-        };
-        handleGetInfo();
-    }, []);
+        if (results.every(result => result.data)) {
+            if (results[0].data) setFincas(results[0].data);
+            if (results[1].data) setProducts(results[1].data);
+            if (results[2].data) setProducers(results[2].data);
+        }
+    }, [results]);
 
+
+    const isLoading = results.some(result => result.isLoading);
+
+    const handleFilterTempChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setTempFilters((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleFilterData = () => {
+        setFilters(tempFilters);
+        setIsOpen(false);
+    }
+
+    const handleResetFilters = () => {
+        setFilters({} as FiletrsBoletaRMP);
+        setIsOpen(false);
+    }
+
+    useEffect(() => {
+        setTempFilters(filters);
+    }, [filters]);
 
     return (
         <div className="relative">
@@ -78,12 +89,12 @@ export default function FiltersRMP({ isOpen, setIsOpen, setFincaId, setProductId
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium">Fecha</label>
-                        <input type="date" className="w-full border p-2 rounded" onChange={(e) => setDate(e.target.value)} value={date} />
+                        <input type="date" name="date" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.date} />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium">Placa</label>
-                        <input placeholder="Ej. C123ABC" type="text" className="w-full border p-2 rounded" onChange={(e) => setPlate(e.target.value)} value={plate} />
+                        <input name="plate" placeholder="Ej. C123ABC" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.plate} />
                     </div>
 
 
@@ -91,8 +102,9 @@ export default function FiltersRMP({ isOpen, setIsOpen, setFincaId, setProductId
                         <label className="block text-sm font-medium">Finca</label>
                         <select
                             className="w-full border p-2 rounded"
-                            onChange={(e) => setFincaId(e.target.value)}
-                            value={fincaId}
+                            name="finca_id"
+                            onChange={(e) => handleFilterTempChange(e)}
+                            value={tempFilters.finca_id}
                         >
                             <option value="">Todas</option>
                             {fincas.map((finca) => (
@@ -107,8 +119,9 @@ export default function FiltersRMP({ isOpen, setIsOpen, setFincaId, setProductId
                         <label className="block text-sm font-medium">Producto</label>
                         <select
                             className="w-full border p-2 rounded"
-                            onChange={(e) => setProductId(e.target.value)}
-                            value={productId}
+                            name="product_id"
+                            onChange={(e) => handleFilterTempChange(e)}
+                            value={tempFilters.product_id}
                         >
                             <option value="">Todos</option>
                             {products.map((product) => (
@@ -123,8 +136,9 @@ export default function FiltersRMP({ isOpen, setIsOpen, setFincaId, setProductId
                         <label className="block text-sm font-medium">Productores</label>
                         <select
                             className="w-full border p-2 rounded"
-                            onChange={(e) => setProducerId(e.target.value)}
-                            value={producerId}
+                            name="producer_id"
+                            onChange={(e) => handleFilterTempChange(e)}
+                            value={tempFilters.producer_id}
                         >
                             <option value="">Todos</option>
                             {producers.map((producer) => (
@@ -137,16 +151,16 @@ export default function FiltersRMP({ isOpen, setIsOpen, setFincaId, setProductId
 
                     <button
                         className="button bg-indigo-500 hover:bg-indigo-600 w-full text-white py-2 rounded"
-                        onClick={() => handleFilters()}
-                        disabled={loading}
+                        onClick={handleFilterData}
+                        disabled={isLoading}
                     >
-                        {loading ? <Spinner /> : "Filtrar"}
+                        {isLoading ? <Spinner /> : "Filtrar"}
                     </button>
 
                     <button
                         className="button bg-red-500 hover:bg-red-600 w-full text-white py-2 rounded"
-                        onClick={handleReset}
-                        disabled={loading}
+                        onClick={handleResetFilters}
+                        disabled={isLoading}
                     >
                         Borrar Filtros
                     </button>

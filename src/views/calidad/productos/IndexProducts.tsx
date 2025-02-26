@@ -1,45 +1,40 @@
 import { Edit, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import Spinner from "@/components/Spinner";
 import { Product } from "@/types";
 import Pagination from "@/components/Pagination";
-
 import { getPaginatedProducts } from "@/api/ProductsAPI";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function IndexVarieties() {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>();
     const [products, setProducts] = useState<Product[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
 
-    const handleGetInfo = async (page: number) => {
-        setLoading(true);
-        try {
-            const data = await getPaginatedProducts(page);
+    const { data, isError, isLoading } = useQuery({
+        queryKey: ['getPaginatedProducts', currentPage],
+        queryFn: () => getPaginatedProducts(currentPage)
+    });
+
+    useEffect(() => {
+        if (data) {
             setProducts(data.data);
             setPageCount(data.meta.last_page);
             setCurrentPage(data.meta.current_page);
-        } catch (error) {
-            toast.error('Hubo un error al traer la información');
-            setError(true);
-        } finally {
-            setLoading(false);
         }
-    }
+    }, [data])
 
     const handlePageChange = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected + 1);
     };
 
-    useEffect(() => {
-        handleGetInfo(currentPage);
-    }, [currentPage]);
+
+    if (isLoading) return <Spinner />
+    if (isError) return <ShowErrorAPI />
 
     return (
         <>
@@ -64,44 +59,39 @@ export default function IndexVarieties() {
                         </Link>
                     </div>
                 </div>
-                {error && <ShowErrorAPI />}
-                {(loading && !error) ? <Spinner /> : (
-                    <>
-                        <div className="p-2 overflow-y-auto mt-10">
-                            <table className="table">
-                                <thead>
-                                    <tr className="thead-tr">
-                                        <th scope="col" className="thead-th">ID</th>
-                                        <th scope="col" className="thead-th">Producto</th>
-                                        <th scope="col" className="thead-th">Variedad</th>
-                                        <th scope="col" className="thead-th">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {products.map(product => (
-                                        <tr className="tbody-tr" key={product.id}>
-                                            <td className="tbody-td">{product.id}</td>
-                                            <td className="tbody-td">{product.product}</td>
-                                            <td className="tbody-td">{product.variety}</td>
-                                            <td className="tbody-td flex gap-5">
-                                                <Link to={`/productos/${product.id}/editar`}>
-                                                    <Edit className="hover:text-gray-500"/>
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="mb-10 flex justify-end">
-                            <Pagination
-                                currentPage={currentPage}
-                                pageCount={pageCount}
-                                handlePageChange={handlePageChange}
-                            />
-                        </div>
-                    </>
-                )}
+                <div className="p-2 overflow-y-auto mt-10">
+                    <table className="table">
+                        <thead>
+                            <tr className="thead-tr">
+                                <th scope="col" className="thead-th">ID</th>
+                                <th scope="col" className="thead-th">Producto</th>
+                                <th scope="col" className="thead-th">Variedad</th>
+                                <th scope="col" className="thead-th">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products.map(product => (
+                                <tr className="tbody-tr" key={product.id}>
+                                    <td className="tbody-td">{product.id}</td>
+                                    <td className="tbody-td">{product.product}</td>
+                                    <td className="tbody-td">{product.variety}</td>
+                                    <td className="tbody-td flex gap-5">
+                                        <Link to={`/productos/${product.id}/editar`}>
+                                            <Edit className="hover:text-gray-500" />
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="mb-10 flex justify-end">
+                    <Pagination
+                        currentPage={currentPage}
+                        pageCount={pageCount}
+                        handlePageChange={handlePageChange}
+                    />
+                </div>
             </div>
         </>
     )
