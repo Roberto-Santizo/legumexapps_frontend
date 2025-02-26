@@ -15,8 +15,8 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
               <LogoLegumex />
             </div>
             <div className="text-sm">
-              <p>12 AVENIDA 6-15 ZONA 2 SECTOR</p>
-              <p>LAS MAJADAS, EL TEJAR, CHIMALTENANGO</p>
+              <p>Agroindustria Legumex,</p>
+              <p>Chimaltenango Guatemala</p>
               <p>PBX: 7963-0888 FAX: 7937-5005</p>
             </div>
           </div>
