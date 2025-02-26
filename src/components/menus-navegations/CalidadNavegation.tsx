@@ -63,7 +63,7 @@ export default function CalidadNavegation() {
                             </NavLink>
                             
                             <NavLink
-                                to={"/transporte/boleta"} className={({ isActive }) =>
+                                to={"/transporte/index"} className={({ isActive }) =>
                                     `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
                                     }`
                                 }
