@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie } from 'recharts';
 
 // Datos estáticos d
 //  Reemplazar este array cuando conectes la db
@@ -33,7 +33,7 @@ const fincaMayorDiferencia = diferenciasFincas.reduce((prev, current) =>
 
 // Colores profesionales con tonos actualizados
 // Reemplazar este array cuando conectes la db
-const COLORS = ['#3498db', '#2ecc71', '#4fc3f7', '#9be7ff', '#55e6c1', '#74b9ff'];
+// const COLORS = ['#3498db', '#2ecc71', '#4fc3f7', '#9be7ff', '#55e6c1', '#74b9ff'];
 
 // Tipos para las props del componente CircularMeter
 interface CircularMeterProps {
@@ -195,9 +195,9 @@ const CalidadDashboard: React.FC = () => {
                     nameKey="nombre"
                     label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
-                    {datosEstados.map((entry, index) => (
+                    {/* {datosEstados.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
+                    ))} */}
                   </Pie>
                   <Tooltip 
                     formatter={(value) => [`${value} boletas`, 'Cantidad']}

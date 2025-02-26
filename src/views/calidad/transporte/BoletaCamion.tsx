@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Truck, Check } from 'lucide-react';
 
 // Definimos una interfaz para el tipo de estado de condiciones
