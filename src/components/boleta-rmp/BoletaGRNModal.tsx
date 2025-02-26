@@ -1,52 +1,49 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 
 import { Dialog, Transition } from "@headlessui/react";
 import { Button } from "@mui/material";
-import { Boleta } from "@/types";
+import { Boleta, BoletasPaginate } from "@/types";
 import Error from "@/components/Error";
 import Spinner from "../Spinner";
 import { toast } from "react-toastify";
-
 import { updateGRN } from "@/api/ReceptionsDocAPI";
+import { QueryObserverResult, RefetchOptions, useMutation } from "@tanstack/react-query";
 
 type Props = {
     modal: boolean;
     setModal: React.Dispatch<React.SetStateAction<boolean>>;
     boleta: Boleta;
-    handleGetBoletas: (page : number) => Promise<void>
-    page: number;
+    refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<BoletasPaginate>>;
 }
 
-type GRN = {
+type FormData = {
     grn: string;
 }
 
-export default function BoletaGRNModal({ modal, boleta, setModal, handleGetBoletas, page }: Props) {
-    const [loading, setLoading] = useState<boolean>(false);
+export default function BoletaGRNModal({ modal, boleta, setModal, refetch }: Props) {
 
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
-    } = useForm<GRN>();
+    } = useForm<FormData>();
 
-
-    const onSubmit = async (data: GRN) => {
-        setLoading(true);
-        try {
-            await updateGRN(data.grn, boleta.id);
-            toast.success("GRN actualizado correctamente");
-            reset();
-        } catch (error) {
-            toast.error("Hubo un error al actualizar el GRN");
-        }finally{
-            setLoading(false);
-            setModal(!modal);
-            await handleGetBoletas(page);
+    const { mutate, isPending } = useMutation({
+        mutationFn: ({ grn, id }: { grn: string, id: Boleta['id'] }) => updateGRN(grn, id),
+        onError: () => {
+            toast.error('Hubo un error al guardar el GRN');
+        },
+        onSuccess: () => {
+            toast.success('GRN guardado correctamente');
+            setModal(false);
+            refetch();
         }
-    }
+    });
+
+    const onSubmit = async (data: FormData) => mutate({ grn: data.grn, id: boleta.id });
+
+
     return (
         <Transition appear show={modal} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={() => setModal(!modal)}>
@@ -96,14 +93,14 @@ export default function BoletaGRNModal({ modal, boleta, setModal, handleGetBolet
                                         </div>
 
                                         <Button
-                                            disabled={loading}
+                                            disabled={isPending}
                                             type="submit"
                                             variant="contained"
                                             color="primary"
                                             fullWidth
                                             sx={{ marginTop: 2 }}
                                         >
-                                            {loading ? (
+                                            {isPending ? (
                                                 <Spinner />
                                             ) : (
                                                 <p className="font-bold text-lg">Crear GRN</p>

@@ -1,34 +1,34 @@
 import { useForm } from "react-hook-form";
 import { DraftVariety } from "@/types";
-import { useState } from "react";
 import Spinner from "@/components/Spinner";
 import { Button } from "@mui/material";
 import Error from "@/components/Error";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
 import { createVariety } from "@/api/VarietiesAPI";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CrearVariedad() {
-    const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: createVariety,
+        onError: () => {
+            toast.error('Hubo un error al crear la variedad');
+        },
+        onSuccess: () => {
+            toast.success('Variedad creada correctamente');
+            navigate('/productos/variedades');
+        }
+    });
     const {
         handleSubmit,
         formState: { errors },
         register
     } = useForm<DraftVariety>();
 
-    const onSubmit = async (data : DraftVariety) => {
-        setLoading(true);
-        try {
-            await createVariety(data);
-            toast.success('Variedad creada correctamente');
-            navigate('/productos/variedades');
-        } catch (error) {
-            toast.error('Hubo un error al crear la variedad');
-        }
-    }
+    const onSubmit = async (data : DraftVariety) => mutate(data);
+
     return (
         <>
             <h2 className="font-bold text-3xl">Crear Variedad</h2>
@@ -50,14 +50,14 @@ export default function CrearVariedad() {
                 </div>
 
                 <Button
-                    disabled={loading}
+                    disabled={isPending}
                     type="submit"
                     variant="contained"
                     color="primary"
                     fullWidth
                     sx={{ marginTop: 2 }}
                 >
-                    {loading ? (
+                    {isPending ? (
                         <Spinner />
                     ) : (
                         <p className="font-bold text-lg">Crear Variedad</p>

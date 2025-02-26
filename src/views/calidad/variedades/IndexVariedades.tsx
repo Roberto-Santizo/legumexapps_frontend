@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
 import { Variety } from "@/types";
 import { PlusIcon } from "lucide-react";
@@ -7,42 +6,35 @@ import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { Link } from "react-router-dom";
 import Pagination from "@/components/Pagination";
 import { getPaginatedVarieties } from "@/api/VarietiesAPI";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function IndexVariedades() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
   const [variedades, setVariedades] = useState<Variety[]>([]);
 
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const handleGetInfo = async (page: number) => {
-    setLoading(true);
-    try {
-      const data = await getPaginatedVarieties(page);
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['getPaginatedVarieties', currentPage],
+    queryFn: () => getPaginatedVarieties(currentPage)
+  });
+
+  useEffect(() => {
+    if (data) {
       setVariedades(data.data);
-      setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
-    } catch (error) {
-      toast.error('Hubo un error al traer la información');
-      setError(true);
-    } finally {
-      setLoading(false);
+      setPageCount(data.meta.last_page);
     }
-  };
+  }, [data]);
+
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
 
-  useEffect(() => {
-    handleGetInfo(currentPage);
-  }, [currentPage]);
-
-  useEffect(() => {
-    getPaginatedVarieties(1)
-  }, []);
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
   return (
     <>
       <h2 className="font-bold text-3xl">Variedades</h2>
@@ -57,35 +49,32 @@ export default function IndexVariedades() {
         </Link>
       </div>
 
-      {error && <ShowErrorAPI />}
-      {(loading && !error) ? <Spinner /> : (
-        <div className="p-2 h-96 overflow-y-auto mt-10">
-          <table className="table">
-            <thead>
-              <tr className="thead-tr">
-                <th scope="col" className="thead-th">ID</th>
-                <th scope="col" className="thead-th">Variedad</th>
+      <div className="p-2 mt-10">
+        <table className="table">
+          <thead>
+            <tr className="thead-tr">
+              <th scope="col" className="thead-th">ID</th>
+              <th scope="col" className="thead-th">Variedad</th>
+            </tr>
+          </thead>
+          <tbody>
+            {variedades.map(variedad => (
+              <tr key={variedad.id} className="tbody-tr">
+                <td className="tbody-td">{variedad.id}</td>
+                <td className="tbody-td">{variedad.name}</td>
               </tr>
-            </thead>
-            <tbody>
-              {variedades.map(variedad => (
-                <tr key={variedad.id} className="tbody-tr">
-                  <td className="tbody-td">{variedad.id}</td>
-                  <td className="tbody-td">{variedad.name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
 
-          <div className="mb-10 flex justify-end">
-            <Pagination
-              currentPage={currentPage}
-              pageCount={pageCount}
-              handlePageChange={handlePageChange}
-            />
-          </div>
+        <div className="mb-10 flex justify-end">
+          <Pagination
+            currentPage={currentPage}
+            pageCount={pageCount}
+            handlePageChange={handlePageChange}
+          />
         </div>
-      )}
+      </div>
     </>
   )
 }

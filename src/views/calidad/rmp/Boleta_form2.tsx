@@ -13,6 +13,8 @@ import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
 
 import { getAllBaskets } from "@/api/BasketsAPI";
+import { useQuery } from "@tanstack/react-query";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 type Props = {
   boleta: BoletaDetail
@@ -24,21 +26,21 @@ export default function Boleta_form2({ boleta }: Props) {
   const [baskets, setBaskets] = useState<Basket[]>([]);
   const navigate = useNavigate();
   
+  const { data,isLoading,isError } = useQuery({
+    queryKey:['getAllBaskets'],
+    queryFn: getAllBaskets
+  });
+  
+  useEffect(()=>{
+    if(data){
+      setBaskets(data);
+    }
+  },[data])
+
   const basketsOptions = baskets.map((basket) => ({
     value: basket.id,
     label: `${basket.code} - ${basket.weight}lbs`,
   }));
-
-  const handleGetInfo = async () => {
-    try {
-      const data2 = await getAllBaskets();
-      setBaskets(data2);
-    } catch (error) {
-      toast.error('Hubo un error al traer los productos');
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const {
     register,
@@ -60,10 +62,8 @@ export default function Boleta_form2({ boleta }: Props) {
     }
   }
 
-  useEffect(() => {
-    handleGetInfo()
-  }, []);
-
+  if(isError) return <ShowErrorAPI />
+  if(isLoading) return <Spinner />
   return (
     <>
       {loading ? <Spinner /> : (

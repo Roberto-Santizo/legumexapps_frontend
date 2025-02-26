@@ -36,7 +36,7 @@ export default function BoletasCalidad({ boleta }: Props) {
                 <p className="text-base">PÁGINAS 1 DE 1</p>
               </div>
               <div>
-                <p className="text-base border border-black my-5 h-10 w-4/12">Correlativo ID</p>
+                <p className="border border-black my-5 h-10 w-4/12 font-bold text-xl"><span className="p-10">NO.{boleta.quality_doc_data?.id}</span></p>
               </div>
             </div>
 
@@ -44,10 +44,10 @@ export default function BoletasCalidad({ boleta }: Props) {
               <div className="w-2/3">
                 <span className="text-bold">Fecha</span>
                 <div className="grid grid-cols-4 gap-1 md:gap-0.5 mb-4 md:mb-6 text-sm md:text-base items-center">
-                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">Día</div>
-                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">Mes</div>
-                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">Año</div>
-                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">Hora</div>
+                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">{boleta.quality_doc_data?.day}</div>
+                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">{boleta.quality_doc_data?.month}</div>
+                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">{boleta.quality_doc_data?.year}</div>
+                  <div className="border border-black w-10/12 pt-1 pb-5 text-center text-base">{boleta.quality_doc_data?.time}</div>
                 </div>
               </div>
             </div>
@@ -137,15 +137,15 @@ export default function BoletasCalidad({ boleta }: Props) {
                     <td className="border border-black p-2 font-bold w-2/12 uppercase">Resultado</td>
                   </tr>
 
-                  {/* {boleta.quality_doc_data?.defects.map((defect, index) => (
-                    <tr key={index}>
+                  {boleta.quality_doc_data?.defects.map((defect, index) => (
+                    <tr key={index} className="font-bold ">
                       <td className="w-1/6 border border-black p-2">{defect.name.toUpperCase()}</td>
-                      <td className="border border-black p-2">{defect.pounds || ''}</td>
-                      <td className="border border-black p-2">{defect.percentage || ''}</td>
+                      <td className="border border-black p-2"></td>
+                      <td className="border border-black p-2 text-center">{defect.input_percentage}%</td>
                       <td className="border border-black p-2 text-center">{defect.tolerace_percentage}%</td>
                       <td className="border border-black p-2 text-center">{defect.result}</td>
                     </tr>
-                  ))} */}
+                  ))}
                 </tbody>
               </table>
             </div>
