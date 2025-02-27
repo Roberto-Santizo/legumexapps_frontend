@@ -1,10 +1,10 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { getAllPlantas } from '@/api/PlantasAPI';
 import { useQueries } from '@tanstack/react-query';
 import { Boleta, DraftBoletaTransporte, Planta, Product, TransporteCondition } from '@/types';
 import { getAllBoletasRMP } from '@/api/ReceptionsDocAPI';
 import { getProducts } from '@/api/ProductsAPI';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Error from '@/components/Error';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { createBoletaTransporte, getTransporteCondiciones } from '@/api/BoletaTransporteAPI';
 import { Button } from '@mui/material';
 import Spinner from '@/components/Spinner';
+import SignatureCanvas from "react-signature-canvas";
 
 const BoletaCamion = () => {
 
@@ -20,13 +21,16 @@ const BoletaCamion = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [conditions, setConditions] = useState<TransporteCondition[]>([]);
   const [selectedConditions, setSelectedConditions] = useState<{ [key: string]: boolean }>({});
+  const verify_by_signature = useRef({} as SignatureCanvas);
+  const quality_manager_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
+    control
   } = useForm<DraftBoletaTransporte>();
 
   const results = useQueries({
@@ -81,7 +85,7 @@ const BoletaCamion = () => {
       ...data,
       conditions: conditions.map(condicion => ({
         id: condicion.id,
-        value: selectedConditions[condicion.id] || false 
+        value: selectedConditions[condicion.id] || false
       }))
     };
 
@@ -229,6 +233,78 @@ const BoletaCamion = () => {
               </tbody>
             </table>
           </div>
+
+          <fieldset className='grid grid-cols-2'>
+            <div className="space-y-2 text-center">
+              <Controller
+                name="verify_by_signature"
+                control={control}
+                rules={{ required: 'Asegurese de haber firmado' }}
+                render={({ field }) => (
+                  <div className="p-2">
+                    <SignatureCanvas
+                      ref={verify_by_signature}
+                      penColor="black"
+                      canvasProps={{ className: "w-full h-40 border" }}
+                      onEnd={() => {
+                        field.onChange(verify_by_signature.current.toDataURL());
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                      onClick={() => {
+                        verify_by_signature.current.clear();
+                        field.onChange("");
+                      }}
+                    >
+                      Limpiar Firma
+                    </button>
+                  </div>
+                )}
+              />
+              <label className="block font-medium text-xl">
+                Verificado Por
+              </label>
+
+              {(errors.verify_by_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
+            </div>
+
+            <div className="space-y-2 text-center">
+              <Controller
+                name="quality_manager_signature"
+                control={control}
+                rules={{ required: 'Asegurese de haber firmado' }}
+                render={({ field }) => (
+                  <div className="p-2">
+                    <SignatureCanvas
+                      ref={quality_manager_signature}
+                      penColor="black"
+                      canvasProps={{ className: "w-full h-40 border" }}
+                      onEnd={() => {
+                        field.onChange(quality_manager_signature.current.toDataURL());
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                      onClick={() => {
+                        quality_manager_signature.current.clear();
+                        field.onChange("");
+                      }}
+                    >
+                      Limpiar Firma
+                    </button>
+                  </div>
+                )}
+              />
+              <label className="block font-medium text-xl">
+                Gerente de Calidad
+              </label>
+
+              {(errors.quality_manager_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
+            </div>
+          </fieldset>
 
           <Button
             disabled={isPending}

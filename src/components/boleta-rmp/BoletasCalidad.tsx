@@ -173,7 +173,7 @@ export default function BoletasCalidad({ boleta }: Props) {
             </div>
           </div>
         )}
-      </div>{/*Aca finaliza el div que voy a imprimir*/}
+      </div>
     </>
   );
 }

@@ -180,11 +180,16 @@ export const TransportDocConditionSchema = z.object({
 
 export const TransportDocSchema = z.object({
     id: z.number(),
+    verify_by: z.string(),
+    planta: z.string(),
     pilot_name: z.string(),
     product: z.string(),
     truck_type: z.string(),
     date: z.string(),
     plate: z.string(),
+    observations:z.string(),
+    quality_manager_signature: z.string(),
+    verify_by_signature: z.string(),
     conditions: z.array(TransportDocConditionSchema)
 })
 
@@ -206,7 +211,9 @@ export const DraftBoletaTransportSchema = z.object({
     pilot_name: z.string(),
     truck_type: z.string(),
     plate: z.string(),
-    observations: z.string().nullable()
+    observations: z.string().nullable(),
+    verify_by_signature: z.string(),
+    quality_manager_signature: z.string()
 });
 
 

@@ -37,15 +37,15 @@ export default function ShowRMP() {
     <>
       <h1 className="font-bold text-4xl">Documentos</h1>
 
-      {(loading && boleta)? <Spinner /> : (
+      {(loading && boleta) ? <Spinner /> : (
         <section className="flex flex-col gap-10 mt-10">
-          <BoletaCampoRMP boleta={boleta}/>
+          <BoletaCampoRMP boleta={boleta} />
           {boleta.quality_doc_data && (
-            <BoletasCalidad boleta={boleta}/>
+            <BoletasCalidad boleta={boleta} />
           )}
 
           {boleta.transport_data && (
-            <InspeccionTransporte boleta={boleta}/>
+            <InspeccionTransporte boleta={boleta} />
           )}
         </section>
       )}
