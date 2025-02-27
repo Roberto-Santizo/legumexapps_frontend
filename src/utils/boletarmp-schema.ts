@@ -76,12 +76,18 @@ export const BoletaSchema = z.object({
     date:z.string(),
     plate: z.string(),
     product: z.string(),
+    product_id: z.string(),
     variety: z.string(),
     coordinator: z.string(),
     cdp: z.string(),
     transport: z.string(),
     status: z.number(),
+    pilot_name:z.string(),
     consignacion: z.boolean()
+});
+
+export const BoletasSchema = z.object({
+  data: z.array(BoletaSchema)
 });
 
 export const BoletasPaginateSchema = z.object({
@@ -166,6 +172,22 @@ export const qualityDocDataSchema = z.object({
   total_defects_evaluation: z.number(),
 });
 
+export const TransportDocConditionSchema = z.object({
+    id: z.number(),
+    condition: z.string(),
+    status: z.boolean() 
+});
+
+export const TransportDocSchema = z.object({
+    id: z.number(),
+    pilot_name: z.string(),
+    product: z.string(),
+    truck_type: z.string(),
+    date: z.string(),
+    plate: z.string(),
+    conditions: z.array(TransportDocConditionSchema)
+})
+
 export const BoletaInfoAllSchema = z.object({
   status: z.number(),
   finca: z.string(),
@@ -174,6 +196,17 @@ export const BoletaInfoAllSchema = z.object({
   field_data: fieldDataSchema,
   prod_data: prodDataSchema.nullable(),
   quality_doc_data: qualityDocDataSchema.nullable(),
+  transport_data: TransportDocSchema.nullable()
+});
+
+export const DraftBoletaTransportSchema = z.object({
+    planta_id: z.string(),
+    product_id: z.string(),
+    rm_reception_id: z.string(),
+    pilot_name: z.string(),
+    truck_type: z.string(),
+    plate: z.string(),
+    observations: z.string().nullable()
 });
 
 

@@ -1,6 +1,6 @@
 import clienteAxios from "@/config/axios";
 import { Boleta, BoletasPaginate, DraftBoletaRMP, DraftFormProd, BoletaDetail, DraftBoletaCalidad, ResultBoletaCalidad } from "@/types";
-import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletasPaginateSchema } from "@/utils/boletarmp-schema";
+import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletasPaginateSchema, BoletasSchema } from "@/utils/boletarmp-schema";
 
 
 export async function createBoletaRMP(data: DraftBoletaRMP): Promise<void | string[]> {
@@ -13,7 +13,7 @@ export async function createBoletaRMP(data: DraftBoletaRMP): Promise<void | stri
     }
 }
 
-export async function getPaginatedBoletasRMP(page : number, filters: Record<string, any> = {}): Promise<BoletasPaginate> {
+export async function getPaginatedBoletasRMP(page: number, filters: Record<string, any> = {}): Promise<BoletasPaginate> {
     try {
         const params = new URLSearchParams({ page: page.toString(), ...filters });
         const url = `/api/boleta-rmp?${params.toString()}`;
@@ -21,6 +21,22 @@ export async function getPaginatedBoletasRMP(page : number, filters: Record<stri
         const result = BoletasPaginateSchema.safeParse(data);
         if (result.success) {
             return result.data
+        } else {
+            throw new Error("Información no válida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getAllBoletasRMP() : Promise<Boleta[]> {
+    try {
+        const url = `/api/boleta-rmp-all`;
+        const { data } = await clienteAxios(url);
+        const result = BoletasSchema.safeParse(data);
+        if (result.success) {
+            return result.data.data
         } else {
             throw new Error("Información no válida");
         }
@@ -65,7 +81,7 @@ export async function createQualityDoc(data: DraftBoletaCalidad, id: Boleta['id'
     }
 }
 
-export async function updateGRN (grn : string, id : Boleta['id']) {
+export async function updateGRN(grn: string, id: Boleta['id']) {
     try {
         const url = `/api/boleta-rmp/generate-grn/${id}`;
         await clienteAxios.post(url, { grn });
@@ -75,14 +91,14 @@ export async function updateGRN (grn : string, id : Boleta['id']) {
     }
 }
 
-export async function getBoletaInfoAll(id : Boleta['id']) {
+export async function getBoletaInfoAll(id: Boleta['id']) {
     try {
         const url = `/api/boleta-rmp-info-doc/${id}`;
         const { data } = await clienteAxios(url);
         const result = BoletaInfoAllSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data
-        }else{
+        } else {
             throw new Error('Información no válida');
         }
     } catch (error) {
