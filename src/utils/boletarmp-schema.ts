@@ -68,6 +68,7 @@ export const BoletaRMPDetailSchema = z.object({
     status: z.number(),
     minimun_percentage: z.number(),
     total_baskets: z.number(),
+    prod_net_weight: z.number(),
 });
 
 export const BoletaSchema = z.object({
@@ -131,7 +132,7 @@ export const fieldDataSchema = z.object({
   status: z.number(),
   minimun_percentage: z.number(),
   total_baskets: z.number(),
-  calidad_signature: z.string()
+  calidad_signature: z.string(),
   // inspector_agricola_signature: z.string(),
   // producer_signature: z.string(),
 });
@@ -166,7 +167,7 @@ export const qualityDocDataSchema = z.object({
   producer_code: z.number(),
   ph: z.number(),
   brix: z.number(),
-  observations: z.string(),
+  observations: z.string().nullable(),
   inspector_planta_name: z.string(),
   defects: z.array(defectSchema),
   total_defects_evaluation: z.number(),

@@ -48,7 +48,12 @@ export default function AgricolaDashboard() {
               </>
             )}
             <DronHours />
+            <DronHours />
 
+            <TasksInProgress />
+            <FinishedTasks />
+            <TasksCropInProgress />
+            <FinishedTasksCrop />
             <TasksInProgress />
             <FinishedTasks />
             <TasksCropInProgress />

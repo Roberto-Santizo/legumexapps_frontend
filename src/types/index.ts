@@ -13,7 +13,7 @@ import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTas
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
 import { InsumoSchema, InsumosSchema } from '@/utils/insumos-schema'
 import { LoteCDPDetailsSchema } from '@/utils/loteCDPDetails-schema'
-import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '@/utils/dashboard-schema'
+import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskCropInProgressSchema, TaskInProgressSchema } from '@/utils/dashboard-schema'
 import { DetailProductSchema, DraftProductSchema, ProductSchema, ProductsPaginateSchema } from '@/utils/product-schema'
 import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaControlCalidadSchema, DraftBoletaSchema, DraftBoletaTransportSchema, DraftFormProdSchema, ResultsQualityControlDocSchema } from '@/utils/boletarmp-schema'
 import { BasketSchema } from '@/utils/baskets-schema'
@@ -172,4 +172,4 @@ export type DraftBoletaTransporte = z.infer<typeof DraftBoletaTransportSchema>
 //FILTROS
 export type FiletrsBoletaRMP = z.infer<typeof FiletrsBoletaRMPSchema>
 
-
+export type TaskCropInProgress = z.infer<typeof TaskCropInProgressSchema>

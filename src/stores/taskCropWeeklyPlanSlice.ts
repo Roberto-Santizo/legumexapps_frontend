@@ -37,6 +37,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
             const url = '/api/tasks-crops-lotes';
             await clienteAxios.post(url,data);
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -54,6 +55,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }finally {
             set({loadingReloadTasks: false});
@@ -71,6 +73,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -85,6 +88,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 throw new Error('Invalid data');
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -96,6 +100,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 data: Employees
             });
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -112,6 +117,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 assigments: dataEmployees
             });
         } catch (error) {
+            console.log(error);
             throw error;
         }
 
@@ -122,6 +128,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
             const url = `/api/tasks-crops-lotes/${id}`;
             await clienteAxios.patch(url);
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -136,6 +143,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 return [];
             }
         } catch (error) {
+            console.log(error);
             return [];
         }
     },
@@ -152,6 +160,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -168,6 +177,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
                 throw new Error("Información no válida");
             }
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
@@ -176,6 +186,7 @@ export const createTaskCropWeeklyPlanSlice: StateCreator<TaskCropWeeklyPlanSlice
             const url = '/api/tasks-crops-lotes/register-daily-assigment'
             await clienteAxios.post(url,data);
         } catch (error) {
+            console.log(error);
             throw error;
         }
     },
