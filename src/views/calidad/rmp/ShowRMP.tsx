@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { getBoletaInfoAll } from "@/api/ReceptionsDocAPI";
+import InspeccionTransporte from "@/components/boleta-camion/InspeccionTransporte";
 
 export default function ShowRMP() {
   const { rm_reception_id } = useParams();
@@ -36,11 +37,15 @@ export default function ShowRMP() {
     <>
       <h1 className="font-bold text-4xl">Documentos</h1>
 
-      {(loading && boleta)? <Spinner /> : (
+      {(loading && boleta) ? <Spinner /> : (
         <section className="flex flex-col gap-10 mt-10">
-          <BoletaCampoRMP boleta={boleta}/>
+          <BoletaCampoRMP boleta={boleta} />
           {boleta.quality_doc_data && (
-            <BoletasCalidad boleta={boleta}/>
+            <BoletasCalidad boleta={boleta} />
+          )}
+
+          {boleta.transport_data && (
+            <InspeccionTransporte boleta={boleta} />
           )}
         </section>
       )}

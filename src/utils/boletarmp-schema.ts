@@ -68,6 +68,7 @@ export const BoletaRMPDetailSchema = z.object({
     status: z.number(),
     minimun_percentage: z.number(),
     total_baskets: z.number(),
+    prod_net_weight: z.number(),
 });
 
 export const BoletaSchema = z.object({
@@ -76,12 +77,18 @@ export const BoletaSchema = z.object({
     date:z.string(),
     plate: z.string(),
     product: z.string(),
+    product_id: z.string(),
     variety: z.string(),
     coordinator: z.string(),
     cdp: z.string(),
     transport: z.string(),
     status: z.number(),
+    pilot_name:z.string(),
     consignacion: z.boolean()
+});
+
+export const BoletasSchema = z.object({
+  data: z.array(BoletaSchema)
 });
 
 export const BoletasPaginateSchema = z.object({
@@ -125,7 +132,7 @@ export const fieldDataSchema = z.object({
   status: z.number(),
   minimun_percentage: z.number(),
   total_baskets: z.number(),
-  calidad_signature: z.string()
+  calidad_signature: z.string(),
   // inspector_agricola_signature: z.string(),
   // producer_signature: z.string(),
 });
@@ -160,11 +167,32 @@ export const qualityDocDataSchema = z.object({
   producer_code: z.number(),
   ph: z.number(),
   brix: z.number(),
-  observations: z.string(),
+  observations: z.string().nullable(),
   inspector_planta_name: z.string(),
   defects: z.array(defectSchema),
   total_defects_evaluation: z.number(),
 });
+
+export const TransportDocConditionSchema = z.object({
+    id: z.number(),
+    condition: z.string(),
+    status: z.boolean() 
+});
+
+export const TransportDocSchema = z.object({
+    id: z.number(),
+    verify_by: z.string(),
+    planta: z.string(),
+    pilot_name: z.string(),
+    product: z.string(),
+    truck_type: z.string(),
+    date: z.string(),
+    plate: z.string(),
+    observations:z.string(),
+    quality_manager_signature: z.string(),
+    verify_by_signature: z.string(),
+    conditions: z.array(TransportDocConditionSchema)
+})
 
 export const BoletaInfoAllSchema = z.object({
   status: z.number(),
@@ -174,6 +202,19 @@ export const BoletaInfoAllSchema = z.object({
   field_data: fieldDataSchema,
   prod_data: prodDataSchema.nullable(),
   quality_doc_data: qualityDocDataSchema.nullable(),
+  transport_data: TransportDocSchema.nullable()
+});
+
+export const DraftBoletaTransportSchema = z.object({
+    planta_id: z.string(),
+    product_id: z.string(),
+    rm_reception_id: z.string(),
+    pilot_name: z.string(),
+    truck_type: z.string(),
+    plate: z.string(),
+    observations: z.string().nullable(),
+    verify_by_signature: z.string(),
+    quality_manager_signature: z.string()
 });
 
 

@@ -13,14 +13,16 @@ import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTas
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
 import { InsumoSchema, InsumosSchema } from '@/utils/insumos-schema'
 import { LoteCDPDetailsSchema } from '@/utils/loteCDPDetails-schema'
-import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskInProgressSchema } from '@/utils/dashboard-schema'
+import { FinishedTaskSchema, SummaryFincaTasksSchema, SummaryHoursEmployeeSchema, SummaryHoursEmployeesSchema, TaskCropInProgressSchema, TaskInProgressSchema } from '@/utils/dashboard-schema'
 import { DetailProductSchema, DraftProductSchema, ProductSchema, ProductsPaginateSchema } from '@/utils/product-schema'
-import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaControlCalidadSchema, DraftBoletaSchema, DraftFormProdSchema, ResultsQualityControlDocSchema } from '@/utils/boletarmp-schema'
+import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, DraftBoletaControlCalidadSchema, DraftBoletaSchema, DraftBoletaTransportSchema, DraftFormProdSchema, ResultsQualityControlDocSchema } from '@/utils/boletarmp-schema'
 import { BasketSchema } from '@/utils/baskets-schema'
 import { VarietiesPaginateSchema, VarietySchema } from '@/utils/calidadVariedades-schema'
 import { DefectSchema, DefectsPaginateSchema, DraftDefectoSchema } from '@/utils/defectos-schema'
 import { ProducerSchema, ProducersPaginateSchema } from '@/utils/producers-schema'
 import { FiletrsBoletaRMPSchema } from '@/utils/filters-schema'
+import { PlantaSchema } from '@/utils/plantas-schema'
+import { DraftTransporteCondicionSchema, TransporteConditionSchema, TransporteConditionsPaginateSchema, TransporteInspectionSchema, TransporteInspectionsPaginateSchema } from '@/utils/transportecondicion-schema'
 
 
 //PERMISOS
@@ -153,6 +155,21 @@ export type Producer = z.infer<typeof ProducerSchema>
 export type DraftProducer = Omit<Producer, 'id'>
 export type ProducersPaginate = z.infer<typeof ProducersPaginateSchema>
 
+//PLANTAS 
+export type Planta = z.infer<typeof PlantaSchema>
+
+//CONDICIONES TRANSPORTE
+export type DraftTransporteCondicion = z.infer<typeof DraftTransporteCondicionSchema>
+export type TransporteConditionsPaginate = z.infer<typeof TransporteConditionsPaginateSchema>
+export type TransporteCondition = z.infer<typeof TransporteConditionSchema>
+
+export type TransporteInspection = z.infer<typeof TransporteInspectionSchema>
+export type TransporteInspectionPaginate = z.infer<typeof TransporteInspectionsPaginateSchema>
+
+//BOLETAS TRANSPORTES
+export type DraftBoletaTransporte = z.infer<typeof DraftBoletaTransportSchema>
+
 //FILTROS
 export type FiletrsBoletaRMP = z.infer<typeof FiletrsBoletaRMPSchema>
 
+export type TaskCropInProgress = z.infer<typeof TaskCropInProgressSchema>

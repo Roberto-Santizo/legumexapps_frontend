@@ -15,6 +15,7 @@ export default function EditarTareaLote() {
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
 
+  const [loading,setLoading] = useState<boolean>(true);
   const [loadingGetPlans, setLoadingGetPlans] = useState<boolean>(false);
   const [loadingGetTask, setLoadingGetTask] = useState<boolean>(false);
   const [loadingEditTask, setLoadingEditTask] = useState<boolean>(false);
@@ -24,12 +25,12 @@ export default function EditarTareaLote() {
 
   const [plans, setPlans] = useState<WeeklyPlan[]>({} as WeeklyPlan[]);
   const [task, setTask] = useState<TaskWeeklyPlan>({} as TaskWeeklyPlan);
-  // const [error]
+  const [role, setRole] = useState<string>('');
 
   const getTask = useAppStore((state) => state.getTask);
-  const userRole = useAppStore((state) => state.userRole);
   const navigate = useNavigate();
   const editTask = useAppStore((state) => state.editTask);
+  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken)
 
 
   const {
@@ -38,6 +39,18 @@ export default function EditarTareaLote() {
     formState: { errors },
     setValue,
   } = useForm<DraftTaskWeeklyPlan>();
+
+  const handleGetUserRoleByToken = async () => {
+    try {
+      const userRole = await getUserRoleByToken();
+      setRole(userRole);
+    } catch (error) {
+      toast.error("Hubo un error al cargar el contenido");
+      navigate("/login");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGetPlans = async () => {
     setLoadingGetPlans(true)
@@ -70,18 +83,15 @@ export default function EditarTareaLote() {
   useEffect(() => {
     handleGetPlans();
     handleGetTask();
+    handleGetUserRoleByToken();
   }, []);
 
   useEffect(() => {
     if (task) {
       setValue("budget", task.budget);
       setValue("hours", task.hours);
-      setValue("slots",task.slots);
+      setValue("slots", task.slots);
       setValue("weekly_plan_id", task.weekly_plan_id);
-      setValue("start_date", task.start_date || "");
-      setValue("start_time", task.start_time || "");
-      setValue("end_date", task.end_date || "");
-      setValue("end_time", task.end_time || "");
     }
   }, [task]);
 
@@ -100,6 +110,8 @@ export default function EditarTareaLote() {
     }
 
   };
+
+  console.log(task);
   return (
     <>
       <h2 className="text-4xl font-bold">Editar Tarea</h2>
@@ -192,7 +204,7 @@ export default function EditarTareaLote() {
             </div>
           )}
 
-          {userRole === "admin" && (
+          {(role === "admin" && !loading) && (
             <fieldset className="space-y-5 shadow p-2">
               <legend className="font-bold text-3xl text-center">
                 Fechas de Asignación

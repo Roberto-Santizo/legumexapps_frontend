@@ -69,7 +69,7 @@ export default function Boleta_form3({ boleta }: Props) {
 
   useEffect(() => {
     if (boleta) {
-      setValue("net_weight", boleta.net_weight ?? 0);
+      setValue("net_weight", boleta.prod_net_weight ?? 0);
       setValue("total_baskets", boleta.baskets ?? 0);
     }
   }, [boleta, setValue]);
@@ -289,7 +289,7 @@ export default function Boleta_form3({ boleta }: Props) {
                 id="valid_pounds"
                 type="number"
                 placeholder={"Libras Pagables"}
-                value={percentage * boleta.net_weight}
+                value={percentage * boleta.prod_net_weight}
                 className="border border-black p-3"
                 {...register("valid_pounds", { required: "El valid_pounds es obligatorio" })}
               />

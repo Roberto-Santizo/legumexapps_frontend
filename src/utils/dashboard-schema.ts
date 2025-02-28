@@ -24,6 +24,21 @@ export const TaskInProgressSchema = z.object({
     week:z.number(),
     assigned_employees: z.number(),
     total_employees: z.number().nullable(),
+    paused: z.boolean(),
+    has_insumos: z.boolean()
+});
+
+export const TaskCropInProgressSchema = z.object({
+    id: z.string(),
+    task: z.string(),
+    finca: z.string(),
+    lote: z.string(),
+    week: z.number(),
+    assigned_employees: z.number(),
+});
+
+export const TasksCropsInProgressSchema = z.object({
+    data: z.array(TaskCropInProgressSchema)
 });
 
 export const TasksInProgressSchema = z.object({

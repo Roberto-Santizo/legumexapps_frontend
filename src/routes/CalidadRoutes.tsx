@@ -19,13 +19,12 @@ const routes = [
   { path: "/productos/variedades", component: lazy(() => import("../views/calidad/variedades/IndexVariedades")), roles: ['admin','pcalidad'] },
   { path: "/productos/variedades/crear", component: lazy(() => import("../views/calidad/variedades/CrearVariedad")), roles: ['admin','pcalidad'] },
 
-  { path: "/transporte/boleta", component: lazy(() => import("../views/calidad/transporte/BoletaCamion")), roles: ['admin','pcalidad'] },
-  { path: "/transporte/index", component: lazy(() => import("../views/calidad/transporte/IndexCamion")), roles: ['admin','pcalidad'] },
-
-
-  { path: "/prueba/camion", component: lazy(() => import("../components/boleta-camion/InspeccionTransporte")), roles: ['admin','pcalidad'] },
+  { path: "/transporte-boleta", component: lazy(() => import("../views/calidad/transporte/IndexCamion")), roles: ['admin','pcalidad'] },
+  { path: "/transporte-boleta/crear", component: lazy(() => import("../views/calidad/transporte/CreateBoletaCamion")), roles: ['admin','pcalidad'] },
+  
+  { path: "/transporte-boleta/condiciones", component: lazy(() => import("../views/calidad/transporte-condiciones/IndexTransporteCondiciones")), roles: ['admin','pcalidad'] },
+  { path: "/transporte-boleta/condiciones/crear", component: lazy(() => import("../views/calidad/transporte-condiciones/CreateTransporteCondicion")), roles: ['admin','pcalidad'] },
   // { path: "/boletaRmp/pdfCampo", component: lazy(() => import("../components/boleta-rmp/PdfBoletaCampoRMP")), roles: ['admin','pcalidad'] },
-
 
 ];
 

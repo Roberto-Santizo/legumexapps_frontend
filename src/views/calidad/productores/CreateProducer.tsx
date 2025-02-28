@@ -2,40 +2,34 @@ import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { DraftProducer } from "@/types";
 import Error from "@/components/Error";
-import { useState } from "react";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { createProducer } from "@/api/ProducersAPI";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CreateProducer() {
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: createProducer,
+    onError: () => {
+      toast.error('Hubo un error al crear el productor');
+    },
+    onSuccess: () => {
+      toast.success('Productor creado correctamente');
+      navigate('/productores');
+    }
+  });
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<DraftProducer>();
 
-  const onSubmit = async (data: DraftProducer) => {
-    setLoading(true);
-    try {
-      const errors = await createProducer(data);
-      if (errors) {
-        errors.forEach(error => toast.error(error[0]));
-        return;
-      }
-      toast.success('Productor creado correctamente');
-      navigate('/productores');
-    } catch (error) {
-      toast.error('Hubo un error al crear el productor');
-    } finally {
-      setLoading(false);
-    }
-  }
+  const onSubmit = async (data: DraftProducer) => mutate(data);
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Productor</h2>
@@ -73,14 +67,14 @@ export default function CreateProducer() {
           </div>
 
           <Button
-            disabled={loading}
+            disabled={isPending}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loading ? (
+            {isPending ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Productor</p>
