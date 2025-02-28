@@ -12,7 +12,7 @@ export default function BoletasCalidad({ boleta }: Props) {
 
   return (
     <>
-      <div ref={contentRef}> {/*Esta es la parte que quiero imprimir */}
+      <div ref={contentRef}> 
         {boleta && (
           <div className="w-full max-w-7xl mx-auto p-10 shadow-xl border border-grya-300 mt-10
                     print:w-[297mm] print:h-[210mm] print:max-w-none print:mx-0 print:mt-0 
@@ -51,7 +51,6 @@ export default function BoletasCalidad({ boleta }: Props) {
                 </div>
               </div>
             </div>
-
 
             <div className="mb-6">
               <div className="grid grid-cols-3 border-t border-black">
@@ -112,7 +111,6 @@ export default function BoletasCalidad({ boleta }: Props) {
               </div>
             </div>
 
-
             <div className="border mb-6 mt-5">
               <table className="w-full">
                 <thead>
@@ -150,7 +148,6 @@ export default function BoletasCalidad({ boleta }: Props) {
               </table>
             </div>
 
-
             <div className="mt-6">
               <p className="text-sm font-bold mb-2">OBSERVACIONES:</p>
               <p className="p-2 border border-black min-h-[6rem]">{boleta.quality_doc_data?.observations}</p>
@@ -173,7 +170,7 @@ export default function BoletasCalidad({ boleta }: Props) {
             </div>
           </div>
         )}
-      </div>{/*Aca finaliza el div que voy a imprimir*/}
+      </div>
     </>
   );
 }

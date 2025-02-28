@@ -24,6 +24,8 @@ const routes = [
 
 
   { path: "/prueba/camion", component: lazy(() => import("../components/boleta-camion/InspeccionTransporte")), roles: ['admin','pcalidad'] },
+  // { path: "/boletaRmp/pdfCampo", component: lazy(() => import("../components/boleta-rmp/PdfBoletaCampoRMP")), roles: ['admin','pcalidad'] },
+
 
 ];
 

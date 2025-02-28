@@ -1,6 +1,7 @@
 import { BoletaInfoAll } from "@/types";
 import LogoLegumex from "../LogoLegumex";
 import { AlertCircle, CheckCircle } from "lucide-react";
+import DownloadPDF from './DownloadPDF';
 
 type Props = {
   boleta: BoletaInfoAll
@@ -84,6 +85,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           </div>
         </div>
 
+        {/*Datos de campo*/}
         <div className="grid grid-cols-12 gap-4 md:gap-6 mb-4 md:mb-6">
           <div className="border border-black p-6 col-span-12 md:col-span-6 bg-yellow-100">
             <p className="text-center font-bold mb-8 text-lg uppercase">Datos Campo</p>
@@ -159,6 +161,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             </div>
           </div>
 
+          {/*Dato de planta */}
           <div className="border border-black p-6 col-span-12 md:col-span-4 bg-yellow-100">
             <p className="text-center font-bold mb-8 text-lg uppercase">DATOS DE PLANTA</p>
             <div className="space-y-6">
@@ -228,6 +231,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             </div>
           </div>
 
+          {/*Datos de diferencia */}
           <div className="border border-black py-1 md:p-2 col-span-12 md:col-span-2">
             <p className="text-center font-bold mb-2 md:mb-3 text-base md:text-lg py-5">DIFERENCIA</p>
             <div className="space-y-2 md:space-y-12 flex flex-col items-center">
@@ -284,8 +288,20 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <p className="mt-2">FIRMA CALIDAD</p>
           </div>
         </div>
-      </div>
 
+        {/* descargar el pdf */}
+        <div className="p-4">
+
+          <DownloadPDF
+            boleta={boleta}
+            buttonLabel="Descargar Boleta en PDF"
+            buttonClassName="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+            
+          />
+        </div>
+
+
+      </div>
     </div>
   );
 };
