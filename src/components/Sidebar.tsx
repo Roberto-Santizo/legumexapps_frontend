@@ -7,19 +7,20 @@ import Spinner from "./Spinner";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CalidadNavegation from "./menus-navegations/CalidadNavegation";
+import ProduccionNavigation from "./menus-navegations/ProduccionNavegation";
 
 
 export function Sidebar() {
   const navigations = {
     admin: (
       <>
-        <AdminNavegation /> <AgricolaNavegation /> <CalidadNavegation />
+        <AdminNavegation /> <AgricolaNavegation /> <CalidadNavegation /> <ProduccionNavigation />
       </>
     ),
     adminagricola: <AgricolaNavegation />,
     auxagricola: <AgricolaNavegation />,
     pprod: <CalidadNavegation />,
-    pcalidad: <CalidadNavegation />
+    pcalidad: <CalidadNavegation />,
   };
 
   const [loading, setLoading] = useState<boolean>(true);
