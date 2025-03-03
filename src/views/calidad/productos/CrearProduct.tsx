@@ -154,7 +154,6 @@ export default function CrearVariedad() {
               <table className="table mt-5">
                 <thead>
                   <tr className="thead-tr">
-                    <th className="thead-th">ID</th>
                     <th className="thead-th">Defecto</th>
                     <th className="thead-th">Porcentaje de Tolerancia</th>
                     <th className="thead-th">Acción</th>
@@ -164,7 +163,6 @@ export default function CrearVariedad() {
                 <tbody>
                   {defects.map((defect) => (
                     <tr key={defect.name} className="tbody-tr">
-                      <td className="tbody-td">{defect.id}</td>
                       <td className="tbody-td">{defect.name}</td>
                       <td className="tbody-td">{defect.tolerance_percentage}</td>
                       <td className="tbody-td flex gap-5">

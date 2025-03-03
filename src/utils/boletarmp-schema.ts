@@ -68,7 +68,7 @@ export const BoletaRMPDetailSchema = z.object({
     status: z.number(),
     minimun_percentage: z.number(),
     total_baskets: z.number(),
-    prod_net_weight: z.number(),
+    prod_net_weight: z.number().nullable(),
 });
 
 export const BoletaSchema = z.object({
