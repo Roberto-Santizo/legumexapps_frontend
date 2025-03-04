@@ -323,7 +323,7 @@ const BoletaCamion = () => {
             </table>
           </div>
 
-          <fieldset className='grid grid-cols-2'>
+          <fieldset>
             <div className="space-y-2 text-center">
               <Controller
                 name="verify_by_signature"
@@ -357,41 +357,6 @@ const BoletaCamion = () => {
               </label>
 
               {(errors.verify_by_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
-            </div>
-
-            <div className="space-y-2 text-center">
-              <Controller
-                name="quality_manager_signature"
-                control={control}
-                rules={{ required: 'Asegurese de haber firmado' }}
-                render={({ field }) => (
-                  <div className="p-2">
-                    <SignatureCanvas
-                      ref={quality_manager_signature}
-                      penColor="black"
-                      canvasProps={{ className: "w-full h-40 border" }}
-                      onEnd={() => {
-                        field.onChange(quality_manager_signature.current.toDataURL());
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
-                      onClick={() => {
-                        quality_manager_signature.current.clear();
-                        field.onChange("");
-                      }}
-                    >
-                      Limpiar Firma
-                    </button>
-                  </div>
-                )}
-              />
-              <label className="block font-medium text-xl">
-                Gerente de Calidad
-              </label>
-
-              {(errors.quality_manager_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
             </div>
           </fieldset>
 
