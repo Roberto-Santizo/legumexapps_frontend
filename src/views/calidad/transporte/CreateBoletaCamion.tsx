@@ -358,7 +358,6 @@ const BoletaCamion = () => {
 
               {(errors.verify_by_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
             </div>
-
           </fieldset>
 
           <Button
