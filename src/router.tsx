@@ -3,6 +3,7 @@ import PublicRoutes from "./routes/PublicRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
 import AgricolaRoutes from "./routes/AgricolaRoutes";
 import CalidadRoutes from "./routes/CalidadRoutes";
+import ProduccionRoutes from "./routes/ProduccionRoutes";
 
 export default function AppRouter() {
     return (
@@ -12,6 +13,7 @@ export default function AppRouter() {
                 {AdminRoutes()}
                 {AgricolaRoutes()}
                 {CalidadRoutes()}
+                {ProduccionRoutes()}
             </Routes>
         </BrowserRouter>
     )
