@@ -47,7 +47,7 @@ export default function IndexPlanSemanalProduccion() {
                     </thead>
                     <tbody>
                         {plans.map(plan => (
-                            <tr className="tbody-tr">
+                            <tr className="tbody-tr" key={plan.id}>
                                 <td className="tbody-td"><CheckBadgeIcon className="w-8 text-green-500"/></td>
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
