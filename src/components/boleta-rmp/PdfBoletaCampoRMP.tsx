@@ -1,7 +1,8 @@
 import React from 'react';
-import {  Document, Page, View, Text, Image, StyleSheet} from '@react-pdf/renderer';
+import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import type { BoletaInfoAll } from "@/types";
 import LogoLegumex from "../../../public/LOGO_LX.png";
+import Signature from '../Signature';
 
 // Crear estilos
 const styles = StyleSheet.create({
@@ -340,9 +341,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
         </View>
       </View>
 
-      {/* Secciones con datos */}
       <View style={styles.dataSection}>
-        {/* DATOS CAMPO */}
         <View style={styles.fieldData}>
           <Text style={styles.sectionTitle}>Datos Campo</Text>
 
@@ -410,7 +409,6 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
           </View>
         </View>
 
-        {/*Datos de planta*/}
         <View style={styles.plantData}>
           <Text style={styles.sectionTitle}>Datos de Planta</Text>
 
@@ -432,24 +430,20 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
                 <Text style={styles.boxLabel}>CANASTAS</Text>
               </View>
 
-              {/* Operador X */}
               <View style={{ justifyContent: 'center', alignItems: 'center', paddingBottom: 16 }}>
                 <Text style={styles.equals}>X</Text>
               </View>
 
-              {/* Campo 2 con su etiqueta debajo */}
               <View style={{ alignItems: 'center' }}>
                 <Text style={[styles.smallDataBox, { minWidth: 70 }]}>{boleta.prod_data?.weight_baskets}</Text>
                 <Text style={[styles.boxLabel, { marginTop: 4 }]}>PESO POR</Text>
                 <Text style={styles.boxLabel}>CANASTAS</Text>
               </View>
 
-              {/* Operador = */}
               <View style={{ justifyContent: 'center', alignItems: 'center', paddingBottom: 16 }}>
                 <Text style={styles.equals}>=</Text>
               </View>
 
-              {/* Campo 3 con su etiqueta debajo */}
               <View style={{ alignItems: 'center' }}>
                 <Text style={[styles.smallDataBox, { minWidth: 70 }]}>{boleta.prod_data?.tara}</Text>
                 <Text style={[styles.boxLabel, { marginTop: 4 }]}>TARA</Text>
@@ -490,25 +484,24 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
           </View>
         </View>
 
-        {/* DIFERENCIA */}
         <View style={styles.differenceData}>
           <View style={styles.diffColumn}>
             <Text style={styles.diffTitle}>DIFERENCIA</Text>
 
             <Text style={styles.diffBox}>
-             {boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)}
+              {boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)}
             </Text>
 
             <Text style={styles.diffBox}>
-            {boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)}
+              {boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)}
             </Text>
 
             <Text style={styles.diffBox}>
-            {boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)}
+              {boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)}
             </Text>
 
             <Text style={styles.diffBox}>
-            {boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)}
+              {boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)}
             </Text>
 
             <Text style={styles.statusBox}>
@@ -518,28 +511,41 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
         </View>
       </View>
 
-      {/* Pie de página */}
       <View style={styles.footer}>
         <Text>ORIGINAL (BLANCO) PRODUCTOR • DUPLICADO (ROSADO) CONTAB./DAD • TRIPLICADO (AMARILLO) ARCHIVO</Text>
         <Text>Correlativo del 170,001 al 172,500 de fecha 23/04/2023</Text>
       </View>
 
-      {/* Sección de firmas */}
       <View style={styles.signatureSection}>
         <View style={styles.signatureBox}>
           <View style={styles.signatureLine}>
-            {/* Firma */}
-            <View>
-              <img
-                src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.field_data.calidad_signature}`}
-                alt="Firma Inspector Agrícola"
-                className="max-h-25 md:max-h-25 object-contain"
-              />
-            </View>
+            <Signature firma={boleta.field_data.calidad_pdf_signature} />
           </View>
-          <Text style={styles.signatureLabel}>FIRMA CALIDAD</Text>
+          <Text style={styles.signatureLabel}>FIRMA</Text>
         </View>
       </View>
+
+      {boleta.prod_data && (
+        <View style={styles.signatureSection}>
+          <View style={styles.signatureBox}>
+            <View style={styles.signatureLine}>
+              <Signature firma={boleta.prod_data?.receptor_pdf_signature} />
+            </View>
+            <Text style={styles.signatureLabel}>FIRMA RECEPTOR</Text>
+          </View>
+        </View>
+      )}
+
+      {boleta.quality_doc_data && (
+        <View style={styles.signatureSection}>
+          <View style={styles.signatureBox}>
+            <View style={styles.signatureLine}>
+              <Signature firma={boleta.quality_doc_data?.inspector_pdf_planta_signature} />
+            </View>
+            <Text style={styles.signatureLabel}>FIRMA INSPECTOR CALIDAD</Text>
+          </View>
+        </View>
+      )}
     </Page>
   </Document>
 );
