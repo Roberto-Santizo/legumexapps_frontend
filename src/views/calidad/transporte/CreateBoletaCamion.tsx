@@ -24,7 +24,6 @@ const BoletaCamion = () => {
   const [conditions, setConditions] = useState<TransporteCondition[]>([]);
   const [selectedConditions, setSelectedConditions] = useState<{ [key: string]: boolean }>({});
   const verify_by_signature = useRef({} as SignatureCanvas);
-  const quality_manager_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
 
   const {
@@ -323,7 +322,8 @@ const BoletaCamion = () => {
             </table>
           </div>
 
-          <fieldset className='grid grid-cols-2'>
+          <fieldset className='grid grid-cols-1 mx-auto '>
+
             <div className="space-y-2 text-center">
               <Controller
                 name="verify_by_signature"
@@ -334,7 +334,7 @@ const BoletaCamion = () => {
                     <SignatureCanvas
                       ref={verify_by_signature}
                       penColor="black"
-                      canvasProps={{ className: "w-full h-40 border" }}
+                      canvasProps={{ className: "w-3/6 h-40 border mx-auto" }}
                       onEnd={() => {
                         field.onChange(verify_by_signature.current.toDataURL());
                       }}
@@ -353,46 +353,12 @@ const BoletaCamion = () => {
                 )}
               />
               <label className="block font-medium text-xl">
-                Verificado Por
+                Inspeccionado por:
               </label>
 
               {(errors.verify_by_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
             </div>
 
-            <div className="space-y-2 text-center">
-              <Controller
-                name="quality_manager_signature"
-                control={control}
-                rules={{ required: 'Asegurese de haber firmado' }}
-                render={({ field }) => (
-                  <div className="p-2">
-                    <SignatureCanvas
-                      ref={quality_manager_signature}
-                      penColor="black"
-                      canvasProps={{ className: "w-full h-40 border" }}
-                      onEnd={() => {
-                        field.onChange(quality_manager_signature.current.toDataURL());
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
-                      onClick={() => {
-                        quality_manager_signature.current.clear();
-                        field.onChange("");
-                      }}
-                    >
-                      Limpiar Firma
-                    </button>
-                  </div>
-                )}
-              />
-              <label className="block font-medium text-xl">
-                Gerente de Calidad
-              </label>
-
-              {(errors.quality_manager_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
-            </div>
           </fieldset>
 
           <Button

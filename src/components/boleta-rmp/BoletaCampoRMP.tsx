@@ -254,7 +254,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <p>Correlativo del 170,001 al 172,500 de fecha 23/04/2023</p>
         </div>
 
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-3 gap-20 mt-5">
           {boleta.prod_data?.receptor_signature && (
             <div className="text-center">
               <div className="border-b border-black h-25 md:h-20 flex items-center justify-center max-w-96">

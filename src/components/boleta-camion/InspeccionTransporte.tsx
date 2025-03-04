@@ -64,7 +64,7 @@ export default function InspeccionTransporte({ boleta }: Props) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-10">
+            <div className="grid grid-cols-2 gap-10 w-5/6 mx-auto">
                 <div className="text-center">
                     <div className="border-b border-black h-16 md:h-20 flex items-center justify-center my-6 mx-auto">
                         <img
@@ -74,16 +74,6 @@ export default function InspeccionTransporte({ boleta }: Props) {
                         />
                     </div>
                     <p className="mt-2 font-bold">VERIFICADO POR</p>
-                </div>
-                <div className="text-center">
-                    <div className="border-b border-black h-16 md:h-20 flex items-center justify-center my-6 mx-auto">
-                        <img
-                            src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.transport_data?.quality_manager_signature}`}
-                            alt="Firma Inspector Planta"
-                            className="max-h-20 md:max-h-20 object-contain"
-                        />
-                    </div>
-                    <p className="mt-2 font-bold">GERENTE DE CALIDAD</p>
                 </div>
                 <div className="text-center">
                     <div className="border-b border-black h-16 md:h-20 flex items-center justify-center my-6 mx-auto">
