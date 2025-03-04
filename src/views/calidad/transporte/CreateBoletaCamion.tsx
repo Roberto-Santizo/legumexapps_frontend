@@ -24,7 +24,6 @@ const BoletaCamion = () => {
   const [conditions, setConditions] = useState<TransporteCondition[]>([]);
   const [selectedConditions, setSelectedConditions] = useState<{ [key: string]: boolean }>({});
   const verify_by_signature = useRef({} as SignatureCanvas);
-  const quality_manager_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
 
   const {
