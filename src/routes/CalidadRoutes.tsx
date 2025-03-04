@@ -5,10 +5,10 @@ import Spinner from "../components/Spinner";
 import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
 const routes = [
-  { path: "/rmp", component: lazy(() => import("../views/calidad/rmp/IndexRMP")), roles: ['admin','pprod','pcampo','pcalidad'] },
+  { path: "/rmp", component: lazy(() => import("../views/calidad/rmp/IndexRMP")), roles: ['admin','pprod','pcampo','pcalidad','pcostos'] },
   { path: "/rmp/crear", component: lazy(() => import("../views/calidad/rmp/Boleta_form1")), roles: ['admin','pcampo','pcalidad'] },
   { path: "/rmp/editar/:rm_reception_id", component: lazy(() => import("../views/calidad/rmp/EditRMP")), roles: ['admin','pprod','pcalidad'] },
-  { path: "/rmp/documentos/:rm_reception_id", component: lazy(() => import("../views/calidad/rmp/ShowRMP")), roles: ['admin','pprod','pcalidad'] },
+  { path: "/rmp/documentos/:rm_reception_id", component: lazy(() => import("../views/calidad/rmp/ShowRMP")), roles: ['admin','pprod','pcalidad','pcostos'] },
 
   { path: "/productores", component: lazy(() => import("../views/calidad/productores/IndexProducers")), roles: ['admin','pcalidad'] },
   { path: "/productores/crear", component: lazy(() => import("../views/calidad/productores/CreateProducer")), roles: ['admin','pcalidad'] },

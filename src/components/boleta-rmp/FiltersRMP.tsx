@@ -97,6 +97,10 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
                         <input name="plate" placeholder="Ej. C123ABC" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.plate} />
                     </div>
 
+                    <div>
+                        <label className="block text-sm font-medium">GRN</label>
+                        <input name="grn" placeholder="Ej. LT0001" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.plate} />
+                    </div>
 
                     <div>
                         <label className="block text-sm font-medium">Finca</label>

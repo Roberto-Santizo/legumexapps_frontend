@@ -101,7 +101,8 @@ export default function IndexRMP() {
                 <table className="table">
                     <thead>
                         <tr className="thead-tr">
-                            <th scope="col" className="thead-th">ID</th>
+                            <th scope="col" className="thead-th">CDP</th>
+                            <th scope="col" className="thead-th">GRN</th>
                             <th scope="col" className="thead-th">Placa</th>
                             <th scope="col" className="thead-th">Producto</th>
                             <th scope="col" className="thead-th">Finca</th>
@@ -116,7 +117,8 @@ export default function IndexRMP() {
                     <tbody>
                         {boletas.map(boleta => (
                             <tr key={boleta.id} className="tbody-tr">
-                                <td className="tbody-td">{boleta.id}</td>
+                                <td className="tbody-td">{boleta.cdp}</td>
+                                <td className="tbody-td">{boleta.grn}</td>
                                 <td className="tbody-td">{boleta.plate}</td>
                                 <td className="tbody-td">{boleta.product}</td>
                                 <td className="tbody-td">{boleta.finca}</td>
@@ -124,7 +126,7 @@ export default function IndexRMP() {
                                 <td className="tbody-td">{boleta.coordinator}</td>
                                 <td className="tbody-td">{boleta.date}</td>
                                 <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-xs`}>{status[boleta.status]}</span></td>
-                                <td className="tbody-td">{boleta.consignacion ? <AlertCircleIcon className="w-8 text-red-500"/> : <CheckCircle className="w-8 text-green-500"/>}</td>
+                                <td className="tbody-td">{boleta.consignacion ? <AlertCircleIcon className="w-8 text-red-500" /> : <CheckCircle className="w-8 text-green-500" />}</td>
                                 <td className="tbody-td flex gap-5">
                                     <>
                                         {(boleta.status === 1 && role && (role === 'pprod')) && (

@@ -494,19 +494,19 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
             <Text style={styles.diffTitle}>DIFERENCIA</Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)}
+              {(boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)}
+              {(boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)}
+              {(boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)}
+              {(boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.statusBox}>

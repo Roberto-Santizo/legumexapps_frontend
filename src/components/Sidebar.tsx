@@ -19,7 +19,8 @@ export function Sidebar() {
     adminagricola: <AgricolaNavegation />,
     auxagricola: <AgricolaNavegation />,
     pprod: <CalidadNavegation />,
-    pcalidad: <CalidadNavegation />
+    pcalidad: <CalidadNavegation />,
+    pcostos: <CalidadNavegation />
   };
 
   const [loading, setLoading] = useState<boolean>(true);
