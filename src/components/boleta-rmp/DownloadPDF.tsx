@@ -2,6 +2,8 @@ import React from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import type { BoletaInfoAll } from "@/types";
 import PdfBoletaCampoRMP from './PdfBoletaCampoRMP';
+import Spinner from '../Spinner';
+import { Download } from 'lucide-react';
 
 interface DownloadPDFProps {
   boleta: BoletaInfoAll;
@@ -10,9 +12,8 @@ interface DownloadPDFProps {
 }
 
 // Componente simplificado para descargar la boleta como PDF
-const DownloadPDF: React.FC<DownloadPDFProps> = ({ 
-  boleta, 
-  buttonLabel, 
+const DownloadPDF: React.FC<DownloadPDFProps> = ({
+  boleta,
   buttonClassName
 }) => {
   return (
@@ -22,7 +23,7 @@ const DownloadPDF: React.FC<DownloadPDFProps> = ({
       className={buttonClassName || "text-blue-600 hover:text-blue-800 underline text-sm"}
     >
       {({ loading }) => (
-        loading ? 'Generando documento...' : buttonLabel || 'Descargar PDF'
+        loading ? <Spinner /> : <div className='flex gap-5'><Download /> <p>Descargar Documento</p></div>
       )}
     </PDFDownloadLink>
   );

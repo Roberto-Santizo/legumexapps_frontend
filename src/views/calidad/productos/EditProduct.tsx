@@ -45,6 +45,8 @@ export default function EditProduct() {
     ]
   })
 
+  const isLoading = results.some(result => result.isFetching);
+
   useEffect(() => {
     if (results[0].data) setVarieties(results[0].data);
   }, [results[0].data]);
@@ -98,6 +100,8 @@ export default function EditProduct() {
       mutate({ product_id, data, defects });
     }
   }
+
+  if(isLoading) return <Spinner />
 
   return (
     <>

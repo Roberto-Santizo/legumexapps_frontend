@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getAllPlantas } from '@/api/PlantasAPI';
 import { useQueries } from '@tanstack/react-query';
 import { Boleta, DraftBoletaTransporte, Planta, Product, TransporteCondition } from '@/types';
@@ -13,12 +13,14 @@ import { createBoletaTransporte, getTransporteCondiciones } from '@/api/BoletaTr
 import { Button } from '@mui/material';
 import Spinner from '@/components/Spinner';
 import SignatureCanvas from "react-signature-canvas";
+import Swal from 'sweetalert2';
 
 const BoletaCamion = () => {
 
   const [plantas, setPlantas] = useState<Planta[]>([]);
   const [boletas, setBoletas] = useState<Boleta[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedBoletas, setSelectedBoletas] = useState<Boleta[]>([]);
   const [conditions, setConditions] = useState<TransporteCondition[]>([]);
   const [selectedConditions, setSelectedConditions] = useState<{ [key: string]: boolean }>({});
   const verify_by_signature = useRef({} as SignatureCanvas);
@@ -63,16 +65,6 @@ const BoletaCamion = () => {
     }
   }, [results]);
 
-  const handleChangeBoleta = (e: ChangeEvent<HTMLSelectElement>) => {
-    const boleta = boletas.find(boleta => boleta.id === e.target.value);
-    if (boleta) {
-      setValue('pilot_name', boleta.pilot_name)
-      setValue('product_id', boleta.product_id)
-      setValue('plate', boleta.plate)
-    }
-  }
-
-
   const handleChangeCondition = (id: string) => {
     setSelectedConditions(prev => ({
       ...prev,
@@ -80,16 +72,70 @@ const BoletaCamion = () => {
     }));
   };
 
+  const handleChangeInputBoleta = (id: string) => {
+    setSelectedBoletas((prevBoletas) => {
+      if (prevBoletas.some((boleta) => boleta.id === id)) {
+        return prevBoletas.filter((boleta) => boleta.id !== id);
+      }
+
+      if (prevBoletas.length === 0) {
+        const boleta = boletas.find((boleta) => boleta.id === id);
+        if (boleta) {
+          setValue('pilot_name', boleta.pilot_name);
+          setValue('product_id', boleta.product_id);
+          setValue('plate', boleta.plate);
+          return [...prevBoletas, boleta];
+        }
+      } else {
+        const newBoleta = boletas.find((boleta) => boleta.id === id);
+
+        if (newBoleta) {
+          const isValid = prevBoletas.every((boleta) =>
+            boleta.coordinator === newBoleta.coordinator &&
+            boleta.pilot_name === newBoleta.pilot_name &&
+            boleta.plate === newBoleta.plate
+          );
+
+          if (!isValid) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Datos incorrectos',
+              text: 'Los datos de la boleta no coinciden con los seleccionados previamente.',
+            });
+            return prevBoletas;
+          }
+
+          return [...prevBoletas, newBoleta];
+        }
+      }
+
+      return prevBoletas;
+    });
+  };
+
+  useEffect(() => {
+    if (selectedBoletas.length === 0) {
+      setValue('pilot_name', '');
+      setValue('product_id', '');
+      setValue('plate', '');
+    }
+  }, [selectedBoletas]);
+  
+
+
   const onSubmit = (data: DraftBoletaTransporte) => {
     const transformedData = {
       ...data,
       conditions: conditions.map(condicion => ({
         id: condicion.id,
         value: selectedConditions[condicion.id] || false
-      }))
+      })),
+      boletas: selectedBoletas.map(boleta => ({
+        id: boleta.id,
+      })),
     };
 
-    mutate(transformedData)
+    mutate(transformedData);
   };
 
   return (
@@ -114,17 +160,60 @@ const BoletaCamion = () => {
               {errors.planta_id?.message && <Error >{errors.planta_id.message}</Error>}
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase text-gray-700" htmlFor="rm_reception_id">
-                Boleta Relacionada:
-              </label>
-              <select className='border border-black p-3' {...register('rm_reception_id', { required: 'Seleccione una boleta', onChange: handleChangeBoleta })}>
-                <option value="">--SELECCIONE UNA OPCIÓN--</option>
-                {boletas.map(boleta => (
-                  <option key={boleta.id} value={boleta.id}>{`${boleta.finca} | ${boleta.coordinator} | ${boleta.date} | ${boleta.product} ${boleta.variety}`}</option>
-                ))}
-              </select>
-              {errors.rm_reception_id?.message && <Error >{errors.rm_reception_id.message}</Error>}
+            <div className="overflow-hidden rounded-xl border border-black bg-white mt-8">
+              <table className="w-full border-collapse text-left">
+                <thead>
+                  <tr className="thead-tr">
+                    <th className="tbody-th p-2">Finca</th>
+                    <th className="tbody-th p-2">Productor</th>
+                    <th className="tbody-th p-2">Placa</th>
+                    <th className="tbody-th p-2">Piloto</th>
+                    <th className="tbody-th p-2">Fecha</th>
+                    <th className="tbody-th p-2">Producto</th>
+                    <th className="tbody-th p-2">Variedad</th>
+                    <th className="tbody-th p-2"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {boletas.map((boleta) => (
+                    <tr
+                      key={boleta.id}
+                      className="tbody-tr">
+                      <td className="tbody-td">
+                        {boleta.finca}
+                      </td>
+                      <td className="tbody-td">
+                        {boleta.coordinator}
+                      </td>
+                      <td className="tbody-td">
+                        {boleta.plate}
+                      </td>
+                      <td className="tbody-td">
+                        {boleta.pilot_name}
+                      </td>
+                      <td className="tbody-td">
+                        {boleta.date}
+                      </td>
+                      <td className="tbody-td">
+                        {boleta.product}
+                      </td>
+                      <td className="tbody-td">
+                        {boleta.variety}
+                      </td>
+
+                      <td className='flex justify-center p-5'>
+                        <input
+                          type="checkbox"
+                          checked={selectedBoletas.some(selectedBoleta => selectedBoleta.id === boleta.id)}
+                          onChange={() => handleChangeInputBoleta(boleta.id)}
+                          className="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                      </td>
+
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
             <div className="flex flex-col gap-2">
