@@ -23,8 +23,8 @@ const routes = [
   { path: "/transporte-boleta/crear", component: lazy(() => import("../views/calidad/transporte/CreateBoletaCamion")), roles: ['admin','pcalidad'] },
   
   { path: "/transporte-boleta/condiciones", component: lazy(() => import("../views/calidad/transporte-condiciones/IndexTransporteCondiciones")), roles: ['admin','pcalidad'] },
+
   { path: "/transporte-boleta/condiciones/crear", component: lazy(() => import("../views/calidad/transporte-condiciones/CreateTransporteCondicion")), roles: ['admin','pcalidad'] },
-  // { path: "/boletaRmp/pdfCampo", component: lazy(() => import("../components/boleta-rmp/PdfBoletaCampoRMP")), roles: ['admin','pcalidad'] },
 
 ];
 
@@ -38,7 +38,7 @@ export default function CalidadRoutes() {
           element={
             <Suspense fallback={<Spinner />}>
               <ProtectedAgricolaRoutes roles={roles}>
-                <Component />
+                <Component/>
               </ProtectedAgricolaRoutes>
             </Suspense>
           }
