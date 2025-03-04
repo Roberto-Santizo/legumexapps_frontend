@@ -1,6 +1,7 @@
 import { BoletaInfoAll } from "@/types";
 import LogoLegumex from "../LogoLegumex";
 import { AlertCircle, CheckCircle } from "lucide-react";
+import DownloadPDF from './DownloadPDF';
 
 type Props = {
   boleta: BoletaInfoAll
@@ -9,6 +10,14 @@ type Props = {
 const BoletaCampoRMP = ({ boleta }: Props) => {
   return (
     <div>
+      <div className="flex justify-end">
+        <div className="p-4 inline-block bg-indigo-500 hover:bg-indigo-600 button">
+          <DownloadPDF
+            boleta={boleta}
+            buttonClassName="text-white"
+          />
+        </div>
+      </div>
       <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 bg-yellow-100 border border-gray-300 mt-4 md:mt-8 lg:mt-10 ">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-start space-x-4">
@@ -259,11 +268,11 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             </div>
           )}
 
-          {boleta.quality_doc_data?.inspector_planta_signaure && (
+          {boleta.quality_doc_data?.inspector_planta_signature && (
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data?.inspector_planta_signaure}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data?.inspector_planta_signature}`}
                   alt="Firma Inspector Planta"
                   className="max-h-25 md:max-h-25 object-contain"
                 />
@@ -285,7 +294,6 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };

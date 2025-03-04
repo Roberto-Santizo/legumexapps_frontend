@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
+import { Edit, PlusIcon } from "lucide-react";
 import { getProductById } from "@/api/ProductsAPI";
 import { Defect, DraftDefecto, DraftProduct, Product, ProductDetail, Variety } from "@/types";
 import { Button } from "@mui/material";
@@ -45,6 +45,8 @@ export default function EditProduct() {
     ]
   })
 
+  const isLoading = results.some(result => result.isFetching);
+
   useEffect(() => {
     if (results[0].data) setVarieties(results[0].data);
   }, [results[0].data]);
@@ -84,10 +86,6 @@ export default function EditProduct() {
     }
   }, [product, setValue]);
 
-  const deleteDefect = (id: DraftDefecto['id']) => {
-    setDefects((prev) => prev.filter((defect) => defect.id !== id));
-  }
-
   const handleEditDefect = (id: number) => {
     setEditingId(id);
     setEditModal(!editModal);
@@ -102,6 +100,8 @@ export default function EditProduct() {
       mutate({ product_id, data, defects });
     }
   }
+
+  if(isLoading) return <Spinner />
 
   return (
     <>
@@ -178,7 +178,6 @@ export default function EditProduct() {
             <table className="table mt-5">
               <thead>
                 <tr className="thead-tr">
-                  <th className="thead-th">ID</th>
                   <th className="thead-th">Defecto</th>
                   <th className="thead-th">Porcentaje de Tolerancia</th>
                   <th className="thead-th">Acción</th>
@@ -189,12 +188,10 @@ export default function EditProduct() {
               <tbody className="text-sm">
                 {defects.map((defect) => (
                   <tr key={defect.name} className="tbody-tr">
-                    <td className="tbody-td">{defect.id}</td>
                     <td className="tbody-td">{defect.name}</td>
                     <td className="tbody-td">{defect.tolerance_percentage}</td>
                     <td className="tbody-td flex gap-5">
                       <Edit className="cursor-pointer hover:text-gray-500" onClick={() => handleEditDefect(defect.id)} />
-                      <DeleteIcon className="cursor-pointer hover:text-gray-500" onClick={() => deleteDefect(defect.id)} />
                     </td>
                     <td className="tbody-td button">
                       <button type="button" onClick={() => handleChangeStatus(defect)}>

@@ -136,7 +136,7 @@ export default function CrearVariedad() {
               type="number"
               placeholder="Porcentaje aceptado de calidad del producto"
               className="border border-black p-3"
-              {...register('accepted_percentage', { required: 'El porcentaje de calidad aceptado es obligatorio' })}
+              {...register('accepted_percentage', { required: 'El porcentaje de calidad aceptado es obligatorio' ,min:{value:0,message:'El valor minimo requerido es 0'}})}
             />
 
             {errors.accepted_percentage && (
@@ -154,7 +154,6 @@ export default function CrearVariedad() {
               <table className="table mt-5">
                 <thead>
                   <tr className="thead-tr">
-                    <th className="thead-th">ID</th>
                     <th className="thead-th">Defecto</th>
                     <th className="thead-th">Porcentaje de Tolerancia</th>
                     <th className="thead-th">Acción</th>
@@ -164,7 +163,6 @@ export default function CrearVariedad() {
                 <tbody>
                   {defects.map((defect) => (
                     <tr key={defect.name} className="tbody-tr">
-                      <td className="tbody-td">{defect.id}</td>
                       <td className="tbody-td">{defect.name}</td>
                       <td className="tbody-td">{defect.tolerance_percentage}</td>
                       <td className="tbody-td flex gap-5">

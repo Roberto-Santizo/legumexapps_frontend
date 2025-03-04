@@ -14,7 +14,7 @@ type Props = {
     defects: DraftDefecto[];
 }
 
-export default function CreateDefectoModal({ modal, setModal,setDefects, defects }: Props) {
+export default function CreateDefectoModal({ modal, setModal, setDefects, defects }: Props) {
     const [loading, setLoading] = useState<boolean>(false);
 
     const {
@@ -26,18 +26,21 @@ export default function CreateDefectoModal({ modal, setModal,setDefects, defects
 
 
     const onSubmit = async (data: DraftDefecto) => {
-        data.id = defects.length + 1;
+        const maxId = defects.length > 0 ? Math.max(...defects.map(defect => defect.id)) + 1 : 0;
+        data.id = maxId;
         setLoading(true);
+
         try {
             setDefects((prev) => [...prev, data]);
             reset();
             setModal(!modal);
         } catch (error) {
             console.error(error);
-        }finally{
+        } finally {
             setLoading(false);
         }
-    }
+    };
+
     return (
         <Transition appear show={modal} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={() => setModal(!modal)}>
@@ -68,7 +71,7 @@ export default function CreateDefectoModal({ modal, setModal,setDefects, defects
                                 <div className="p-7">
                                     <h2 className="font-bold text-3xl">Relacionar Defecto</h2>
                                     <form noValidate className="space-y-5 w-2/3 mx-auto mt-10" onSubmit={handleSubmit(onSubmit)}>
-                                        
+
                                         <DefectForm register={register} errors={errors} />
 
                                         <Button

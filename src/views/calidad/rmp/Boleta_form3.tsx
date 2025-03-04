@@ -289,7 +289,7 @@ export default function Boleta_form3({ boleta }: Props) {
                 id="valid_pounds"
                 type="number"
                 placeholder={"Libras Pagables"}
-                value={percentage * boleta.prod_net_weight}
+                value={percentage * (boleta.prod_net_weight ?? 0)}
                 className="border border-black p-3"
                 {...register("valid_pounds", { required: "El valid_pounds es obligatorio" })}
               />
@@ -322,7 +322,7 @@ export default function Boleta_form3({ boleta }: Props) {
                 type="number"
                 placeholder={"Ph"}
                 className="border border-black p-3"
-                {...register("ph", { required: "El ph es obligatorio" })}
+                {...register("ph")}
               />
               {errors.ph && <Error>{errors.ph?.message?.toString()}</Error>}
             </div>
@@ -337,7 +337,7 @@ export default function Boleta_form3({ boleta }: Props) {
                 type="number"
                 placeholder={"Dato del brix"}
                 className="border border-black p-3"
-                {...register("brix", { required: "El brix es obligatorio" })}
+                {...register("brix")}
               />
               {errors.brix && <Error>{errors.brix?.message?.toString()}</Error>}
             </div>
