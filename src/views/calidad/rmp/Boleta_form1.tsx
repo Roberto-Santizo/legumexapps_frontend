@@ -169,6 +169,20 @@ export default function Boleta_form1() {
           </div>
 
           <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="date">
+              FECHA DE BOLETA:
+            </label>
+            <input
+              autoComplete="off"
+              id="date"
+              type="date"
+              className="border border-black p-3"
+              {...register("date", { required: "La fecha es obligatoria" })}
+            />
+            {errors.transport && <Error>{errors.transport?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="transport">
               Transporte:
             </label>

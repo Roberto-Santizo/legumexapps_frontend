@@ -16,7 +16,8 @@ export const DraftBoletaSchema = z.object({
     // inspector_signature: z.string(),
     // prod_signature: z.string(),
     calidad_signature: z.string(),
-    basket_id: z.string()
+    basket_id: z.string(),
+    date: z.string()
 });
 
 export const DraftBoletaControlCalidadSchema = z.object({

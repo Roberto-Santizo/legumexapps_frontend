@@ -119,7 +119,6 @@ export default function IndexRMP() {
                 />
             </div>
 
-            {/* Tabla responsive */}
             <div className="w-full overflow-x-auto mt-5">
                 <table className="table min-w-full">
                     <thead>
@@ -179,7 +178,7 @@ export default function IndexRMP() {
                                             <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
                                         )}
 
-                                        {(boleta.quality_status_id === 3 && role === 'pcalidad') && (
+                                        {(role === 'pcalidad' && boleta.quality_status_id !== 5) && (
                                             <RefreshCcwDot className="cursor-pointer hover:text-gray-500" onClick={() => handleRejectBoleta(boleta.id)} />
                                         )}
 
