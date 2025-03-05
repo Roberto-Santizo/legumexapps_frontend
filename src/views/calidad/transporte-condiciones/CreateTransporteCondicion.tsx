@@ -58,7 +58,7 @@ export default function CreateTransporteCondicion() {
             {isPending ? (
               <Spinner />
             ) : (
-              <p className="font-bold text-lg">Crear Usuario</p>
+              <p className="font-bold text-lg">Crear Condición</p>
             )}
           </Button>
       </form>
