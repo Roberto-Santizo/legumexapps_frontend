@@ -472,7 +472,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
               <View style={{ width: 28, height: 20, justifyContent: 'center', alignItems: 'center', marginHorizontal: 4 }}>
                 <Text style={styles.equals}>=</Text>
               </View>
-              <Text style={styles.dataBox}>{boleta.quality_doc_data?.valid_pounds}</Text>
+              <Text style={styles.dataBox}>{(boleta.quality_doc_data?.valid_pounds)?.toFixed(2)}</Text>
             </View>
           </View>
 

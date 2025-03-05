@@ -1,9 +1,9 @@
-import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon } from "lucide-react";
+import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon, RefreshCcwDot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
 
-import { getPaginatedBoletasRMP } from "@/api/ReceptionsDocAPI";
+import { getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 
 import { useAppStore } from "@/stores/useAppStore";
 import { Boleta, FiletrsBoletaRMP } from "@/types";
@@ -13,20 +13,15 @@ import FiltersRMP from "@/components/boleta-rmp/FiltersRMP";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
-
-const status: { [key: number]: string } = {
-    1: 'Pendiente de Recepción',
-    2: 'Pendiente de Revision Calidad',
-    3: 'Pendiente de GRN',
-    5: 'GRN Aprobado'
-}
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const classes: { [key: number]: string } = {
     1: 'bg-orange-500',
     2: 'bg-indigo-500',
     3: 'bg-yellow-500',
-    4: 'bg-yellow-500',
-    5: 'bg-green-500'
+    4: 'bg-green-500',
+    5: 'bg-red-500'
 }
 
 export default function IndexRMP() {
@@ -45,6 +40,17 @@ export default function IndexRMP() {
     const { data, isError, isLoading, refetch } = useQuery({
         queryKey: ['getPaginatedBoletasRMP', currentPage, filters],
         queryFn: () => getPaginatedBoletasRMP(currentPage, filters),
+    });
+
+    const { mutate } = useMutation({
+        mutationFn: rejectBoleta,
+        onError: () => {
+            toast.error('Hubo un error al actualizar la información');
+        },
+        onSuccess: () => {
+            toast.success('Información actualizada correctamente');
+            refetch();
+        }
     });
 
     const results = useQueries({
@@ -73,6 +79,19 @@ export default function IndexRMP() {
     const handlePageChange = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected + 1);
     };
+
+    const handleRejectBoleta = (id : Boleta['id']) => {
+        Swal.fire({
+            title: "¿Quieres rechazar esta boleta?",
+            showCancelButton: true,
+            confirmButtonText: "Rechazar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire("Boleta cancelada correctamente", "", "success");
+                mutate(id);
+            }
+        });
+    }
 
     if (isError) return <ShowErrorAPI />
     if (isLoading) return <Spinner />
@@ -125,24 +144,29 @@ export default function IndexRMP() {
                                 <td className="tbody-td">{boleta.variety}</td>
                                 <td className="tbody-td">{boleta.coordinator}</td>
                                 <td className="tbody-td">{boleta.date}</td>
-                                <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-xs`}>{status[boleta.status]}</span></td>
+                                <td className="tbody-td"><span className={`button ${classes[boleta.quality_status_id]} text-xs`}>{boleta.status}</span></td>
                                 <td className="tbody-td">{boleta.consignacion ? <AlertCircleIcon className="w-8 text-red-500" /> : <CheckCircle className="w-8 text-green-500" />}</td>
                                 <td className="tbody-td flex gap-5">
                                     <>
-                                        {(boleta.status === 1 && role && (role === 'pprod')) && (
+                                        {(boleta.quality_status_id === 1 && role && (role === 'pprod')) && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {(boleta.status === 2 && role && (role === 'pcalidad')) && (
+                                        {(boleta.quality_status_id === 2 && role && (role === 'pcalidad')) && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {((boleta.status === 3 || boleta.status === 4) && role && (role === 'pprod')) && (
+                                        {((boleta.quality_status_id === 3) && role && (role === 'pprod')) && (
                                             <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
+                                        )}
+
+
+                                        {((boleta.quality_status_id === 3) && role && (role === 'pcalidad')) && (
+                                            <RefreshCcwDot className="cursor-pointer hover:text-gray-500" onClick={() => handleRejectBoleta(boleta.id)} />
                                         )}
 
                                         <Link to={`/rmp/documentos/${boleta.id}`}>

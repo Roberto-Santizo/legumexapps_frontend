@@ -228,7 +228,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
                   <span className="px-2">=</span>
                   <div className="text-center w-40">
                     <span className="border border-black px-3 py-1 inline-block w-full text-center ">
-                      {boleta.quality_doc_data?.valid_pounds}
+                      {(boleta.quality_doc_data?.valid_pounds)?.toFixed(2)}
                     </span>
                     <p className="text-xs mt-0.5">LIBRAS VALIDADAS</p>
                   </div>
