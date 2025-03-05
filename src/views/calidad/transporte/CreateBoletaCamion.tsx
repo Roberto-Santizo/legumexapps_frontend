@@ -119,7 +119,7 @@ const BoletaCamion = () => {
       setValue('plate', '');
     }
   }, [selectedBoletas]);
-  
+
 
 
   const onSubmit = (data: DraftBoletaTransporte) => {
@@ -159,60 +159,44 @@ const BoletaCamion = () => {
               {errors.planta_id?.message && <Error >{errors.planta_id.message}</Error>}
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-black bg-white mt-8">
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="thead-tr">
-                    <th className="tbody-th p-2">Finca</th>
-                    <th className="tbody-th p-2">Productor</th>
-                    <th className="tbody-th p-2">Placa</th>
-                    <th className="tbody-th p-2">Piloto</th>
-                    <th className="tbody-th p-2">Fecha</th>
-                    <th className="tbody-th p-2">Producto</th>
-                    <th className="tbody-th p-2">Variedad</th>
-                    <th className="tbody-th p-2"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {boletas.map((boleta) => (
-                    <tr
-                      key={boleta.id}
-                      className="tbody-tr">
-                      <td className="tbody-td">
-                        {boleta.finca}
-                      </td>
-                      <td className="tbody-td">
-                        {boleta.coordinator}
-                      </td>
-                      <td className="tbody-td">
-                        {boleta.plate}
-                      </td>
-                      <td className="tbody-td">
-                        {boleta.pilot_name}
-                      </td>
-                      <td className="tbody-td">
-                        {boleta.date}
-                      </td>
-                      <td className="tbody-td">
-                        {boleta.product}
-                      </td>
-                      <td className="tbody-td">
-                        {boleta.variety}
-                      </td>
-
-                      <td className='flex justify-center p-5'>
-                        <input
-                          type="checkbox"
-                          checked={selectedBoletas.some(selectedBoleta => selectedBoleta.id === boleta.id)}
-                          onChange={() => handleChangeInputBoleta(boleta.id)}
-                          className="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                      </td>
-
+            <div className="w-full overflow-x-auto mt-8">
+              <div className="min-w-max overflow-hidden rounded-xl border border-black bg-white">
+                <table className="w-full border-collapse text-left">
+                  <thead>
+                    <tr className="thead-tr">
+                      <th className="tbody-th px-4 py-3">Finca</th>
+                      <th className="tbody-th px-4 py-3">Productor</th>
+                      <th className="tbody-th px-4 py-3">Placa</th>
+                      <th className="tbody-th px-4 py-3">Piloto</th>
+                      <th className="tbody-th px-4 py-3">Fecha</th>
+                      <th className="tbody-th px-4 py-3">Producto</th>
+                      <th className="tbody-th px-4 py-3">Variedad</th>
+                      <th className="tbody-th px-4 py-3 text-center">Seleccionar</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {boletas.map((boleta) => (
+                      <tr key={boleta.id} className="tbody-tr">
+                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.finca}</td>
+                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.coordinator}</td>
+                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.plate}</td>
+                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.pilot_name}</td>
+                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.date}</td>
+                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.product}</td>
+                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.variety}</td>
+                        <td className="tbody-td flex justify-center px-4 py-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedBoletas.some(selectedBoleta => selectedBoleta.id === boleta.id)}
+                            onChange={() => handleChangeInputBoleta(boleta.id)}
+                            className="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -322,7 +306,8 @@ const BoletaCamion = () => {
             </table>
           </div>
 
-          <fieldset>
+          <fieldset className='grid grid-cols-1 mx-auto '>
+
             <div className="space-y-2 text-center">
               <Controller
                 name="verify_by_signature"
@@ -333,7 +318,7 @@ const BoletaCamion = () => {
                     <SignatureCanvas
                       ref={verify_by_signature}
                       penColor="black"
-                      canvasProps={{ className: "w-full h-40 border" }}
+                      canvasProps={{ className: "w-3/6 h-40 border mx-auto" }}
                       onEnd={() => {
                         field.onChange(verify_by_signature.current.toDataURL());
                       }}
@@ -352,7 +337,7 @@ const BoletaCamion = () => {
                 )}
               />
               <label className="block font-medium text-xl">
-                Verificado Por
+                Inspeccionado por:
               </label>
 
               {(errors.verify_by_signature) && <Error>{'Asegurese de haber firmado'}</Error>}

@@ -59,8 +59,8 @@ const CalidadDashboard: React.FC = () => {
                     contentStyle={{ backgroundColor: '#F9FAFB', borderRadius: '6px', border: '1px solid #E5E7EB' }}
                   />
                   <Legend wrapperStyle={{ paddingTop: '50px' }} />
-                  <Bar dataKey="field_percentage" name="% Campo" fill="#3498db" />
-                  <Bar dataKey="quality_percentage" name="% Calidad" fill="#4fc3f7" />
+                  <Bar dataKey="field_percentage" name="% Calidad" fill="#3498db" />
+                  <Bar dataKey="quality_percentage" name="% Campo" fill="#4fc3f7" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

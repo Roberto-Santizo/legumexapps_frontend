@@ -1,9 +1,9 @@
-import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon } from "lucide-react";
+import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon, RefreshCcwDot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
 
-import { getPaginatedBoletasRMP } from "@/api/ReceptionsDocAPI";
+import { getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 
 import { useAppStore } from "@/stores/useAppStore";
 import { Boleta, FiletrsBoletaRMP } from "@/types";
@@ -13,20 +13,15 @@ import FiltersRMP from "@/components/boleta-rmp/FiltersRMP";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
-
-const status: { [key: number]: string } = {
-    1: 'Pendiente de Recepción',
-    2: 'Pendiente de Revision Calidad',
-    3: 'Pendiente de GRN',
-    5: 'GRN Aprobado'
-}
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const classes: { [key: number]: string } = {
     1: 'bg-orange-500',
     2: 'bg-indigo-500',
     3: 'bg-yellow-500',
-    4: 'bg-yellow-500',
-    5: 'bg-green-500'
+    4: 'bg-green-500',
+    5: 'bg-red-500'
 }
 
 export default function IndexRMP() {
@@ -45,6 +40,17 @@ export default function IndexRMP() {
     const { data, isError, isLoading, refetch } = useQuery({
         queryKey: ['getPaginatedBoletasRMP', currentPage, filters],
         queryFn: () => getPaginatedBoletasRMP(currentPage, filters),
+    });
+
+    const { mutate } = useMutation({
+        mutationFn: rejectBoleta,
+        onError: () => {
+            toast.error('Hubo un error al actualizar la información');
+        },
+        onSuccess: () => {
+            toast.success('Información actualizada correctamente');
+            refetch();
+        }
     });
 
     const results = useQueries({
@@ -74,73 +80,106 @@ export default function IndexRMP() {
         setCurrentPage(selectedItem.selected + 1);
     };
 
+    const handleRejectBoleta = (id: Boleta['id']) => {
+        Swal.fire({
+            title: "¿Quieres rechazar esta boleta?",
+            showCancelButton: true,
+            confirmButtonText: "Rechazar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire("Boleta cancelada correctamente", "", "success");
+                mutate(id);
+            }
+        });
+    }
+
     if (isError) return <ShowErrorAPI />
     if (isLoading) return <Spinner />
 
     return (
-        <div>
-            <h2 className="font-bold text-4xl">Boletas Recepción de Materia Prima</h2>
+        <div className="p-4">
+            <h2 className="font-bold text-2xl md:text-4xl">
+                Boletas Recepción de Materia Prima
+            </h2>
 
-            <div className="flex flex-row justify-end gap-5">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-5">
                 {(role === 'pcalidad' || role === 'admin') && (
                     <Link
                         to="/rmp/crear"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
                     >
-                        <PlusIcon className="w-8" />
-                        <p>Crear Boleta Materia Prima</p>
+                        <PlusIcon className="w-6 md:w-8" />
+                        <p className="text-sm md:text-base">Crear Boleta Materia Prima</p>
                     </Link>
                 )}
+
+                <Bars3Icon
+                    className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+                    onClick={() => setIsOpen(true)}
+                />
             </div>
 
-            <div className="w-full flex justify-end mt-5">
-                <Bars3Icon className="w-8 cursor-pointer hover:text-gray-500" onClick={() => setIsOpen(true)} />
-            </div>
-
-            <div className="p-2 mt-10">
-                <table className="table">
+            <div className="w-full overflow-x-auto mt-5">
+                <table className="table min-w-full">
                     <thead>
                         <tr className="thead-tr">
-                            <th scope="col" className="thead-th">ID</th>
-                            <th scope="col" className="thead-th">Placa</th>
-                            <th scope="col" className="thead-th">Producto</th>
-                            <th scope="col" className="thead-th">Finca</th>
-                            <th scope="col" className="thead-th">Variedad</th>
-                            <th scope="col" className="thead-th">Coordinador</th>
-                            <th scope="col" className="thead-th">Fecha</th>
-                            <th scope="col" className="thead-th">Estado</th>
-                            <th scope="col" className="thead-th">Consignación</th>
-                            <th scope="col" className="thead-th">Acción</th>
+                            <th className="thead-th">CDP</th>
+                            <th className="thead-th">GRN</th>
+                            <th className="thead-th">Placa</th>
+                            <th className="thead-th">Producto</th>
+                            <th className="thead-th">Finca</th>
+                            <th className="thead-th">Variedad</th>
+                            <th className="thead-th">Coordinador</th>
+                            <th className="thead-th">Fecha</th>
+                            <th className="thead-th">Estado</th>
+                            <th className="thead-th">Consignación</th>
+                            <th className="thead-th">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
                         {boletas.map(boleta => (
-                            <tr key={boleta.id} className="tbody-tr">
-                                <td className="tbody-td">{boleta.id}</td>
+                            <tr key={boleta.id} className="tbody-tr text-sm md:text-base">
+                                <td className="tbody-td">{boleta.cdp}</td>
+                                <td className="tbody-td">{boleta.grn}</td>
                                 <td className="tbody-td">{boleta.plate}</td>
                                 <td className="tbody-td">{boleta.product}</td>
                                 <td className="tbody-td">{boleta.finca}</td>
                                 <td className="tbody-td">{boleta.variety}</td>
                                 <td className="tbody-td">{boleta.coordinator}</td>
                                 <td className="tbody-td">{boleta.date}</td>
-                                <td className="tbody-td"><span className={`button ${classes[boleta.status]} text-xs`}>{status[boleta.status]}</span></td>
-                                <td className="tbody-td">{boleta.consignacion ? <AlertCircleIcon className="w-8 text-red-500"/> : <CheckCircle className="w-8 text-green-500"/>}</td>
-                                <td className="tbody-td flex gap-5">
+                                <td className="tbody-td text-center px-2 md:px-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                                    <span className={`button ${classes[boleta.quality_status_id]} text-xs md:text-sm px-2 py-1 rounded-lg`}>
+                                        {boleta.status}
+                                    </span>
+                                </td>
+
+                                <td className="tbody-td">
+                                    {boleta.consignacion ? (
+                                        <AlertCircleIcon className="w-6 md:w-8 text-red-500" />
+                                    ) : (
+                                        <CheckCircle className="w-6 md:w-8 text-green-500" />
+                                    )}
+                                </td>
+                                <td className="tbody-td flex gap-3">
                                     <>
-                                        {(boleta.status === 1 && role && (role === 'pprod')) && (
+                                        {(boleta.quality_status_id === 1 && role === 'pprod') && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {(boleta.status === 2 && role && (role === 'pcalidad')) && (
+                                        {(boleta.quality_status_id === 2 && role === 'pcalidad') && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {((boleta.status === 3 || boleta.status === 4) && role && (role === 'pprod')) && (
+                                        {(boleta.quality_status_id === 3 && role === 'pprod') && (
                                             <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
+                                        )}
+
+                                        {(role === 'pcalidad' && boleta.quality_status_id !== 5) && (
+                                            <RefreshCcwDot className="cursor-pointer hover:text-gray-500" onClick={() => handleRejectBoleta(boleta.id)} />
                                         )}
 
                                         <Link to={`/rmp/documentos/${boleta.id}`}>
@@ -152,17 +191,26 @@ export default function IndexRMP() {
                         ))}
                     </tbody>
                 </table>
-                <div className="mb-10 flex justify-end">
-                    <Pagination
-                        currentPage={currentPage}
-                        pageCount={pageCount}
-                        handlePageChange={handlePageChange}
-                    />
-                </div>
             </div>
-            {boletaSelected && <BoletaGRNModal modal={modalGRN} setModal={setModalGRN} boleta={boletaSelected} refetch={refetch} />}
+
+            <div className="mt-5 mb-10 flex justify-center md:justify-end">
+                <Pagination
+                    currentPage={currentPage}
+                    pageCount={pageCount}
+                    handlePageChange={handlePageChange}
+                />
+            </div>
+
+            {boletaSelected && (
+                <BoletaGRNModal
+                    modal={modalGRN}
+                    setModal={setModalGRN}
+                    boleta={boletaSelected}
+                    refetch={refetch}
+                />
+            )}
             <FiltersRMP filters={filters} setFilters={setFilters} isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
+    );
 
-    )
 }

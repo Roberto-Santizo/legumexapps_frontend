@@ -1,7 +1,6 @@
 
 import { BoletaInfoAll } from "@/types";
 import LogoLegumex from "../LogoLegumex";
-// import { useRef } from 'react';
 
 type Props = {
     boleta: BoletaInfoAll;
@@ -9,7 +8,6 @@ type Props = {
 
 export default function BoletasCalidad({ boleta }: Props) {
 
-    // const contentRef = useRef<HTMLDivElement>(null);
     return (
         <div className="w-full max-w-7xl mx-auto p-10 shadow-xl border border-gray-300 mt-10 print:w-[297mm] print:h-[210mm] print:max-w-none print:mx-0 print:mt-0 print:bg-white print:p-4 print:shadow-none space-y-11">
             <div className="grid grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6 text-sm md:text-base items-center">
@@ -30,7 +28,7 @@ export default function BoletasCalidad({ boleta }: Props) {
             </div>
 
             <div>
-                <div className="w-2/3 font-bold justify-end uppercase">Fecha: <span className="font-normal">Insertar dato de fecha aca </span></div>
+                <div className="w-2/3 font-bold justify-end uppercase">Fecha: <span className="font-normal">{boleta.quality_doc_data?.date}</span></div>
             </div>
 
             <div className="grid grid-cols-2 grid-rows-4 border border-black">
@@ -86,13 +84,13 @@ export default function BoletasCalidad({ boleta }: Props) {
                             <td></td>
                             <td></td>
                             <td className="border border-black p-2 uppercase text-right font-bold">Total de % defectos</td>
-                            <td className="border border-black p-2"> Insertar dato de % defecto aca</td>
+                            <td className="border border-black p-2">{100 - +(boleta.quality_doc_data?.percentage ?? 0)}</td>
                         </tr>
                         <tr>
                             <td></td>
                             <td></td>
                             <td className="border border-black p-2 uppercase text-right font-bold">% calidad</td>
-                            <td className="border border-black p-2"> Insertar dato de % calidad aca</td>
+                            <td className="border border-black p-2">{boleta.quality_doc_data?.percentage}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -169,6 +169,20 @@ export default function Boleta_form1() {
           </div>
 
           <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="date">
+              FECHA DE BOLETA:
+            </label>
+            <input
+              autoComplete="off"
+              id="date"
+              type="date"
+              className="border border-black p-3"
+              {...register("date", { required: "La fecha es obligatoria" })}
+            />
+            {errors.transport && <Error>{errors.transport?.message?.toString()}</Error>}
+          </div>
+
+          <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="transport">
               Transporte:
             </label>
@@ -210,10 +224,7 @@ export default function Boleta_form1() {
               placeholder={"Numero de placa"}
               className="border border-black p-3"
               {...register("transport_plate", {
-                required: "La placa es obligatoria", pattern: {
-                  value: /^[PCDTOM]-?\d{3}[A-Z]{3}$/,
-                  message: "Formato de placa inválido (Ej: P-123ABC o P123ABC)"
-                }
+                required: "La placa es obligatoria"
               })}
             />
             {errors.transport_plate && <Error>{errors.transport_plate?.message?.toString()}</Error>}

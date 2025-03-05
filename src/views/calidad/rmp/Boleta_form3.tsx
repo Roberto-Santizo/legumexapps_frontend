@@ -39,6 +39,10 @@ export default function Boleta_form3({ boleta }: Props) {
     return percentage * 100 < boleta.minimun_percentage;
   }, [percentage]);
 
+  useEffect(()=>{
+    console.log(percentage);
+  },[percentage]);
+
 
   const {
     register,
@@ -76,6 +80,8 @@ export default function Boleta_form3({ boleta }: Props) {
 
   useEffect(() => { 
     setValue("isMinimunRequire", !isMinimunRequire);
+    setValue("percentage",percentage*100);
+    setValue("valid_pounds",percentage * (boleta.prod_net_weight ?? 0))
   }, [percentage]);
 
   useEffect(() => {
@@ -123,6 +129,7 @@ export default function Boleta_form3({ boleta }: Props) {
   }
 
   const onSubmit = async (data : DraftBoletaCalidad) => {
+    console.log(data)
     setLoading(true);
     try {
       await createQualityDoc(data, boleta.id, results);
@@ -289,7 +296,6 @@ export default function Boleta_form3({ boleta }: Props) {
                 id="valid_pounds"
                 type="number"
                 placeholder={"Libras Pagables"}
-                value={percentage * (boleta.prod_net_weight ?? 0)}
                 className="border border-black p-3"
                 {...register("valid_pounds", { required: "El valid_pounds es obligatorio" })}
               />
@@ -305,7 +311,7 @@ export default function Boleta_form3({ boleta }: Props) {
                 id="percentage"
                 type="number"
                 placeholder={"Porcentaje a pagar"}
-                value={100 - total_points}
+                value={percentage * 100}
                 className="border border-black p-3"
                 {...register("percentage", { required: "El percentage a pagar es obligatorio" })}
               />
