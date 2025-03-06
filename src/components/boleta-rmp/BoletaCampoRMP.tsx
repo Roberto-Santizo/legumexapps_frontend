@@ -27,7 +27,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-sm">
               <p>Agroindustria Legumex,</p>
               <p>Chimaltenango Guatemala</p>
-              <p>PBX: 7963-0888 FAX: 7937-5005</p>
+              <p>PBX: 7824 9300</p>
             </div>
           </div>
 
@@ -228,7 +228,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
                   <span className="px-2">=</span>
                   <div className="text-center w-40">
                     <span className="border border-black px-3 py-1 inline-block w-full text-center ">
-                      {boleta.quality_doc_data?.valid_pounds}
+                      {(boleta.quality_doc_data?.valid_pounds)?.toFixed(2)}
                     </span>
                     <p className="text-xs mt-0.5">LIBRAS VALIDADAS</p>
                   </div>
@@ -240,10 +240,19 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="border border-black py-1 md:p-2 col-span-12 md:col-span-2">
             <p className="text-center font-bold mb-2 md:mb-3 text-base md:text-lg py-5">DIFERENCIA</p>
             <div className="space-y-2 md:space-y-12 flex flex-col items-center">
-              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">{boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)}</div>
-              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">{boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)}</div>
-              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">{boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)}</div>
-              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">{boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)}</div>
+              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
+                {(boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)).toFixed(2)}
+              </div>
+              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
+                {(boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)).toFixed(2)}
+              </div>
+              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
+                {(boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)).toFixed(2)}
+              </div>
+              <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
+                {(boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)).toFixed(2)}
+              </div>
+
               <div className="px-1 min-w-[120px] text-center h-8 flex items-center justify-center">{boleta.consignacion ? <AlertCircle className="text-red-500" /> : <CheckCircle className="text-green-500" />}</div>
             </div>
           </div>

@@ -106,3 +106,13 @@ export async function getBoletaInfoAll(id: Boleta['id']) {
         throw error;
     }
 }
+
+export async function rejectBoleta(id: Boleta['id']){
+    try {
+        const url = `/api/boleta-rmp/${id}/reject`;
+        await clienteAxios(url);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}

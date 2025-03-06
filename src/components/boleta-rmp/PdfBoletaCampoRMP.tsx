@@ -472,7 +472,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
               <View style={{ width: 28, height: 20, justifyContent: 'center', alignItems: 'center', marginHorizontal: 4 }}>
                 <Text style={styles.equals}>=</Text>
               </View>
-              <Text style={styles.dataBox}>{boleta.quality_doc_data?.valid_pounds}</Text>
+              <Text style={styles.dataBox}>{(boleta.quality_doc_data?.valid_pounds)?.toFixed(2)}</Text>
             </View>
           </View>
 
@@ -494,19 +494,19 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
             <Text style={styles.diffTitle}>DIFERENCIA</Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)}
+              {(boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)}
+              {(boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)}
+              {(boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.diffBox}>
-              {boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)}
+              {(boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)).toFixed(2)}
             </Text>
 
             <Text style={styles.statusBox}>

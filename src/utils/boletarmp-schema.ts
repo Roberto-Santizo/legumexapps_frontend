@@ -16,7 +16,8 @@ export const DraftBoletaSchema = z.object({
     // inspector_signature: z.string(),
     // prod_signature: z.string(),
     calidad_signature: z.string(),
-    basket_id: z.string()
+    basket_id: z.string(),
+    date: z.string()
 });
 
 export const DraftBoletaControlCalidadSchema = z.object({
@@ -65,7 +66,8 @@ export const BoletaRMPDetailSchema = z.object({
     net_weight:  z.number(),
     percentage_field: z.number(),
     valid_pounds: z.number(),
-    status: z.number(),
+    status: z.string(),
+    quality_status_id: z.number(),
     minimun_percentage: z.number(),
     total_baskets: z.number(),
     prod_net_weight: z.number().nullable(),
@@ -74,6 +76,7 @@ export const BoletaRMPDetailSchema = z.object({
 export const BoletaSchema = z.object({
     id: z.string(),
     finca:z.string(),
+    grn: z.string().nullable(),
     date:z.string(),
     plate: z.string(),
     product: z.string(),
@@ -82,7 +85,8 @@ export const BoletaSchema = z.object({
     coordinator: z.string(),
     cdp: z.string(),
     transport: z.string(),
-    status: z.number(),
+    status: z.string(),
+    quality_status_id: z.number(),
     pilot_name:z.string(),
     consignacion: z.boolean()
 });
@@ -129,7 +133,8 @@ export const fieldDataSchema = z.object({
   net_weight: z.number(),
   percentage_field: z.number(),
   valid_pounds: z.number(),
-  status: z.number(),
+  status: z.string(),
+  quality_status_id: z.number(),
   minimun_percentage: z.number(),
   total_baskets: z.number(),
   calidad_signature: z.string(),
@@ -156,10 +161,6 @@ export const qualityDocDataSchema = z.object({
   inspector_planta_signature: z.string(),
   inspector_pdf_planta_signature: z.string(),
   date: z.string(), 
-  day: z.string(), 
-  month: z.string(), 
-  year: z.string(), 
-  time: z.string(),
   producer_name: z.string(),
   variety: z.string(),
   grn: z.string().nullable(),
@@ -168,8 +169,8 @@ export const qualityDocDataSchema = z.object({
   sample_units: z.string(),
   total_baskets: z.number(),
   producer_code: z.number(),
-  ph: z.number(),
-  brix: z.number(),
+  ph: z.number().nullable(),
+  brix: z.number().nullable(),
   observations: z.string().nullable(),
   inspector_planta_name: z.string(),
   defects: z.array(defectSchema),

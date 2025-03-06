@@ -9,13 +9,17 @@ import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import GeneralDashboard from "../views/admin/GeneralDashboards";
 import CalidadDashboard from "../views/calidad/CalidadDashboard";
+import ProduccionCDashboard from "../views/calidad/ProduccionCDashboard";
+import CostosDashboard from "../views/calidad/CostosDashboard";
 
 export default function Dashboard() {
   const dashboards = {
     'admin': (<GeneralDashboard />),
     'adminagricola':  (<AgricolaDashboard />),
     'auxagricola': (<AgricolaDashboard />),
-    'pcalidad': (<CalidadDashboard />)
+    'pcalidad': (<CalidadDashboard />),
+    'pprod': (<ProduccionCDashboard />),
+    'pcostos': (<CostosDashboard />),
   };
 
   const [loading, setLoading] = useState<boolean>(true);

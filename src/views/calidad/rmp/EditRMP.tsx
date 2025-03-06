@@ -42,7 +42,7 @@ export default function EditRMP() {
       <h2 className="font-bold text-3xl">Recepción de Materia Prima</h2>
       {loading ? <Spinner /> : (
         <>
-          {forms[boleta.status]}
+          {forms[boleta.quality_status_id]}
         </>
       )}
 
