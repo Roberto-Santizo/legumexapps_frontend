@@ -1,6 +1,9 @@
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
+import Spinner from "@/components/Spinner";
+import Error from "@/components/Error";
 
 export default function CreateSKU() {
   const {
@@ -9,9 +12,13 @@ export default function CreateSKU() {
     formState: { errors },
   } = useForm();
 
+  const [isPending, setIsPending] = React.useState(false);
+
   const onSubmit = (data: any) => {
+    setIsPending(true);
     toast.success("Línea creada con éxito");
     console.log(data);
+    setIsPending(false);
   };
 
   return (
@@ -33,11 +40,9 @@ export default function CreateSKU() {
               type="text"
               placeholder="Ingrese el código del SKU"
               className="border border-black p-3"
-              {...register("code", { required: "El código es obligatorio" })}
+              {...register("code", { required: "El código del SKU es obligatorio" })}
             />
-            {errors.code && (
-              <p className="text-red-500">{errors.code.message as string}</p>
-            )}
+            {errors.code?.message && <Error>{String(errors.code.message)}</Error>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -50,18 +55,24 @@ export default function CreateSKU() {
               type="number"
               placeholder="Ingrese el total de personas"
               className="border border-black p-3"
-              {...register("total_persons", {
-                required: "El total de personas es obligatorio",
-                min: { value: 1, message: "Debe ser al menos 1" },
-              })}
+              {...register("total_persons", { required: "El total de personas es obligatorio" })}
             />
-            {errors.total_persons && (
-              <p className="text-red-500">{errors.total_persons.message as string}</p>
-            )}
+            {errors.total_persons?.message && <Error>{String(errors.total_persons.message)}</Error>}
           </div>
 
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ marginTop: 2 }}>
-            <p className="font-bold text-lg">Crear línea</p>
+          <Button
+            disabled={isPending}
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ marginTop: 2 }}
+          >
+            {isPending ? (
+              <Spinner />
+            ) : (
+              <p className="font-bold text-lg">Crear Condición</p>
+            )}
           </Button>
         </form>
       </div>

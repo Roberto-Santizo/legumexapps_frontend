@@ -8,6 +8,7 @@ import {
   SquarePlusIcon,
   TrashIcon,
 } from "lucide-react";
+
 import { useAppStore } from "../stores/useAppStore";
 import { TaskWeeklyPlan } from "../types";
 import { toast } from "react-toastify";

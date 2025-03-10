@@ -6,6 +6,7 @@ import ShowErrorAPI from "@/components/ShowErrorAPI";
 import Pagination from "@/components/Pagination";
 import { Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
+import { Link } from "react-router-dom";
 
 export default function IndexPlanSemanalProduccion() {
     const [pageCount, setPageCount] = useState<number>(0);
@@ -52,7 +53,9 @@ export default function IndexPlanSemanalProduccion() {
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
                                 <td className="tbody-td">
-                                    <Eye className="cur"/>
+                                    <Link to={`/plan-semana-produccion/${plan.id}`}>
+                                        <Eye className="cur"/>
+                                    </Link>
                                 </td>
                             </tr>
                         ))}

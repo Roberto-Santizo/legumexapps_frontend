@@ -1,6 +1,7 @@
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Edit } from "lucide-react";
 // import Pagination from "@/components/Pagination";
 import { Link } from "react-router-dom";
+
 
 
 export default function IndexLineas() {
@@ -27,16 +28,19 @@ export default function IndexLineas() {
             <tr className="thead-tr">
               <th scope="col" className="thead-th">codigo</th>
               <th scope="col" className="thead-th">total de personas</th>
-              <th> </th>
+              <th scope="col" className="thead-th">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {/* {producers.map(producer => ( */}
-              <tr className="tbody-tr">
-                <td className="tbody-td"></td>
-                <td className="tbody-td"></td>
-                <td className="tbody-td"></td>
-              </tr>
+            <tr className="tbody-tr">
+              <td className="tbody-td">1</td>
+              <td className="tbody-td">1</td>
+              <td className="tbody-td flex gap-5">
+                <Link to={`/lineas/EditarLineas`}> {/* El link de esta linea debe de ser corregido porque solo se coloco como guia mas no funciona*/}
+                  <Edit className="hover:text-gray-500" />
+                </Link>
+              </td>
+            </tr>
             {/* ))} */}
           </tbody>
         </table>
@@ -47,7 +51,7 @@ export default function IndexLineas() {
             handlePageChange={handlePageChange}
           /> */}
         </div>
-      </div> 
+      </div>
     </>
   )
 }
