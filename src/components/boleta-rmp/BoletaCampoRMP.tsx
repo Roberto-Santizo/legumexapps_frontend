@@ -34,7 +34,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center flex-1 mx-4 md:mx-8">
             <h1 className="text-xl md:text-2xl font-bold">RECIBO DE MATERIA PRIMA</h1>
             <div className="flex justify-center mb-1">
-              <span className="p-1 text-center text-2xl font-bold text-red-600">No.{boleta.field_data.id}</span>
+              <span className="p-1 text-center text-2xl font-bold text-red-600">No.{boleta.field_data.ref_doc}</span>
             </div>
           </div>
 
