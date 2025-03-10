@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import TaskLabel from "../../../components/TaskLabel";
 import {
   CircleCheck,
@@ -7,7 +6,7 @@ import {
 } from "lucide-react";
 
 export default function ShowPlanSemanalProduccion() {
-  const params = useParams();
+  // const params = useParams();
 
   return (
     <div className="grid grid-cols-6 shadow-xl p-10 text-xl">
