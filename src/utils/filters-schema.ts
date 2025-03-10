@@ -5,5 +5,8 @@ export const FiletrsBoletaRMPSchema = z.object({
     product_id: z.string(),
     producer_id: z.string(),
     date: z.string(),
-    plate: z.string() 
+    plate: z.string(),
+    quality_status_id: z.string(),
+    ref_doc: z.string(),
+    grn: z.string(),
 });

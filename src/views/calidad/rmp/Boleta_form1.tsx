@@ -15,10 +15,19 @@ import { Button } from "@mui/material";
 import { Basket, DraftBoletaRMP, Finca, Producer, Product } from "@/types";
 import Error from "@/components/Error";
 import Spinner from "@/components/Spinner";
-import { useMutation, useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { getPilotosByTransportistaId, Piloto } from "@/api/PilotosAPI";
+import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
+import { getPlacasByCarrierId, Placa } from "@/api/PlacasAPI";
+import { getAllProductorCDPS, ProductorCDP } from "@/api/ProductorPlantationAPI";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [pilotos, setPilotos] = useState<Piloto[]>([]);
+  const [placas, setPlacas] = useState<Placa[]>([]);
+  const [cdps, setCDPS] = useState<ProductorCDP[]>([]);
+  const [transportistaId, setTransportistaId] = useState<string>('');
+  const [transportistas, setTransportistas] = useState<Transportista[]>([]);
   const [baskets, setBaskets] = useState<Basket[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
   const [fincas, setFincas] = useState<Finca[]>([]);
@@ -30,17 +39,46 @@ export default function Boleta_form1() {
       { queryKey: ['getProducts'], queryFn: getProducts },
       { queryKey: ['getAllProducers'], queryFn: getAllProducers },
       { queryKey: ['getAllBaskets'], queryFn: getAllBaskets },
-      { queryKey: ['getAllFincas'], queryFn: getAllFincas }
+      { queryKey: ['getAllFincas'], queryFn: getAllFincas },
+      { queryKey: ['getAllTransportistas'], queryFn: getAllTransportistas },
+      { queryKey: ['getAllProductorCDPS'], queryFn: getAllProductorCDPS }
     ]
   });
-  
+
+  const { data: pilotosData } = useQuery({
+    queryKey: ['getPilotosByTransportistaId', transportistaId],
+    queryFn: () => getPilotosByTransportistaId(transportistaId),
+    enabled: !!transportistaId
+  });
+
+
+  const { data: placasData } = useQuery({
+    queryKey: ['getPlacasByCarrierId', transportistaId],
+    queryFn: () => getPlacasByCarrierId(transportistaId),
+    enabled: !!transportistaId
+  });
+
   useEffect(() => {
     if (results[0].data) setProducts(results[0].data);
     if (results[1].data) setProducers(results[1].data);
     if (results[2].data) setBaskets(results[2].data);
     if (results[3].data) setFincas(results[3].data);
+    if (results[4].data) setTransportistas(results[4].data);
+    if (results[5].data) setCDPS(results[5].data);
   }, [results]);
-  
+
+  useEffect(() => {
+    if (pilotosData) {
+      setPilotos(pilotosData)
+    }
+  }, [pilotosData])
+
+  useEffect(() => {
+    if (placasData) {
+      setPlacas(placasData)
+    }
+  }, [placasData])
+
   const fincasOptions = fincas.map((finca) => ({
     value: finca.id,
     label: `${finca.name}`,
@@ -61,6 +99,26 @@ export default function Boleta_form1() {
     label: `${basket.code} - ${basket.weight}lbs`,
   }));
 
+  const transportistasOptions = transportistas.map((transportista) => ({
+    value: transportista.id,
+    label: `${transportista.code} - ${transportista.name}`,
+  }));
+
+  const pilotosOptions = pilotos.map((piloto) => ({
+    value: piloto.id,
+    label: `${piloto.name}`,
+  }));
+
+  const placasOptions = placas.map((placa) => ({
+    value: placa.id,
+    label: `${placa.name}`,
+  }));
+
+  const cdpsOptions = cdps.map((cdp) => ({
+    value: cdp.id,
+    label: `${cdp.name}`,
+  }));
+
   const { mutate, isPending } = useMutation({
     mutationFn: createBoletaRMP,
     onError: () => {
@@ -79,7 +137,7 @@ export default function Boleta_form1() {
     formState: { errors },
   } = useForm<DraftBoletaRMP>();
 
-  const onSubmit = async (data: DraftBoletaRMP) => mutate(data)
+  const onSubmit = async (data: DraftBoletaRMP) => mutate(data);
 
   return (
     <>
@@ -91,9 +149,27 @@ export default function Boleta_form1() {
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
+
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="ref_doc">
+              No. DOC:
+            </label>
+            <input
+              autoComplete="off"
+              id="ref_doc"
+              type="text"
+              placeholder={"Número de referencia fisica"}
+              className="border border-black p-3"
+              {...register("ref_doc", {
+                required: "La referencia de documento es necesaria",
+              })}
+            />
+            {errors.ref_doc && <Error>{errors.ref_doc?.message?.toString()}</Error>}
+          </div>
+
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="producer_id">
-              COORDINADOR:
+              PRODUCTOR:
             </label>
             <Controller
               name="producer_id"
@@ -179,57 +255,111 @@ export default function Boleta_form1() {
               className="border border-black p-3"
               {...register("date", { required: "La fecha es obligatoria" })}
             />
-            {errors.transport && <Error>{errors.transport?.message?.toString()}</Error>}
+            {errors.date && <Error>{errors.date?.message?.toString()}</Error>}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="transport">
-              Transporte:
+          <div>
+            <label className="text-lg font-bold uppercase" htmlFor="carrier_id">
+              TRANSPORTISTA:
             </label>
-            <input
-              autoComplete="off"
-              id="transport"
-              type="text"
-              placeholder={"Nombre de la empresa de transporte"}
-              className="border border-black p-3"
-              {...register("transport", { required: "El nombre de la empresa de transporte es obligatorio" })}
+            <Controller
+              name="carrier_id"
+              control={control}
+              rules={{ required: "Seleccione un transportista" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={transportistasOptions}
+                  id="carrier_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  onChange={(selected) => {
+                    field.onChange(selected?.value)
+                    setTransportistaId(selected?.value ?? '')
+                  }}
+                  value={transportistasOptions.find(
+                    (option) => option.value === field.value
+                  )}
+                />
+              )}
             />
-            {errors.transport && <Error>{errors.transport?.message?.toString()}</Error>}
+            {errors.carrier_id && <Error>{errors.carrier_id?.message?.toString()}</Error>}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="pilot_name">
-              Nombre Piloto:
+          <div>
+            <label className="text-lg font-bold uppercase" htmlFor="driver_id">
+              PILOTOS:
             </label>
-            <input
-              autoComplete="off"
-              id="pilot_name"
-              type="text"
-              placeholder={"Nombre del piloto"}
-              className="border border-black p-3"
-              {...register("pilot_name", { required: "El nombre del piloto es obligatorio" })}
+            <Controller
+              name="driver_id"
+              control={control}
+              rules={{ required: "Seleccione un piloto" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={pilotosOptions}
+                  id="driver_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  onChange={(selected) => field.onChange(selected?.value)}
+                  value={pilotosOptions.find(
+                    (option) => option.value === field.value
+                  )}
+                />
+              )}
             />
-            {errors.pilot_name && <Error>{errors.pilot_name?.message?.toString()}</Error>}
+            {errors.driver_id && <Error>{errors.driver_id?.message?.toString()}</Error>}
           </div>
 
-
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="transport_plate">
-              Placa del transporte:
+          <div>
+            <label className="text-lg font-bold uppercase" htmlFor="plate_id">
+              PLACA:
             </label>
-            <input
-              autoComplete="off"
-              id="transport_plate"
-              type="text"
-              placeholder={"Numero de placa"}
-              className="border border-black p-3"
-              {...register("transport_plate", {
-                required: "La placa es obligatoria"
-              })}
+            <Controller
+              name="plate_id"
+              control={control}
+              rules={{ required: "Seleccione una placa" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={placasOptions}
+                  id="plate_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  onChange={(selected) => field.onChange(selected?.value)}
+                  value={placasOptions.find(
+                    (option) => option.value === field.value
+                  )}
+                />
+              )}
             />
-            {errors.transport_plate && <Error>{errors.transport_plate?.message?.toString()}</Error>}
+            {errors.plate_id && <Error>{errors.plate_id?.message?.toString()}</Error>}
           </div>
 
+          <div>
+            <label className="text-lg font-bold uppercase" htmlFor="productor_plantation_control_id">
+              CDP:
+            </label>
+            <Controller
+              name="productor_plantation_control_id"
+              control={control}
+              rules={{ required: "Seleccione un CDP" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={cdpsOptions}
+                  id="productor_plantation_control_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  onChange={(selected) => field.onChange(selected?.value)}
+                  value={cdpsOptions.find(
+                    (option) => option.value === field.value
+                  )}
+                />
+              )}
+            />
+            {errors.productor_plantation_control_id && <Error>{errors.productor_plantation_control_id?.message?.toString()}</Error>}
+          </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="inspector_name">
@@ -244,21 +374,6 @@ export default function Boleta_form1() {
               {...register("inspector_name", { required: "El nombre del inspector es obligatorio" })}
             />
             {errors.inspector_name && <Error>{errors.inspector_name?.message?.toString()}</Error>}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="cdp">
-              CDP:
-            </label>
-            <input
-              autoComplete="off"
-              id="cdp"
-              type="text"
-              placeholder={"Control de Plantación"}
-              className="border border-black p-3"
-              {...register("cdp", { required: "El CDP es obligatorio" })}
-            />
-            {errors.cdp && <Error>{errors.cdp?.message?.toString()}</Error>}
           </div>
 
           <div className="flex flex-col gap-2">

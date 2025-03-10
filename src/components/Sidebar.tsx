@@ -20,6 +20,7 @@ export function Sidebar() {
     auxagricola: <AgricolaNavegation />,
     pprod: <CalidadNavegation />,
     pcalidad: <CalidadNavegation />,
+    admincalidad: <CalidadNavegation /> ,
     pcostos: <CalidadNavegation />
   };
 

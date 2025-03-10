@@ -1,6 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { Boleta, BoletasPaginate, DraftBoletaRMP, DraftFormProd, BoletaDetail, DraftBoletaCalidad, ResultBoletaCalidad } from "@/types";
 import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletasPaginateSchema, BoletasSchema } from "@/utils/boletarmp-schema";
+import { z } from "zod";
 
 
 export async function createBoletaRMP(data: DraftBoletaRMP): Promise<void | string[]> {
@@ -111,6 +112,33 @@ export async function rejectBoleta(id: Boleta['id']){
     try {
         const url = `/api/boleta-rmp/${id}/reject`;
         await clienteAxios(url);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const QualityStatusSchema = z.object({
+    id: z.string(),
+    name: z.string()
+});
+
+export type QualityStatus = z.infer<typeof QualityStatusSchema>
+
+export const QualityStatusesSchema = z.object({
+    data: z.array(QualityStatusSchema)
+});
+
+export async function getQualityStatuses() : Promise<QualityStatus[]>{
+    try {
+        const url = `/api/quality-statuses`;
+        const { data } = await clienteAxios(url);
+        const result = QualityStatusesSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
     } catch (error) {
         console.log(error);
         throw error;

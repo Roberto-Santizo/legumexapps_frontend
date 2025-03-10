@@ -25,17 +25,17 @@ export default function Boleta_form2({ boleta }: Props) {
   const receptor_signature = useRef({} as SignatureCanvas);
   const [baskets, setBaskets] = useState<Basket[]>([]);
   const navigate = useNavigate();
-  
-  const { data,isLoading,isError } = useQuery({
-    queryKey:['getAllBaskets'],
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['getAllBaskets'],
     queryFn: getAllBaskets
   });
-  
-  useEffect(()=>{
-    if(data){
+
+  useEffect(() => {
+    if (data) {
       setBaskets(data);
     }
-  },[data])
+  }, [data])
 
   const basketsOptions = baskets.map((basket) => ({
     value: basket.id,
@@ -62,34 +62,12 @@ export default function Boleta_form2({ boleta }: Props) {
     }
   }
 
-  if(isError) return <ShowErrorAPI />
-  if(isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+  if (isLoading) return <Spinner />
   return (
     <>
       {loading ? <Spinner /> : (
         <>
-          <div>
-            <div className="space-y-10">
-              <div className="mt-5 shadow-xl p-5 space-y-5">
-                <p className="font-bold text-xl uppercase">Información de Campo</p>
-                <div className="grid grid-cols-4 gap-2 text-xl">
-                  <p className="bg-gray-200 p-5"><span className="font-bold">Producto: </span>{boleta.product}</p>
-                  <p className="bg-gray-200 p-5"><span className="font-bold">Variedad: </span>{boleta.variety}</p>
-                  <p className="bg-gray-200 p-5"><span className="font-bold">CDP: </span>{boleta.cdp}</p>
-                  <p className="bg-gray-200 p-5"><span className="font-bold">Peso Bruto: </span>{boleta.gross_weight} lbs</p>
-                  <p className="bg-gray-200 p-5"><span className="font-bold">Cantidad de canastas: </span>{boleta.total_baskets}</p>
-                  <p className="bg-gray-200 p-5"><span className="font-bold">Tara: </span>{boleta.weight_baskets} lbs</p>
-                  <p className="bg-gray-200 p-5"><span className="font-bold">Peso Materia Prima: </span>{boleta.net_weight} lbs</p>
-                  <p className="bg-gray-200 p-5"><span className="font-bold">Porcentaje de Campo: </span>{boleta.percentage_field} %</p>
-                </div>
-              </div>
-
-              <div>
-                <p className="font-bold text-xl uppercase">Información de Planta</p>
-              </div>
-            </div>
-          </div>
-
           <div>
             <form className="mt-10 w-1/2 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-2">
