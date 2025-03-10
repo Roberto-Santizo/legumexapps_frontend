@@ -17,7 +17,12 @@ export const DraftBoletaSchema = z.object({
     // prod_signature: z.string(),
     calidad_signature: z.string(),
     basket_id: z.string(),
-    date: z.string()
+    date: z.string(),
+    carrier_id: z.string(),
+    productor_plantation_control_id: z.string(),
+    driver_id: z.string(),
+    plate_id: z.string(),
+    ref_doc: z.string()
 });
 
 export const DraftBoletaControlCalidadSchema = z.object({
@@ -114,6 +119,7 @@ export const defectSchema = z.object({
 
 export const fieldDataSchema = z.object({
   id: z.string(),
+  ref_doc: z.string(),
   producer_id: z.string(),
   producer_code: z.number(),
   product_id: z.string(),

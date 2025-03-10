@@ -15,14 +15,7 @@ import ShowErrorAPI from "@/components/ShowErrorAPI";
 import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-
-const classes: { [key: number]: string } = {
-    1: 'bg-orange-500',
-    2: 'bg-indigo-500',
-    3: 'bg-yellow-500',
-    4: 'bg-green-500',
-    5: 'bg-red-500'
-}
+import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
 export default function IndexRMP() {
 
@@ -102,8 +95,8 @@ export default function IndexRMP() {
                 Boletas Recepción de Materia Prima
             </h2>
 
-            <div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-5">
-                {(role === 'pcalidad' || role === 'admin') && (
+            <div className="flex flex-col items-end gap-3 mt-10">
+                {(role === 'admincalidad' || role === 'admin') && (
                     <Link
                         to="/rmp/crear"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
@@ -123,13 +116,9 @@ export default function IndexRMP() {
                 <table className="table min-w-full">
                     <thead>
                         <tr className="thead-tr">
-                            <th className="thead-th">CDP</th>
                             <th className="thead-th">GRN</th>
                             <th className="thead-th">Placa</th>
                             <th className="thead-th">Producto</th>
-                            <th className="thead-th">Finca</th>
-                            <th className="thead-th">Variedad</th>
-                            <th className="thead-th">Coordinador</th>
                             <th className="thead-th">Fecha</th>
                             <th className="thead-th">Estado</th>
                             <th className="thead-th">Consignación</th>
@@ -139,18 +128,12 @@ export default function IndexRMP() {
                     <tbody>
                         {boletas.map(boleta => (
                             <tr key={boleta.id} className="tbody-tr text-sm md:text-base">
-                                <td className="tbody-td">{boleta.cdp}</td>
-                                <td className="tbody-td">{boleta.grn}</td>
+                                <td className="tbody-td">{boleta.grn ?? 'SIN GRN'}</td>
                                 <td className="tbody-td">{boleta.plate}</td>
                                 <td className="tbody-td">{boleta.product}</td>
-                                <td className="tbody-td">{boleta.finca}</td>
-                                <td className="tbody-td">{boleta.variety}</td>
-                                <td className="tbody-td">{boleta.coordinator}</td>
                                 <td className="tbody-td">{boleta.date}</td>
-                                <td className="tbody-td text-center px-2 md:px-4 whitespace-nowrap overflow-hidden text-ellipsis">
-                                    <span className={`button ${classes[boleta.quality_status_id]} text-xs md:text-sm px-2 py-1 rounded-lg`}>
-                                        {boleta.status}
-                                    </span>
+                                <td className="tbody-td">
+                                    <StatusComponent id={boleta.quality_status_id} tag={boleta.status} />
                                 </td>
 
                                 <td className="tbody-td">
@@ -178,7 +161,7 @@ export default function IndexRMP() {
                                             <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
                                         )}
 
-                                        {(role === 'pcalidad' && boleta.quality_status_id !== 5) && (
+                                        {((role === 'pcalidad' || role == 'admin') && boleta.quality_status_id === 4) && (
                                             <RefreshCcwDot className="cursor-pointer hover:text-gray-500" onClick={() => handleRejectBoleta(boleta.id)} />
                                         )}
 

@@ -8,6 +8,7 @@ import Spinner from "../Spinner";
 
 import { getAllProducers } from "@/api/ProducersAPI";
 import { useQueries } from "@tanstack/react-query";
+import { getQualityStatuses, QualityStatus } from "@/api/ReceptionsDocAPI";
 
 type Props = {
     filters: FiletrsBoletaRMP;
@@ -21,13 +22,15 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
     const [fincas, setFincas] = useState<Finca[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [producers, setProducers] = useState<Producer[]>([]);
+    const [statuses, setStatuses] = useState<QualityStatus[]>([]);
     const [tempFilters, setTempFilters] = useState<FiletrsBoletaRMP>({} as FiletrsBoletaRMP);
 
     const results = useQueries({
         queries: [
             { queryKey: ['getAllFincas'], queryFn: getAllFincas },
             { queryKey: ['getProducts'], queryFn: getProducts },
-            { queryKey: ['getAllProducers'], queryFn: getAllProducers }
+            { queryKey: ['getAllProducers'], queryFn: getAllProducers },
+            { queryKey: ['getQualityStatuses'], queryFn: getQualityStatuses }
         ]
     });
 
@@ -36,6 +39,7 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
             if (results[0].data) setFincas(results[0].data);
             if (results[1].data) setProducts(results[1].data);
             if (results[2].data) setProducers(results[2].data);
+            if (results[3].data) setStatuses(results[3].data);
         }
     }, [results]);
 
@@ -89,17 +93,23 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium">Fecha</label>
-                        <input type="date" name="date" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.date} />
+                        <input autoComplete="off" type="date" name="date" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.date} />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium">Placa</label>
-                        <input name="plate" placeholder="Ej. C123ABC" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.plate} />
+                        <input autoComplete="off" name="plate" placeholder="Ej. C123ABC" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.plate} />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium">GRN</label>
-                        <input name="grn" placeholder="Ej. LT0001" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.plate} />
+                        <input autoComplete="off" name="grn" placeholder="Ej. LT0001" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.grn} />
+                    </div>
+
+                    
+                    <div>
+                        <label className="block text-sm font-medium">Documento Referencia</label>
+                        <input autoComplete="off" name="ref_doc" placeholder="Ej. LT0001" type="text" className="w-full border p-2 rounded" onChange={(e) => handleFilterTempChange(e)} value={tempFilters.ref_doc} />
                     </div>
 
                     <div>
@@ -114,6 +124,23 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
                             {fincas.map((finca) => (
                                 <option key={finca.id} value={finca.id}>
                                     {finca.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium">Estado</label>
+                        <select
+                            className="w-full border p-2 rounded"
+                            name="quality_status_id"
+                            onChange={(e) => handleFilterTempChange(e)}
+                            value={tempFilters.quality_status_id}
+                        >
+                            <option value="">Todas</option>
+                            {statuses.map((status) => (
+                                <option key={status.id} value={status.id}>
+                                    {status.name}
                                 </option>
                             ))}
                         </select>

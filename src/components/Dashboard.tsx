@@ -11,13 +11,15 @@ import GeneralDashboard from "../views/admin/GeneralDashboards";
 import CalidadDashboard from "../views/calidad/CalidadDashboard";
 import ProduccionCDashboard from "../views/calidad/ProduccionCDashboard";
 import CostosDashboard from "../views/calidad/CostosDashboard";
+import PersonalCalidadDashboard from "../views/calidad/PersonalCalidadDashboard";
 
 export default function Dashboard() {
   const dashboards = {
     'admin': (<GeneralDashboard />),
     'adminagricola':  (<AgricolaDashboard />),
     'auxagricola': (<AgricolaDashboard />),
-    'pcalidad': (<CalidadDashboard />),
+    'pcalidad': (<PersonalCalidadDashboard />),
+    'admincalidad': (<CalidadDashboard />),
     'pprod': (<ProduccionCDashboard />),
     'pcostos': (<CostosDashboard />),
   };
