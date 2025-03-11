@@ -1,25 +1,32 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
 import Error from "@/components/Error";
+import { createLinea, DraftLinea } from "@/api/LineasAPI";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateSKU() {
+  const navigate = useNavigate();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createLinea,
+    onError: () => {
+      toast.error('Hubo un error al crear la linea');
+    },
+    onSuccess: () => {
+      toast.success('Linea creada correctamente');
+      navigate('/lineas');
+    }
+  });
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<DraftLinea>();
 
-  const [isPending, setIsPending] = React.useState(false);
-
-  const onSubmit = (data: any) => {
-    setIsPending(true);
-    toast.success("Línea creada con éxito");
-    console.log(data);
-    setIsPending(false);
-  };
+  const onSubmit = (data: DraftLinea) => mutate(data) 
 
   return (
     <>
@@ -38,9 +45,9 @@ export default function CreateSKU() {
               autoComplete="off"
               id="code"
               type="text"
-              placeholder="Ingrese el código del SKU"
+              placeholder="Codificación de la línea"
               className="border border-black p-3"
-              {...register("code", { required: "El código del SKU es obligatorio" })}
+              {...register("code", { required: "La codificación de la línea es obligatoria" })}
             />
             {errors.code?.message && <Error>{String(errors.code.message)}</Error>}
           </div>
@@ -71,7 +78,7 @@ export default function CreateSKU() {
             {isPending ? (
               <Spinner />
             ) : (
-              <p className="font-bold text-lg">Crear Condición</p>
+              <p className="font-bold text-lg">Crear Linea</p>
             )}
           </Button>
         </form>

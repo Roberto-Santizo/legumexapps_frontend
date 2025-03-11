@@ -1,55 +1,107 @@
+import Spinner from "@/components/Spinner";
+import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation,useQuery } from "@tanstack/react-query";
+import Error from "@/components/Error";
+import { DraftLinea, getLineaById, updateLinea } from "@/api/LineasAPI";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function EditarLinea() {
-  const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+  const params = useParams();
+  const id = params.id!!;
 
-  const onSubmit = (data: any) => {
-    console.log("Datos actualizados:", data);
-    navigate("/lineas");
-  };
+  const {data,isLoading,isError} = useQuery({
+    queryKey:['getLineaById',id],
+    queryFn: () => getLineaById(id)
+  });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: DraftLinea) => updateLinea(data, id),
+    onError: () => {
+      toast.error('Hubo un error al actualizar la linea');
+    },
+    onSuccess: () => {
+      toast.success('Linea actualizada correctamente');
+      navigate('/lineas');
+    }
+  });
+
+  const { 
+    register,
+    setValue, 
+    handleSubmit, 
+    formState: { errors } 
+  } = useForm<DraftLinea>();
+
+  useEffect(()=>{
+    if(data){
+      setValue('code',data.code);
+      setValue('total_persons',data.total_persons);
+    }
+  },[data]);
+
+  const onSubmit = (data: DraftLinea) => mutate(data);
+
+  if(isLoading) return <Spinner />
+  if(isError) return <ShowErrorAPI/>
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-5">Editar Línea</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Código</label>
-          <input
-            type="text"
-            {...register("codigo", { required: true })}
-            className="w-full border rounded-lg p-2"
-            defaultValue="1" 
-          />
-        </div>
+    <>
+      <h2 className="text-3xl font-bold mb-5">Editar Linea</h2>
+      <div>
+        <form
+          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="code">
+              Código:
+            </label>
+            <input
+              autoComplete="off"
+              id="code"
+              type="text"
+              placeholder="Codificación de la línea"
+              className="border border-black p-3"
+              {...register("code", { required: "La codificación de la línea es obligatoria" })}
+            />
+            {errors.code?.message && <Error>{String(errors.code.message)}</Error>}
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium">Total de personas</label>
-          <input
-            type="number"
-            {...register("totalPersonas", { required: true })}
-            className="w-full border rounded-lg p-2"
-            defaultValue="1" 
-          />
-        </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="total_persons">
+              Total de personas:
+            </label>
+            <input
+              autoComplete="off"
+              id="total_persons"
+              type="number"
+              placeholder="Ingrese el total de personas"
+              className="border border-black p-3"
+              {...register("total_persons", { required: "El total de personas es obligatorio" })}
+            />
+            {errors.total_persons?.message && <Error>{String(errors.total_persons.message)}</Error>}
+          </div>
 
-        <div className="flex justify-end gap-4">
-          <button
-            type="button"
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-            onClick={() => navigate("/lineas")}
-          >
-            Cancelar
-          </button>
-          <button
+          <Button
+            disabled={isPending}
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ marginTop: 2 }}
           >
-            Guardar Cambios
-          </button>
-        </div>
-      </form>
-    </div>
+            {isPending ? (
+              <Spinner />
+            ) : (
+              <p className="font-bold text-lg">Editar Linea</p>
+            )}
+          </Button>
+        </form>
+      </div>
+    </>
   );
 }

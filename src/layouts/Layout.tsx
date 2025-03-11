@@ -17,9 +17,10 @@ export default function Layout() {
   return (
     <>
       <div className="flex h-screen bg-gray-100">
-        <div className="hidden lg:block">
+        <div className="hidden lg:block max-h-screen overflow-y-auto scrollbar-hide">
           <Sidebar />
         </div>
+
 
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header />
