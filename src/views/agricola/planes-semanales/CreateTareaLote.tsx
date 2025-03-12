@@ -1,40 +1,81 @@
 import { useEffect, useState } from "react";
 import { useAppStore } from "@/stores/useAppStore";
 import { DraftCreateTaskWeeklyPlan, Lote, Tarea, WeeklyPlan } from "@/types";
-import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import Error from "@/components/Error";
 import { Button } from "@mui/material";
-import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
-
 import { getAllPlans } from "@/api/WeeklyPlansAPI";
 import { getAllLotes } from "@/api/LotesAPI";
 import { getAllTasks } from "@/api/TasksAPI";
+import { useQueries } from "@tanstack/react-query";
+import { Delete, PlusIcon } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import ModalAddInsumo from "@/components/ModalAddInsumo";
+import Spinner from "@/components/Spinner";
+import { toast } from "react-toastify";
+
+export type DraftSelectedInsumo = {
+  insumo_id: string,
+  quantity: string,
+  name: string
+}
 
 export default function CreateTareaLote() {
-  const [loading, setLoading] = useState<boolean>(true);
   const [lotes, setLotes] = useState<Lote[]>([]);
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [plans, setPlans] = useState<WeeklyPlan[]>([]);
+  const [selectedInsumos, setSelectedInsumos] = useState<DraftSelectedInsumo[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
-  const createTaskWeeklyPlan = useAppStore(
-    (state) => state.createTaskWeeklyPlan
-  );
+
+  const createTaskWeeklyPlan = useAppStore((state) => state.createTaskWeeklyPlan);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: ({ data, selectedInsumos }: { data: DraftCreateTaskWeeklyPlan, selectedInsumos: DraftSelectedInsumo[] }) => createTaskWeeklyPlan(data, selectedInsumos),
+    onError: () => {
+      toast.error('Hubo un error al crear la tarea, vuelva a intentarlo más tarde')
+    },
+    onSuccess: () => {
+      toast.success('Tarea Creada Correctamente');
+      navigate('/planes-semanales');
+    }
+  });
+  const results = useQueries({
+    queries: [
+      { queryKey: ['getAllLotes'], queryFn: getAllLotes },
+      { queryKey: ['getAllTasks'], queryFn: getAllTasks },
+      { queryKey: ['getAllPlans'], queryFn: getAllPlans }
+    ]
+  })
+
+  useEffect(() => {
+    if (results[0].data) setLotes(results[0].data)
+    if (results[1].data) setTareas(results[1].data)
+    if (results[2].data) setPlans(results[2].data)
+  }, [results])
+
+  useEffect(() => {
+    console.log(selectedInsumos);
+  }, [selectedInsumos])
+
 
   const lotesOptions = lotes.map((lote) => ({
     value: lote.id,
     label: lote.name,
   }));
+
   const tareasOptions = tareas.map((lote) => ({
     value: lote.id,
     label: `${lote.code} ${lote.name}`,
   }));
+
   const plansOptions = plans.map((plan) => ({
     value: plan.id,
     label: `${plan.finca} - ${plan.week}`,
   }));
+
   const {
     register,
     handleSubmit,
@@ -42,37 +83,12 @@ export default function CreateTareaLote() {
     formState: { errors },
   } = useForm<DraftCreateTaskWeeklyPlan>();
 
-  const handleGetInfo = async () => {
-    try {
-      const lotes = await getAllLotes();
-      const tareas = await getAllTasks();
-      const plans = await getAllPlans();
-      setLotes(lotes);
-      setTareas(tareas);
-      setPlans(plans);
-    } catch (error) {
-      toast.error("Hubo un error al traer la información");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const deleteItem = (insumo_id: DraftSelectedInsumo['insumo_id']) => {
+    const newSelectedItems = selectedInsumos.filter(insumo => insumo.insumo_id != insumo_id);
+    setSelectedInsumos(newSelectedItems)
+  }
 
-  useEffect(() => {
-    handleGetInfo();
-  }, []);
-
-  const CreateTareaLote = async (data: DraftCreateTaskWeeklyPlan) => {
-    setLoading(true);
-    try {
-      await createTaskWeeklyPlan(data);
-      navigate('/planes-semanales');
-      toast.success("Tarea Creada Correctamente");
-    } catch (error) {
-      toast.error("Existe un error al guardar la tarea, verifique los datos");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const CreateTareaLote = async (data: DraftCreateTaskWeeklyPlan) => mutate({ data, selectedInsumos });
   return (
     <>
       <div className="my-10 w-1/2 mx-auto">
@@ -260,15 +276,47 @@ export default function CreateTareaLote() {
             )}
           </div>
 
+          <fieldset className="border p-5">
+            <legend className="font-bold text-3xl">Insumos</legend>
+            <button type="button" className="button bg-blue-500 hover:bg-blue-600 flex" onClick={() => setOpen(true)}>
+              <PlusIcon />
+              <p>Agregar Insumo</p>
+            </button>
+
+            {selectedInsumos.length > 0 ? (
+              <table className="table mt-5">
+                <thead>
+                  <tr className="thead-tr">
+                    <th className="thead-th">Insumo</th>
+                    <th className="thead-th">Cantidad</th>
+                    <th className="thead-th">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedInsumos.map(item => (
+                    <tr className="tbody-tr" key={item.insumo_id}>
+                      <td className="tbody-td">{item.name}</td>
+                      <td className="tbody-td">{item.quantity}</td>
+                      <td className="tbody-td">
+                        <Delete className="cursor-pointer hover:text-gray-500" onClick={() => deleteItem(item.insumo_id)} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (<p className="mt-5 text-center">No existen insumos relacionados</p>)}
+
+          </fieldset>
+
           <Button
-            disabled={loading}
+            disabled={isPending}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loading ? (
+            {isPending ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Tarea Lote</p>
@@ -276,6 +324,8 @@ export default function CreateTareaLote() {
           </Button>
         </form>
       </div>
+
+      <ModalAddInsumo open={open} setOpen={setOpen} setSelectedInsumos={setSelectedInsumos} />
     </>
   );
 }

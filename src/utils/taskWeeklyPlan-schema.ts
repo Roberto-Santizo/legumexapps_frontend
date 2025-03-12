@@ -97,5 +97,5 @@ export const DraftTaskWeeklyPlan = z.object({
   workers_quantity: z.string(),
   budget: z.string(),
   hours: z.string(),
-  extraordinary: z.string()
+  extraordinary: z.string(),
 });

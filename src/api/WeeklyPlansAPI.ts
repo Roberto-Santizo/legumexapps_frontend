@@ -78,3 +78,18 @@ export async function downloadWeeklyPlanReport(weekly_plans_ids: WeeklyPlan['id'
         throw error;
     }
 }
+
+export async function downloadReportInsumos(weekly_plan_id: WeeklyPlan['id']): Promise<void> {
+    try {
+        const url = `/api/report/insumos/${weekly_plan_id}`;
+        const { data } = await clienteAxios(url);
+        const result = ReportSchema.safeParse(data);
+        if (result.success) {
+            downloadBase64File(result.data.file, result.data.fileName)
+        } else {
+            throw new Error('Información no válida');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
