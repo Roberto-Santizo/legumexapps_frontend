@@ -7,6 +7,8 @@ import Pagination from "@/components/Pagination";
 import { Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Link } from "react-router-dom";
+import { PlusIcon } from "lucide-react";
+
 
 export default function IndexPlanSemanalProduccion() {
     const [pageCount, setPageCount] = useState<number>(0);
@@ -35,6 +37,17 @@ export default function IndexPlanSemanalProduccion() {
     return (
         <>
             <h1 className="font-bold text-4xl">Plan Semanal Produccion</h1>
+            <div className="flex flex-row justify-end gap-5 mb-5">
+                <div className="flex flex-row justify-end gap-5">
+                    <Link
+                        to="/plan-semana-produccion/crear"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                    >
+                        <PlusIcon className="w-8" />
+                        <p>crear plan semanal</p>
+                    </Link>
+                </div>
+            </div>
 
             <div className="mt-10">
                 <table className="table">
@@ -49,12 +62,12 @@ export default function IndexPlanSemanalProduccion() {
                     <tbody>
                         {plans.map(plan => (
                             <tr className="tbody-tr" key={plan.id}>
-                                <td className="tbody-td"><CheckBadgeIcon className="w-8 text-green-500"/></td>
+                                <td className="tbody-td"><CheckBadgeIcon className="w-8 text-green-500" /></td>
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
                                 <td className="tbody-td">
                                     <Link to={`/plan-semana-produccion/${plan.id}`}>
-                                        <Eye className="cur"/>
+                                        <Eye className="cur" />
                                     </Link>
                                 </td>
                             </tr>

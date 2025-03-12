@@ -6,6 +6,7 @@ import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
 const routes = [
   { path: "/plan-semana-produccion", component: lazy(() => import("../views/produccion/planes_semanales/IndexPlanSemanalProduccion")), roles: ['admin'] },
+  { path: "/plan-semana-produccion/crear", component: lazy(() => import("../views/produccion/planes_semanales/CreatePlanSemanal")), roles: ['admin'] },
 
   { path: "/plan-semana-produccion/:plan_id", component: lazy(() => import("../views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin'] },
 
@@ -19,7 +20,7 @@ const routes = [
 
 
   { path: "/tareas/TaskPeople", component: lazy(() => import("../views/produccion/Tareas/TaskPeople")), roles: ['admin'] },
-
+  
 ];
 
 export default function ProduccionRoutes() {
