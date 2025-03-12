@@ -40,7 +40,7 @@ export default function IndexPlanSemanalProduccion() {
             <div className="flex flex-row justify-end gap-5 mb-5">
                 <div className="flex flex-row justify-end gap-5">
                     <Link
-                        to="/plan-semana-produccion/crear"
+                        to="/planes-produccion/crear"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                     >
                         <PlusIcon className="w-8" />
@@ -66,7 +66,7 @@ export default function IndexPlanSemanalProduccion() {
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
                                 <td className="tbody-td">
-                                    <Link to={`/plan-semana-produccion/${plan.id}`}>
+                                    <Link to={`/planes-produccion/${plan.id}`}>
                                         <Eye className="cur" />
                                     </Link>
                                 </td>

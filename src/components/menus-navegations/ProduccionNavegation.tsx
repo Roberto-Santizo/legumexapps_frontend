@@ -5,7 +5,7 @@ export default function ProduccionNavigation() {
   return (
     <>
       <NavLink
-        to={"/plan-semana-produccion"}
+        to={"/planes-produccion"}
         className={({ isActive }) =>
           `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
             isActive ? "bg-gray-200" : "hover:bg-gray-200"

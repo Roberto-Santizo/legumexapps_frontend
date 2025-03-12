@@ -1,18 +1,14 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
-
-import { createPlan } from "@/api/WeeklyPlansAPI";//Verificar esta importacion para que funcione correctamente
-
-//COMPONENTES
+import { createProductionPlan } from "@/api/WeeklyProductionPlanAPI";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CreatePlanSemanal() {
   const [file, setFile] = useState<File[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -23,20 +19,22 @@ export default function CreatePlanSemanal() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleCreatePlan = async () => {
-    setLoading(true);
-    if (file) {
-      const error = await createPlan(file);
-      if (error) {
-        toast.error(error);
-        setLoading(false);
-        return;
-      }
-      navigate("/planes-semanales");
-      toast.success("Plan Creado Correctamente");
+  const {mutate,isPending} = useMutation({
+    mutationFn: (file : File[]) => createProductionPlan(file),
+    onError: () => {
+      toast.error('Hubo un error al crear el plan semanal');
+    },
+    onSuccess: () => {
+      toast.success('Plan creado correctamente');
+      navigate('/planes-produccion');
     }
-    setLoading(false);
-  };
+  });
+
+  const handleCreatePlan = async () => {
+    if(file){
+      mutate(file)
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +43,7 @@ export default function CreatePlanSemanal() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear Plan Semanal</h2>
+      <h2 className="text-4xl font-bold">Crear Plan Semanal de Producción</h2>
       <form className="w-1/2 mx-auto" onSubmit={handleSubmit}>
         <div
           className="mt-5"
@@ -58,7 +56,7 @@ export default function CreatePlanSemanal() {
             backgroundColor: isDragActive ? "#e3f2fd" : "#f9f9f9",
           }}
         >
-          <input {...getInputProps()} disabled={loading || !!file} />
+          <input {...getInputProps()} disabled={isPending || !!file} />
           {file ? (
             <p className="text-green-600 font-medium">
               Archivo: {file[0].name}
@@ -80,12 +78,12 @@ export default function CreatePlanSemanal() {
           color="primary"
           fullWidth
           sx={{ marginTop: 2 }}
-          disabled={!file || loading}
+          disabled={!file || isPending}
         >
-          {loading ? (
+          {isPending ? (
             <Spinner />
           ) : (
-            <p className="font-bold text-lg">Crear Plan Semanal</p>
+            <p className="font-bold text-lg">Crear Plan</p>
           )}
         </Button>
       </form>

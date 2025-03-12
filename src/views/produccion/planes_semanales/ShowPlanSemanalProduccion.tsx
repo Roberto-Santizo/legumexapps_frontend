@@ -1,34 +1,36 @@
-import TaskLabel from "../../../components/TaskLabel";
-import {
-  CircleCheck,
-  CirclePause,
-  PlayCircleIcon,
-} from "lucide-react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getWeeklyPlanDetails } from "@/api/WeeklyProductionPlanAPI";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function ShowPlanSemanalProduccion() {
-  // const params = useParams();
+  const params = useParams();
+  const id = params.plan_id!!;
+
+  const { data: assignment, isLoading, isError } = useQuery({
+    queryKey: ['getWeeklyPlanDetails'],
+    queryFn: () => getWeeklyPlanDetails(id)
+  });
+
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
 
   return (
-    <div className="grid grid-cols-6 shadow-xl p-10 text-xl">
-    <div className="col-span-5">
-      <TaskLabel label={"ID"} text={"Insertar dato aca"}/>
-      <TaskLabel label={"Linea"} text={"Insertar dato aca"}/>
-      <TaskLabel label={"Total de tarimas"} text={"Insertar dato aca"}/>
-      <TaskLabel label={"Dia de operacion"} text={"Insertar dato aca"}/>
-      <TaskLabel label={"Fecha de inicio"} text={"Insertar dato aca"}/>
-      <TaskLabel label={"Fecha de Asignacion"} text={"Insertar dato aca"}/>
-      <TaskLabel label={"Fecha de cierre"} text={"Insertar dato aca"}/>
-      <TaskLabel label={"Horas totales"} text={"Insertar dato aca"}/>
-    </div>
+    <div className="w-full">
+      <h2 className="font-bold text-3xl mb-10">Lineas Asignadas</h2>
 
-    <div className="col-start-7 space-y-5">
-      <div className="flex flex-col justify-center items-center gap-4">
-        <PlayCircleIcon className="cursor-pointer text-green-500 hover:text-green-400" /> 
-        <CircleCheck className="cursor-pointer hover:text-green-400" />
-        <CirclePause className="cursor-pointer text-orange-500 hover:text-orange-800" />
+      <div className="p-5 space-y-10">
+        {assignment?.map(assigment => (
+          <div key={assigment.id} className="p-5 grid grid-cols-8 shadow-xl">
+            <p className="col-span-7 text-2xl font-bold">{assigment.line}</p>
+            <div>
+                optiones
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-  </div>
   )
 }
 
