@@ -3,6 +3,7 @@ import clienteAxios from "../config/axios";
 import { DraftCreateTaskWeeklyPlan, DraftTaskWeeklyPlan, Employee, TaskInsumo, TasksWeeklyPlan, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "../types";
 import { TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from "../utils/taskWeeklyPlan-schema";
 import { EmployeesSchema } from "../utils/employee-schema";
+import { DraftSelectedInsumo } from "views/agricola/planes-semanales/CreateTareaLote";
 
 export type TaskWeeklyPlanSliceType = {
 
@@ -13,7 +14,7 @@ export type TaskWeeklyPlanSliceType = {
 
     getTasks: (id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) => Promise<void>
     getTask: (id: TaskWeeklyPlan['id']) => Promise<TaskWeeklyPlan>
-    createTaskWeeklyPlan: (data: DraftCreateTaskWeeklyPlan) => Promise<void>
+    createTaskWeeklyPlan: (data: DraftCreateTaskWeeklyPlan, insumos: DraftSelectedInsumo[]) => Promise<void>
     getEmployees: (id: TaskWeeklyPlan['finca_id']) => Promise<Employee[]>
     closeAssigment: (Employees: Employee[], task_id: TaskWeeklyPlan['id']) => Promise<void>
     closeAssigmentDron: (task_id: TaskWeeklyPlan['id']) => Promise<void>
@@ -72,10 +73,13 @@ export const createTaskWeeklyPlanSlice: StateCreator<TaskWeeklyPlanSliceType> = 
         }
     },
 
-    createTaskWeeklyPlan: async (data) => {
+    createTaskWeeklyPlan: async (data,selectedInsumos) => {
         try {
             const url = '/api/tasks-lotes';
-            await clienteAxios.post(url,data);
+            await clienteAxios.post(url,{
+                data,
+                insumos: selectedInsumos
+            });
         } catch (error) {
             throw error;
         }

@@ -1,6 +1,7 @@
 import clienteAxios from "@/config/axios";
-import { DraftInsumo } from "@/types";
+import { DraftInsumo, Insumo } from "@/types";
 import { InsumosSchema } from "@/utils/insumos-schema";
+import { z } from "zod";
 
 export async function createInsumo(data: DraftInsumo): Promise<void | string[]> {
     try {
@@ -33,6 +34,34 @@ export async function getPaginatedInsumos(page: number) {
             throw new Error("Información no válida");
         }
     } catch (error) {
+        throw error;
+    }
+}
+
+export const InsumoSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    code: z.string(),
+    measure: z.string()
+});
+
+export const AllInsumosSchema = z.object({
+    data: z.array(InsumoSchema)
+});
+
+
+export async function getAllInsumos() : Promise<Insumo[]> {
+    try {
+        const url = '/api/insumos';
+        const { data } = await clienteAxios(url);
+        const result = AllInsumosSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
         throw error;
     }
 }

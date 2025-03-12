@@ -10,13 +10,13 @@ const routes = [
 
   { path: "/plan-semana-produccion/:plan_id", component: lazy(() => import("../views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin'] },
 
-  { path: "/sku/createSKU", component: lazy(() => import("../views/produccion/sku/CreateSKU")), roles: ['admin'] },
-  { path: "/sku/IndexSKU", component: lazy(() => import("../views/produccion/sku/IndexSKU")), roles: ['admin'] },
-  { path: "/sku/ModalSku", component: lazy(() => import("../views/produccion/sku/ModalSku")), roles: ['admin'] },
+  { path: "/skus", component: lazy(() => import("../views/produccion/sku/IndexSKU")), roles: ['admin'] },
+  { path: "/skus/crear", component: lazy(() => import("../views/produccion/sku/CreateSKU")), roles: ['admin'] },
+  // { path: "/skus/ModalSku", component: lazy(() => import("../views/produccion/sku/ModalSku")), roles: ['admin'] },
 
-  { path: "/lineas/CrearLinea", component: lazy(() => import("../views/produccion/lineas/CrearLinea")), roles: ['admin'] },
-  { path: "/lineas/IndexLineas", component: lazy(() => import("../views/produccion/lineas/IndexLineas")), roles: ['admin'] },
-  { path: "/lineas/EditarLineas", component: lazy(() => import("../views/produccion/lineas/IndexLineas")), roles: ['admin'] },
+  { path: "/lineas", component: lazy(() => import("../views/produccion/lineas/IndexLineas")), roles: ['admin'] },
+  { path: "/lineas/crear", component: lazy(() => import("../views/produccion/lineas/CrearLinea")), roles: ['admin'] },
+  { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin'] },
 
 
   { path: "/tareas/TaskPeople", component: lazy(() => import("../views/produccion/Tareas/TaskPeople")), roles: ['admin'] },

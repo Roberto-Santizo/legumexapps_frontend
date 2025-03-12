@@ -1,25 +1,32 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
-import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
 import Error from "@/components/Error";
+import { createSKU, DraftSku } from "@/api/SkusAPI";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateSKU() {
+  const navigate  = useNavigate();
+  const { mutate, isPending } = useMutation({
+    mutationFn: createSKU,
+    onError: () => {
+      toast.error('Hubo un error al crear el SKU');
+    },
+    onSuccess: () => {
+      toast.success('SKU Creado Correctamente');
+      navigate('/skus');
+    }
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<DraftSku>();
 
-  const [isPending, setIsPending] = React.useState(false);
-
-  const onSubmit = (data: any) => {
-    setIsPending(true);
-    toast.success("SKU creado con éxito");
-    console.log(data);
-    setIsPending(false);
-  };
+  const onSubmit = (data: DraftSku) => mutate(data);
 
   return (
     <>

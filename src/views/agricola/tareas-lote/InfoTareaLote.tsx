@@ -154,6 +154,9 @@ export default function InfoTareaLote() {
                           <th scope="col" className="thead-th">
                             Cantidad Asignada
                           </th>
+                          <th scope="col" className="thead-th">
+                            Cantidad Utilizada
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -165,6 +168,11 @@ export default function InfoTareaLote() {
                             <td className="tbody-td">
                               <p>
                                 {insumo.assigned_quantity} {insumo.measure}
+                              </p>
+                            </td>
+                            <td className="tbody-td">
+                              <p>
+                                {insumo.used_quantity} {insumo.measure}
                               </p>
                             </td>
                           </tr>

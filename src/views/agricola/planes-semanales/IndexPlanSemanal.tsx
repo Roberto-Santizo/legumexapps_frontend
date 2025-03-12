@@ -1,30 +1,20 @@
-//HOOKS
 import { useEffect, useState } from "react";
 import { useAppStore } from "@/stores/useAppStore";
 import { motion } from "framer-motion";
-
-import { getPaginatedPlans } from "@/api/WeeklyPlansAPI";
-
-//COMPONENTES
+import { downloadReportInsumos, getPaginatedPlans } from "@/api/WeeklyPlansAPI";
 import { Link } from "react-router-dom";
 import { CheckCircle, Download, PlusIcon, Sheet, XIcon } from "lucide-react";
 import { toast } from "react-toastify";
-
 import { downloadWeeklyPlanReport } from "@/api/WeeklyPlansAPI";
-
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import Spinner from "@/components/Spinner";
 import { WeeklyPlan } from "@/types";
 import Pagination from "@/components/Pagination";
+import { formatearQuetzales } from "@/helpers";
+import { useQueries, useMutation } from "@tanstack/react-query";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import { formatearQuetzales } from "../../../helpers";
 
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [loadingDownloadReport, setLoadingDownloadReport] = useState<boolean>(false);
-  const [loadingDownloadSingleReport, setLoadingSingleReport] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
   const [plansId, setPlansId] = useState<WeeklyPlan["id"][]>([]);
   const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
@@ -32,43 +22,46 @@ export default function IndexPlanSemanal() {
   const [role, setRole] = useState<string>("");
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-  const handleGetUserRole = async () => {
-    setLoading(true);
-    try {
-      const role = await getUserRoleByToken();
-      setRole(role);
-    } catch (error) {
-      toast.error("Error al cargar el contenido");
-      setError(false);
-    } finally {
-      setLoading(false);
+  const { mutate: handleDowloadReportMutation, isPending: handleDowloadReportMutationPending } = useMutation({
+    mutationFn: ({ plansId }: { plansId: WeeklyPlan['id'][] }) => downloadWeeklyPlanReport(plansId),
+    onError: () => {
+      toast.error('Hubo un error al descargar')
+    },
+    onSuccess: () => {
+      setSelectingReport(false);
+      setPlansId([]);
     }
-  };
-  const handleGetPlans = async (page: number) => {
-    setLoading(true);
-    try {
-      const plans = await getPaginatedPlans(page);
-      setWeeklyPlans(plans.data);
-      setPageCount(plans.meta.last_page);
-      setCurrentPage(plans.meta.current_page);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
+  });
+
+  const { mutate: HandleDownloadReportInsumosMutation, isPending: HandleDownloadReportInsumosPending } = useMutation({
+    mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadReportInsumos(planId),
+    onError: () => {
+      toast.error('Hubo un error al descargar')
     }
-  };
+  });
+
+  const results = useQueries({
+    queries: [
+      { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken },
+      { queryKey: ['getPaginatedPlans', currentPage], queryFn: () => getPaginatedPlans(currentPage) }
+    ]
+  });
+
+  const isLoading = results.every(query => query.isFetching);
+
+  useEffect(() => {
+    if (results[0].data) setRole(results[0].data);
+    if (results[1].data) {
+      setWeeklyPlans(results[1].data.data);
+      setPageCount(results[1].data.meta.last_page);
+      setCurrentPage(results[1].data.meta.current_page);
+    }
+  }, [results])
+
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
-
-  useEffect(() => {
-    handleGetUserRole();
-  }, [currentPage]);
-
-  useEffect(() => {
-    handleGetPlans(currentPage);
-  }, [currentPage]);
 
   const handleDobleClick = (id: WeeklyPlan["id"]) => {
     setSelectingReport(true);
@@ -86,35 +79,15 @@ export default function IndexPlanSemanal() {
     });
   };
 
-  const handleDowloadReport = async () => {
-    setLoadingDownloadReport(true);
-    try {
-      await downloadWeeklyPlanReport(plansId);
-    } catch (error) {
-      toast.error("Hubo un error al tratar de descargar el archivo");
-    } finally {
-      setLoadingDownloadReport(false);
-      setSelectingReport(false);
-      setPlansId([]);
-    }
-  };
+  const handleDowloadReport = async ({ plansId }: { plansId: WeeklyPlan['id'][] }) => { handleDowloadReportMutation({ plansId }) };
+  const handleDownloadInsumosReport = async (planId: WeeklyPlan['id']) => { HandleDownloadReportInsumosMutation({ planId }) };
 
-  const handleDownloadSingleReport = async (data: string[]) => {
-    setLoadingSingleReport(true);
-    try {
-      await downloadWeeklyPlanReport(data);
-    } catch (error) {
-      toast.error("Hubo un error al tratar de descargar el archivo");
-    } finally {
-      setLoadingSingleReport(false);
-    }
-  };
+  if (isLoading) return <Spinner />
 
   return (
     <>
-      {loadingDownloadSingleReport && <LoadingOverlay />}
       <h2 className="font-bold text-4xl">Planes Semanales</h2>
-
+      {HandleDownloadReportInsumosPending && <LoadingOverlay />}
       {(role === "admin" || role === "adminagricola") && (
         <div className="flex flex-row justify-end gap-5 mb-5">
           <Link
@@ -145,10 +118,10 @@ export default function IndexPlanSemanal() {
         >
           <button
             className="button bg-green-500 hover:bg-green-700 flex gap-2"
-            onClick={() => handleDowloadReport()}
-            disabled={loadingDownloadReport}
+            onClick={() => handleDowloadReport({ plansId })}
+            disabled={handleDowloadReportMutationPending}
           >
-            {loadingDownloadReport ? (
+            {handleDowloadReportMutationPending ? (
               <Spinner />
             ) : (
               <>
@@ -170,114 +143,105 @@ export default function IndexPlanSemanal() {
         </motion.div>
       )}
 
-      {!loading && error && <ShowErrorAPI />}
-      {(loading && weeklyPlans.length === 0) ? <Spinner /> : (
-        <>
-          <table className="table mt-10">
-            <thead>
-              <tr className="thead-tr">
-                {selectingReport && <th scope="col" className="thead-th"></th>}
+      <table className="table mt-10">
+        <thead>
+          <tr className="thead-tr">
+            {selectingReport && <th scope="col" className="thead-th"></th>}
 
+            <th scope="col" className="thead-th">
+              Finca
+            </th>
+            <th scope="col" className="thead-th">
+              Semana
+            </th>
+            <th scope="col" className="thead-th">
+              Año
+            </th>
+            {(role === "admin" || role === "adminagricola") && (
+              <>
                 <th scope="col" className="thead-th">
-                  Finca
+                  Control de Presupuesto
                 </th>
                 <th scope="col" className="thead-th">
-                  Semana
+                  Monto Extraordinario
                 </th>
-                <th scope="col" className="thead-th">
-                  Año
-                </th>
-                {/* <th scope="col" className="thead-th">
-                  Fecha de Creación
-                </th> */}
-                {(role === "admin" || role === "adminagricola") && (
-                  <>
-                    <th scope="col" className="thead-th">
-                      Control de Presupuesto
-                    </th>
-                    <th scope="col" className="thead-th">
-                      Monto Extraordinario
-                    </th>
-                  </>
-                )}
+              </>
+            )}
 
-                <th scope="col" className="thead-th">
-                  Control de Tareas
-                </th>
-                <th scope="col" className="thead-th">
-                  Control de tareas Cosecha
-                </th>
-                <th scope="col" className="thead-th">
-                  Tareas
-                </th>
-                <th scope="col" className="thead-th">
-                  Reporte General
-                </th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {weeklyPlans.map((plan) => (
-                <tr
-                  className="tbody-tr"
-                  key={plan.id}
-                  onDoubleClick={() => handleDobleClick(plan.id)}
+            <th scope="col" className="thead-th">
+              Control de Tareas
+            </th>
+            <th scope="col" className="thead-th">
+              Control de tareas Cosecha
+            </th>
+            <th scope="col" className="thead-th">
+              Acciones
+            </th>
+            <th scope="col" className="thead-th">
+              Reporte de Insumos
+            </th>
+          </tr>
+        </thead>
+        <tbody className="text-sm">
+          {weeklyPlans.map((plan) => (
+            <tr
+              className="tbody-tr"
+              key={plan.id}
+              onDoubleClick={() => handleDobleClick(plan.id)}
+            >
+              {selectingReport && (
+                <td className="p-5">
+                  {plansId.some((p) => p === plan.id) && (
+                    <CheckCircle
+                      className="text-green-600 cursor-pointer hover:text-green-800"
+                      onClick={() => handleDobleClick(plan.id)}
+                    />
+                  )}
+                </td>
+              )}
+              <td className="tbody-td">{plan.finca}</td>
+              <td className="tbody-td">{plan.week}</td>
+              <td className="tbody-td">{plan.year}</td>
+              {(role === "admin" || role === "adminagricola") && (
+                <>
+                  <td className="tbody-td font-bold text-green-500">
+                    {`${formatearQuetzales(plan.used_budget)}/${formatearQuetzales(plan.total_budget)}`}
+                  </td>
+                  <td className="tbody-td font-bold text-green-500">
+                    {`${formatearQuetzales(plan.used_total_budget_ext)}/${formatearQuetzales(plan.total_budget_ext)}`}
+                  </td>
+                </>
+              )}
+              <td className="tbody-td">
+                {`${plan.finished_total_tasks}/${plan.total_tasks}`}
+              </td>
+              <td className="tbody-td">{`${plan.finished_total_tasks_crops}/${plan.total_tasks_crop}`}</td>
+              <td className="tbody-td w-1/5">
+                <Link
+                  to={`/planes-semanales/${plan.finca}/${plan.id}`}
+                  className={`button flex justify-center w-2/3 bg-indigo-500 hover:bg-indigo-600 text-base rounded-lg`}
                 >
-                  {selectingReport && (
-                    <td className="p-5">
-                      {plansId.some((p) => p === plan.id) && (
-                        <CheckCircle
-                          className="text-green-600 cursor-pointer hover:text-green-800"
-                          onClick={() => handleDobleClick(plan.id)}
-                        />
-                      )}
-                    </td>
-                  )}
-                  <td className="tbody-td">{plan.finca}</td>
-                  <td className="tbody-td">{plan.week}</td>
-                  <td className="tbody-td">{plan.year}</td>
-                  {/* <td className="tbody-td">{plan.created_at}</td> */}
-                  {(role === "admin" || role === "adminagricola") && (
-                    <>
-                      <td className="tbody-td font-bold text-green-500">
-                        {`${formatearQuetzales(plan.used_budget)}/${formatearQuetzales(plan.total_budget)}`}
-                      </td>
-                      <td className="tbody-td font-bold text-green-500">
-                        {`${formatearQuetzales(plan.used_total_budget_ext)}/${formatearQuetzales(plan.total_budget_ext)}`}
-                      </td>
-                    </>
-                  )}
-                  <td className="tbody-td">
-                    {`${plan.finished_total_tasks}/${plan.total_tasks}`}
-                  </td>
-                  <td className="tbody-td">{`${plan.finished_total_tasks_crops}/${plan.total_tasks_crop}`}</td>
-                  <td className="tbody-td w-1/5">
-                    <Link
-                      to={`/planes-semanales/${plan.finca}/${plan.id}`}
-                      className="button bg-indigo-500 hover:bg-indigo-600 w-auto"
-                    >
-                      Tareas del Plan
-                    </Link>
-                  </td>
-                  <td className="tbody-td">
-                    <button
-                      onClick={() => handleDownloadSingleReport([plan.id])}
-                    >
-                      <Sheet className="hover:text-gray-400" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="mb-10 flex justify-end">
-            <Pagination
-              currentPage={currentPage}
-              pageCount={pageCount}
-              handlePageChange={handlePageChange}
-            />
-          </div>
-        </>
-      )}
+                  Tareas
+                </Link>
+              </td>
+              <td className="tbody-td">
+                <button
+                  onClick={() => handleDownloadInsumosReport(plan.id)}
+                >
+                  <Sheet className="hover:text-gray-400" />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="mb-10 flex justify-end">
+        <Pagination
+          currentPage={currentPage}
+          pageCount={pageCount}
+          handlePageChange={handlePageChange}
+        />
+      </div>
     </>
   );
 }
