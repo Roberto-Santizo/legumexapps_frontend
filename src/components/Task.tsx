@@ -139,15 +139,11 @@ export default function Task({ task, role }: TaskProps) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          if (task.insumos.length > 0) {
-            openModalAction(task.id);
-          }else{
             await closeTaskDron(id);
 
             if (lote_plantation_control_id && weekly_plan_id) {
               await getTasks(lote_plantation_control_id, weekly_plan_id);
             }
-          }
 
           toast.success("Asignación creada Correctamente");
         } catch (error) {

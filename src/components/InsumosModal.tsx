@@ -19,11 +19,10 @@ export default function InsumosModal() {
   const registerUsedInsumos = useAppStore((state) => state.registerUsedInsumos);
   const closeTask = useAppStore((state) => state.closeTask);
   const getTasks = useAppStore((state) => state.getTasks);
-  const closeAssigmentDron = useAppStore((state) => state.closeAssigmentDron);
   const hasValidData = useMemo(
     () =>
       taskInsumos.some(
-        (item) => item.used_quantity === null || item.used_quantity === 0
+        (item) => item.used_quantity === null
       ),
     [taskInsumos]
   );
@@ -52,11 +51,6 @@ export default function InsumosModal() {
     id: TaskInsumo["id"],
     e: ChangeEvent<HTMLInputElement>
   ) => {
-    const value = parseFloat(e.target.value);
-    if (value <= 0) {
-      toast.error("La cantidad utilizada debe de ser mayor a 0");
-      return;
-    }
     setTaskInsumo((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, used_quantity: +e.target.value } : item
@@ -69,15 +63,11 @@ export default function InsumosModal() {
     try {
       await registerUsedInsumos(taskInsumos);
 
-      if(!task.use_dron){
-        await closeTask(task.id);
-      }else{
-        await closeAssigmentDron(task.id);
-      }
+      await closeTask(task.id);
       toast.success("Asignación cerrada correctamente");
       closeModal();
       if (lote_plantation_control_id && weekly_plan_id) {
-        await getTasks(lote_plantation_control_id,weekly_plan_id);
+        await getTasks(lote_plantation_control_id, weekly_plan_id);
       }
     } catch (error) {
       toast.error(
@@ -146,11 +136,10 @@ export default function InsumosModal() {
 
                       <button
                         disabled={hasValidData || loadingClose}
-                        className={`mt-10 w-full ${
-                          hasValidData
+                        className={`mt-10 w-full ${hasValidData
                             ? "p-2 font-bold opacity-50 uppercase cursor-not-allowed bg-gray-400 hover:bg-gray-400"
                             : "button bg-indigo-500 hover:bg-indigo-800"
-                        }`}
+                          }`}
                         onClick={() => SaveData()}
                       >
                         {loadingClose ? (
