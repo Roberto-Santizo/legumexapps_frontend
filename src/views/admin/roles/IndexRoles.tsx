@@ -2,32 +2,28 @@ import { useEffect, useState } from "react";
 import { formatDate } from "../../../helpers";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-
 import { getRoles } from "@/api/RolesAPI";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Spinner from "@/components/Spinner";
+import { useQuery } from "@tanstack/react-query";
 import { Role } from "@/types";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function IndexRoles() {
-  const [loading,setLoading] = useState<boolean>(false);
-  const [error,setError] = useState<boolean>(false);
   const [roles, setRoles] = useState<Role[]>([]);
 
+  const { data,isLoading,isError } = useQuery({
+    queryKey:['getRoles'],
+    queryFn: getRoles
+  });
 
-  const handleGetRoles = async () => {
-    setLoading(true);
-    try {
-      const roles = await getRoles();
-      setRoles(roles);
-    } catch (error) {
-      setError(true);
-    }finally {
-      setLoading(false);
+  useEffect(()=>{
+    if(data){
+      setRoles(data)
     }
-  }
-  useEffect(() => {
-    handleGetRoles();
-  }, []);
+  },[data]);
+
+  if(isLoading) return <Spinner />
+  if(isError) return <ShowErrorAPI />
   return (
     <>
       <div>
@@ -45,9 +41,6 @@ export default function IndexRoles() {
 
 
         <div className="p-2 h-96 overflow-y-auto mt-10">
-          {loading && <Spinner />}
-          {(!loading && error) && <ShowErrorAPI />}
-          {!loading && !error && (
             <table className="table">
               <thead>
                 <tr className="thead-tr">
@@ -84,7 +77,6 @@ export default function IndexRoles() {
                 ))}
               </tbody>
             </table>
-          )}
         </div>
       </div>
     </>

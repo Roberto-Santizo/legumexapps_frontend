@@ -2,15 +2,25 @@ import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useState } from "react";
 import { DraftRole } from "@/types";
 import Error from "@/components/Error";
 import Spinner from "@/components/Spinner";
 import { createRole } from "@/api/RolesAPI";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CreateRole() {
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createRole,
+    onError: () => {
+      toast.error('Hubo un error al crear el rol');
+    },
+    onSuccess: () => {
+      toast.success("Usuario creado correctamente");
+      navigate("/roles");
+    }
+  });
 
   const {
     register,
@@ -18,18 +28,7 @@ export default function CreateRole() {
     formState: { errors },
   } = useForm<DraftRole>();
 
-  const handleCreateRole = async (data: DraftRole) => {
-    setLoading(true);
-    const errors = await createRole(data);
-    if (errors) {
-      errors.forEach(error => toast.error(error[0]))
-      setLoading(false);
-      return;
-    }
-    toast.success("Usuario creado correctamente");
-    navigate("/roles");
-    setLoading(false);
-  };
+  const handleCreateRole = async (data: DraftRole) => mutate(data);
 
   return (
     <>
@@ -56,14 +55,14 @@ export default function CreateRole() {
           </div>
 
           <Button
-            disabled={loading}
+            disabled={isPending}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loading ? (
+            {isPending ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Rol</p>
