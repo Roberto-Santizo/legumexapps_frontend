@@ -1,26 +1,16 @@
-import { useEffect, useState } from "react";
 import { formatDate } from "../../../helpers";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getRoles } from "@/api/RolesAPI";
 import { useQuery } from "@tanstack/react-query";
-import { Role } from "@/types";
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function IndexRoles() {
-  const [roles, setRoles] = useState<Role[]>([]);
-
-  const { data,isLoading,isError } = useQuery({
+  const { data : roles,isLoading,isError } = useQuery({
     queryKey:['getRoles'],
     queryFn: getRoles
   });
-
-  useEffect(()=>{
-    if(data){
-      setRoles(data)
-    }
-  },[data]);
 
   if(isLoading) return <Spinner />
   if(isError) return <ShowErrorAPI />
@@ -59,7 +49,7 @@ export default function IndexRoles() {
                 </tr>
               </thead>
               <tbody>
-                {roles.map((role) => (
+                {roles?.map((role) => (
                   <tr className="tbody-tr" key={role.id}>
                     <td className="tbody-td">
                       <p>{role.id}</p>

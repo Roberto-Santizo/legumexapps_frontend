@@ -8,6 +8,7 @@ import { Trash2Icon } from "lucide-react";
 import Fuse from "fuse.js";
 import Worker from "../../../components/Worker";
 import { toast } from "react-toastify";
+import { getEmployees } from "@/api/TasksWeeklyPlanAPI";
 
 export default function AsignarTareaCosechaLote() {
   const location = useLocation();
@@ -26,7 +27,6 @@ export default function AsignarTareaCosechaLote() {
   const [assignedEmployees, setAssignedEmployees] = useState<Employee[]>([]);
   const [query, setQuery] = useState<string>("");
 
-  const getEmployees = useAppStore((state) => state.getEmployees);
   const getTaskCrop = useAppStore((state) => state.getTaskCrop);
   const closeCropAssigment = useAppStore((state) => state.closeCropAssigment);
 

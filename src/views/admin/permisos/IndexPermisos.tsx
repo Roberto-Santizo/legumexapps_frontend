@@ -1,36 +1,20 @@
-//HOOKS
-import { useEffect, useState } from "react";
 import { formatDate } from "../../../helpers";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-
-//COMPONENTES
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
-import { Permission } from "@/types";
 import { getPermissions } from "@/api/PermissionsAPI";
+import { useQuery } from "@tanstack/react-query";
 
 export default function IndexPermisos() {
-  const [loading,setLoading] = useState<boolean>(false);
-  const [error,setError] = useState<boolean>(false);
+  const { data : permissions, isLoading, isError } = useQuery({
+    queryKey: ['getPermissions'],
+    queryFn: getPermissions
+  });
 
-  const [permissions,setPermissions] = useState<Permission[]>([]);
-
-  const handleGetPermissions = async () => {
-    setLoading(true);
-    try {
-      const permissions = await getPermissions();
-      setPermissions(permissions);
-    } catch (error) {
-      setError(true);
-    }finally {
-      setLoading(false);
-    }
-  }
-  useEffect(() => {
-    handleGetPermissions();
-  }, []);
-
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+  
   return (
     <>
       <h2 className="font-bold text-4xl">Administración de Permisos</h2>
@@ -45,46 +29,42 @@ export default function IndexPermisos() {
       </div>
 
       <div className="mt-10">
-        {loading && <Spinner />}
-        {!loading && error && <ShowErrorAPI />}
-        {!loading && !error && (
-          <table className="table">
-            <thead>
-              <tr className="thead-tr">
-                <th scope="col" className="thead-th">
-                  No.
-                </th>
-                <th scope="col" className="thead-th">
-                  Permiso
-                </th>
-                <th scope="col" className="thead-th">
-                  Fecha de Creación
-                </th>
-                <th scope="col" className="thead-th">
-                  Última fecha de Modificación
-                </th>
+        <table className="table">
+          <thead>
+            <tr className="thead-tr">
+              <th scope="col" className="thead-th">
+                No.
+              </th>
+              <th scope="col" className="thead-th">
+                Permiso
+              </th>
+              <th scope="col" className="thead-th">
+                Fecha de Creación
+              </th>
+              <th scope="col" className="thead-th">
+                Última fecha de Modificación
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {permissions?.map((permission) => (
+              <tr className="tbody-tr" key={permission.id}>
+                <td className="tbody-td">
+                  <p>{permission.id}</p>
+                </td>
+                <td className="tbody-td">
+                  <p>{permission.name}</p>
+                </td>
+                <td className="tbody-td">
+                  <p>{formatDate(permission.created_at)}</p>
+                </td>
+                <td className="tbody-td">
+                  <p>{formatDate(permission.updated_at)}</p>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {permissions.map((permission) => (
-                <tr className="tbody-tr" key={permission.id}>
-                  <td className="tbody-td">
-                    <p>{permission.id}</p>
-                  </td>
-                  <td className="tbody-td">
-                    <p>{permission.name}</p>
-                  </td>
-                  <td className="tbody-td">
-                    <p>{formatDate(permission.created_at)}</p>
-                  </td>
-                  <td className="tbody-td">
-                    <p>{formatDate(permission.updated_at)}</p>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );

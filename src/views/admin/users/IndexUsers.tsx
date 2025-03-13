@@ -1,26 +1,17 @@
 import { Link } from "react-router-dom";
 import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
-import { useEffect, useState } from "react";
 import { getUsers, changeActiveUser } from "@/api/UsersAPI";
 import Spinner from "@/components/Spinner";
-import { User, Users } from "@/types";
+import { User } from "@/types";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function IndexUsers() {
-  const [users, setUsers] = useState<Users>();
-
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data : users, isLoading, isError, refetch } = useQuery({
     queryKey: ['getUsers'],
     queryFn: getUsers
   });
-
-  useEffect(() => {
-    if (data) {
-      setUsers(data)
-    }
-  }, [data]);
 
   const { mutate,isPending } = useMutation({
     mutationFn: (id : User['id']) => changeActiveUser(id),

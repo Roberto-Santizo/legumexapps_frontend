@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "@/stores/useAppStore";
 import { DraftCreateTaskWeeklyPlan, Lote, Tarea, WeeklyPlan } from "@/types";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -15,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import ModalAddInsumo from "@/components/ModalAddInsumo";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
+import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
 
 export type DraftSelectedInsumo = {
   insumo_id: string,
@@ -29,8 +29,6 @@ export default function CreateTareaLote() {
   const [selectedInsumos, setSelectedInsumos] = useState<DraftSelectedInsumo[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
-
-  const createTaskWeeklyPlan = useAppStore((state) => state.createTaskWeeklyPlan);
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ data, selectedInsumos }: { data: DraftCreateTaskWeeklyPlan, selectedInsumos: DraftSelectedInsumo[] }) => createTaskWeeklyPlan(data, selectedInsumos),
