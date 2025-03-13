@@ -1,9 +1,9 @@
-import { useParams } from "react-router-dom"
+// import { useParams } from "react-router-dom"
 
 export default function ShowLineaDetalles() {
-    const params = useParams();
-    const plan_id = params.plan_id!!;
-    const linea_id = params.linea_id!!;
+    // const params = useParams();
+    // const plan_id = params.plan_id!!;
+    // const linea_id = params.linea_id!!;
 
     return (
         <>
