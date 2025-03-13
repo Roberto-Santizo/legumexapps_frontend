@@ -1,12 +1,18 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getWeeklyPlanDetails } from "@/api/WeeklyProductionPlanAPI";
+import { getWeeklyPlanDetails, LineWeeklyPlan } from "@/api/WeeklyProductionPlanAPI";
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { CircleCheck, Eye, Upload } from "lucide-react";
+import ModalCargaPosiciones from "@/components/ModalCargaPosiciones";
+import { useState } from "react";
 
 export default function ShowPlanSemanalProduccion() {
   const params = useParams();
   const id = params.plan_id!!;
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedLinea, setSelectedLinea] = useState<LineWeeklyPlan>({} as LineWeeklyPlan);
 
   const { data: assignment, isLoading, isError } = useQuery({
     queryKey: ['getWeeklyPlanDetails'],
@@ -22,14 +28,30 @@ export default function ShowPlanSemanalProduccion() {
 
       <div className="p-5 space-y-10">
         {assignment?.map(assigment => (
-          <div key={assigment.id} className="p-5 grid grid-cols-8 shadow-xl">
-            <p className="col-span-7 text-2xl font-bold">{assigment.line}</p>
-            <div>
-                optiones
+          <>
+            <div key={assigment.id} className="p-10 flex justify-between items-center shadow-xl">
+              <p className="text-2xl font-bold">{assigment.line}</p>
+              <div>
+                {assigment.status ? (
+                  <div className="flex flex-col gap-5">
+                    <CircleCheck className="text-green-500" />
+                    <Link to={`/planes-produccion/${id}/${assigment.id}`}>
+                      <Eye className="hover:text-gray-600"/>
+                    </Link>
+                  </div>
+                ) : (
+                  <Upload className="cursor-pointer hover:text-gray-500" onClick={() => {
+                    setIsOpen(true);
+                    setSelectedLinea(assigment)
+                  }} />
+                )}
+              </div>
             </div>
-          </div>
+          </>
         ))}
       </div>
+
+      <ModalCargaPosiciones isOpen={isOpen} setIsOpen={setIsOpen} linea={selectedLinea} />
     </div>
   )
 }

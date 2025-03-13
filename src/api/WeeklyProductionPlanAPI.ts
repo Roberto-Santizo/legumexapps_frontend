@@ -1,5 +1,7 @@
 import clienteAxios from "@/config/axios";
+import { Line } from "recharts";
 import { z } from 'zod';
+import { SKUSchema } from "./SkusAPI";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
@@ -36,22 +38,23 @@ export async function getPaginatedWeeklyProductionPlans(page: number): Promise<P
     }
 }
 
-export const TaskWeeklyProductionPlanSchema = z.object({
+export const LineWeeklyPlanSchema = z.object({
     id: z.string(),
     line: z.string(),
+    status: z.boolean()
 });
 
-export const TasksWeeklyProductionPlanSchema = z.object({
-    data: z.array(TaskWeeklyProductionPlanSchema)
+export const LinesWeeklyPlanSchema = z.object({
+    data: z.array(LineWeeklyPlanSchema)
 });
 
-export type TaskWeeklyProductionPlan = z.infer<typeof TaskWeeklyProductionPlanSchema>
+export type LineWeeklyPlan = z.infer<typeof LineWeeklyPlanSchema>
 
-export async function getWeeklyPlanDetails(id: WeeklyPlanProductionPlan['id']): Promise<TaskWeeklyProductionPlan[]> {
+export async function getWeeklyPlanDetails(id: WeeklyPlanProductionPlan['id']): Promise<LineWeeklyPlan[]> {
     try {
         const url = `/api/weekly_production_plan/${id}`;
         const { data } = await clienteAxios(url);
-        const result = TasksWeeklyProductionPlanSchema.safeParse(data);
+        const result = LinesWeeklyPlanSchema.safeParse(data);
         if (result.success) {
             return result.data.data
         } else {
@@ -63,9 +66,116 @@ export async function getWeeklyPlanDetails(id: WeeklyPlanProductionPlan['id']): 
     }
 }
 
+export const TaskProductionSchema = z.object({
+    id: z.string(),
+    line: z.string(),
+    total_tarimas: z.number(),
+    operation_date: z.string(),
+    start_date: z.string().nullable(),
+    end_date: z.string().nullable(),
+    hours: z.number(),
+    total_hours: z.number(),
+});
+
+export const TasksProductionSchema = z.object({
+    data: z.array(TaskProductionSchema)
+});
+
+export type TaskProduction = z.infer<typeof TaskProductionSchema>
+
+export async function getWeeklyPlanLineDetails(line_id: Line['id'], weekly_production_plan_id: WeeklyPlanProductionPlan['id']) : Promise<TaskProduction[]> {
+    try {
+        const url = `/api/weekly_production_plan/details/${weekly_production_plan_id}/${line_id}`;
+        const { data } = await clienteAxios(url);
+        const result = TasksProductionSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const EmployeeTaskProductionSchema = z.object({
+    id: z.string(), 
+    name: z.string(), 
+    code: z.string(),
+    position: z.string(),
+});
+
+export const TaskProductionDetailSchema = z.object({
+    id: z.number(),
+    line: z.string(), 
+    operation_date: z.string(), 
+    total_tarimas: z.number(), 
+    sku: SKUSchema,
+    employees: z.array(EmployeeTaskProductionSchema), 
+});
+
+export type TaskProductionDetails = z.infer<typeof TaskProductionDetailSchema>
+
+export async function getTaskProductionDetails(id:TaskProduction['id']) : Promise<TaskProductionDetails> {
+    try {
+        const url = `/api/task_production_plan/${id}`;
+        const { data } = await clienteAxios(url);
+        const result = TaskProductionDetailSchema.safeParse(data);
+        if(result.success){
+            return result.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const EmployeeComodinSchema = z.object({
+    name: z.string(),
+    code: z.string(),
+    position: z.string()
+});
+
+export const EmployeesComodinesSchema = z.object({
+    data: z.array(EmployeeComodinSchema)
+});
+
+export type EmployeeComodin = z.infer<typeof EmployeeComodinSchema>
+
+export async function getComodines() : Promise<EmployeeComodin[]>{
+    try {
+        const url = '/api/employees-comodines';
+        const { data } = await clienteAxios(url);
+        const result =  EmployeesComodinesSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export async function createProductionPlan(file: File[]) {
     try {
         const url = '/api/weekly_production_plan';
+        const formData = new FormData();
+        formData.append("file", file[0]);
+
+        await clienteAxios.post(url, formData);
+    } catch (error: any) {
+        return error.response.data.message;
+    }
+}
+
+export async function createAssigmentsProductionTasks(file: File[], id: LineWeeklyPlan['id']) {
+    try {
+        const url = `/api/weekly_production_plan/assign/${id}`;
         const formData = new FormData();
         formData.append("file", file[0]);
 
