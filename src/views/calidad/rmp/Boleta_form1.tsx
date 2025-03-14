@@ -475,7 +475,7 @@ export default function Boleta_form1() {
               )}
             />
             <label className="block font-medium text-xl">
-              Firma de Calidad
+              Firma
             </label>
 
             {(errors.calidad_signature) && <Error>{'Asegurese de haber firmado'}</Error>}

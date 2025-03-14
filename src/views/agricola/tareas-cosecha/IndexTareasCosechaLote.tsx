@@ -1,45 +1,36 @@
-import { useEffect, useState } from "react";
-import { useAppStore } from "../../../stores/useAppStore";
 import { useParams } from "react-router-dom";
-import Spinner from "../../../components/Spinner";
-import ShowErrorAPI from "../../../components/ShowErrorAPI";
-import TaskCrop from "../../../components/TaskCrop";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import TaskCrop from "@/components/TaskCrop";
+import { getTasksCrop } from "@/api/TaskCropWeeklyPlanAPI";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import ModalTomaLibras from "@/components/ModalTomaLibras";
 
 export default function IndexTareasCosechaLote() {
-  const { lote_plantation_control_id, weekly_plan_id } = useParams();
-  const [loading,setLoading] = useState<boolean>(false);
-  const [error,setError] = useState<boolean>(false);
-  const tasksCrops = useAppStore((state) => state.tasksCrops);
-  const getTasksCrop = useAppStore((state) => state.getTasksCrop);
+  const params = useParams();
+  const lote_plantation_control_id = params.lote_plantation_control_id!!;
+  const weekly_plan_id = params.weekly_plan_id!!;
 
-  const handleGetTasksCrops = async () => {
-    setLoading(true);
-    try {
-      if (lote_plantation_control_id && weekly_plan_id) {
-        await getTasksCrop(lote_plantation_control_id, weekly_plan_id);
-      }
-    } catch (error) {
-      setError(true);
-    }finally{
-      setLoading(false);
-    }
-  }
+  const [id, setId] = useState<string>('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    handleGetTasksCrops();
-  }, []);
+  const { data: tasksCrops, isLoading, isError, refetch } = useQuery({
+    queryKey: ['getTasksCrop', lote_plantation_control_id, weekly_plan_id], queryFn: () => getTasksCrop(lote_plantation_control_id, weekly_plan_id)
+  });
 
-  return (
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+  if (tasksCrops) return (
     <>
-      {(!loading && !error) && <h2 className="font-bold text-3xl">Plan Semanal Semana {tasksCrops.week} - FINCA {tasksCrops.finca} - LOTE {tasksCrops.lote}</h2>}
-      {loading && <Spinner />}
-      {(!loading && error) && <ShowErrorAPI />}
-
+      <h2 className="font-bold text-3xl">Plan Semanal Semana {tasksCrops.week} - FINCA {tasksCrops.finca} - LOTE {tasksCrops.lote}</h2>
       <div className="flex flex-col gap-10 mt-10">
-        {(!loading && !error && tasksCrops.tasks) && (
-          tasksCrops.tasks.map(task => <TaskCrop key={task.id} task={task} />)
-        )}
+        {tasksCrops.tasks.map(task => <TaskCrop key={task.id} task={task} refetch={refetch} setId={setId} setIsOpen={setIsOpen}/>)}
       </div>
+
+      {isOpen && (
+        <ModalTomaLibras isOpen={isOpen} setIsOpen={setIsOpen} id={id} refetch={refetch}/>
+      )}
     </>
   )
 }

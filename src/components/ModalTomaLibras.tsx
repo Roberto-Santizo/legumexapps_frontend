@@ -1,34 +1,44 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { ChangeEvent, Fragment, useEffect, useMemo, useState } from "react";
-import { useAppStore } from "../stores/useAppStore";
-import { TaskCropIncomplete } from "../types";
+import { ChangeEvent, Dispatch, Fragment, useEffect, useMemo, useState } from "react";
+import { TaskCropIncomplete, TasksCropWeeklyPlan } from "@/types";
 import Spinner from "./Spinner";
-import { formatDate } from "../helpers";
+import { formatDate } from "@/helpers";
 import ShowErrorAPI from "./ShowErrorAPI";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { completeAssigments, getIncompleteAssigments } from "@/api/TaskCropWeeklyPlanAPI";
+import { QueryObserverResult, useQuery, useMutation } from "@tanstack/react-query";
 
-export default function ModalTomaLibras() {
-  const { lote_plantation_control_id, weekly_plan_id } = useParams();
 
-  const [loadingGetTask, setLoadingGetTask] = useState<boolean>(false);
-  const [errorGetTask, setErrorGetTask] = useState<boolean>(false);
+type Props = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<React.SetStateAction<boolean>>;
+  id: string;
+  refetch: () => Promise<QueryObserverResult<TasksCropWeeklyPlan>>;
+}
 
-  const [loadingCompleteAssigments, setLoadingCompleteAssigments] = useState<boolean>(false);
+export default function ModalTomaLibras({ isOpen, setIsOpen, id, refetch }: Props) {
+  const [incompleteAssigments, setIncompleteAssigments] = useState<TaskCropIncomplete[]>([]);
 
-  const modalTomaLibras = useAppStore((state) => state.modalTomaLibras);
-  const idTakeLbsData = useAppStore((state) => state.idTakeLbsData);
+  const { mutate, isPending } = useMutation({
+    mutationFn: completeAssigments,
+    onError: () => {
+      toast.error('Hubo un error al registrar las libras, intentelo de nuevo más tarde');
+    },
+    onSuccess: () => {
+      toast.success("Registro Guardado Correctamente");
+      refetch();
+    }
+  });
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['getIncompleteAssigments'],
+    queryFn: () => getIncompleteAssigments(id)
+  });
 
-  const getIncompleteAssigments = useAppStore(
-    (state) => state.getIncompleteAssigments
-  );
-  const getTasksCrop = useAppStore((state) => state.getTasksCrop);
-  const completeAssigments = useAppStore((state) => state.completeAssigments);
-  const [modal, useModal] = useState(modalTomaLibras);
-  const [incompleteAssigments, setIncompleteAssigments] = useState<
-    TaskCropIncomplete[]
-  >([]);
-  const closeModal = useAppStore((state) => state.closeModal);
+  useEffect(() => {
+    if (data) {
+      setIncompleteAssigments(data)
+    }
+  }, [data])
 
   const hasValidData = useMemo(
     () =>
@@ -39,28 +49,6 @@ export default function ModalTomaLibras() {
       ),
     [incompleteAssigments]
   );
-
-  const handleGerIncompleteAssigments = async () => {
-    setLoadingGetTask(true);
-    try {
-      if (modalTomaLibras) {
-        const assigments = await getIncompleteAssigments(idTakeLbsData);
-        setIncompleteAssigments(assigments);
-      }
-    } catch (error) {
-      setErrorGetTask(true);
-    } finally {
-      setLoadingGetTask(false);
-    }
-  };
-
-  useEffect(() => {
-    useModal(modalTomaLibras);
-  }, [modalTomaLibras]);
-
-  useEffect(() => {
-    handleGerIncompleteAssigments();
-  }, [modalTomaLibras]);
 
   const handleChange = (
     id: TaskCropIncomplete["id"],
@@ -79,27 +67,14 @@ export default function ModalTomaLibras() {
   };
 
   const SaveData = async () => {
-    const completedAssigments = incompleteAssigments.filter(
-      (item) => item.lbs_planta != null && item.lbs_planta > 0
-    );
-    setLoadingCompleteAssigments(true);
-    try {
-      await completeAssigments(completedAssigments);
-      closeModal();
-      toast.success("Registro Guardado Correctamente");
-      if (lote_plantation_control_id && weekly_plan_id) {
-        await getTasksCrop(lote_plantation_control_id,weekly_plan_id);
-      }
-    } catch (error) {
-      toast.error("Hubo un error al cerrar la asignación, intentelo de nuevo más tarde");
-    }finally {
-      setLoadingCompleteAssigments(false);
-    }
+    const completedAssigments = incompleteAssigments.filter((item) => item.lbs_planta != null && item.lbs_planta > 0);
+    mutate(completedAssigments);
+    setIsOpen(false);
   };
 
-  return (
-    <Transition appear show={modal} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+  if (incompleteAssigments) return (
+    <Transition appear show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={() => setIsOpen(false)}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -130,61 +105,57 @@ export default function ModalTomaLibras() {
                   </h3>
                   <button
                     className="text-white hover:text-gray-300"
-                    onClick={closeModal}
+                    onClick={() => setIsOpen(false)}
                   >
                     ✕
                   </button>
                 </div>
 
                 <div className="p-6">
-                  {loadingGetTask && (
-                    <div className="flex justify-center py-10">
-                      <Spinner />
-                    </div>
+                  {isLoading && <Spinner />}
+                  {isError && <ShowErrorAPI />}
+                  {incompleteAssigments.length === 0 && (
+                    <p className="text-center font-bold uppercase">No existen datos incompletos</p>
                   )}
-                  {errorGetTask && <ShowErrorAPI />}
-                  {!loadingGetTask && !errorGetTask && (
-                    <div className="space-y-6">
-                      {incompleteAssigments.map((item) => (
-                        <div
-                          key={item.id}
-                          className="bg-gray-100 rounded-lg shadow-md p-5 flex justify-between items-center"
-                        >
-                          <div>
-                            <p className="text-lg font-semibold">
-                              Fecha: {formatDate(item.date)}
-                            </p>
-                            <p className="text-sm">
-                              <span className="font-bold">Libras Finca:</span>{" "}
-                              {item.lbs_finca} lbs
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-3">
-                            <input
-                              type="number"
-                              placeholder="Libras Planta"
-                              className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                              onChange={(e) => handleChange(item.id, e)}
-                            />
-                          </div>
+                  <div className="space-y-6">
+                    {incompleteAssigments.map((item) => (
+                      <div
+                        key={item.id}
+                        className="bg-gray-100 rounded-lg shadow-md p-5 flex justify-between items-center"
+                      >
+                        <div>
+                          <p className="text-lg font-semibold">
+                            Fecha: {formatDate(item.date)}
+                          </p>
+                          <p className="text-sm">
+                            <span className="font-bold">Libras Finca:</span>{" "}
+                            {item.lbs_finca} lbs
+                          </p>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                        <div className="flex flex-col gap-3">
+                          <input
+                            type="number"
+                            placeholder="Libras Planta"
+                            className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                            onChange={(e) => handleChange(item.id, e)}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
                   <button
                     disabled={!hasValidData}
-                    className={`mt-10 w-full ${
-                      !hasValidData
-                        ? "p-2 font-bold opacity-50 uppercase cursor-not-allowed bg-gray-400 hover:bg-gray-400"
-                        : "button bg-indigo-500 hover:bg-indigo-800"
-                    }`}
+                    className={`mt-10 w-full ${!hasValidData
+                      ? "p-2 font-bold opacity-50 uppercase cursor-not-allowed bg-gray-400 hover:bg-gray-400"
+                      : "button bg-indigo-500 hover:bg-indigo-800"
+                      }`}
                     onClick={() => SaveData()}
                   >
-                    {loadingCompleteAssigments ? (
+                    {isPending ? (
                       <Spinner />
                     ) : (
-                    <p className="font-bold text-lg">Registrar Libras</p>
+                      <p className="font-bold text-lg">Registrar Libras</p>
                     )}
                   </button>
                 </div>

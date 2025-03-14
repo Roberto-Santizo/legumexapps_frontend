@@ -2,13 +2,8 @@ import { StateCreator } from "zustand";
 import clienteAxios from "../config/axios";
 import { FinishedTasksByFincaSchema, FinishedTasksSchema, TasksInProgressSchema } from "@/utils/dashboard-schema";
 import { FinishedTask, SummaryFincaTasks, TaskInProgress } from "@/types";
-import {
-    DronHoursSchema, SummaryHoursEmployeesSchema,
-    TasksCropsInProgressSchema
-} from "../utils/dashboard-schema";
-import {
-    SummaryEmployeeHours, TaskCropInProgress
-} from "../types";
+import {DronHoursSchema, SummaryHoursEmployeesSchema,TasksCropsInProgressSchema} from "../utils/dashboard-schema";
+import { SummaryEmployeeHours, TaskCropInProgress } from "../types";
 
 export type DashboardAgricolaSliceType = {
     getDronHours: () => Promise<number>;
