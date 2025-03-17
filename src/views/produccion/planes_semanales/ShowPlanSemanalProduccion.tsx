@@ -28,7 +28,6 @@ export default function ShowPlanSemanalProduccion() {
 
       <div className="p-5 space-y-10">
         {assignment?.map(assigment => (
-          <>
             <div key={assigment.id} className="p-10 flex justify-between items-center shadow-xl">
               <p className="text-2xl font-bold">{assigment.line}</p>
               <div>
@@ -47,7 +46,6 @@ export default function ShowPlanSemanalProduccion() {
                 )}
               </div>
             </div>
-          </>
         ))}
       </div>
 

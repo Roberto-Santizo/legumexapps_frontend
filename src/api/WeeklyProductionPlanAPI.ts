@@ -107,7 +107,7 @@ export const EmployeeTaskProductionSchema = z.object({
 });
 
 export const TaskProductionDetailSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     line: z.string(), 
     operation_date: z.string(), 
     total_tarimas: z.number(), 
@@ -121,7 +121,8 @@ export async function getTaskProductionDetails(id:TaskProduction['id']) : Promis
     try {
         const url = `/api/task_production_plan/${id}`;
         const { data } = await clienteAxios(url);
-        const result = TaskProductionDetailSchema.safeParse(data);
+        console.log("Respuesta API:", data);
+        const result = TaskProductionDetailSchema.safeParse(data.data);
         if(result.success){
             return result.data
         }else{
@@ -153,6 +154,7 @@ export async function getComodines() : Promise<EmployeeComodin[]>{
         if(result.success){
             return result.data.data
         }else{
+            console.error("Datos no válidos:", result.error);
             throw new Error("Información no valida");
         }
     } catch (error) {

@@ -19,9 +19,9 @@ const routes = [
   { path: "/lineas", component: lazy(() => import("../views/produccion/lineas/IndexLineas")), roles: ['admin'] },
   { path: "/lineas/crear", component: lazy(() => import("../views/produccion/lineas/CrearLinea")), roles: ['admin'] },
   { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin'] },
+  { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin'] },
 
-
-  { path: "/tareas/TaskPeople", component: lazy(() => import("../views/produccion/Tareas/TaskPeople")), roles: ['admin'] },
+  { path: "/tareas/TaskPeople/:id", component: lazy(() => import("../views/produccion/Tareas/TaskPeople")), roles: ['admin'] },
   
 ];
 
