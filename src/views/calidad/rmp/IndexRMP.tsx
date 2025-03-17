@@ -2,9 +2,7 @@ import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon, RefreshCcwDot } 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
-
 import { getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
-
 import { useAppStore } from "@/stores/useAppStore";
 import { Boleta, FiletrsBoletaRMP } from "@/types";
 import Spinner from "@/components/Spinner";
@@ -89,14 +87,14 @@ export default function IndexRMP() {
     if (isError) return <ShowErrorAPI />
     if (isLoading) return <Spinner />
 
-    if(role) return (
+    if (role) return (
         <div className="p-4">
             <h2 className="font-bold text-2xl md:text-4xl">
                 Boletas Recepción de Materia Prima
             </h2>
 
             <div className="flex flex-col items-end gap-3 mt-10">
-                {(['admin','pprod'].includes(role)) && (
+                {(['admin', 'pprod'].includes(role)) && (
                     <Link
                         to="/rmp/crear"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
