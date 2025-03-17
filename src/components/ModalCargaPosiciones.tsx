@@ -28,7 +28,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea }: Props
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
     const { mutate, isPending } = useMutation({
-        mutationFn: ({file,id} : {file : File[], id : LineWeeklyPlan['id']}) => createAssigmentsProductionTasks(file,linea.id),
+        mutationFn: ({file} : {file : File[], id : LineWeeklyPlan['id']}) => createAssigmentsProductionTasks(file,linea.id),
         onError: () => {
             toast.error('Hubo un error al cargar el archivo');
         },
