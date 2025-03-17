@@ -1,22 +1,26 @@
-//HOOKS
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { createPermission } from "@/api/PermissionsAPI";
-
-//TYPES
 import { DraftPermssion } from "@/types";
-
-//COMPONENTES
 import { Button } from "@mui/material";
 import Error from "@/components/Error";
 import Spinner from "@/components/Spinner";
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CreatePermiso() {
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createPermission,
+    onError: () => {
+      toast.error('Hubo un error al crear el permiso')
+    },
+    onSuccess: () => {
+      toast.success("Permiso creado correctamente");
+      navigate("/permisos");
+    }
+  });
 
   const {
     register,
@@ -24,20 +28,7 @@ export default function CreatePermiso() {
     formState: { errors },
   } = useForm<DraftPermssion>();
 
-  const handleCreatePermission = async (data: DraftPermssion) => {
-    setLoading(true);
-
-    const errors = await createPermission(data);
-    if (errors) {
-      errors.forEach(error => toast.error(error[0]))
-      setLoading(false);
-      return;
-    }
-    toast.success("Permiso creado correctamente");
-    navigate("/permisos");
-    setLoading(false);
-  };
-
+  const handleCreatePermission = async (data: DraftPermssion) => mutate(data);
 
   return (
     <>
@@ -64,14 +55,14 @@ export default function CreatePermiso() {
           </div>
 
           <Button
-            disabled={loading}
+            disabled={isPending}
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
           >
-            {loading ? (
+            {isPending ? (
               <Spinner />
             ) : (
               <p className="font-bold text-lg">Crear Permiso</p>

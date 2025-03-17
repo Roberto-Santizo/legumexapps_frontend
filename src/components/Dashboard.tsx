@@ -19,6 +19,7 @@ export default function Dashboard() {
     'adminagricola':  (<AgricolaDashboard />),
     'auxagricola': (<AgricolaDashboard />),
     'pcalidad': (<PersonalCalidadDashboard />),
+    'auxcalidad': (<CalidadDashboard />),
     'admincalidad': (<CalidadDashboard />),
     'pprod': (<ProduccionCDashboard />),
     'pcostos': (<CostosDashboard />),

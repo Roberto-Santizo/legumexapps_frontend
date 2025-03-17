@@ -1,29 +1,37 @@
-// EXTERNAS
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
-
-// HOOKS
-import UserMobile from "../components/UserMenu";
-
-// COMPONENTES
+import { Outlet, useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
-import ModalTomaLibras from "../components/ModalTomaLibras";
-import InsumosModal from "../components/InsumosModal";
+import MobileSidebar from "@/components/MobileSidebar";
+import { useAppStore } from "@/stores/useAppStore";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "@/components/Spinner";
 
 export default function Layout() {
-  const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState(false);
+  const navigate = useNavigate();
+  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-  return (
+  const { data: role, isLoading, isError } = useQuery({
+    queryKey: ['getUserRoleByToken'],
+    queryFn: getUserRoleByToken
+  });
+
+  if (isError) navigate('/login');
+  if (isLoading) return <Spinner />
+  if (role) return (
     <>
       <div className="flex h-screen bg-gray-100">
-        <div className="hidden lg:block max-h-screen overflow-y-auto scrollbar-hide">
-          <Sidebar />
+        <div className="hidden lg:block">
+          <Sidebar role={role} />
         </div>
 
+        {modal && (
+          <MobileSidebar role={role} modal={modal} setModal={setModal} />
+        )}
 
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header />
+          <Header setModal={setModal} />
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mt-4"></div>
@@ -34,12 +42,6 @@ export default function Layout() {
           </main>
         </div>
       </div>
-
-      <ModalTomaLibras />
-      <InsumosModal />
-
-      {/* Menú móvil */}
-      {open && <UserMobile setOpen={setOpen} />}
     </>
   );
 }

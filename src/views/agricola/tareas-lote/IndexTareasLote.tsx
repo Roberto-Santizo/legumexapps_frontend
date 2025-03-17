@@ -1,67 +1,44 @@
 import { useParams } from "react-router-dom";
 import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-
-//COMPONENTES
-import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
 import Task from "@/components/Task";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { useQueries } from "@tanstack/react-query";
+import { getTasks } from "@/api/TasksWeeklyPlanAPI";
+import { TasksWeeklyPlan } from "@/types";
+import Spinner from "@/components/Spinner";
 
 export default function IndexTareasLote() {
-  const { lote_plantation_control_id, weekly_plan_id } = useParams();
-  const [error, setError] = useState<boolean>(false);
-  const [loading,setLoading] = useState<boolean>(false);
-  const loadingReloadTasks = useAppStore((state) => state.loadingReloadTasks);
-  const tasks = useAppStore((state) => state.tasksWeeklyPlan);
-  const getTasks = useAppStore((state) => state.getTasks);
-
+  const params = useParams();
+  const lote_plantation_control_id = params.lote_plantation_control_id!!;
+  const weekly_plan_id = params.weekly_plan_id!!;
   const [role, setRole] = useState<string>("");
+  const [tasks, setTasks] = useState<TasksWeeklyPlan>({} as TasksWeeklyPlan);
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-  const handleGetUserRole = async () => {
-    setLoading(true);
-    try {
-      const role = await getUserRoleByToken();
-      setRole(role);
-    } catch (error) {
-      toast.error("Error al cargar el contenido");
-      setError(false);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const results = useQueries({
+    queries: [
+      { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken },
+      { queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id], queryFn: () => getTasks(lote_plantation_control_id, weekly_plan_id) },
+    ]
+  });
 
-  const handleGetTasks = async () => {
-    try {
-      if (lote_plantation_control_id && weekly_plan_id) {
-        await getTasks(lote_plantation_control_id, weekly_plan_id);
-      }
-    } catch (error) {
-      setError(true);
-    }
-  };
+  const isLoading = results.some(result => result.isFetching);
 
   useEffect(() => {
-    handleGetTasks();
-    handleGetUserRole();
-  }, []);
+    if (results[0].data) setRole(results[0].data);
+    if (results[1].data) setTasks(results[1].data);
+  }, [results]);
 
-  return (
+  if (isLoading) return <Spinner />
+  
+  if(tasks.data) return (
     <>
-      {!loading && !error && (
-        <h2 className="font-bold text-3xl">
-          Plan Semanal Semana {tasks.week} - FINCA {tasks.finca} - LOTE{" "}
-          {tasks?.lote}
-        </h2>
-      )}
-      {loading && <Spinner />}
-      {!loadingReloadTasks && !loading && error && <ShowErrorAPI />}
+      <h2 className="font-bold text-3xl">
+        Plan Semanal Semana {tasks.week} - FINCA {tasks.finca} - LOTE{" "}
+        {tasks.lote}
+      </h2>
       <div className="flex flex-col gap-10 mt-10">
-        {!loading &&
-          !error &&
-          tasks.data &&
-          tasks.data.map((task) => <Task key={task.id} task={task} role={role}/>)}
+        {tasks.data.map((task) => <Task key={task.id} task={task} role={role} getTasks={() => results[1].refetch()}/>)}
       </div>
     </>
   );

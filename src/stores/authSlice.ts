@@ -10,7 +10,6 @@ export type AuthSliceType = {
 
     logedIn: boolean;
     
-    
     Autherrors: string[];
     getUserByTokenError: boolean;
     errorgetRole: boolean;

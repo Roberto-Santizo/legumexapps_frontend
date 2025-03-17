@@ -1,59 +1,45 @@
-//EXTERNAS
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
-//HOOKS
 import { useEffect, useState } from "react";
 import { createUser } from "@/api/UsersAPI";
 import { getRoles } from "@/api/RolesAPI";
 import { getPermissions } from "@/api/PermissionsAPI";
-
-//TYPES
 import { DraftUser, Permission, Role } from "@/types";
-
-//COMPONENTES
 import Error from "@/components/Error";
 import Spinner from "@/components/Spinner";
+import { useQueries, useMutation } from "@tanstack/react-query";
 
 export default function CreateUser() {
-  const [loadingGetRoles, setLoadingGetRoles] = useState<boolean>(false);
-  const [loadingGetPermissions, setLoadingGetPermissions] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
-
   const navigate = useNavigate();
 
-  const handleGetRoles = async () => {
-    setLoadingGetRoles(true);
-    try {
-      const roles = await getRoles();
-      setRoles(roles);
-    } catch (error) {
-      toast.error("Hubo un error a traer los roles");
-    } finally {
-      setLoadingGetRoles(false);
-    }
-  };
+  const results = useQueries({
+    queries: [
+      { queryKey: ['getRoles'], queryFn: getRoles },
+      { queryKey: ['getPermissions'], queryFn: getPermissions }
+    ]
+  });
 
-  const handleGetPermissions = async () => {
-    setLoadingGetPermissions(true);
-    try {
-      const permissions = await getPermissions();
-      setPermissions(permissions);
-    } catch (error) {
-      toast.error("Hubo un error a traer los permisos");
-    } finally {
-      setLoadingGetPermissions(false);
-    }
-  };
+  const isFetched = results.some(result => result.isFetched);
 
   useEffect(() => {
-    handleGetRoles();
-    handleGetPermissions();
-  }, []);
+    if (results[0].data) setRoles(results[0].data)
+    if (results[1].data) setPermissions(results[1].data)
+  }, [results])
+
+  const {mutate,isPending} = useMutation({
+    mutationFn:createUser,
+    onError: () => {
+      toast.success('Hubo un error al crear el usuario');
+    },
+    onSuccess: () => {
+      toast.success("Usuario creado correctamente");
+      navigate("/usuarios");
+    }
+  });
 
   const {
     register,
@@ -61,19 +47,9 @@ export default function CreateUser() {
     formState: { errors },
   } = useForm<DraftUser>();
 
-  const RegisterUser = async (data: DraftUser) => {
-    setLoading(true);
-    const errors = await createUser(data);
-    if (errors) {
-      errors.forEach(error => toast.error(error[0]))
-      setLoading(false);
-      return;
-    }
-    toast.success("Usuario creado correctamente");
-    navigate("/usuarios");
-    setLoading(false);
-  };
+  const RegisterUser = async (data: DraftUser) => mutate(data);
 
+  if (!isFetched) return <Spinner />
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Usuario</h2>
@@ -159,75 +135,67 @@ export default function CreateUser() {
           )}
         </div>
 
-        {loadingGetRoles ? (
-          <Spinner />
-        ) : (
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="role">
-              Rol:
-            </label>
+        <div className="flex flex-col gap-2">
+          <label className="text-lg font-bold uppercase" htmlFor="role">
+            Rol:
+          </label>
 
-            <select
-              id="role"
-              className="border border-black p-3"
-              {...register("roles", { required: "El rol es obligatorio" })}
-            >
-              <option value="">--SELECCIONE UNA OPCIÓN--</option>
-              {roles.map((role) => (
-                <option value={role.name} key={role.id}>
-                  {role.name}
-                </option>
-              ))}
-            </select>
+          <select
+            id="role"
+            className="border border-black p-3"
+            {...register("roles", { required: "El rol es obligatorio" })}
+          >
+            <option value="">--SELECCIONE UNA OPCIÓN--</option>
+            {roles.map((role) => (
+              <option value={role.name} key={role.id}>
+                {role.name}
+              </option>
+            ))}
+          </select>
 
-            {errors.roles && <Error>{errors.roles?.message?.toString()}</Error>}
-          </div>
-        )}
+          {errors.roles && <Error>{errors.roles?.message?.toString()}</Error>}
+        </div>
 
-        {loadingGetPermissions ? (
-          <Spinner />
-        ) : (
-          <fieldset className="shadow p-5">
-            <legend className="text-3xl font-bold">Permisos</legend>
-            {errors.permissions && (
-              <Error>{errors.permissions.message?.toString()}</Error>
-            )}
-            <div className="flex flex-col gap-5 mt-5">
-              {permissions.map((permission) => (
-                <div
-                  className="w-full flex flex-row gap-5 p-5 odd:bg-gray-300 odd:text-white shadow-xl"
-                  key={permission.id}
+        <fieldset className="shadow p-5">
+          <legend className="text-3xl font-bold">Permisos</legend>
+          {errors.permissions && (
+            <Error>{errors.permissions.message?.toString()}</Error>
+          )}
+          <div className="flex flex-col gap-5 mt-5">
+            {permissions.map((permission) => (
+              <div
+                className="w-full flex flex-row gap-5 p-5 odd:bg-gray-300 odd:text-white shadow-xl"
+                key={permission.id}
+              >
+                <input
+                  type="checkbox"
+                  id={permission.name}
+                  value={permission.id}
+                  {...register("permissions", {
+                    required: "Selecciona al menos un permiso",
+                  })}
+                  className="w-10"
+                />
+                <label
+                  className="font-bold text-xl"
+                  htmlFor={permission.name}
                 >
-                  <input
-                    type="checkbox"
-                    id={permission.name}
-                    value={permission.id}
-                    {...register("permissions", {
-                      required: "Selecciona al menos un permiso",
-                    })}
-                    className="w-10"
-                  />
-                  <label
-                    className="font-bold text-xl"
-                    htmlFor={permission.name}
-                  >
-                    {permission.name}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </fieldset>
-        )}
+                  {permission.name}
+                </label>
+              </div>
+            ))}
+          </div>
+        </fieldset>
 
         <Button
-          disabled={loading}
+          disabled={isPending}
           type="submit"
           variant="contained"
           color="primary"
           fullWidth
           sx={{ marginTop: 2 }}
         >
-          {loading ? (
+          {isPending ? (
             <Spinner />
           ) : (
             <p className="font-bold text-lg">Crear Usuario</p>

@@ -1,11 +1,7 @@
-//HOOKS
 import { useEffect, useState } from "react";
 import { useAppStore } from "@/stores/useAppStore";
 import { Link } from "react-router-dom";
-
 import { getPaginatedTasks } from "@/api/TasksAPI";
-
-//COMPONENTES
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { Edit, PlusIcon } from "lucide-react";

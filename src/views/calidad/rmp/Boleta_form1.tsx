@@ -145,7 +145,7 @@ export default function Boleta_form1() {
 
       <div>
         <form
-          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          className="mt-10 md:w-2/3 w-full mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
@@ -180,7 +180,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={producersOptions}
                   id="producer_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   value={producersOptions.find(option => option.value === field.value) || null}
                   onChange={(option) => {
@@ -207,7 +207,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={productsOptions}
                   id="product_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   onChange={(selected) => field.onChange(selected?.value)}
                   value={productsOptions.find(
@@ -232,7 +232,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={fincasOptions}
                   id="finca_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   onChange={(selected) => field.onChange(selected?.value)}
                   value={fincasOptions.find(
@@ -271,7 +271,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={transportistasOptions}
                   id="carrier_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   onChange={(selected) => {
                     field.onChange(selected?.value)
@@ -299,7 +299,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={pilotosOptions}
                   id="driver_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   onChange={(selected) => field.onChange(selected?.value)}
                   value={pilotosOptions.find(
@@ -324,7 +324,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={placasOptions}
                   id="plate_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   onChange={(selected) => field.onChange(selected?.value)}
                   value={placasOptions.find(
@@ -349,7 +349,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={cdpsOptions}
                   id="productor_plantation_control_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   onChange={(selected) => field.onChange(selected?.value)}
                   value={cdpsOptions.find(
@@ -404,7 +404,7 @@ export default function Boleta_form1() {
                   {...field}
                   options={basketsOptions}
                   id="basket_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  placeholder={"SELECCIONE UNA OPCION"}
                   className="border border-black"
                   onChange={(selected) => field.onChange(selected?.value)}
                   value={basketsOptions.find(
@@ -475,7 +475,7 @@ export default function Boleta_form1() {
               )}
             />
             <label className="block font-medium text-xl">
-              Firma de Calidad
+              Firma
             </label>
 
             {(errors.calidad_signature) && <Error>{'Asegurese de haber firmado'}</Error>}

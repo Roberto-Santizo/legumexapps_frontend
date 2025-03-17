@@ -47,7 +47,6 @@ export default function UserMenu({ setOpen }: UserMobileProps) {
             <User2Icon width={64} height={64}/>
             <div>
               <p className="text-lg text-black font-bold">{user.name}</p>
-              <p className="text-lg">Informatica</p>
             </div>
           </div>
 
@@ -57,7 +56,7 @@ export default function UserMenu({ setOpen }: UserMobileProps) {
           </p>
           <p className="text-lg">
             <span className="font-bold">Correo: </span>
-            {user.email}
+            {user.email ==='' ? 'SIN CORREO ASOCIADO' : user.email}
           </p>
         </div>
 

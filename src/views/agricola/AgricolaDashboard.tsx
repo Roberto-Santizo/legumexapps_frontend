@@ -5,61 +5,39 @@ import FinishedTasks from "@/components/dashboard-agricola-components/FinishedTa
 import TasksCropInProgress from "@/components/dashboard-agricola-components/TasksCropInProgress";
 import FinishedTasksCrop from "@/components/dashboard-agricola-components/FinishedTasksCrop";
 import { useAppStore } from "@/stores/useAppStore";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
 import SummaryTasksFincas from "@/components/dashboard-agricola-components/SummaryTasksFincas";
+import { useQuery } from "@tanstack/react-query";
 
 export default function AgricolaDashboard() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [role, setRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-  const handleGetUserRoleByToken = async () => {
-    try {
-      const userRole = await getUserRoleByToken();
-      setRole(userRole);
-    } catch (error) {
-      toast.error("Hubo un error al cargar el contenido");
-      navigate("/login");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: role, isLoading, isError } = useQuery<string>({
+    queryKey: ['getUserRoleByToken'],
+    queryFn: getUserRoleByToken
+  });
 
-  useEffect(() => {
-    handleGetUserRoleByToken();
-  }, []);
-  return (
+  if (isError) navigate('/login');
+  if (isLoading) return <Spinner />
+  if (role) return (
     <div>
       <h1 className="text-5xl font-bold mb-10">Dashboard Agricola</h1>
 
       <div className="mt-10 grid grid-cols-12 gap-5">
-        {loading && <Spinner />}
-
-        {(!loading)&& (
+        {['admin', 'adminagricola'].includes(role) && (
           <>
-            {(role === "admin" || role === "adminagricola") && (
-              <>
-                <SummaryTasksFincas />
-                <SummaryHoursEmployees />
-              </>
-            )}
-            <DronHours />
-            <DronHours />
-
-            <TasksInProgress />
-            <FinishedTasks />
-            <TasksCropInProgress />
-            <FinishedTasksCrop />
-            <TasksInProgress />
-            <FinishedTasks />
-            <TasksCropInProgress />
-            <FinishedTasksCrop />
+            <SummaryTasksFincas />
+            <SummaryHoursEmployees />
           </>
         )}
+
+        <DronHours />
+        <TasksInProgress />
+        <FinishedTasks />
+        <TasksCropInProgress />
+        <FinishedTasksCrop />
       </div>
     </div>
   );

@@ -1,51 +1,29 @@
-import { useAppStore } from "../../stores/useAppStore";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { TaskCropInProgress } from "../../types";
 import Spinner from "../Spinner";
 import TaskCropInProgressComponent from "../TaskCropInProgressComponent";
+import { getTasksCropInProgress } from "@/api/DashboardAgricolaAPI";
+import { useQuery } from "@tanstack/react-query";
+import ShowErrorAPI from "../ShowErrorAPI";
 
 export default function TasksCropInProgress() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [tasksInProgress, setTasksInProgress] = useState<TaskCropInProgress[]>(
-    []
-  );
-  const getTasksCropInProgress = useAppStore(
-    (state) => state.getTasksCropInProgress
-  );
 
-  const handleGetInfo = async () => {
-    setLoading(true);
-    try {
-      const tasks = await getTasksCropInProgress();
-      setTasksInProgress(tasks);
-    } catch (error) {
-      toast.error("Hubo un error al traer la información");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: tasksInProgress, isLoading, isError } = useQuery({
+    queryKey: ['getTasksCropInProgress'],
+    queryFn: getTasksCropInProgress
+  });
 
-  useEffect(() => {
-    handleGetInfo();
-  }, []);
-  return (
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+  if (tasksInProgress) return (
     <div className="flex flex-col items-center shadow-xl row-start-5 col-start-1 col-span-12 rounded-xl gap-5">
       <p className="uppercase w-full text-center bg-gray-400 p-3 text-white font-bold rounded-t-xl text-2xl">
         Control de Cosechas en Proceso
       </p>
-      {(!loading && tasksInProgress.length === 0) && (<p className="text-center mt-1">No hay datos</p>)}
+      {(tasksInProgress.length === 0) && (<p className="text-center mt-1">No hay datos</p>)}
       <div className="w-full p-2  max-h-96 overflow-y-auto">
         <div className="font-bold space-y-5">
-          {loading ? (
-            <Spinner />
-          ) : (
-            <>
-              {tasksInProgress.map((task) => (
-                <TaskCropInProgressComponent key={task.id} task={task} />
-              ))}
-            </>
-          )}
+          {tasksInProgress.map((task) => (
+            <TaskCropInProgressComponent key={task.id} task={task} />
+          ))}
         </div>
       </div>
     </div>
