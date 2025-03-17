@@ -1,24 +1,38 @@
 import { Card, CardContent, Typography, IconButton, Tooltip, Box, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Clock, PlayCircle, Eye, CheckCircle } from "lucide-react";
-import { useAppStore } from "../stores/useAppStore";
 import { TaskInProgress, TaskWeeklyPlan } from "../types";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { closeTask } from "@/api/TasksWeeklyPlanAPI";
+import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 
 type Props = {
   task: TaskInProgress;
-  handleGetInfo: () => Promise<void>
+  refetch: () => Promise<QueryObserverResult<TaskInProgress[]>>
 };
 
-export default function TaskCard({ task, handleGetInfo } : Props) {
-  const url = `/planes-semanales/tareas-lote/informacion/${task.id}`
-  const openModalAction = useAppStore((state) => state.openModalAction);
-  const closeTask = useAppStore((state) => state.closeTask)
+export default function TaskCard({ task, refetch }: Props) {
+  const url = `/planes-semanales/tareas-lote/informacion/${task.id}`;
+
+  const { mutate } = useMutation({
+    mutationFn: closeTask,
+    onError: () => {
+      toast.error('Hubo un error al traer la información');
+    },
+    onSuccess: () => {
+      refetch();
+      toast.success("Tarea Cerrada Correctamente");
+    }
+  });
 
   const handleCloseTask = async (idTask: TaskWeeklyPlan["id"]) => {
     if (task.has_insumos) {
-      openModalAction(idTask);
+      Swal.fire({
+        icon: "error",
+        title: "¡La tarea cuenta con insumos!",
+        text: "Para poder cerrar la tarea ve a la seccion de tareas en planes semanales",
+      });
     } else {
       Swal.fire({
         title: "¿Deseas cerrar esta tarea?",
@@ -28,13 +42,7 @@ export default function TaskCard({ task, handleGetInfo } : Props) {
         confirmButtonColor: 'red'
       }).then(async (result) => {
         if (result.isConfirmed) {
-          try {
-            await closeTask(idTask);
-            await handleGetInfo();
-            toast.success("Tarea Cerrada Correctamente");
-          } catch (error) {
-            toast.error('Hubo un error al traer la información');
-          }
+          mutate(idTask)
         }
       });
     }

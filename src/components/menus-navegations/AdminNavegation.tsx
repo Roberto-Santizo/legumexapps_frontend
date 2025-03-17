@@ -7,8 +7,7 @@ export default function AdminNavegation() {
       <NavLink
         to={"/usuarios"}
         className={({ isActive }) =>
-          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
-            isActive ? "bg-gray-200" : "hover:bg-gray-200"
+          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
           }`
         }
       >
@@ -19,8 +18,7 @@ export default function AdminNavegation() {
       <NavLink
         to={"/roles"}
         className={({ isActive }) =>
-          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
-            isActive ? "bg-gray-200" : "hover:bg-gray-200"
+          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
           }`
         }
       >
@@ -31,8 +29,7 @@ export default function AdminNavegation() {
       <NavLink
         to={"/permisos"}
         className={({ isActive }) =>
-          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
-            isActive ? "bg-gray-200" : "hover:bg-gray-200"
+          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
           }`
         }
       >

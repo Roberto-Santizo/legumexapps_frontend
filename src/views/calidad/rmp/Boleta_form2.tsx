@@ -69,7 +69,7 @@ export default function Boleta_form2({ boleta }: Props) {
       {loading ? <Spinner /> : (
         <>
           <div>
-            <form className="mt-10 w-1/2 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
+            <form className="mt-10 w-full md:w-1/2 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-2">
                 <label
                   className="text-lg font-bold uppercase"
@@ -106,7 +106,7 @@ export default function Boleta_form2({ boleta }: Props) {
                       {...field}
                       options={basketsOptions}
                       id="basket_id"
-                      placeholder={"--SELECCIONE UNA OPCION--"}
+                      placeholder={"SELECCIONE UNA OPCION"}
                       className="border border-black"
                       onChange={(selected) => field.onChange(selected?.value)}
                       value={basketsOptions.find(

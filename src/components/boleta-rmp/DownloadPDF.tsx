@@ -11,7 +11,6 @@ interface DownloadPDFProps {
   buttonClassName?: string;
 }
 
-// Componente simplificado para descargar la boleta como PDF
 const DownloadPDF: React.FC<DownloadPDFProps> = ({
   boleta,
   buttonClassName

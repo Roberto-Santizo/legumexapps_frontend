@@ -57,9 +57,6 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
 
         <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-6 text-sm md:text-base">
           <div className="flex space-x-2">
-            <span>PLANTA CONGELADORA</span>
-          </div>
-          <div className="flex space-x-2">
             <span>TRANSP:</span>
             <span className="border-b border-black flex-grow">{boleta.field_data.transport}</span>
           </div>
@@ -258,12 +255,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           </div>
         </div>
 
-        <div className="mt-4 md:mt-6 text-sm text-center text-gray-600">
-          <p>ORIGINAL (BLANCO) PRODUCTOR • DUPLICADO (ROSADO) CONTAB./DAD • TRIPLICADO (AMARILLO) ARCHIVO</p>
-          <p>Correlativo del 170,001 al 172,500 de fecha 23/04/2023</p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-20 mt-5">
+        <div className="grid grid-cols-3 gap-20 mt-20">
           {boleta.prod_data?.receptor_signature && (
             <div className="text-center">
               <div className="border-b border-black h-25 md:h-20 flex items-center justify-center max-w-96">
@@ -299,7 +291,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
                 className="max-h-25 md:max-h-25 object-contain"
               />
             </div>
-            <p className="mt-2">FIRMA CALIDAD</p>
+            <p className="mt-2">FIRMA DIGITADOR</p>
           </div>
         </div>
       </div>

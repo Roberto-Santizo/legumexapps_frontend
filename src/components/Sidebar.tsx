@@ -1,53 +1,19 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { useAppStore } from "@/stores/useAppStore";
+import { NavLink } from "react-router-dom";
 import AdminNavegation from "./menus-navegations/AdminNavegation";
 import AgricolaNavegation from "./menus-navegations/AgricolaNavegation";
 import { HomeIcon } from "lucide-react";
-import Spinner from "./Spinner";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import CalidadNavegation from "./menus-navegations/CalidadNavegation";
+import BoletaRMPNavigation from "./menus-navegations/BoletaRMPNavigation";
 import ProduccionNavigation from "./menus-navegations/ProduccionNavegation";
 
 
-export function Sidebar() {
-  const navigations = {
-    admin: (
-      <>
-        <AdminNavegation /> <AgricolaNavegation /> <CalidadNavegation /> <ProduccionNavigation />
-      </>
-    ),
-    adminagricola: <AgricolaNavegation />,
-    auxagricola: <AgricolaNavegation />,
-    pprod: <CalidadNavegation />,
-    pcalidad: <CalidadNavegation />,
-    admincalidad: <CalidadNavegation /> ,
-    pcostos: <CalidadNavegation />
-  };
+type Props = {
+  role: string
+}
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [role, setRole] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
-
-  useEffect(() => {
-    const handleGetUserRoleByToken = async () => {
-      try {
-        const userRole = await getUserRoleByToken();
-        setRole(userRole);
-      } catch (error) {
-        toast.error("Hubo un error al cargar el contenido");
-        navigate("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    handleGetUserRoleByToken();
-  }, []);
+export function Sidebar({ role }: Props) {
   return (
     <div className="pb-12 h-screen w-64 bg-gray-100 ">
-      <div className="space-y-4 py-4">
+      <div className="space-y-4 py-4 max-h-screen  overflow-y-auto scrollbar-hide">
         <div className="px-3 py-2">
           <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
             Menu
@@ -56,8 +22,7 @@ export function Sidebar() {
             <NavLink
               to={"/dashboard"}
               className={({ isActive }) =>
-                `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${
-                  isActive ? "bg-gray-200" : "hover:bg-gray-200"
+                `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
                 }`
               }
             >
@@ -65,9 +30,19 @@ export function Sidebar() {
               <p className="text-sm font-bold">Dashboard</p>
             </NavLink>
 
-            {loading && <Spinner />}
+            {['admin'].includes(role) && (
+              <>
+                <AdminNavegation /> <AgricolaNavegation role={role} /> <BoletaRMPNavigation role={role} /> <ProduccionNavigation />
+              </>
+            )}
 
-            {!loading && navigations[role as keyof typeof navigations]}
+            {['auxagricola', 'adminagricola'].includes(role) && (
+              <AgricolaNavegation role={role} />
+            )}
+
+            {['pprod', 'admincalidad', 'auxcalidad', 'pprod', 'pcostos', 'pcalidad'].includes(role) && (
+              <BoletaRMPNavigation role={role} />
+            )}
           </nav>
         </div>
       </div>

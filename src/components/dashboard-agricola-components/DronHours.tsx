@@ -1,45 +1,28 @@
-import { useEffect, useState } from "react";
 import DronIcon from "../DronIcon";
-import { toast } from "react-toastify";
 import Spinner from "../Spinner";
-
 import { getDronHours } from "@/api/DashboardAgricolaAPI";
-
+import { useQuery } from "@tanstack/react-query";
+import ShowErrorAPI from "../ShowErrorAPI";
 
 export default function DronHours() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [dronHours, setDronHours] = useState<number>(0);
 
-  const handleGetDronHours = async () => {
-    setLoading(true);
-    try {
-      const hours = await getDronHours();
-      setDronHours(hours);
-    } catch (error) {
-      toast.error("Error al obtener información del dron");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: dronHours, isLoading, isError } = useQuery({
+    queryKey: ['getDronHours'],
+    queryFn: getDronHours
+  });
 
-  useEffect(() => {
-    handleGetDronHours();
-  }, []);
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+
   return (
     <div className="flex flex-col items-center justify-center shadow-xl row-start-2 col-start-1 col-span-5 rounded-xl">
       <p className="uppercase w-full text-center bg-gray-400 p-3 text-white font-bold rounded-t-xl text-2xl">
         Horas Dron Semanal
       </p>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <>
-          <div className="h-full flex justify-center items-center flex-col">
-            <DronIcon width={120} height={150} />
-            <p className="text-2xl font-bold mb-5">{dronHours} Horas</p>
-          </div>
-        </>
-      )}
+      <div className="h-full flex justify-center items-center flex-col">
+        <DronIcon width={120} height={150} />
+        <p className="text-2xl font-bold mb-5">{dronHours ?? 0} Horas</p>
+      </div>
     </div>
   );
 }

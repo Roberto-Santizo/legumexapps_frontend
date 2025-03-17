@@ -1,54 +1,38 @@
-import BoletaCampoRMP from "@/components/boleta-rmp/BoletaCampoRMP"
-import BoletasCalidad from "@/components/boleta-rmp/BoletasCalidad"
-import Spinner from "@/components/Spinner";
-import { BoletaInfoAll } from "@/types";
-import { useEffect, useState } from "react";
+import BoletaCampoRMP from "@/components/boleta-rmp/BoletaCampoRMP";
+import BoletasCalidad from "@/components/boleta-rmp/BoletasCalidad";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 
-import { getBoletaInfoAll } from "@/api/ReceptionsDocAPI";
 import InspeccionTransporte from "@/components/boleta-camion/InspeccionTransporte";
+import { useQuery } from "@tanstack/react-query";
+import { getBoletaInfoAll } from "@/api/ReceptionsDocAPI";
+import Spinner from "@/components/Spinner";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function ShowRMP() {
-  const { rm_reception_id } = useParams();
+  const params = useParams();
+  const rm_reception_id = params.rm_reception_id!!;
 
-  const [boleta, setBoleta] = useState<BoletaInfoAll>({} as BoletaInfoAll);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { data: boleta, isLoading, isError } = useQuery({
+    queryKey: ['getBoletaInfoAll', rm_reception_id],
+    queryFn: () => getBoletaInfoAll(rm_reception_id)
+  });
 
-  const handleGetInfo = async () => {
-    setLoading(true);
-    try {
-      if (rm_reception_id) {
-        const data = await getBoletaInfoAll(rm_reception_id);
-        setBoleta(data);
-      }
-    } catch (error) {
-      toast.error('Error al traer la información');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    handleGetInfo();
-  }, []);
-
-  return (
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+  if (boleta) return (
     <>
       <h1 className="font-bold text-4xl">Documentos</h1>
 
-      {(loading && boleta) ? <Spinner /> : (
-        <section className="flex flex-col gap-10 mt-10">
-          <BoletaCampoRMP boleta={boleta} />
-          {boleta.quality_doc_data && (
-            <BoletasCalidad boleta={boleta} />
-          )}
+      <section className="flex flex-col gap-10 mt-10">
+        <BoletaCampoRMP boleta={boleta} />
+        {boleta.quality_doc_data && (
+          <BoletasCalidad boleta={boleta} />
+        )}
 
-          {boleta.transport_data && (
-            <InspeccionTransporte boleta={boleta} />
-          )}
-        </section>
-      )}
+        {boleta.transport_data && (
+          <InspeccionTransporte boleta={boleta} />
+        )}
+      </section>
 
     </>
   )
