@@ -1,40 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppStore } from "../stores/useAppStore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
+import { useQuery } from "@tanstack/react-query";
 
 interface ProtectedAgricolaRoutesProps {
   children: JSX.Element;
   roles: string[]
 }
 
-export default function ProtectedAgricolaRoutes({roles, children }: ProtectedAgricolaRoutesProps) {
-  const [loading, setLoading] = useState<boolean>(true); 
+export default function ProtectedAgricolaRoutes({ roles, children }: ProtectedAgricolaRoutesProps) {
   const logedIn = useAppStore((state) => state.logedIn);
-  const [role, setRole] = useState<string | null>(null);
   const navigate = useNavigate();
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-  if(!logedIn){
+  const { data: role, isLoading, isError } = useQuery({
+    queryKey: ['getUserRoleByToken'],
+    queryFn: getUserRoleByToken
+  });
+
+  if (!logedIn) {
     navigate('/login');
   }
-
-  const handleGetUserRoleByToken = async () => {
-    try {
-      const userRole = await getUserRoleByToken();
-      setRole(userRole);
-    } catch (error) {
-      toast.error("Hubo un error al cargar el contenido");
-      navigate("/login"); 
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    handleGetUserRoleByToken();
-  }, []);
 
   useEffect(() => {
     if (role && !roles.includes(role)) {
@@ -43,9 +31,11 @@ export default function ProtectedAgricolaRoutes({roles, children }: ProtectedAgr
     }
   }, [role]);
 
-  if (loading) {
-    return <Spinner />; 
+
+  if (isError) navigate('/login');
+  if (isLoading) {
+    return <Spinner />;
   }
 
-  return children; 
+  if (role) return children;
 }

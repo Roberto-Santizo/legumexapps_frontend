@@ -287,7 +287,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
 
         <View style={styles.centerTitle}>
           <Text style={styles.title}>RECIBO DE MATERIA PRIMA</Text>
-          <Text style={styles.receiptNumber}>No.{boleta.field_data.id}</Text>
+          <Text style={styles.receiptNumber}>No.{boleta.field_data.ref_doc}</Text>
         </View>
 
         <View style={styles.headerRight}>
@@ -309,9 +309,6 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
 
       {/* Información General */}
       <View style={styles.infoGrid}>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>PLANTA CONGELADORA</Text>
-        </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>TRANSP:</Text>
           <Text style={styles.infoValue}>{boleta.field_data.transport}</Text>
@@ -508,16 +505,8 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
             <Text style={styles.diffBox}>
               {(boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)).toFixed(2)}
             </Text>
-
-            <Text style={styles.statusBox}>
-              {boleta.consignacion ? "⭕" : "✔"}
-            </Text>
           </View>
         </View>
-      </View>
-      <View style={styles.footer}>
-        <Text>ORIGINAL (BLANCO) PRODUCTOR • DUPLICADO (ROSADO) CONTAB./DAD • TRIPLICADO (AMARILLO) ARCHIVO</Text>
-        <Text>Correlativo del 170,001 al 172,500 de fecha 23/04/2023</Text>
       </View>
 
       <View style={styles.row}>
@@ -526,7 +515,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
             <View style={styles.signatureLine}>
               <Signature firma={boleta.field_data.calidad_pdf_signature} />
             </View>
-            <Text style={styles.signatureLabel}>FIRMA</Text>
+            <Text style={styles.signatureLabel}>FIRMA DIGITADOR</Text>
           </View>
         </View>
 
