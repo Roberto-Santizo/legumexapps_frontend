@@ -21,7 +21,6 @@ const routes = [
   { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin'] },
   { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin'] },
 
-  { path: "/tareas/TaskPeople/:id", component: lazy(() => import("../views/produccion/Tareas/TaskPeople")), roles: ['admin'] },
   
 ];
 

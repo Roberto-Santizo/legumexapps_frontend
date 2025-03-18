@@ -2,6 +2,7 @@ import clienteAxios from "@/config/axios";
 import { Line } from "recharts";
 import { z } from 'zod';
 import { SKUSchema } from "./SkusAPI";
+import { EmployeeTaskCropPlanSchema } from "@/utils/taskCropWeeklyPlan-schema";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
@@ -104,6 +105,7 @@ export const EmployeeTaskProductionSchema = z.object({
     name: z.string(), 
     code: z.string(),
     position: z.string(),
+    column_id: z.string()
 });
 
 export const TaskProductionDetailSchema = z.object({
@@ -115,13 +117,13 @@ export const TaskProductionDetailSchema = z.object({
     employees: z.array(EmployeeTaskProductionSchema), 
 });
 
+export type EmployeeProduction = z.infer<typeof EmployeeTaskProductionSchema>
 export type TaskProductionDetails = z.infer<typeof TaskProductionDetailSchema>
 
 export async function getTaskProductionDetails(id:TaskProduction['id']) : Promise<TaskProductionDetails> {
     try {
         const url = `/api/task_production_plan/${id}`;
         const { data } = await clienteAxios(url);
-        console.log("Respuesta API:", data);
         const result = TaskProductionDetailSchema.safeParse(data.data);
         if(result.success){
             return result.data
@@ -135,9 +137,11 @@ export async function getTaskProductionDetails(id:TaskProduction['id']) : Promis
 }
 
 export const EmployeeComodinSchema = z.object({
+    id: z.string(),
     name: z.string(),
     code: z.string(),
-    position: z.string()
+    position: z.string(),
+    column_id: z.string()
 });
 
 export const EmployeesComodinesSchema = z.object({
@@ -154,7 +158,6 @@ export async function getComodines() : Promise<EmployeeComodin[]>{
         if(result.success){
             return result.data.data
         }else{
-            console.error("Datos no válidos:", result.error);
             throw new Error("Información no valida");
         }
     } catch (error) {

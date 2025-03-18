@@ -33,7 +33,7 @@ export default function ShowLineaDetalles() {
             </div>
 
             <div>
-              <Link to={`/tareas/TaskPeople/${task.id}`}>
+              <Link to={`/planes-produccion/${plan_id}/${linea_id}}/${task.id}`}>
                 <Eye className="cur" />
               </Link>
             </div>
