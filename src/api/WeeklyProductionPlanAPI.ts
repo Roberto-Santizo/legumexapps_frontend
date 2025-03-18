@@ -2,7 +2,6 @@ import clienteAxios from "@/config/axios";
 import { Line } from "recharts";
 import { z } from 'zod';
 import { SKUSchema } from "./SkusAPI";
-import { EmployeeTaskCropPlanSchema } from "@/utils/taskCropWeeklyPlan-schema";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
