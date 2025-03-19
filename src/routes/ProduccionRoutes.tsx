@@ -11,6 +11,8 @@ const routes = [
   { path: "/planes-produccion/:plan_id", component: lazy(() => import("../views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin'] },
   { path: "/planes-produccion/:plan_id/:linea_id", component: lazy(() => import("../views/produccion/planes_semanales/ShowLineaDetalles")), roles: ['admin'] },
   { path: "/planes-produccion/:plan_id/:linea_id/:task_p_id", component: lazy(() => import("../views/produccion/planes_semanales/ShowTaskProductionDetails")), roles: ['admin'] },
+  { path: "/planes-produccion/graphics", component: lazy(() => import("../views/produccion/planes_semanales/GraphicsPlanSemanal")), roles: ['admin'] },
+
 
   { path: "/skus", component: lazy(() => import("../views/produccion/sku/IndexSKU")), roles: ['admin'] },
   { path: "/skus/crear", component: lazy(() => import("../views/produccion/sku/CreateSKU")), roles: ['admin'] },
