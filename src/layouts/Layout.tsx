@@ -32,7 +32,7 @@ export default function Layout() {
 
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header setModal={setModal} />
-          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white scrollbar-hide">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mt-4"></div>
               <div className="mt-8">

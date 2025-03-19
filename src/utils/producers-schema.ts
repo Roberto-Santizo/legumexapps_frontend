@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const ProducerSchema = z.object({
     id: z.string(),
-    code: z.number(),
+    code: z.string(),
     name: z.string()
 }); 
 
