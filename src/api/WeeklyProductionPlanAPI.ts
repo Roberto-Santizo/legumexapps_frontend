@@ -3,6 +3,7 @@ import { Line } from "recharts";
 import { z } from 'zod';
 import { SKUSchema } from "./SkusAPI";
 import { DraftChangePosition } from "@/components/ModalChangeEmployee";
+import { DraftPerformance } from "@/components/ModalTomaRendimientoProduccion";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
@@ -70,6 +71,7 @@ export async function getWeeklyPlanDetails(id: WeeklyPlanProductionPlan['id']): 
 export const TaskProductionSchema = z.object({
     id: z.string(),
     line: z.string(),
+    sku: z.string(),
     total_tarimas: z.number(),
     operation_date: z.string(),
     start_date: z.string().nullable(),
@@ -225,6 +227,10 @@ export const TaskProductionInProgressSchema = z.object({
         line: z.string(),
         sku: z.string(),
         start_date: z.string(),
+        biometric_hours: z.number(),
+        total_hours: z.number(),
+        line_hours: z.number(),
+        performance_hours: z.number(),
         employees: z.array(AssignedEmployeeTaskProductionSchema)
     })
 })
@@ -242,6 +248,17 @@ export async function getTaskProductionInProgressDetail(id: TaskProduction['id']
         }else{
             throw new Error("Información no valida");
         }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+
+export async function createTaskProductionPerformance(id : TaskProduction['id'],data : DraftPerformance) {
+    try {
+        const url = `/api/tasks_production_plan/${id}/performance`;
+        await clienteAxios.post(url,data);
     } catch (error) {
         console.log(error);
         throw error;

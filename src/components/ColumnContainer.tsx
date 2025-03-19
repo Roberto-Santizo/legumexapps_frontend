@@ -1,5 +1,5 @@
 import { SortableContext, useSortable } from "@dnd-kit/sortable"
-import { Column } from "views/produccion/planes_semanales/ShowTaskProductionDetails"
+import { Column } from "views/produccion/planes_semanales/AsignarEmpleadosTareaProduccion"
 import { CSS } from "@dnd-kit/utilities";
 import { EmployeeProduction } from "@/api/WeeklyProductionPlanAPI";
 import EmployeeDraggable from "./EmployeeDraggable";
