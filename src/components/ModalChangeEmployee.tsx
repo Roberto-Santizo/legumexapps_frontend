@@ -1,7 +1,9 @@
-import { EmployeeProduction } from "@/api/WeeklyProductionPlanAPI";
+import { changePosition, EmployeeProduction } from "@/api/WeeklyProductionPlanAPI";
 import { Dialog, Transition } from "@headlessui/react";
 import { Dispatch, Fragment } from "react";
+import { useMutation } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 type Props = {
     modal: boolean;
@@ -11,16 +13,49 @@ type Props = {
     setEmployees: Dispatch<React.SetStateAction<EmployeeProduction[]>>;
 }
 
+export type DraftChangePosition = {
+    assignment_id: EmployeeProduction['id'],
+    new_name: EmployeeProduction['name'],
+    new_code: EmployeeProduction['code'],
+    new_position: EmployeeProduction['position'],
+}
+
 export default function ModalChangeEmployee({ modal, setModal, employee, availableEmployees, setEmployees }: Props) {
 
+    const { mutate } = useMutation({
+        mutationFn: changePosition,
+        onError: () => {
+            toast.error('Hubo un error al realizar el cambio de posición');
+        },
+        onSuccess: () => {
+            toast.success('Cambio de posición realizada correctamente');
+            setModal(false);
+        }
+    });
+
     const swapEmployees = (position: EmployeeProduction['position'], column_id: EmployeeProduction['column_id']) => {
+        const newEmployee = employee;
+        const oldEmployee = availableEmployees.filter(employee => employee.position === position)[0];
         Swal.fire({
-            title: "¿Deseas hacer el cambio de empleado?",
+            title: "¿Deseas hacer el cambio de posición?",
+            text: `Se cambiara a ${newEmployee.name} por ${oldEmployee.name}, este cambio no se podrá revertir`,
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Guardar",
-            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "¡Si, cambiar!",
+            cancelButtonText: "Cancelar"
         }).then((result) => {
             if (result.isConfirmed) {
+                const data: DraftChangePosition = {
+                    assignment_id: oldEmployee.id,
+                    new_name: employee.name,
+                    new_code: employee.code,
+                    new_position: employee.position,
+                }
+
+                mutate(data);
+
                 setEmployees(prevEmployees =>
                     prevEmployees.map(emp => {
                         if (emp.position === position)
@@ -34,8 +69,6 @@ export default function ModalChangeEmployee({ modal, setModal, employee, availab
                 );
             }
         });
-
-        setModal(false);
     }
     return (
         <Transition appear show={modal} as={Fragment}>

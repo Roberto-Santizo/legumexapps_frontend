@@ -5,7 +5,8 @@ import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { useParams } from "react-router-dom";
 import { formatDate } from "@/helpers";
 import { Link } from "react-router-dom";
-import { Eye } from "lucide-react";
+import { Eye, Paperclip } from "lucide-react";
+import TaskLabel from "@/components/TaskLabel";
 
 
 export default function ShowLineaDetalles() {
@@ -25,20 +26,30 @@ export default function ShowLineaDetalles() {
       <h1 className="text-4xl font-bold mb-10">Tareas en proceso</h1>
 
       {tasks.map(task => (
-        <div key={task.id} className="p-5 shadow-xl">
-          <div className="flex justify-between items-center">
-            <div>
-              <p>Fecha: {formatDate(task.operation_date)}</p>
-              <p>Total tarimas: {task.total_tarimas}</p>
-            </div>
+        <div className="grid grid-cols-6 shadow-xl p-10 text-xl" key={task.id}>
+          <div className="col-span-5">
+            <TaskLabel label={"Fecha de Operación"} text={formatDate(task.operation_date)} />
+            <TaskLabel label={"Fecha de Inicio"} text={task.start_date ? formatDate(task.start_date) : 'SIN FECHA DE INICIO'} />
+          </div>
 
-            <div>
-              <Link to={`/planes-produccion/${plan_id}/${linea_id}}/${task.id}`}>
-                <Eye className="cur" />
+          <div className="col-start-7 space-y-5 flex flex-col justify-center items-center">
+            {task.start_date ? (
+              <Link to={`/planes-produccion/informacion/${task.id}`}>
+                <Eye className="cursor-pointer hover:text-gray-500" />
               </Link>
+            ) : (
+              <Link to={`/planes-produccion/asignacion/${task.id}`}>
+                <Paperclip className="cursor-pointer hover:text-gray-500" />
+              </Link>
+            )}
+
+
+            <div className="mt-5 flex justify-end">
+              <p className="bg-sky-400 p-2 text-white rounded font-bold">{task.total_in_employees}/{task.total_employees}</p>
             </div>
           </div>
         </div>
+
 
       ))}
     </>

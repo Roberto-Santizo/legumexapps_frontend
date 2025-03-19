@@ -14,7 +14,7 @@ export default function ShowPlanSemanalProduccion() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedLinea, setSelectedLinea] = useState<LineWeeklyPlan>({} as LineWeeklyPlan);
 
-  const { data: assignment, isLoading, isError } = useQuery({
+  const { data: assignment, isLoading, isError, refetch } = useQuery({
     queryKey: ['getWeeklyPlanDetails'],
     queryFn: () => getWeeklyPlanDetails(id)
   });
@@ -49,7 +49,7 @@ export default function ShowPlanSemanalProduccion() {
         ))}
       </div>
 
-      <ModalCargaPosiciones isOpen={isOpen} setIsOpen={setIsOpen} linea={selectedLinea} />
+      <ModalCargaPosiciones isOpen={isOpen} setIsOpen={setIsOpen} linea={selectedLinea} refetch={refetch}/>
     </div>
   )
 }

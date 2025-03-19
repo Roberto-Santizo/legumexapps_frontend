@@ -4,20 +4,19 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Dispatch, Fragment, useCallback, useState } from "react";
 import { Button } from "@mui/material";
 import Spinner from "./Spinner";
-import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
-import { useMutation } from "@tanstack/react-query";
+import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 type Props = {
     isOpen: boolean;
     setIsOpen: Dispatch<React.SetStateAction<boolean>>;
-    linea: LineWeeklyPlan
+    linea: LineWeeklyPlan;
+    refetch: () => Promise<QueryObserverResult<LineWeeklyPlan[]>>
 }
 
-export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea }: Props) {
+export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch}: Props) {
     const [file, setFile] = useState<File[] | null>(null);
-    const navigate = useNavigate();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -33,8 +32,9 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea }: Props
             toast.error('Hubo un error al cargar el archivo');
         },
         onSuccess: () => {
-            toast.success('Los datos f');
-            navigate('/planes-produccion');
+            toast.success('Asignaciones Creadas Correctamente');
+            setIsOpen(false);
+            refetch();
         }
     });
 

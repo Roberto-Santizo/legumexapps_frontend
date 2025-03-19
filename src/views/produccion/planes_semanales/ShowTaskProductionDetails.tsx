@@ -1,16 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQueries } from "@tanstack/react-query";
-import { EmployeeProduction, getTaskProductionDetails, TaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
+import { EmployeeProduction, getTaskProductionDetails, startTaskProduction, TaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
 import { getComodines } from "@/api/WeeklyProductionPlanAPI";
 import { formatDate } from "@/helpers";
-import Spinner from "@/components/Spinner";
 import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-import ColumnContainer from "@/components/ColumnContainer";
 import { createPortal } from "react-dom";
+import { Button } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/Spinner";
+import ColumnContainer from "@/components/ColumnContainer";
 import EmployeeDraggable from "@/components/EmployeeDraggable";
 import ModalChangeEmployee from "@/components/ModalChangeEmployee";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export type Column = {
     id: string,
@@ -25,7 +29,6 @@ const initialValues = [
 export default function ShowTaskProductionDetails() {
     const params = useParams();
     const task_p_id = params.task_p_id!!;
-
     const [columns] = useState<Column[]>(initialValues);
     const [modal, setModal] = useState<boolean>(false);
     const [activeColumn, setActiveColumn] = useState<Column | null>(null);
@@ -33,6 +36,18 @@ export default function ShowTaskProductionDetails() {
     const [taskData, setTaskData] = useState<TaskProductionDetails>();
     const [employees, setEmployees] = useState<EmployeeProduction[]>([]);
     const [availableEmployees, setAvailableEmployees] = useState<EmployeeProduction[]>([]);
+    const navigate = useNavigate();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: startTaskProduction,
+        onError: () => {
+            toast.error('Error al cerrar la asignación');
+        },
+        onSuccess: () => {
+            toast.success('Tarea Iniciada Correctamente');
+            navigate('/planes-produccion');
+        }
+    });
 
     const columnsId = useMemo(() => {
         return columns.map(column => column.id)
@@ -114,54 +129,28 @@ export default function ShowTaskProductionDetails() {
         }
     }
 
-    // const onDragOver = (event: DragOverEvent) => {
-    //     const { active, over } = event;
-
-    //     if (!over || !active) return;
-
-    //     const activeId = active.id;
-    //     const overId = over.id;
-
-    //     if (activeId === overId) return;
-
-    //     const isActiveEmployee = active.data.current?.type === "Employee";
-    //     const isOverEmployee = over.data.current?.type === "Employee";
-
-    //     if (!isActiveEmployee) return;
-
-    //     if (isActiveEmployee && isOverEmployee) {
-    //         // setEmployees(employees => {
-    //             const activeIndex = employees.findIndex(t => t.id === activeId);
-    //             const overIndex = employees.findIndex(t => t.id === overId);
-
-    //             if(employees[activeIndex].column_id != employees[overIndex].column_id){
-    //                 setModal(true);
-    //             }
-
-    //              employees[activeIndex].column_id = employees[overIndex].column_id;
-
-
-    //              return arrayMove(employees, activeIndex, overIndex);
-    //         // });
-    //     }
-
-    //     const isOverAColumn = active.data.current?.type === "Column";
-
-    //     if (isActiveEmployee && isOverAColumn) {
-    //         setEmployees(employees => {
-    //             const activeIndex = employees.findIndex(t => t.id === activeId);
-    //             employees[activeIndex].column_id = overId as string;
-    //             return arrayMove(employees, activeIndex, activeIndex);
-    //         });
-    //     }
-
-    // }
+    const handleStartTask = () => {
+        Swal.fire({
+            title: "¿Desea iniciar la tarea?",
+            text: "Una vez iniciada no podra modificar la asignación",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, cerrar asignación",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                mutate(task_p_id);
+            }
+        });
+    }
 
     const isLoading = results.some(result => result.isLoading);
     if (isLoading) return <Spinner />
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>
             <div className="p-5 shadow-xl">
                 <div className="font-bold">Línea: <span className="font-normal ml-2">{taskData?.line ?? 'N/A'}</span></div>
@@ -198,6 +187,22 @@ export default function ShowTaskProductionDetails() {
             {(modal && activeEmployee) && (
                 <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} />
             )}
+
+            <Button
+                disabled={isPending}
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ marginTop: 2 }}
+                onClick={() => handleStartTask()}
+            >
+                {isPending ? (
+                    <Spinner />
+                ) : (
+                    <p className="font-bold text-lg">Cerrar Asignación</p>
+                )}
+            </Button>
         </div>
     );
 }
