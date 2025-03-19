@@ -58,7 +58,7 @@ export default function CreateProducer() {
             <input
               autoComplete="off"
               id="code"
-              type="number"
+              type="text"
               placeholder="Código del productor"
               className="border border-black p-3"
               {...register('code', { required: 'El codigo del productor es obligatorio' })}
