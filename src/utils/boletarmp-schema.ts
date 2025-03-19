@@ -121,7 +121,7 @@ export const fieldDataSchema = z.object({
   id: z.string(),
   ref_doc: z.string(),
   producer_id: z.string(),
-  producer_code: z.number(),
+  producer_code: z.string(),
   product_id: z.string(),
   plate: z.string(),
   product: z.string(),
