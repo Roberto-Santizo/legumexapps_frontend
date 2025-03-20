@@ -5,8 +5,8 @@ import Spinner from "../components/Spinner";
 import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
 
 const routes = [
-  { path: "/planes-produccion", component: lazy(() => import("../views/produccion/planes_semanales/IndexPlanSemanalProduccion")), roles: ['admin'] },
   { path: "/planes-produccion/crear", component: lazy(() => import("../views/produccion/planes_semanales/CreatePlanSemanal")), roles: ['admin'] },
+  { path: "/planes-produccion", component: lazy(() => import("../views/produccion/planes_semanales/IndexPlanSemanalProduccion")), roles: ['admin'] },
 
   { path: "/planes-produccion/:plan_id", component: lazy(() => import("../views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin'] },
   { path: "/planes-produccion/:plan_id/:linea_id", component: lazy(() => import("../views/produccion/planes_semanales/ShowLineaDetalles")), roles: ['admin'] },

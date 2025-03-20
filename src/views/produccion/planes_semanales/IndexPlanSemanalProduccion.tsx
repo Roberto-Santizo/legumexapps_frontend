@@ -65,12 +65,14 @@ export default function IndexPlanSemanalProduccion() {
                                 <td className="tbody-td"><CheckBadgeIcon className="w-8 text-green-500" /></td>
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
+
                                 <td className="tbody-td flex gap-5">
                                     <Link to={`/planes-produccion/${plan.id}`}>
-                                        <Eye className="cur" />
+                                        <Eye/>
                                     </Link>
-                                    <Link to={`/planes-produccion/graphics/plan_id/${plan.id}`}>
-                                        <ChartNoAxesCombined className="cur" />
+                                    <Link to={`/planes-produccion/graphics${plan.id}`}>
+                                    {/* <Link to={`/planes-produccion/graphics/plan_id/${plan.id}`}> asi estaba el original */}
+                                        <ChartNoAxesCombined />
                                     </Link>
                                     
                                 </td>
