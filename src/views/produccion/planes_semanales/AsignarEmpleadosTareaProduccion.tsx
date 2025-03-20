@@ -148,7 +148,7 @@ export default function ShowTaskProductionDetails() {
 
     const isLoading = results.some(result => result.isLoading);
     if (isLoading) return <Spinner />
-
+    
     return (
         <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>

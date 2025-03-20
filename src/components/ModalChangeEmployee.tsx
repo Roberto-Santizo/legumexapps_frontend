@@ -4,6 +4,7 @@ import { Dispatch, Fragment } from "react";
 import { useMutation } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import LoadingOverlay from "./LoadingOverlay";
 
 type Props = {
     modal: boolean;
@@ -22,7 +23,7 @@ export type DraftChangePosition = {
 
 export default function ModalChangeEmployee({ modal, setModal, employee, availableEmployees, setEmployees }: Props) {
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: changePosition,
         onError: () => {
             toast.error('Hubo un error al realizar el cambio de posición');
@@ -70,6 +71,8 @@ export default function ModalChangeEmployee({ modal, setModal, employee, availab
             }
         });
     }
+
+    if (isPending) return <LoadingOverlay />
     return (
         <Transition appear show={modal} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={() => setModal(false)}>
