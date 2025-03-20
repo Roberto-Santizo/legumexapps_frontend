@@ -7,7 +7,7 @@ import Pagination from "@/components/Pagination";
 import { Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Link } from "react-router-dom";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon,ChartNoAxesCombined} from "lucide-react";
 
 
 export default function IndexPlanSemanalProduccion() {
@@ -65,10 +65,14 @@ export default function IndexPlanSemanalProduccion() {
                                 <td className="tbody-td"><CheckBadgeIcon className="w-8 text-green-500" /></td>
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
-                                <td className="tbody-td">
+                                <td className="tbody-td flex gap-5">
                                     <Link to={`/planes-produccion/${plan.id}`}>
                                         <Eye className="cur" />
                                     </Link>
+                                    <Link to={`/planes-produccion/graphics/plan_id/${plan.id}`}>
+                                        <ChartNoAxesCombined className="cur" />
+                                    </Link>
+                                    
                                 </td>
                             </tr>
                         ))}
