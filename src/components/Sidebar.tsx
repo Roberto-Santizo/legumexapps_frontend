@@ -4,6 +4,7 @@ import AgricolaNavegation from "./menus-navegations/AgricolaNavegation";
 import { HomeIcon } from "lucide-react";
 import BoletaRMPNavigation from "./menus-navegations/BoletaRMPNavigation";
 import ProduccionNavigation from "./menus-navegations/ProduccionNavegation";
+import RecursosNavegation from "./menus-navegations/RecursosNavegation";
 
 
 type Props = {
@@ -32,7 +33,7 @@ export function Sidebar({ role }: Props) {
 
             {['admin'].includes(role) && (
               <>
-                <AdminNavegation /> <AgricolaNavegation role={role} /> <BoletaRMPNavigation role={role} /> <ProduccionNavigation />
+                <AdminNavegation /> <AgricolaNavegation role={role} /> <BoletaRMPNavigation role={role} /> <ProduccionNavigation /> <RecursosNavegation />
               </>
             )}
 

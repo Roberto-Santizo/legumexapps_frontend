@@ -5,6 +5,7 @@ import BoletaRMPNavigation from "./menus-navegations/BoletaRMPNavigation";
 import AdminNavegation from "./menus-navegations/AdminNavegation";
 import AgricolaNavegation from "./menus-navegations/AgricolaNavegation";
 import { Dispatch } from "react";
+import ProduccionNavigation from "./menus-navegations/ProduccionNavegation";
 
 type Props = {
     role: string;
@@ -56,6 +57,7 @@ export default function MobileSidebar({ role, modal, setModal }: Props) {
                                         <AdminNavegation />
                                         <AgricolaNavegation role={role} />
                                         <BoletaRMPNavigation role={role} />
+                                        <ProduccionNavigation />
                                     </>
                                 )}
 

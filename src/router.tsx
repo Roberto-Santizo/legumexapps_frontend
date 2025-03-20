@@ -4,6 +4,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import AgricolaRoutes from "./routes/AgricolaRoutes";
 import CalidadRoutes from "./routes/CalidadRoutes";
 import ProduccionRoutes from "./routes/ProduccionRoutes";
+import RecursosRoutes from "./routes/RecursosRoutes";
 
 export default function AppRouter() {
     return (
@@ -14,6 +15,7 @@ export default function AppRouter() {
                 {AgricolaRoutes()}
                 {CalidadRoutes()}
                 {ProduccionRoutes()}
+                {RecursosRoutes()}
             </Routes>
         </BrowserRouter>
     )
