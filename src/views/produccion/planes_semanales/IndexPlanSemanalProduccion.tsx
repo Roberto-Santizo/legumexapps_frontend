@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import Pagination from "@/components/Pagination";
-import { Eye } from "lucide-react";
+import { CalendarRange, Clock, Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Link } from "react-router-dom";
-import { PlusIcon,ChartNoAxesCombined} from "lucide-react";
+import { PlusIcon } from "lucide-react";
 
 
 export default function IndexPlanSemanalProduccion() {
@@ -62,19 +62,23 @@ export default function IndexPlanSemanalProduccion() {
                     <tbody>
                         {plans.map(plan => (
                             <tr className="tbody-tr" key={plan.id}>
-                                <td className="tbody-td"><CheckBadgeIcon className="w-8 text-green-500" /></td>
+                                <td className="tbody-td">
+                                    {plan.completed ? (
+                                        <CheckBadgeIcon className="w-8 text-green-500" />
+                                    ) : (
+                                        <Clock className="w-8 text-orange-500"/>
+                                    )}
+                                </td>
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
 
                                 <td className="tbody-td flex gap-5">
                                     <Link to={`/planes-produccion/${plan.id}`}>
-                                        <Eye/>
+                                        <Eye />
                                     </Link>
-                                    <Link to={`/planes-produccion/graphics${plan.id}`}>
-                                    {/* <Link to={`/planes-produccion/graphics/plan_id/${plan.id}`}> asi estaba el original */}
-                                        <ChartNoAxesCombined />
+                                    <Link to={`/planes-produccion/calendario/${plan.id}`}>
+                                        <CalendarRange />
                                     </Link>
-                                    
                                 </td>
                             </tr>
                         ))}

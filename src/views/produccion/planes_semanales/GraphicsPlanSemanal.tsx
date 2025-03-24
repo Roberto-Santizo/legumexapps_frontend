@@ -6,14 +6,12 @@ type Props = {
 
 const GraphicsPlanSemanal = ({ task }: Props) => {
   const colores = {
-    "H. Biometrico": "bg-orange-500",
     "H. Plan": "bg-blue-500",
     "H. Linea": "bg-yellow-400",
     "H. Rendimiento": "bg-lime-600",
   };
 
   const graphData = {
-    "H. Biometrico": task.data.biometric_hours || 0,
     "H. Plan": task.data.total_hours || 0,
     "H. Linea": task.data.line_hours || 0,
     "H. Rendimiento": task.data.performance_hours || 0,

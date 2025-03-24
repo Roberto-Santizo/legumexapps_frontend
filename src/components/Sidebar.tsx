@@ -44,6 +44,10 @@ export function Sidebar({ role }: Props) {
             {['pprod', 'admincalidad', 'auxcalidad', 'pprod', 'pcostos', 'pcalidad'].includes(role) && (
               <BoletaRMPNavigation role={role} />
             )}
+
+            {['audiproceso'].includes(role) && (
+              <ProduccionNavigation />
+            )}
           </nav>
         </div>
       </div>

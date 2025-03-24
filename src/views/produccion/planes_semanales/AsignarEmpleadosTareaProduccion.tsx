@@ -61,27 +61,18 @@ export default function ShowTaskProductionDetails() {
     });
 
     useEffect(() => {
-        if (results[0]?.data) {
-            setTaskData(results[0].data);
-        }
-    }, [results[0]?.data]);
+        if (results[0]?.data || results[1]?.data) {
+            setTaskData(results[0]?.data);
+            const employeesFromTask = results[0]?.data?.employees ?? [];
+            const employeesFromComodines = results[1]?.data ?? [];
 
-    useEffect(() => {
-        if (results[0]?.data) {
-            setEmployees(prev => [...prev, ...(results[0].data?.employees ?? [])]);
-            setAvailableEmployees(prev => [...prev, ...(results[0].data?.employees ?? [])]);
-        }
-    }, [results[0]?.data]);
+            const uniqueEmployees = [...new Map([...employeesFromTask, ...employeesFromComodines].map(emp => [emp.id, emp])).values()];
 
-    useEffect(() => {
-        if (results[1]?.data) {
-            setEmployees(prev => [...prev, ...(results[1].data ?? [])]);
+            setEmployees(uniqueEmployees);
+            setAvailableEmployees(uniqueEmployees.filter(employee => employee.column_id === '1'));
         }
-    }, [results[1]?.data]);
+    }, [results[0]?.data, results[1]?.data]);
 
-    useEffect(() => {
-        setAvailableEmployees(employees.filter(employee => employee.column_id === '1'));
-    }, [employees]);
 
 
     const onDragEnd = (event: DragOverEvent) => {
@@ -101,6 +92,14 @@ export default function ShowTaskProductionDetails() {
         const isOverEmployee = over.data.current?.type === "Employee";
 
         if (isOverEmployee && isActiveEmployee) {
+            const active = employees.filter(emp => emp.id === activeId);
+            const over = employees.filter(emp => emp.id === overId);
+
+            if (active[0].column_id !== over[0].column_id) {
+                const activeIndex = employees.findIndex(emp => emp.id === activeId);
+                setActiveEmployee(employees[activeIndex]);
+                setModal(true);
+            };
             const newEmployees = () => {
                 const activeIndex = employees.findIndex(emp => emp.id === activeId);
                 const overIndex = employees.findIndex(emp => emp.id === overId);
@@ -148,7 +147,7 @@ export default function ShowTaskProductionDetails() {
 
     const isLoading = results.some(result => result.isLoading);
     if (isLoading) return <Spinner />
-    
+
     return (
         <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>

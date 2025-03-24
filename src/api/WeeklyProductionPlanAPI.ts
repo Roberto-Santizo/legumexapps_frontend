@@ -4,11 +4,14 @@ import { z } from 'zod';
 import { SKUSchema } from "./SkusAPI";
 import { DraftChangePosition } from "@/components/ModalChangeEmployee";
 import { DraftPerformance } from "@/components/ModalTomaRendimientoProduccion";
+import { DraftCloseTask } from "@/components/ModalCierreTareaProduccion";
+import { DraftTaskProduction } from "@/components/ModalNuevaTareaProduccion";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
     week: z.number(),
-    year: z.number()
+    year: z.number(),
+    completed: z.boolean()
 });
 
 export type WeeklyPlanProductionPlan = z.infer<typeof WeeklyPlanProductionPlanSchema>
@@ -43,7 +46,9 @@ export async function getPaginatedWeeklyProductionPlans(page: number): Promise<P
 export const LineWeeklyPlanSchema = z.object({
     id: z.string(),
     line: z.string(),
-    status: z.boolean()
+    status: z.boolean(),
+    total_employees: z.number(),
+    assigned_employees: z.number()
 });
 
 export const LinesWeeklyPlanSchema = z.object({
@@ -73,13 +78,16 @@ export const TaskProductionSchema = z.object({
     line: z.string(),
     sku: z.string(),
     total_tarimas: z.number(),
+    finished_tarimas: z.number(),
     operation_date: z.string(),
     start_date: z.string().nullable(),
     end_date: z.string().nullable(),
     hours: z.number(),
     total_hours: z.number(),
     total_employees: z.number(),
-    total_in_employees: z.number()
+    total_in_employees: z.number(),
+    priority: z.number(),
+    available: z.boolean()
 });
 
 export const TasksProductionSchema = z.object({
@@ -88,10 +96,11 @@ export const TasksProductionSchema = z.object({
 
 export type TaskProduction = z.infer<typeof TaskProductionSchema>
 
-export async function getWeeklyPlanLineDetails(line_id: Line['id'], weekly_production_plan_id: WeeklyPlanProductionPlan['id']): Promise<TaskProduction[]> {
+export async function getWeeklyPlanLineDetails(line_id: Line['id'], weekly_production_plan_id: WeeklyPlanProductionPlan['id'], date : string): Promise<TaskProduction[]> {
     try {
-        const url = `/api/weekly_production_plan/details/${weekly_production_plan_id}/${line_id}`;
+        const url = `/api/weekly_production_plan/details/${weekly_production_plan_id}/${line_id}?date=${date}`;
         const { data } = await clienteAxios(url);
+        console.log(date);
         const result = TasksProductionSchema.safeParse(data);
         if (result.success) {
             return result.data.data
@@ -178,7 +187,8 @@ export async function createProductionPlan(file: File[]) {
 
         await clienteAxios.post(url, formData);
     } catch (error: any) {
-        return error.response.data.message;
+        console.log(error);
+        throw error;
     }
 }
 
@@ -238,14 +248,14 @@ export const TaskProductionInProgressSchema = z.object({
 export type TaskProductionInProgress = z.infer<typeof TaskProductionInProgressSchema>
 
 
-export async function getTaskProductionInProgressDetail(id: TaskProduction['id']) : Promise<TaskProductionInProgress> {
+export async function getTaskProductionInProgressDetail(id: TaskProduction['id']): Promise<TaskProductionInProgress> {
     try {
         const url = `/api/tasks_production_plan/details/${id}`;
         const { data } = await clienteAxios(url);
         const result = TaskProductionInProgressSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data
-        }else{
+        } else {
             throw new Error("Información no valida");
         }
     } catch (error) {
@@ -255,10 +265,118 @@ export async function getTaskProductionInProgressDetail(id: TaskProduction['id']
 }
 
 
-export async function createTaskProductionPerformance(id : TaskProduction['id'],data : DraftPerformance) {
+export async function createTaskProductionPerformance(id: TaskProduction['id'], data: DraftPerformance) {
     try {
         const url = `/api/tasks_production_plan/${id}/performance`;
-        await clienteAxios.post(url,data);
+        await clienteAxios.post(url, data);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function closeTaskProduction(id: TaskProduction['id'], data: DraftCloseTask) {
+    try {
+        const url = `/api/tasks_production_plan/${id}/end`;
+        await clienteAxios.patch(url, data);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function createTaskProduction(data: DraftTaskProduction) {
+    try {
+        const url = '/api/task_production_plan';
+        await clienteAxios.post(url, data);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function changeTasksPriority(data: string[]) {
+    try {
+        const url = '/api/tasks_production_plan/change-priority';
+        await clienteAxios.put(url, {
+            data: data
+        });
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const TaskForCalendarSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    start: z.string(),
+    priority: z.string()
+});
+
+export const TasksForCalendarSchema= z.object({
+    data: z.array(TaskForCalendarSchema)
+});
+
+export type TaskForCalendar = z.infer<typeof TaskForCalendarSchema>;
+
+export async function getAllTasksForCalendar(id : WeeklyPlanProductionPlan['id']) : Promise<TaskForCalendar[]> {
+    try {
+        const url = `/api/weekly_production_plan/details/${id}`;
+        const { data } = await clienteAxios(url);
+        const result = TasksForCalendarSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function updateTaskProductionOperationDate(id : TaskProduction['id'], date : string) {
+    try {
+        const url = `/api/tasks_production_plan/change-operation-date/${id}`;
+        await clienteAxios.patch(url,{
+            date: date
+        });
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const TaskByDateSchema = z.object({
+    id: z.string(),
+    line: z.string(),
+    sku: z.string(),
+    total_tarimas: z.number(),
+    finished_tarimas: z.number(),
+    operation_date: z.string(),
+    start_date: z.string().nullable(),
+    end_date: z.string().nullable(),
+    hours: z.number(),
+    priority: z.number()
+});
+
+export const TasksByDateSchema = z.object({
+    data: z.array(TaskByDateSchema)
+})
+
+export type TaskByDate = z.infer<typeof TaskByDateSchema>;
+
+export async function getTasksProductionByDate(id : WeeklyPlanProductionPlan['id'], date : string) : Promise<TaskByDate[]> {
+    try {
+        const url = `api/weekly_production_plan/details-by-date/${id}?date=${date}`;
+        const { data } = await clienteAxios(url);
+        const result = TasksByDateSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
     } catch (error) {
         console.log(error);
         throw error;

@@ -9,12 +9,13 @@ export default function TaskProductionPlanDetails() {
   const params = useParams();
   const task_p_id = params.task_p_id!!;
 
-  const { data: task, isLoading, isError,} = useQuery({
+  const { data: task, isLoading, isError, } = useQuery({
     queryKey: ["getTaskProductionInProgressDetail", task_p_id],
     queryFn: () => getTaskProductionInProgressDetail(task_p_id),
+    refetchInterval: 1000
   });
 
-  if (isLoading) return <Spinner/>;
+  if (isLoading) return <Spinner />;
   if (isError) return <ShowErrorAPI />;
   if (task)
     return (
@@ -36,8 +37,7 @@ export default function TaskProductionPlanDetails() {
           </thead>
           <tbody>
             {task.data.employees.map((employee) => (
-               <tr key={employee.code} className="tbody-tr"> 
-               {/* Added a unique key to avoid React warnings */}
+              <tr key={employee.code} className="tbody-tr">
                 <td className="tbody-td">{employee.code}</td>
                 <td className="tbody-td">{employee.name}</td>
                 <td className="tbody-td">{employee.position}</td>
