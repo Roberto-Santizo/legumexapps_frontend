@@ -21,9 +21,14 @@ export default function TaskProductionPlanDetails() {
     return (
       <div>
         <h2 className="font-bold text-4xl">Infomación de Tarea </h2>
-        <div className="p-5 grid grid-cols-2 mt-5">
+        <div className="mt-10 flex flex-col">
           <div>
             <p className="font-bold text-2xl">SKU: {task.data.sku}</p>
+          </div>
+
+          <div className="p-5 shadow">
+            <p><span className="font-bold">Ultima toma de rendimiento:</span> {task.data.last_take}</p>
+            <p><span className="font-bold">Ultimas tarimas reportadas:</span> {task.data.last_finished_tarimas}</p>
           </div>
         </div>
 

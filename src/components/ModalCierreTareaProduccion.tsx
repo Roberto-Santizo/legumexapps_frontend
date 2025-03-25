@@ -1,4 +1,4 @@
-import { closeTaskProduction, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
+import { closeTaskProduction, TaskByLine, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { Dialog, Transition } from "@headlessui/react";
 import { QueryObserverResult } from "@tanstack/react-query";
 import { Dispatch, Fragment } from "react";
@@ -10,10 +10,10 @@ import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 
 type Props = {
-    task: TaskProduction;
+    task: TaskByLine;
     setModalCierre: Dispatch<React.SetStateAction<boolean>>;
     modal: boolean;
-    refetch: () => Promise<QueryObserverResult<TaskProduction[]>>;
+    refetch: () => Promise<QueryObserverResult<TaskByLine[]>>;
     setSelectedTask: Dispatch<React.SetStateAction<TaskProduction>>;
 }
 

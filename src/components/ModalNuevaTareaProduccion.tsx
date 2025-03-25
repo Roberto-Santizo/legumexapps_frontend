@@ -1,19 +1,19 @@
-import { createTaskProduction, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
+import { createTaskProduction, TaskByDate } from "@/api/WeeklyProductionPlanAPI";
 import { Dialog, Transition } from "@headlessui/react";
 import { Dispatch, Fragment, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
-import { QueryObserverResult, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import Error from "./Error";
 import Spinner from "./Spinner";
-import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 
 type Props = {
-    task: TaskProduction;
+    task: TaskByDate;
     setModalNewTask: Dispatch<React.SetStateAction<boolean>>;
     modal: boolean;
-    refetch: () => Promise<QueryObserverResult<TaskProduction[]>>;
 }
 
 export type DraftTaskProduction = {
@@ -23,7 +23,11 @@ export type DraftTaskProduction = {
     task_production_plan_id: string;
 }
 
-export default function ModalNuevaTareaProduccion({ task, setModalNewTask, modal, refetch }: Props) {
+export default function ModalNuevaTareaProduccion({ task, setModalNewTask, modal }: Props) {
+    const params = useParams();
+    const plan_id = params.plan_id!!;
+
+    const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskProduction,
@@ -33,7 +37,6 @@ export default function ModalNuevaTareaProduccion({ task, setModalNewTask, modal
         onSuccess: () => {
             toast.success('Tarea creada correctamente');
             setModalNewTask(false);
-            refetch();
         }
     });
     const {
@@ -50,6 +53,7 @@ export default function ModalNuevaTareaProduccion({ task, setModalNewTask, modal
     const onSubmit = (data: DraftTaskProduction) => {
         data.task_production_plan_id = task.id;
         mutate(data);
+        queryClient.invalidateQueries({ queryKey: ['getAllTasksForCalendar', plan_id] });
     }
     return (
         <Transition appear show={modal} as={Fragment}>
@@ -149,7 +153,7 @@ export default function ModalNuevaTareaProduccion({ task, setModalNewTask, modal
                                         {isPending ? (
                                             <Spinner />
                                         ) : (
-                                            <p className="font-bold text-lg">Cerrar Tarea</p>
+                                            <p className="font-bold text-lg">Crear Tarea Producción</p>
                                         )}
                                     </Button>
 

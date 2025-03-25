@@ -1,80 +1,70 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TaskForCalendar, TaskProduction, updateTaskProductionOperationDate } from "@/api/WeeklyProductionPlanAPI";
+import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { getAllTasksForCalendar, TaskForCalendar, TaskProduction, updateTaskProductionOperationDate } from "@/api/WeeklyProductionPlanAPI";
-import Spinner from "./Spinner";
-import ShowErrorAPI from "./ShowErrorAPI";
-import { toast } from "react-toastify";
-
-type Event = {
-  id: string;
-  title: string;
-  start: string;
-  priority: string;
-}
-
-type EventDropInfo = {
-  event: {
-    id: string;
-    startStr: string;
-  };
-}
+import { EventDropArg } from "@fullcalendar/core/index.js";
 
 type Props = {
-  setModalTasks: Dispatch<SetStateAction<boolean>>;
-  setDate: Dispatch<SetStateAction<string>>;
+  events: TaskForCalendar[];
+  setEvents: Dispatch<SetStateAction<TaskForCalendar[]>>;
 }
-export default function CustomCalendar({ setModalTasks, setDate }: Props) {
+
+
+export default function CustomCalendar({ events, setEvents }: Props) {
   const params = useParams();
   const plan_id = params.plan_id!!;
-  const [events, setEvents] = useState<TaskForCalendar[]>([]);
+
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationFn: ({id,date} : {id:TaskProduction['id'], date:string}) => updateTaskProductionOperationDate(id,date),
-    onError: () =>{
-      toast.error('Hubo un error al actualizar la tarea');
-    },
-    onSuccess: () =>{
-      toast.success('Fecha de operacion actualizada correctamente');
-    }
+    mutationFn: ({ id, date }: { id: TaskProduction['id'], date: string }) => updateTaskProductionOperationDate(id, date),
   });
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['getAllTasksForCalendar', plan_id],
-    queryFn: () => getAllTasksForCalendar(plan_id)
-  });
+  const handleEventDrop = (info: EventDropArg) => {
+    const today = new Date().toISOString().split("T")[0];
 
-  useEffect(() => {
-    if (data) {
-      setEvents(data);
+    if (info.event.startStr < today) {
+      info.revert(); 
+      toast.error("No puedes mover eventos a fechas pasadas.");
+      return;
     }
-  }, [data]);
 
-  const handleEventDrop = (info: EventDropInfo) => {
-    const updatedEvents = events.map((event: Event) =>
-      event.id === info.event.id ? { ...event, start: info.event.startStr } : event
+    mutate({ id: info.event.id, date: info.event.startStr },
+      {
+        onSuccess: () => {
+          const updatedEvents = events.map((event: TaskForCalendar) =>
+            event.id === info.event.id
+              ? { ...event, start: info.event.startStr, backgroundColor: event.backgroundColor, editable: event.editable }
+              : event
+          );
+          setEvents(updatedEvents);
+          queryClient.invalidateQueries({ queryKey: ['getAllTasksForCalendar', plan_id] });
+          toast.success('Tarea Actualizada Correctamente');
+        },
+        onError: (error) => {
+          info.revert();
+          toast.error(error.message);
+        }
+      }
     );
-    setEvents(updatedEvents);
-
-    mutate({ id: info.event.id, date: info.event.startStr });
   };
+
 
   interface DateClickInfo {
     dateStr: string;
   }
 
   const handleOpenDate = (info: DateClickInfo) => {
-    setDate(info.dateStr);
-    setModalTasks(true);
+    navigate(`${location.pathname}?date=${info.dateStr}`);
   };
 
-  if (isLoading) return <Spinner />;
-  if (isError) return <ShowErrorAPI />;
-  if (events) return (
+  return (
     <FullCalendar
       plugins={[dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"
@@ -82,7 +72,12 @@ export default function CustomCalendar({ setModalTasks, setDate }: Props) {
       editable={true}
       locale={esLocale}
       eventDrop={handleEventDrop}
+      eventOrder="priority"
       dateClick={handleOpenDate}
+      eventAllow={(dropInfo) => {
+        const today = new Date().toISOString().split("T")[0];
+        return dropInfo.startStr >= today;
+      }}
     />
   );
 }

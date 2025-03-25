@@ -1,5 +1,4 @@
 import { createTaskProductionPerformance, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
-import { formatDate } from "@/helpers";
 import { Dialog, Transition } from "@headlessui/react";
 import { Dispatch, Fragment } from "react";
 import { useForm } from "react-hook-form";
@@ -70,7 +69,7 @@ export default function ModalTomaRendimientoProduccion({ task, modal, setModal }
                             <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white shadow-xl sm:w-full sm:max-w-3xl">
                                 <div className="flex justify-between items-center bg-indigo-600 px-6 py-4 text-white">
                                     <h3 className="text-xl font-bold uppercase">
-                                        Toma Rendimiento {task.sku} - {formatDate(task.operation_date)}
+                                        Toma Rendimiento {task.sku} - {task.operation_date}
                                     </h3>
                                     <button
                                         className="text-white hover:text-gray-300"

@@ -1,30 +1,35 @@
 import { DndContext, DragOverEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-import TaskProductionComponent from "@/components/TaskProductionComponent";
-import { useParams } from "react-router-dom";
-import { useEffect, useMemo, useState, Fragment, Dispatch, SetStateAction } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState, Fragment } from "react";
 import { changeTasksPriority, getTasksProductionByDate, TaskByDate } from "@/api/WeeklyProductionPlanAPI";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { Dialog, Transition } from "@headlessui/react";
+import TaskProductionComponent from "@/components/TaskProductionComponent";
 import ShowErrorAPI from "./ShowErrorAPI";
-import LoadingOverlay from "./LoadingOverlay";
-import Spinner from "./Spinner";
+import ModalNuevaTareaProduccion from "./ModalNuevaTareaProduccion";
 
-type Props = {
-    setModalTasks: Dispatch<SetStateAction<boolean>>;
-    date: string;
-}
+export default function TasksOrder() {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const date = queryParams.get('date')!;
+    const show = date ? true : false;
 
-export default function TasksOrder({ setModalTasks, date }: Props) {
     const params = useParams();
     const plan_id = params.plan_id!!;
 
-    const [tasks, setTasks] = useState<TaskByDate[]>([]);
+    const queryClient = useQueryClient();
 
-    const { data, isLoading, isError, refetch, isFetching } = useQuery({
+    const navigate = useNavigate();
+    const [tasks, setTasks] = useState<TaskByDate[]>([]);
+    const [modalNewTask, setModalNewTask] = useState<boolean>(false);
+    const [selectedTask, setSelectedTask] = useState<TaskByDate>({} as TaskByDate);
+
+    const { data, isLoading, isError, isFetching } = useQuery({
         queryKey: ['getTasksProductionByDate', plan_id, date],
-        queryFn: () => getTasksProductionByDate(plan_id, date)
+        queryFn: () => getTasksProductionByDate(plan_id, date),
+        enabled: !!date
     });
 
     const { mutate } = useMutation({
@@ -34,6 +39,8 @@ export default function TasksOrder({ setModalTasks, date }: Props) {
         },
         onSuccess: () => {
             toast.success('Prioridad Cambiada Correctamente');
+            queryClient.invalidateQueries({ queryKey: ['getTasksProductionByDate', plan_id, date] });
+            queryClient.invalidateQueries({ queryKey: ['getAllTasksForCalendar', plan_id] });
         }
     });
 
@@ -76,16 +83,13 @@ export default function TasksOrder({ setModalTasks, date }: Props) {
         }
     };
 
-    useEffect(() => {
-        refetch();
-    }, [date]);
-
-    if (isLoading) return <LoadingOverlay />
     if (isError) return <ShowErrorAPI />
 
     if (tasks && itemsId) return (
-        <Transition appear show={true} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => setModalTasks(false)}>
+        <Transition appear show={show} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={() => {
+                navigate(location.pathname);
+            }}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -110,24 +114,23 @@ export default function TasksOrder({ setModalTasks, date }: Props) {
                             leaveTo="opacity-0 scale-95"
                         >
                             <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white shadow-xl sm:w-full sm:max-w-3xl">
-                                <div className="p-5">
+                                <div className="p-5 w-full">
                                     {(!isFetching && !isLoading && tasks.length === 0) && <p className="font-bold text-xl">No existen tareas en esta fecha</p>}
-                                    {isFetching ? <Spinner /> : (
-                                        <>
-                                            <DndContext onDragEnd={onDragEnd}>
-                                                <SortableContext items={itemsId}>
-                                                    {tasks.map(task => (
-                                                        <TaskProductionComponent key={task.id} task={task} />
-                                                    ))}
-                                                </SortableContext>
-                                            </DndContext>
-                                        </>
-                                    )}
+                                    <DndContext onDragEnd={onDragEnd}>
+                                        <SortableContext items={itemsId}>
+                                            {tasks.map(task => (
+                                                <TaskProductionComponent key={task.id} task={task} isDraggable={task.end_date ? false : true} setSelectedTask={setSelectedTask} setModalNewTask={setModalNewTask} />
+                                            ))}
+                                        </SortableContext>
+                                    </DndContext>
                                 </div>
-
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>
+
+                    {(modalNewTask) && (
+                        <ModalNuevaTareaProduccion task={selectedTask} setModalNewTask={setModalNewTask} modal={modalNewTask} />
+                    )}
                 </div>
             </Dialog>
         </Transition>

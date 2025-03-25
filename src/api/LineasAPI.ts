@@ -38,6 +38,34 @@ export async function getLineasPaginated(page: number): Promise<LineasPaginated>
     }
 }
 
+export const LineaSelectSchema = z.object({
+    value: z.string(),
+    label: z.string()
+});
+
+export const LineasSelectSchema = z.object({
+    data: z.array(LineaSelectSchema)
+});
+
+export type LineaSelect = z.infer<typeof LineaSelectSchema>
+
+
+export async function getAllLines() : Promise<LineaSelect[]> {
+    try {
+        const url = '/api/lines-all';
+        const { data } = await clienteAxios(url);
+        const result = LineasSelectSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export async function getLineaById(id: Linea['id']): Promise<Linea> {
     try {
         const url = `/api/lines/${id}`;
