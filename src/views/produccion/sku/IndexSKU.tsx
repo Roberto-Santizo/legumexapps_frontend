@@ -55,16 +55,14 @@ export default function IndexSKU() {
           <thead>
             <tr className="thead-tr">
               <th scope="col" className="thead-th">codigo</th>
-              <th scope="col" className="thead-th">nombre</th>
-              <th scope="col" className="thead-th">Unidad de Medida</th>
+              <th scope="col" className="thead-th">producto</th>
             </tr>
           </thead>
           <tbody>
             {skus.map(sku => (
               <tr key={sku.id} className="tbody-tr">
                 <td className="tbody-td">{sku.code}</td>
-                <td className="tbody-td">{sku.name}</td>
-                <td className="tbody-td">{sku.unit_mesurment}</td>
+                <td className="tbody-td">{sku.product}</td>
               </tr>
             ))}
 

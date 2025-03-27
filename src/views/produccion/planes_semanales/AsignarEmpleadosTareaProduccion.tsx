@@ -7,7 +7,6 @@ import { formatDate } from "@/helpers";
 import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
-import { Button } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/Spinner";
 import ColumnContainer from "@/components/ColumnContainer";
@@ -156,7 +155,7 @@ export default function ShowTaskProductionDetails() {
                 <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskData?.operation_date ? formatDate(taskData.operation_date) : 'N/A'}</span></div>
                 <div className="font-bold">Total de tarimas:<span className="font-normal ml-2">{taskData?.total_tarimas ?? 0}</span></div>
                 <div className="font-bold">SKU:<span className="font-normal ml-2">{taskData?.sku?.code ?? 'N/A'}</span></div>
-                <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData?.sku?.name ?? 'N/A'}</span></div>
+                <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData?.sku?.product ?? 'N/A'}</span></div>
                 <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData?.employees?.length ?? 0}</span></div>
             </div>
 
@@ -187,21 +186,9 @@ export default function ShowTaskProductionDetails() {
                 <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} />
             )}
 
-            <Button
-                disabled={isPending}
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{ marginTop: 2 }}
-                onClick={() => handleStartTask()}
-            >
-                {isPending ? (
-                    <Spinner />
-                ) : (
-                    <p className="font-bold text-lg">Cerrar Asignación</p>
-                )}
-            </Button>
+           <button onClick={() => handleStartTask()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                {isPending ? <Spinner /> : <p>Cerrar Asignación</p>}
+           </button>
         </div>
     );
 }

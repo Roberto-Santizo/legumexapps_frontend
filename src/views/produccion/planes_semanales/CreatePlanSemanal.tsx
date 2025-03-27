@@ -21,11 +21,11 @@ export default function CreatePlanSemanal() {
 
   const {mutate,isPending} = useMutation({
     mutationFn: (file : File[]) => createProductionPlan(file),
-    onError: () => {
-      toast.error('Hubo un error al crear el plan semanal');
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Plan creado correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/planes-produccion');
     }
   });

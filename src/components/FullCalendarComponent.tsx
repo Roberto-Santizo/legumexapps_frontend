@@ -3,11 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TaskForCalendar, TaskProduction, updateTaskProductionOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import { EventDropArg } from "@fullcalendar/core/index.js";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
-import { EventDropArg } from "@fullcalendar/core/index.js";
 
 type Props = {
   events: TaskForCalendar[];

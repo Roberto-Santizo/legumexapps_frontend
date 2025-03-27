@@ -16,14 +16,25 @@ const routes = [
 
   { path: "/skus", component: lazy(() => import("../views/produccion/sku/IndexSKU")), roles: ['admin','audiproceso'] },
   { path: "/skus/crear", component: lazy(() => import("../views/produccion/sku/CreateSKU")), roles: ['admin','audiproceso'] },
-  // { path: "/skus/ModalSku", component: lazy(() => import("../views/produccion/sku/ModalSku")), roles: ['admin','audiproceso'] },
-
+  
+  { path: "/productos-sku", component: lazy(() => import("../views/produccion/productos/IndexProductosSku")), roles: ['admin'] },
+  { path: "/productos-sku/crear", component: lazy(() => import("../views/produccion/productos/CrearProductoSku")), roles: ['admin'] },
+  
+  { path: "/clientes", component: lazy(() => import("../views/produccion/clientes/IndexClientes")), roles: ['admin'] },
+  { path: "/clientes/crear", component: lazy(() => import("../views/produccion/clientes/CrearCliente")), roles: ['admin'] },
+  
   { path: "/lineas", component: lazy(() => import("../views/produccion/lineas/IndexLineas")), roles: ['admin','audiproceso'] },
   { path: "/lineas/crear", component: lazy(() => import("../views/produccion/lineas/CrearLinea")), roles: ['admin','audiproceso'] },
   { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin','audiproceso'] },
   { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin','audiproceso'] },
-
   
+  { path: "/lineas-skus", component: lazy(() => import("../views/produccion/lineas_skus/IndexLineasSku")), roles: ['admin'] },
+  { path: "/lineas-skus/crear", component: lazy(() => import("../views/produccion/lineas_skus/CrearLineaSku")), roles: ['admin'] },
+  
+  { path: "/tiempos-muertos", component: lazy(() => import("../views/produccion/tiempos_muertos/IndexTiemposMuertos")), roles: ['admin','audiproceso'] },
+  { path: "/tiempos-muertos/crear", component: lazy(() => import("../views/produccion/tiempos_muertos/CrearTiempoMuerto")), roles: ['admin','audiproceso'] },
+  { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("../views/produccion/tiempos_muertos/EditarTiempoMuerto")), roles: ['admin','audiproceso'] },
+
 ];
 
 export default function ProduccionRoutes() {

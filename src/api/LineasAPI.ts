@@ -1,10 +1,14 @@
 import clienteAxios from "@/config/axios";
+import { isAxiosError } from "axios";
+import { DraftLinea } from "views/produccion/lineas/CrearLinea";
 import { z } from "zod";
 
 export const LineaSchema = z.object({
     id: z.string(),
     code: z.string(),
-    total_persons: z.number()
+    total_persons: z.number(),
+    name: z.string(),
+    shift:z.string()
 });
 
 export const LineaDetailSchema = z.object({
@@ -50,14 +54,14 @@ export const LineasSelectSchema = z.object({
 export type LineaSelect = z.infer<typeof LineaSelectSchema>
 
 
-export async function getAllLines() : Promise<LineaSelect[]> {
+export async function getAllLines(): Promise<LineaSelect[]> {
     try {
         const url = '/api/lines-all';
         const { data } = await clienteAxios(url);
         const result = LineasSelectSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data.data
-        }else{
+        } else {
             throw new Error("Información no valida");
         }
     } catch (error) {
@@ -82,27 +86,28 @@ export async function getLineaById(id: Linea['id']): Promise<Linea> {
     }
 }
 
-export type DraftLinea = {
-    code: string,
-    total_persons: number
-}
 
-export async function createLinea(data: DraftLinea) {
+
+export async function createLinea(FormData: DraftLinea) {
     try {
         const url = '/api/lines';
-        await clienteAxios.post(url, data);
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
-export async function updateLinea(data: DraftLinea, id : Linea['id']) {
+export async function updateLinea(FormData: DraftLinea, id: Linea['id']) {
     try {
         const url = `/api/lines/${id}`;
-        await clienteAxios.put(url, data);
+        const { data } = await clienteAxios.put<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
