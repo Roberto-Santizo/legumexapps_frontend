@@ -82,6 +82,21 @@ export default function CreateSKU() {
             {errors.unit_mesurment?.message && <Error>{String(errors.unit_mesurment.message)}</Error>}
           </div>
           
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-bold uppercase" htmlFor="unit_mesurment">
+              Porcentaje de calidad:
+            </label>
+            <input
+              autoComplete="off"
+              id="unit_mesurment"
+              type="number"
+              placeholder="Ingrese el porcentaje de calidad del SKU"
+              className="border border-black p-3"
+              {...register("unit_mesurment", { required: "El porcentaje de calidad es obligatorio" })}
+            />
+            {errors.unit_mesurment?.message && <Error>{String(errors.unit_mesurment.message)}</Error>}
+          </div>
+          
           <Button
             disabled={isPending}
             type="submit"
