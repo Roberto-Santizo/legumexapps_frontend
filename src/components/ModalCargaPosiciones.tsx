@@ -2,8 +2,6 @@ import { LineWeeklyPlan } from "@/api/WeeklyProductionPlanAPI";
 import { createAssigmentsProductionTasks } from "@/api/WeeklyProductionPlanAPI";
 import { Dialog, Transition } from "@headlessui/react";
 import { Dispatch, Fragment, useCallback, useState } from "react";
-import { Button } from "@mui/material";
-import Spinner from "./Spinner";
 import { useDropzone } from "react-dropzone";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -15,7 +13,7 @@ type Props = {
     refetch: () => Promise<QueryObserverResult<LineWeeklyPlan[]>>
 }
 
-export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch}: Props) {
+export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch }: Props) {
     const [file, setFile] = useState<File[] | null>(null);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -27,7 +25,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
     const { mutate, isPending } = useMutation({
-        mutationFn: ({file} : {file : File[], id : LineWeeklyPlan['id']}) => createAssigmentsProductionTasks(file,linea.id),
+        mutationFn: ({ file }: { file: File[], id: LineWeeklyPlan['id'] }) => createAssigmentsProductionTasks(file, linea.id),
         onError: () => {
             toast.error('Hubo un error al cargar el archivo');
         },
@@ -35,6 +33,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
             toast.success('Asignaciones Creadas Correctamente');
             setIsOpen(false);
             refetch();
+            setFile(null);
         }
     });
 
@@ -88,7 +87,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
                                 </div>
 
                                 <div className="p-10">
-                                    <form onSubmit={handleSubmit}>
+                                    <form onSubmit={handleSubmit} className="space-y-5">
                                         <div
                                             className="mt-5"
                                             {...getRootProps()}
@@ -116,20 +115,9 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
                                             )}
                                         </div>
 
-                                        <Button
-                                            type="submit"
-                                            variant="contained"
-                                            color="primary"
-                                            fullWidth
-                                            sx={{ marginTop: 2 }}
-                                            disabled={!file || isPending}
-                                        >
-                                            {isPending ? (
-                                                <Spinner />
-                                            ) : (
-                                                <p className="font-bold text-lg">Crear Plan</p>
-                                            )}
-                                        </Button>
+                                        <button type="submit" className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                                            Cargar Asignaciones
+                                        </button>
                                     </form>
                                 </div>
                             </Dialog.Panel>

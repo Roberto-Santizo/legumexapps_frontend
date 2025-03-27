@@ -1,11 +1,11 @@
 import clienteAxios from "@/config/axios";
+import { DraftSku } from "views/produccion/sku/CreateSKU";
 import { z } from "zod";
 
 export const SKUSchema = z.object({
     id: z.string(),
-    name: z.string(),
     code: z.string(),
-    unit_mesurment: z.string()
+    product: z.string()
 });
 
 export const SkusPaginatedSchema = z.object({
@@ -62,11 +62,6 @@ export async function getAllSkus(): Promise<SKUSelect[]> {
     }
 }
 
-export type DraftSku = {
-    code: string,
-    name: string,
-    unit_mesurment: string
-}
 
 export async function createSKU(data: DraftSku) {
     try {

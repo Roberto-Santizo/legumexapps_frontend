@@ -1,11 +1,13 @@
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getWeeklyPlanDetails, LineWeeklyPlan } from "@/api/WeeklyProductionPlanAPI";
-import { CircleCheck, Eye, Upload } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { downloadPlanillaProduction, getWeeklyPlanDetails, LineWeeklyPlan } from "@/api/WeeklyProductionPlanAPI";
+import { CircleCheck, Eye, FileDown, Upload } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import ModalCargaPosiciones from "@/components/ModalCargaPosiciones";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 export default function ShowPlanSemanalProduccion() {
   const params = useParams();
@@ -14,6 +16,13 @@ export default function ShowPlanSemanalProduccion() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedLinea, setSelectedLinea] = useState<LineWeeklyPlan>({} as LineWeeklyPlan);
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: downloadPlanillaProduction,
+    onError: (error) => {
+      toast.error(error.message);
+    }
+  });
+
   const { data: assignment, isLoading, isError, refetch } = useQuery({
     queryKey: ['getWeeklyPlanDetails'],
     queryFn: () => getWeeklyPlanDetails(id)
@@ -21,9 +30,9 @@ export default function ShowPlanSemanalProduccion() {
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />
-
   return (
     <div className="w-full">
+      {isPending && <LoadingOverlay />}
       <h2 className="font-bold text-3xl mb-10">Lineas Asignadas</h2>
 
       <div className="p-5 space-y-10">
@@ -40,6 +49,7 @@ export default function ShowPlanSemanalProduccion() {
                   <Link to={`/planes-produccion/${id}/${assigment.id}`}>
                     <Eye className="hover:text-gray-600" />
                   </Link>
+                  <FileDown className="hover:text-gray-600 cursor-pointer" onClick={() => mutate({ plan_id: id, line_id: assigment.id })} />
                 </div>
               ) : (
                 <Upload className="cursor-pointer hover:text-gray-500" onClick={() => {

@@ -9,6 +9,8 @@ import { DraftTaskProduction } from "@/components/ModalNuevaTareaProduccion";
 import { Linea } from "./LineasAPI";
 import { DraftNewTaskProduction } from "@/components/ModalCrearTareaProduccion";
 import { isAxiosError } from "axios";
+import { ReportSchema } from "@/utils/reports-schema";
+import { downloadBase64File } from "@/helpers";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
@@ -90,7 +92,8 @@ export const TaskProductionSchema = z.object({
     total_employees: z.number(),
     total_in_employees: z.number(),
     priority: z.number(),
-    available: z.boolean()
+    available: z.boolean(),
+    paused: z.boolean()
 });
 
 export const TasksProductionSchema = z.object({
@@ -188,10 +191,12 @@ export async function createProductionPlan(file: File[]) {
         const formData = new FormData();
         formData.append("file", file[0]);
 
-        await clienteAxios.post(url, formData);
-    } catch (error: any) {
-        console.log(error);
-        throw error;
+        const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
@@ -227,6 +232,20 @@ export async function startTaskProduction(id: TaskProduction['id']) {
     }
 }
 
+export const TimeoutTaskProductionSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    start_date: z.string(),
+    end_date: z.string().nullable(),
+    total_hours: z.number().nullable()
+});
+
+export const PerformanceTaskProductionSchema = z.object({
+    id: z.string(),
+    take_date: z.string(),
+    tarimas_produced: z.number()
+});
+
 
 export const AssignedEmployeeTaskProductionSchema = z.object({
     id: z.string(),
@@ -245,8 +264,8 @@ export const TaskProductionInProgressSchema = z.object({
         line_hours: z.number(),
         performance_hours: z.number(),
         employees: z.array(AssignedEmployeeTaskProductionSchema),
-        last_take: z.string(),
-        last_finished_tarimas: z.number()
+        performances: z.array(PerformanceTaskProductionSchema),
+        timeouts: z.array(TimeoutTaskProductionSchema)
     })
 })
 
@@ -296,7 +315,7 @@ export async function createNewTaskProduction(data: DraftNewTaskProduction) {
         const url = '/api/tasks_production_plan/new-task';
         await clienteAxios.post(url, data);
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg)
         }
     }
@@ -362,7 +381,7 @@ export async function updateTaskProductionOperationDate(id: TaskProduction['id']
             date: date
         });
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg)
         }
     }
@@ -407,6 +426,7 @@ export const TaskByLineSchema = z.object({
     id: z.string(),
     line: z.string(),
     sku: z.string(),
+    product: z.string(),
     total_tarimas: z.number(),
     finished_tarimas: z.number(),
     operation_date: z.string(),
@@ -418,6 +438,7 @@ export const TaskByLineSchema = z.object({
     total_employees: z.number(),
     priority: z.number(),
     available: z.boolean(),
+    paused: z.boolean()
 });
 
 export const TasksByLineSchema = z.object({
@@ -442,3 +463,19 @@ export async function getTasksByLineId(plan_id: WeeklyPlanProductionPlan['id'], 
     }
 }
 
+export async function downloadPlanillaProduction({ plan_id, line_id }: { plan_id: WeeklyPlanProductionPlan['id'], line_id: Linea['id'] }) {
+    try {
+        const url = `/api/report-production/${plan_id}/${line_id}`;
+        const { data } = await clienteAxios.post(url);
+        const result = ReportSchema.safeParse(data);
+        if (result.success) {
+            downloadBase64File(result.data.file, result.data.fileName)
+        } else {
+            throw new Error('Información no válida');
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}

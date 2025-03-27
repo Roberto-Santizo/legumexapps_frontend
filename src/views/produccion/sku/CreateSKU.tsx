@@ -1,14 +1,27 @@
-import { useForm } from "react-hook-form";
-import { Button } from "@mui/material";
-import Spinner from "@/components/Spinner";
-import Error from "@/components/Error";
-import { createSKU, DraftSku } from "@/api/SkusAPI";
-import { useMutation } from "@tanstack/react-query";
+import { Controller, useForm } from "react-hook-form";
+import { createSKU } from "@/api/SkusAPI";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { getAllProducts } from "@/api/ProductsSkuAPI";
+import Spinner from "@/components/Spinner";
+import Error from "@/components/Error";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Select from "react-select";
+
+export type DraftSku = {
+  code: string;
+  product_id: string;
+}
 
 export default function CreateSKU() {
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
+
+  const { data: products, isLoading, isError } = useQuery({
+    queryKey: ['getAllProducts'],
+    queryFn: getAllProducts
+  });
+
   const { mutate, isPending } = useMutation({
     mutationFn: createSKU,
     onError: () => {
@@ -23,12 +36,15 @@ export default function CreateSKU() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<DraftSku>();
 
   const onSubmit = (data: DraftSku) => mutate(data);
 
-  return (
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
+  if (products) return (
     <>
       <h2 className="text-4xl font-bold">Crear SKU</h2>
 
@@ -52,37 +68,32 @@ export default function CreateSKU() {
             {errors.code?.message && <Error>{String(errors.code.message)}</Error>}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="name">
-              Nombre:
+          <div>
+            <label className="text-lg font-bold uppercase" htmlFor="product_id">
+              TRANSPORTISTA:
             </label>
-            <input
-              autoComplete="off"
-              id="name"
-              type="text"
-              placeholder="Ingrese el nombre del SKU"
-              className="border border-black p-3"
-              {...register("name", { required: "El nombre del SKU obligatorio" })}
+            <Controller
+              name="product_id"
+              control={control}
+              rules={{ required: "Seleccione un transportista" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={products}
+                  id="product_id"
+                  placeholder={"--SELECCIONE UNA OPCION--"}
+                  className="border border-black"
+                  onChange={(selected) => field.onChange(selected?.value)}
+                  value={products.find(
+                    (option) => option.value === field.value
+                  )}
+                />
+              )}
             />
-            {errors.name?.message && <Error>{String(errors.name.message)}</Error>}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="unit_mesurment">
-              Unidad de medida:
-            </label>
-            <input
-              autoComplete="off"
-              id="unit_mesurment"
-              type="text"
-              placeholder="Ingrese la unidad de medida del SKU"
-              className="border border-black p-3"
-              {...register("unit_mesurment", { required: "La unidad de medida es obligatoria" })}
-            />
-            {errors.unit_mesurment?.message && <Error>{String(errors.unit_mesurment.message)}</Error>}
+            {errors.product_id && <Error>{errors.product_id?.message?.toString()}</Error>}
           </div>
           
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="unit_mesurment">
               Porcentaje de calidad:
             </label>
@@ -95,22 +106,11 @@ export default function CreateSKU() {
               {...register("unit_mesurment", { required: "El porcentaje de calidad es obligatorio" })}
             />
             {errors.unit_mesurment?.message && <Error>{String(errors.unit_mesurment.message)}</Error>}
-          </div>
-          
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear SKU</p>
-            )}
-          </Button>
+          </div> */}
+
+          <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Crear SKU</p>}
+          </button>
         </form>
       </div>
     </>

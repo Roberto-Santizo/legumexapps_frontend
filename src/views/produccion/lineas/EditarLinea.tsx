@@ -4,10 +4,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation,useQuery } from "@tanstack/react-query";
 import Error from "@/components/Error";
-import { DraftLinea, getLineaById, updateLinea } from "@/api/LineasAPI";
+import {  getLineaById, updateLinea } from "@/api/LineasAPI";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { DraftLinea } from "./CrearLinea";
 
 export default function EditarLinea() {
   const navigate = useNavigate();
@@ -21,11 +22,11 @@ export default function EditarLinea() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: DraftLinea) => updateLinea(data, id),
-    onError: () => {
-      toast.error('Hubo un error al actualizar la linea');
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Linea actualizada correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/lineas');
     }
   });

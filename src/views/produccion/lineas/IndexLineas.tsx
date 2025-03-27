@@ -51,6 +51,8 @@ export default function IndexLineas() {
           <thead>
             <tr className="thead-tr">
               <th scope="col" className="thead-th">codigo</th>
+              <th scope="col" className="thead-th">linea</th>
+              <th scope="col" className="thead-th">turno</th>
               <th scope="col" className="thead-th">total de personas</th>
               <th scope="col" className="thead-th">Acciones</th>
             </tr>
@@ -59,6 +61,8 @@ export default function IndexLineas() {
             {lineas.map(linea => (
               <tr key={linea.id} className="tbody-tr">
                 <td className="tbody-td">{linea.code}</td>
+                <td className="tbody-td">{linea.name}</td>
+                <td className="tbody-td">{linea.shift}</td>
                 <td className="tbody-td">{linea.total_persons}</td>
                 <td className="tbody-td">
                   <Link to={`/lineas/editar/${linea.id}`}>

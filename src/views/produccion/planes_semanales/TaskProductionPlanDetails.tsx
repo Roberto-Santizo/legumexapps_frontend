@@ -26,9 +26,56 @@ export default function TaskProductionPlanDetails() {
             <p className="font-bold text-2xl">SKU: {task.data.sku}</p>
           </div>
 
-          <div className="p-5 shadow">
-            <p><span className="font-bold">Ultima toma de rendimiento:</span> {task.data.last_take}</p>
-            <p><span className="font-bold">Ultimas tarimas reportadas:</span> {task.data.last_finished_tarimas}</p>
+          <div className="grid grid-cols-2 gap-5 p-5 shadow">
+            <div>
+              <h2 className="font-bold text-2xl uppercase mb-5">Información de rendimientos</h2>
+              <div className="w-full p-2 h-64 overflow-y-scroll scrollbar-hide">
+
+                <table className="table">
+                  <thead>
+                    <tr className="thead-tr">
+                      <th className="thead-th">Fecha de Toma</th>
+                      <th className="thead-th">Tarimas Producidas</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {task.data.performances.map(performance => (
+                      <tr key={performance.id} className="tbody-tr">
+                        <td className="tbody-td">{performance.take_date}</td>
+                        <td className="tbody-td">{performance.tarimas_produced}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="font-bold text-2xl uppercase mb-5">Información de tiempos muertos</h2>
+              <div className="w-full p-2 h-64 overflow-y-scroll scrollbar-hide">
+                <table className="table">
+                  <thead>
+                    <tr className="thead-tr">
+                      <th className="thead-th">Tiempo Muerto</th>
+                      <th className="thead-th">Fecha de Inicio</th>
+                      <th className="thead-th">Fecha Final</th>
+                      <th className="thead-th">Horas Totales</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {task.data.timeouts.map(timeout => (
+                      <tr key={timeout.id} className="tbody-tr">
+                        <td className="tbody-td">{timeout.name}</td>
+                        <td className="tbody-td">{timeout.start_date}</td>
+                        <td className="tbody-td">{timeout.end_date ?? 'SIN CIERRE'}</td>
+                        <td className="tbody-td">{timeout.total_hours ?? 'SIN HORAS'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
           </div>
         </div>
 
