@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ShoppingCart, UserRoundCog, Users } from "lucide-react";
+import { AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ShoppingCart, UserRoundCog, Users, ChartNoAxesCombined } from "lucide-react";
 
 export default function ProduccionNavigation() {
   return (
@@ -80,6 +80,17 @@ export default function ProduccionNavigation() {
       >
         <AlarmClockPlus className="w-8" />
         <p className="text-sm font-bold">Tiempos Muertos</p>
+      </NavLink>
+
+      <NavLink
+        to={"/graficas-diarias"}
+        className={({ isActive }) =>
+          `flex items-center gap-2 flex-row rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
+          }`
+        }
+      >
+        <ChartNoAxesCombined className="w-8" />
+        <p className="text-sm font-bold">Gráficas diarias</p>
       </NavLink>
     </>
   );

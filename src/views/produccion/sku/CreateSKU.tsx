@@ -70,7 +70,7 @@ export default function CreateSKU() {
 
           <div>
             <label className="text-lg font-bold uppercase" htmlFor="product_id">
-              TRANSPORTISTA:
+              Producto:
             </label>
             <Controller
               name="product_id"

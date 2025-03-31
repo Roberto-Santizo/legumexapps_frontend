@@ -35,6 +35,10 @@ const routes = [
   { path: "/tiempos-muertos/crear", component: lazy(() => import("../views/produccion/tiempos_muertos/CrearTiempoMuerto")), roles: ['admin','audiproceso'] },
   { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("../views/produccion/tiempos_muertos/EditarTiempoMuerto")), roles: ['admin','audiproceso'] },
 
+
+  { path: "/graficas-diarias", component: lazy(() => import("../views/produccion/graficasDiarias/DailyGraphs")), roles: ['admin','audiproceso'] },
+
+
 ];
 
 export default function ProduccionRoutes() {
