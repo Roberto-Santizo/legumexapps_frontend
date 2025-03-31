@@ -1,23 +1,24 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
-import { Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllLines, LineaSelect } from "@/api/LineasAPI";
+import { useQueries, useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { getLinesBySkuId } from "@/api/LineasAPI";
 import { getAllSkus, SKUSelect } from "@/api/SkusAPI";
-import { createNewTaskProduction } from "@/api/WeeklyProductionPlanAPI";
+import { createNewTaskProduction, getTotalHoursByDate } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { formatDate, getCurrentDate } from "@/helpers";
 import Select from "react-select";
 import Error from "./Error";
 import Spinner from "./Spinner";
+import Swal from "sweetalert2";
 
 export type DraftNewTaskProduction = {
     sku_id: string,
     line_id: string,
     operation_date: string,
-    total_hours: number,
-    tarimas: number
+    total_lbs: number,
+    destination: string;
 }
 
 export default function ModalCrearTareaProduccion() {
@@ -29,12 +30,24 @@ export default function ModalCrearTareaProduccion() {
     const params = useParams();
     const plan_id = params.plan_id!!;
 
+    const [skuId, setSkuId] = useState<string>('');
+
+    const { data: hoursByDates } = useQuery({
+        queryKey: ['getTotalHoursByDate', plan_id],
+        queryFn: () => getTotalHoursByDate(plan_id),
+    });
+
+    const { data: lineas } = useQuery({
+        queryKey: ['getLinesBySkuId', skuId],
+        queryFn: () => getLinesBySkuId(skuId),
+        enabled: !!skuId
+    });
+
     const queryClient = useQueryClient();
 
-    const [lineas, setLineas] = useState<LineaSelect[]>([]);
     const [skus, setSkus] = useState<SKUSelect[]>([]);
     const navigate = useNavigate();
-    
+
     const {
         handleSubmit,
         register,
@@ -48,31 +61,56 @@ export default function ModalCrearTareaProduccion() {
         onError: (error) => {
             toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Tarea Creada Correctamente');
-            queryClient.invalidateQueries({queryKey:['getAllTasksForCalendar',plan_id]});
+        onSuccess: (data) => {
+            toast.success(data);
+            queryClient.invalidateQueries({ queryKey: ['getAllTasksForCalendar', plan_id] });
             navigate(location.pathname);
             reset();
         }
     });
+
     const results = useQueries({
         queries: [
-            { queryKey: ['getAllLines'], queryFn: getAllLines },
             { queryKey: ['getAllSkus'], queryFn: getAllSkus }
         ]
     });
 
     useEffect(() => {
-        if (results[0].data) setLineas(results[0].data);
-        if (results[1].data) setSkus(results[1].data);
+        if (results[0].data) setSkus(results[0].data);
     }, [results])
 
-    const isLoading = results.some(result => result.isLoading);
+    const onSubmit = (data: DraftNewTaskProduction) => {
+        if (hoursByDates) {
+            const total_hours = hoursByDates.find(item => item.date === data.operation_date && item.line_id === data.line_id)?.total_hours || 0;
+            const performance = lineas?.find(item => item.value === data.line_id);
+            if (performance?.performance) {
+                const newHours = Math.round((data.total_lbs / performance.performance) + total_hours);
+                if (newHours > 12) {
+                    Swal.fire({
+                        title: '¿Desea crear la tarea?',
+                        text: `La linea ${performance.label} contará con ${newHours} horas en fecha ${formatDate(data.operation_date)}`,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Si, crear",
+                        cancelButtonText: "Cancelar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            mutate(data);
+                        }
+                    });
+                } else {
+                    mutate(data);
+                }
+            } else {
+                mutate(data);
+            }
 
-    const onSubmit = (data: DraftNewTaskProduction) => mutate(data);
+        }
+    };
 
-    if (isLoading) return <Spinner />
-    return (
+    if (hoursByDates) return (
         <Transition appear show={show} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={() => {
                 navigate(location.pathname);
@@ -128,7 +166,12 @@ export default function ModalCrearTareaProduccion() {
                                                     options={skus}
                                                     id="sku_id"
                                                     placeholder={"--SELECCIONE UNA OPCION--"}
-                                                    onChange={(selected) => field.onChange(selected?.value)}
+                                                    onChange={(selected) => {
+                                                        if (selected?.value) {
+                                                            setSkuId(selected?.value);
+                                                            field.onChange(selected?.value)
+                                                        }
+                                                    }}
                                                     value={skus.find(
                                                         (option) => option.value === field.value
                                                     )}
@@ -155,7 +198,7 @@ export default function ModalCrearTareaProduccion() {
                                                     id="line_id"
                                                     placeholder={"--SELECCIONE UNA OPCION--"}
                                                     onChange={(selected) => field.onChange(selected?.value)}
-                                                    value={lineas.find(
+                                                    value={lineas?.find(
                                                         (option) => option.value === field.value
                                                     )}
                                                 />
@@ -167,6 +210,40 @@ export default function ModalCrearTareaProduccion() {
                                     </div>
 
                                     <div className="flex flex-col gap-2">
+                                        <label className="text-lg font-bold uppercase" htmlFor="total_lbs">
+                                            Total de Libras:
+                                        </label>
+                                        <input
+                                            autoComplete="off"
+                                            id="total_lbs"
+                                            type="number"
+                                            placeholder="Número de libras"
+                                            className="border border-black p-3"
+                                            {...register('total_lbs', {
+                                                required: 'Las libras total son requeridas',
+                                            })}
+                                        />
+                                        {errors.total_lbs?.message && <Error>{errors.total_lbs.message.toString()}</Error>}
+                                    </div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-lg font-bold uppercase" htmlFor="destination">
+                                            Destino:
+                                        </label>
+                                        <input
+                                            autoComplete="off"
+                                            id="destination"
+                                            type="text"
+                                            placeholder="Nombre del Destino"
+                                            className="border border-black p-3"
+                                            {...register('destination', {
+                                                required: 'El destino es requerido',
+                                            })}
+                                        />
+                                        {errors.destination?.message && <Error>{errors.destination.message.toString()}</Error>}
+                                    </div>
+
+                                    <div className="flex flex-col gap-2">
                                         <label className="text-lg font-bold uppercase" htmlFor="operation_date">
                                             Fecha de operación:
                                         </label>
@@ -174,6 +251,7 @@ export default function ModalCrearTareaProduccion() {
                                             autoComplete="off"
                                             id="operation_date"
                                             type="date"
+                                            min={getCurrentDate()}
                                             className="border border-black p-3"
                                             {...register('operation_date', {
                                                 required: 'La fecha de operación es obligatoria',
@@ -182,56 +260,9 @@ export default function ModalCrearTareaProduccion() {
                                         {errors.operation_date?.message && <Error>{errors.operation_date.message.toString()}</Error>}
                                     </div>
 
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-lg font-bold uppercase" htmlFor="total_hours">
-                                            Horas Totales:
-                                        </label>
-                                        <input
-                                            autoComplete="off"
-                                            id="total_hours"
-                                            type="number"
-                                            placeholder="Total de horas"
-                                            className="border border-black p-3"
-                                            {...register('total_hours', {
-                                                required: 'Las horas totales son obligatorias',
-                                            })}
-                                        />
-                                        {errors.total_hours?.message && <Error>{errors.total_hours.message.toString()}</Error>}
-                                    </div>
-
-
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-lg font-bold uppercase" htmlFor="tarimas">
-                                            Número de Tarimas:
-                                        </label>
-                                        <input
-                                            autoComplete="off"
-                                            id="tarimas"
-                                            type="number"
-                                            placeholder="Número de Tarimas Totales a Producir"
-                                            className="border border-black p-3"
-                                            {...register('tarimas', {
-                                                required: 'Las horas totales son obligatorias',
-                                            })}
-                                        />
-                                        {errors.tarimas?.message && <Error>{errors.tarimas.message.toString()}</Error>}
-                                    </div>
-
-
-                                    <Button
-                                        disabled={isPending}
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                        fullWidth
-                                        sx={{ marginTop: 2 }}
-                                    >
-                                        {isPending ? (
-                                            <Spinner />
-                                        ) : (
-                                            <p className="font-bold text-lg">Crear Tarea Producción</p>
-                                        )}
-                                    </Button>
+                                    <button className="button w-full bg-indigo-500 hover:bg-indigo-600">
+                                        {isPending ? <Spinner /> : <p>Crear Tarea Producción</p>}
+                                    </button>
                                 </form>
                             </Dialog.Panel>
                         </Transition.Child>

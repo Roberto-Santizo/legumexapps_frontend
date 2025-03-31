@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import Select from "react-select";
 
 type Props = {
-    task: TaskProduction;
+    task: TaskByLine;
     modal: boolean;
     setSelectedTask: Dispatch<React.SetStateAction<TaskByLine>>;
     setModalTimeout: Dispatch<React.SetStateAction<boolean>>

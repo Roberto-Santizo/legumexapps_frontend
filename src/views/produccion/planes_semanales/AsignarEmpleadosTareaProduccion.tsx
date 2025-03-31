@@ -14,6 +14,7 @@ import EmployeeDraggable from "@/components/EmployeeDraggable";
 import ModalChangeEmployee from "@/components/ModalChangeEmployee";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { PlusIcon } from "lucide-react";
 
 export type Column = {
     id: string,
@@ -150,13 +151,21 @@ export default function ShowTaskProductionDetails() {
     return (
         <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>
-            <div className="p-5 shadow-xl">
-                <div className="font-bold">Línea: <span className="font-normal ml-2">{taskData?.line ?? 'N/A'}</span></div>
-                <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskData?.operation_date ? formatDate(taskData.operation_date) : 'N/A'}</span></div>
-                <div className="font-bold">Total de tarimas:<span className="font-normal ml-2">{taskData?.total_tarimas ?? 0}</span></div>
-                <div className="font-bold">SKU:<span className="font-normal ml-2">{taskData?.sku?.code ?? 'N/A'}</span></div>
-                <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData?.sku?.product ?? 'N/A'}</span></div>
-                <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData?.employees?.length ?? 0}</span></div>
+            <div className="p-5 shadow-xl grid grid-cols-2">
+                <div>
+                    <div className="font-bold">Línea: <span className="font-normal ml-2">{taskData?.line ?? 'N/A'}</span></div>
+                    <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskData?.operation_date ? formatDate(taskData.operation_date) : 'N/A'}</span></div>
+                    <div className="font-bold">Total de tarimas:<span className="font-normal ml-2">{taskData?.total_lbs ?? 0}</span></div>
+                    <div className="font-bold">SKU:<span className="font-normal ml-2">{taskData?.sku?.code ?? 'N/A'}</span></div>
+                    <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData?.sku?.product_name ?? 'N/A'}</span></div>
+                    <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData?.employees?.length ?? 0}</span></div>
+                </div>
+                <div>
+                    <button className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2">
+                        <PlusIcon />
+                        <p>Agregar Empleado</p>
+                    </button>
+                </div>
             </div>
 
             <div className="flex justify-between w-full mx-auto gap-5">
@@ -186,9 +195,9 @@ export default function ShowTaskProductionDetails() {
                 <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} />
             )}
 
-           <button onClick={() => handleStartTask()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            <button onClick={() => handleStartTask()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                 {isPending ? <Spinner /> : <p>Cerrar Asignación</p>}
-           </button>
+            </button>
         </div>
     );
 }

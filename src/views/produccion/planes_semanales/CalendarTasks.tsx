@@ -1,4 +1,4 @@
-import { getAllTasksForCalendar, TaskForCalendar } from "@/api/WeeklyProductionPlanAPI";
+import { getAllTasksForCalendar, getTotalHoursByDate, TaskForCalendar } from "@/api/WeeklyProductionPlanAPI";
 import { useQuery } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -16,23 +16,26 @@ export default function CalendarTasks() {
   const [events, setEvents] = useState<TaskForCalendar[]>([]);
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data: DataEvents, isLoading, isError } = useQuery({
     queryKey: ['getAllTasksForCalendar', plan_id],
     queryFn: () => getAllTasksForCalendar(plan_id)
   });
 
-  useEffect(() => {
-    if (data) {
-      setEvents(data)
-    }
-  }, [data]);
+  const { data: hoursByDates } = useQuery({
+    queryKey: ['getTotalHoursByDate', plan_id],
+    queryFn: () => getTotalHoursByDate(plan_id),
+  });
 
+  useEffect(() => {
+    if (DataEvents) {
+      setEvents(DataEvents)
+    }
+  }, [DataEvents]);
 
   if (isLoading) return <Spinner />;
   if (isError) return <ShowErrorAPI />;
-  if (data) return (
+  if (DataEvents && hoursByDates) return (
     <div>
-
       <div className="flex items-center justify-between">
         <h1 className="text-4xl font-bold mb-10">Tareas Programadas</h1>
         <button type="button" className="button bg-indigo-500 flex justify-end hover:bg-indigo-600" onClick={() => {
@@ -43,12 +46,14 @@ export default function CalendarTasks() {
         </button>
       </div>
 
-      <FullCalendarComponent events={events} setEvents={setEvents} />
+      <div className="mb-10">
+        <FullCalendarComponent events={events} setEvents={setEvents} hoursByDates={hoursByDates} />
+      </div>
 
       <TasksOrder />
 
       <ModalCrearTareaProduccion />
-      
+
     </div>
   )
 }

@@ -1,22 +1,21 @@
-import Spinner from "@/components/Spinner";
-import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation,useQuery } from "@tanstack/react-query";
-import Error from "@/components/Error";
-import {  getLineaById, updateLinea } from "@/api/LineasAPI";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getLineaById, updateLinea } from "@/api/LineasAPI";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { DraftLinea } from "./CrearLinea";
+import Spinner from "@/components/Spinner";
+import Error from "@/components/Error";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
 
 export default function EditarLinea() {
   const navigate = useNavigate();
   const params = useParams();
   const id = params.id!!;
 
-  const {data,isLoading,isError} = useQuery({
-    queryKey:['getLineaById',id],
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['getLineaById', id],
     queryFn: () => getLineaById(id)
   });
 
@@ -31,24 +30,24 @@ export default function EditarLinea() {
     }
   });
 
-  const { 
+  const {
     register,
-    setValue, 
-    handleSubmit, 
-    formState: { errors } 
+    setValue,
+    handleSubmit,
+    formState: { errors }
   } = useForm<DraftLinea>();
 
-  useEffect(()=>{
-    if(data){
-      setValue('code',data.code);
-      setValue('total_persons',data.total_persons);
+  useEffect(() => {
+    if (data) {
+      setValue('code', data.code);
+      setValue('total_persons', data.total_persons);
     }
-  },[data]);
+  }, [data]);
 
   const onSubmit = (data: DraftLinea) => mutate(data);
 
-  if(isLoading) return <Spinner />
-  if(isError) return <ShowErrorAPI/>
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
   return (
     <>
       <h2 className="text-3xl font-bold mb-5">Editar Linea</h2>
@@ -87,20 +86,9 @@ export default function EditarLinea() {
             {errors.total_persons?.message && <Error>{String(errors.total_persons.message)}</Error>}
           </div>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Editar Linea</p>
-            )}
-          </Button>
+          <button className="button w-full bg-indigo-500 hover:bg-indigo-600">
+            {isPending ? <Spinner /> : <p>Guardar Cambios</p>}
+          </button>
         </form>
       </div>
     </>

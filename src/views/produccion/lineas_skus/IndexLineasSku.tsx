@@ -54,6 +54,7 @@ export default function IndexLineasSku() {
                         <th className="thead-th">Producto</th>
                         <th className="thead-th">Turno</th>
                         <th className="thead-th">Libras/Hora</th>
+                        <th className="thead-th">Porcentaje Aceptado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,6 +66,7 @@ export default function IndexLineasSku() {
                             <td className="tbody-td">{sku.product}</td>
                             <td className="tbody-td">{sku.shift}</td>
                             <td className="tbody-td">{sku.performance}</td>
+                            <td className="tbody-td">{sku.accepted_percentage} %</td>
                         </tr>
                     ))}
                 </tbody>

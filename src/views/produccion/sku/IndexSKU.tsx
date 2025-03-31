@@ -1,9 +1,9 @@
 import { PlusIcon } from "lucide-react";
-import Pagination from "@/components/Pagination";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getSkusPaginated, SKU } from "@/api/SkusAPI";
+import Pagination from "@/components/Pagination";
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 
@@ -54,15 +54,19 @@ export default function IndexSKU() {
         <table className="table">
           <thead>
             <tr className="thead-tr">
-              <th scope="col" className="thead-th">codigo</th>
-              <th scope="col" className="thead-th">producto</th>
+              <th scope="col" className="thead-th">Codigo</th>
+              <th scope="col" className="thead-th">Producto</th>
+              <th scope="col" className="thead-th">Presentación</th>
+              <th scope="col" className="thead-th">Cliente</th>
             </tr>
           </thead>
           <tbody>
             {skus.map(sku => (
               <tr key={sku.id} className="tbody-tr">
                 <td className="tbody-td">{sku.code}</td>
-                <td className="tbody-td">{sku.product}</td>
+                <td className="tbody-td">{sku.product_name}</td>
+                <td className="tbody-td">{sku.presentation}</td>
+                <td className="tbody-td">{sku.client_name}</td>
               </tr>
             ))}
 

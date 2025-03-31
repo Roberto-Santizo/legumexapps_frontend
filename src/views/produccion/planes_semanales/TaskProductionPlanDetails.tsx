@@ -36,6 +36,9 @@ export default function TaskProductionPlanDetails() {
                     <tr className="thead-tr">
                       <th className="thead-th">Fecha de Toma</th>
                       <th className="thead-th">Tarimas Producidas</th>
+                      <th className="thead-th">Libras Bascula</th>
+                      <th className="thead-th">Libras Producidas</th>
+                      <th className="thead-th">Sobre Dosificación</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -43,6 +46,9 @@ export default function TaskProductionPlanDetails() {
                       <tr key={performance.id} className="tbody-tr">
                         <td className="tbody-td">{performance.take_date}</td>
                         <td className="tbody-td">{performance.tarimas_produced}</td>
+                        <td className="tbody-td">{performance.lbs_bascula}</td>
+                        <td className="tbody-td">{performance.lbs_teoricas}</td>
+                        <td className="tbody-td">{performance.difference}</td>
                       </tr>
                     ))}
                   </tbody>

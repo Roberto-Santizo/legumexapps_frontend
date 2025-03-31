@@ -1,11 +1,14 @@
 import clienteAxios from "@/config/axios";
+import { isAxiosError } from "axios";
 import { DraftSku } from "views/produccion/sku/CreateSKU";
 import { z } from "zod";
 
 export const SKUSchema = z.object({
     id: z.string(),
     code: z.string(),
-    product: z.string()
+    product_name: z.string(),
+    presentation: z.string().nullable(),
+    client_name: z.string()
 });
 
 export const SkusPaginatedSchema = z.object({
@@ -37,7 +40,7 @@ export async function getSkusPaginated(page: number): Promise<SkusPaginated> {
 
 export const SKUSelectSchema = z.object({
     value: z.string(),
-    label: z.string()
+    label: z.string(),
 });
 
 export const SKUSSelectSchema = z.object({
@@ -63,12 +66,14 @@ export async function getAllSkus(): Promise<SKUSelect[]> {
 }
 
 
-export async function createSKU(data: DraftSku) {
+export async function createSKU(FormData: DraftSku) {
     try {
         const url = '/api/sku';
-        await clienteAxios.post(url, data);
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.msg);
+        }
     }
 }

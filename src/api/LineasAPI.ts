@@ -2,6 +2,7 @@ import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { DraftLinea } from "views/produccion/lineas/CrearLinea";
 import { z } from "zod";
+import { SKU } from "./SkusAPI";
 
 export const LineaSchema = z.object({
     id: z.string(),
@@ -44,7 +45,8 @@ export async function getLineasPaginated(page: number): Promise<LineasPaginated>
 
 export const LineaSelectSchema = z.object({
     value: z.string(),
-    label: z.string()
+    label: z.string(),
+    performance: z.number().nullable()
 });
 
 export const LineasSelectSchema = z.object({
@@ -53,10 +55,26 @@ export const LineasSelectSchema = z.object({
 
 export type LineaSelect = z.infer<typeof LineaSelectSchema>
 
-
-export async function getAllLines(): Promise<LineaSelect[]> {
+export async function getAllLines() : Promise<LineaSelect[]> {
     try {
         const url = '/api/lines-all';
+        const { data } = await clienteAxios(url);    
+        const result = LineasSelectSchema.safeParse(data);
+        if(result.success){
+            return result.data.data;
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+
+export async function getLinesBySkuId(id : SKU['id']): Promise<LineaSelect[]> {
+    try {
+        const url = `/api/lines-by-sku/${id}`;
         const { data } = await clienteAxios(url);
         const result = LineasSelectSchema.safeParse(data);
         if (result.success) {
@@ -69,6 +87,7 @@ export async function getAllLines(): Promise<LineaSelect[]> {
         throw error;
     }
 }
+
 
 export async function getLineaById(id: Linea['id']): Promise<Linea> {
     try {

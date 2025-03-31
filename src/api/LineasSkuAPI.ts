@@ -9,7 +9,8 @@ export const LineaSKUSchema = z.object({
     client: z.string(),
     product: z.string(),
     shift: z.string(),
-    performance: z.number()
+    performance: z.string(),
+    accepted_percentage: z.number()
 });
 
 export const PaginatedLineasSKUSchema = z.object({

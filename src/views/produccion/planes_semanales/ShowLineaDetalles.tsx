@@ -8,8 +8,7 @@ import TaskProduction from "@/components/TaskProduction";
 import ModalCierreTareaProduccion from "@/components/ModalCierreTareaProduccion";
 import ModalTomaRendimientoProduccion from "@/components/ModalTomaRendimientoProduccion";
 import ModalTiempoMuerto from "@/components/ModalTiempoMuerto";
-// Esta línea yo la gregue
-// import ModalNotasProblemas from "@/components/ModalNotasProblemas";
+import ModalNotasProblemas from "@/components/ModalNotasProblemas";
 
 export default function ShowLineaDetalles() {
     const params = useParams();
@@ -19,6 +18,7 @@ export default function ShowLineaDetalles() {
     const [modalCierre, setModalCierre] = useState<boolean>(false);
     const [modalRendimiento, setModalRendimiento] = useState<boolean>(false);
     const [modalTimeout, setModalTimeout] = useState<boolean>(false);
+    const [modalNotas, setModalNotas] = useState<boolean>(false);
 
     const { data: tasks, isLoading, isError, refetch } = useQuery({
         queryKey: ['getTasksByLineId', plan_id, linea_id],
@@ -34,7 +34,7 @@ export default function ShowLineaDetalles() {
                 <p className=" text-center text-3xl font-medium mt-10">No existen tareas para esta fecha</p>
             )}
             {tasks.map(task => (
-                <TaskProduction key={task.id} task={task} setModalTimeOut={setModalTimeout} setSelectedTask={setSelectedTask} setModalCierre={setModalCierre} modalCierre={modalCierre} setModalRendimiento={setModalRendimiento} />
+                <TaskProduction key={task.id} task={task} setModalTimeOut={setModalTimeout} setSelectedTask={setSelectedTask} setModalCierre={setModalCierre} modalCierre={modalCierre} setModalRendimiento={setModalRendimiento} setModalNotas={setModalNotas} />
             ))}
 
 
@@ -47,7 +47,11 @@ export default function ShowLineaDetalles() {
             )}
 
             {(modalTimeout) && (
-                <ModalTiempoMuerto modal={modalTimeout} task={selectedTask} setModalTimeout={setModalTimeout} setSelectedTask={setSelectedTask}/>
+                <ModalTiempoMuerto modal={modalTimeout} task={selectedTask} setModalTimeout={setModalTimeout} setSelectedTask={setSelectedTask} />
+            )}
+
+            {(modalNotas) && (
+                <ModalNotasProblemas modalNotas={modalNotas} setModalNotas={setModalNotas} task={selectedTask} setSelectedTask={setSelectedTask} />
             )}
         </div>
     )

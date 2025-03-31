@@ -1,20 +1,19 @@
-import { getAllClients } from "@/api/ClientsAPI";
-import { getAllLines } from "@/api/LineasAPI";
 import { getAllSkus } from "@/api/SkusAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { createLineaSku } from "@/api/LineasSkuAPI";
-import Select from "react-select";
-import Error from "@/components/Error";
 import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
+import { getAllLines } from "@/api/LineasAPI";
+import Select from "react-select";
+import Error from "@/components/Error";
 
 export type DraftLineaSku = {
     sku_id: string;
     line_id: string;
-    client_id: string;
     lbs_performance: number;
+    accepted_percentage: number;
 }
 
 export default function CrearLineaSku() {
@@ -44,7 +43,6 @@ export default function CrearLineaSku() {
         queries: [
             { queryKey: ['getAllSkus'], queryFn: getAllSkus },
             { queryKey: ['getAllLines'], queryFn: getAllLines },
-            { queryKey: ['getAllClients'], queryFn: getAllClients },
         ]
     });
 
@@ -104,31 +102,6 @@ export default function CrearLineaSku() {
                     {errors.line_id && <Error>{errors.line_id?.message?.toString()}</Error>}
                 </div>
 
-                <div>
-                    <label className="text-lg font-bold uppercase" htmlFor="client_id">
-                        Cliente:
-                    </label>
-                    <Controller
-                        name="client_id"
-                        control={control}
-                        rules={{ required: "Seleccione un cliente" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                options={results[2].data}
-                                id="client_id"
-                                placeholder={"--SELECCIONE UNA OPCION--"}
-                                className="border border-black"
-                                onChange={(selected) => field.onChange(selected?.value)}
-                                value={results[2].data?.find(
-                                    (option) => option.value === field.value
-                                )}
-                            />
-                        )}
-                    />
-                    {errors.client_id && <Error>{errors.client_id?.message?.toString()}</Error>}
-                </div>
-
                 <div className="flex flex-col gap-2">
                     <label className="text-lg font-bold uppercase" htmlFor="lbs_performance">
                         Libras/Horas:
@@ -140,11 +113,28 @@ export default function CrearLineaSku() {
                         placeholder={"Rendiento en lbs"}
                         className="border border-black p-3"
                         {...register("lbs_performance", {
-                            required: "El rendimiento es requerido",
                             min: { value: 0, message: 'El valor debe de ser mayor a 0' }
                         })}
                     />
                     {errors.lbs_performance && <Error>{errors.lbs_performance?.message?.toString()}</Error>}
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className="text-lg font-bold uppercase" htmlFor="accepted_percentage">
+                        Porcentaje Aceptado:
+                    </label>
+                    <input
+                        autoComplete="off"
+                        id="accepted_percentage"
+                        type="number"
+                        placeholder={"Rendiento en lbs"}
+                        className="border border-black p-3"
+                        {...register("accepted_percentage", {
+                            required: "El porcentaje aceptado es requerido",
+                            min: { value: 0, message: 'El valor debe de ser mayor a 0' }
+                        })}
+                    />
+                    {errors.accepted_percentage && <Error>{errors.accepted_percentage?.message?.toString()}</Error>}
                 </div>
 
 

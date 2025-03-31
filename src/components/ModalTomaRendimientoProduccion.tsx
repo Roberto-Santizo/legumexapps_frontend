@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 type Props = {
-    task: TaskProduction;
+    task: TaskByLine;
     modal: boolean;
     setModal: Dispatch<React.SetStateAction<boolean>>;
     setSelectedTask: Dispatch<React.SetStateAction<TaskByLine>>;
@@ -14,17 +14,18 @@ type Props = {
 
 export type DraftPerformance = {
     tarimas_produced: number;
+    lbs_bascula: number;
 }
 
 export default function ModalTomaRendimientoProduccion({ task, modal, setModal, setSelectedTask }: Props) {
 
     const { mutate } = useMutation({
         mutationFn: ({ id, data }: { id: TaskProduction['id'], data: DraftPerformance }) => createTaskProductionPerformance(id, data),
-        onError: () => {
-            toast.error('Ocurrio un error al tomar el rendimiento');
+        onError: (error) => {
+            toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Rendimiento tomado correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             setSelectedTask({} as TaskByLine)
             setModal(false);
         }
@@ -92,6 +93,23 @@ export default function ModalTomaRendimientoProduccion({ task, modal, setModal, 
                                         />
                                         {errors.tarimas_produced?.message && (
                                             <p className="text-red-600 text-sm mt-1">{errors.tarimas_produced.message.toString()}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 font-medium mb-2" htmlFor="lbs_bascula">
+                                            Libras Báscula:
+                                        </label>
+                                        <input
+                                            autoComplete="off"
+                                            id="lbs_bascula"
+                                            type="number"
+                                            placeholder="Total de tarimas producidas"
+                                            className="border border-gray-300 p-3 w-full rounded-md"
+                                            {...register('lbs_bascula', { required: 'El total de libras de la tarima son necesarias' })}
+                                        />
+                                        {errors.lbs_bascula?.message && (
+                                            <p className="text-red-600 text-sm mt-1">{errors.lbs_bascula.message.toString()}</p>
                                         )}
                                     </div>
 
