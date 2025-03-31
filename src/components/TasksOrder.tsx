@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { Dialog, Transition } from "@headlessui/react";
 import TaskProductionComponent from "@/components/TaskProductionComponent";
 import ShowErrorAPI from "./ShowErrorAPI";
-import ModalNuevaTareaProduccion from "./ModalNuevaTareaProduccion";
 
 export default function TasksOrder() {
     const location = useLocation();
@@ -23,8 +22,6 @@ export default function TasksOrder() {
 
     const navigate = useNavigate();
     const [tasks, setTasks] = useState<TaskByDate[]>([]);
-    const [modalNewTask, setModalNewTask] = useState<boolean>(false);
-    const [selectedTask, setSelectedTask] = useState<TaskByDate>({} as TaskByDate);
 
     const { data, isLoading, isError, isFetching } = useQuery({
         queryKey: ['getTasksProductionByDate', plan_id, date],
@@ -46,7 +43,7 @@ export default function TasksOrder() {
 
     useEffect(() => {
         if (data) {
-            setTasks(data);
+            setTasks(data.data);
         }
     }, [data]);
 
@@ -114,12 +111,30 @@ export default function TasksOrder() {
                             leaveTo="opacity-0 scale-95"
                         >
                             <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white shadow-xl sm:w-full sm:max-w-3xl">
+                                <div className="mt-10 p-10">
+                                    <table className="table">
+                                        <thead>
+                                            <tr className="thead-tr">
+                                                <th className="thead-tr">Linea</th>
+                                                <th className="thead-tr">Total Horas del Día</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data?.summary.map(item => (
+                                                <tr className="tbody-tr">
+                                                    <td className="tbody-td">{item.line}</td>
+                                                    <td className="tbody-td">{item.total_hours} horas</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div className="p-5 w-full">
                                     {(!isFetching && !isLoading && tasks.length === 0) && <p className="font-bold text-xl">No existen tareas en esta fecha</p>}
                                     <DndContext onDragEnd={onDragEnd}>
                                         <SortableContext items={itemsId}>
                                             {tasks.map(task => (
-                                                <TaskProductionComponent key={task.id} task={task} isDraggable={task.end_date ? false : true} setSelectedTask={setSelectedTask} setModalNewTask={setModalNewTask} />
+                                                <TaskProductionComponent key={task.id} task={task} isDraggable={task.end_date ? false : true} />
                                             ))}
                                         </SortableContext>
                                     </DndContext>
@@ -127,10 +142,6 @@ export default function TasksOrder() {
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>
-
-                    {(modalNewTask) && (
-                        <ModalNuevaTareaProduccion task={selectedTask} setModalNewTask={setModalNewTask} modal={modalNewTask} />
-                    )}
                 </div>
             </Dialog>
         </Transition>

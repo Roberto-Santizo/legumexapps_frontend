@@ -1,18 +1,14 @@
-import { CirclePlusIcon } from "lucide-react";
 import TaskLabel from "./TaskLabel";
 import { TaskByDate } from "@/api/WeeklyProductionPlanAPI";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Dispatch, SetStateAction } from "react";
 
 type Props = {
     task: TaskByDate;
     isDraggable: boolean;
-    setSelectedTask: Dispatch<SetStateAction<TaskByDate>>;
-    setModalNewTask: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function TaskProductionComponent({ task, isDraggable, setSelectedTask, setModalNewTask }: Props) {
+export default function TaskProductionComponent({ task, isDraggable }: Props) {
     const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
         id: task.priority,
         data: {
@@ -36,7 +32,8 @@ export default function TaskProductionComponent({ task, isDraggable, setSelected
                         <TaskLabel label={"Prioridad"} text={task.priority.toString()} />
                         <TaskLabel label={"SKU"} text={task.sku} />
                         <TaskLabel label={"Linea"} text={task.line} />
-                        <TaskLabel label={"Total de Tarimas"} text={task.total_tarimas.toString()} />
+                        <TaskLabel label={"Total Libras"} text={task.total_lbs.toString()} />
+                        <TaskLabel label={"Horas Programadas"} text={task.hours?.toString() ?? ''} />
                         <TaskLabel label={"Fecha de Operación"} text={task.operation_date} />
                     </div>
                 </div>
@@ -52,20 +49,11 @@ export default function TaskProductionComponent({ task, isDraggable, setSelected
                     <TaskLabel label={"Prioridad"} text={task.priority.toString()} />
                     <TaskLabel label={"SKU"} text={task.sku} />
                     <TaskLabel label={"Linea"} text={task.line} />
-                    <TaskLabel label={"Total de Tarimas"} text={task.total_tarimas.toString()} />
+                    <TaskLabel label={"Total Libras"} text={task.total_lbs.toString()} />
+                    <TaskLabel label={"Horas Programadas"} text={task.hours?.toString() ?? 'SIN RENDIMIENTO ASOCIADO'} />
                     <TaskLabel label={"Fecha de Operación"} text={task.operation_date} />
                     {task.end_date && (
                         <p className="mt-5 w-1/2 button bg-green-500">Tarea Terminada</p>
-                    )}
-                </div>
-
-                <div>
-                    {(task.end_date && task.finished_tarimas != task.total_tarimas) && (
-                        <CirclePlusIcon className="text-red-500 cursor-pointer"
-                            onClick={() => {
-                                setSelectedTask(task)
-                                setModalNewTask(true);
-                            }} />
                     )}
                 </div>
             </div>

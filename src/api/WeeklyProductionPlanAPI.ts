@@ -11,6 +11,7 @@ import { DraftNewTaskProduction } from "@/components/ModalCrearTareaProduccion";
 import { isAxiosError } from "axios";
 import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
+import { DraftNote } from "@/components/ModalNotasProblemas";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
@@ -131,7 +132,7 @@ export const TaskProductionDetailSchema = z.object({
     id: z.string(),
     line: z.string(),
     operation_date: z.string(),
-    total_tarimas: z.number(),
+    total_lbs: z.number(),
     sku: SKUSchema,
     employees: z.array(EmployeeTaskProductionSchema),
 });
@@ -243,7 +244,10 @@ export const TimeoutTaskProductionSchema = z.object({
 export const PerformanceTaskProductionSchema = z.object({
     id: z.string(),
     take_date: z.string(),
-    tarimas_produced: z.number()
+    tarimas_produced: z.number(),
+    lbs_bascula: z.number(),
+    lbs_teoricas: z.number(),
+    difference: z.number()
 });
 
 
@@ -276,7 +280,6 @@ export async function getTaskProductionInProgressDetail(id: TaskProduction['id']
     try {
         const url = `/api/tasks_production_plan/details/${id}`;
         const { data } = await clienteAxios(url);
-        console.log(data);
         const result = TaskProductionInProgressSchema.safeParse(data);
         if (result.success) {
             return result.data
@@ -290,30 +293,35 @@ export async function getTaskProductionInProgressDetail(id: TaskProduction['id']
 }
 
 
-export async function createTaskProductionPerformance(id: TaskProduction['id'], data: DraftPerformance) {
+export async function createTaskProductionPerformance(id: TaskProduction['id'], FormData: DraftPerformance) {
     try {
         const url = `/api/tasks_production_plan/${id}/performance`;
-        await clienteAxios.post(url, data);
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
-export async function closeTaskProduction(id: TaskProduction['id'], data: DraftCloseTask) {
+export async function closeTaskProduction(id: TaskProduction['id'], FormData: DraftCloseTask) {
     try {
         const url = `/api/tasks_production_plan/${id}/end`;
-        await clienteAxios.patch(url, data);
+        const { data } = await clienteAxios.patch<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
-export async function createNewTaskProduction(data: DraftNewTaskProduction) {
+export async function createNewTaskProduction(FormData: DraftNewTaskProduction) {
     try {
         const url = '/api/tasks_production_plan/new-task';
-        await clienteAxios.post(url, data);
+        const {data} = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg)
@@ -347,9 +355,11 @@ export const TaskForCalendarSchema = z.object({
     id: z.string(),
     title: z.string(),
     start: z.string(),
+    total_hours: z.number(),
     priority: z.string(),
     backgroundColor: z.string(),
-    editable: z.boolean()
+    editable: z.boolean(),
+    line_id: z.string()
 });
 
 export const TasksForCalendarSchema = z.object({
@@ -391,28 +401,35 @@ export const TaskByDateSchema = z.object({
     id: z.string(),
     line: z.string(),
     sku: z.string(),
-    total_tarimas: z.number(),
+    total_lbs: z.number(),
     finished_tarimas: z.number(),
     operation_date: z.string(),
     start_date: z.string().nullable(),
     end_date: z.string().nullable(),
-    hours: z.number(),
+    hours: z.number().nullable(),
     priority: z.number()
 });
 
+export const SummaryHoursByLineSchema = z.object({
+    line: z.string(),
+    total_hours: z.number()
+});
+
 export const TasksByDateSchema = z.object({
+    summary: z.array(SummaryHoursByLineSchema),
     data: z.array(TaskByDateSchema)
 })
 
 export type TaskByDate = z.infer<typeof TaskByDateSchema>;
+export type InfoTasksByDate = z.infer<typeof TasksByDateSchema>;
 
-export async function getTasksProductionByDate(id: WeeklyPlanProductionPlan['id'], date: string): Promise<TaskByDate[]> {
+export async function getTasksProductionByDate(id: WeeklyPlanProductionPlan['id'], date: string): Promise<InfoTasksByDate> {
     try {
         const url = `api/weekly_production_plan/details-by-date/${id}?date=${date}`;
         const { data } = await clienteAxios(url);
         const result = TasksByDateSchema.safeParse(data);
         if (result.success) {
-            return result.data.data
+            return result.data
         } else {
             throw new Error("Información no valida");
         }
@@ -427,8 +444,7 @@ export const TaskByLineSchema = z.object({
     line: z.string(),
     sku: z.string(),
     product: z.string(),
-    total_tarimas: z.number(),
-    finished_tarimas: z.number(),
+    total_lbs: z.number(),
     operation_date: z.string(),
     start_date: z.string().nullable(),
     end_date: z.string().nullable(),
@@ -438,7 +454,9 @@ export const TaskByLineSchema = z.object({
     total_employees: z.number(),
     priority: z.number(),
     available: z.boolean(),
-    paused: z.boolean()
+    paused: z.boolean(),
+    is_minimum_requrire: z.boolean().nullable(),
+    is_justified: z.boolean().nullable()
 });
 
 export const TasksByLineSchema = z.object({
@@ -477,5 +495,46 @@ export async function downloadPlanillaProduction({ plan_id, line_id }: { plan_id
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
         }
+    }
+}
+
+export async function createTaskProductionNote(FormData: DraftNote) {
+    try {
+        const url = '/api/notes';
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.message);
+        }
+    }
+}
+
+
+export const HoursByDateSchema = z.object({
+    date: z.string(),
+    total_hours: z.number(),
+    line_id: z.string()
+});
+
+export const HoursByDatesSchema = z.object({
+    data: z.array(HoursByDateSchema)
+})
+
+export type HoursByDate = z.infer<typeof HoursByDateSchema>;
+
+export async function getTotalHoursByDate(plan_id : WeeklyPlanProductionPlan['id']) : Promise<HoursByDate[]> {
+    try {
+        const url = `/api/weekly_production_plan/hours-by-date/${plan_id}`;
+        const { data } = await clienteAxios(url);
+        const result = HoursByDatesSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
 }

@@ -1,10 +1,4 @@
-import {
-  AlarmClockPlus,
-  CheckCircle,
-  Eye,
-  NotebookPen,
-  Paperclip,
-} from "lucide-react";
+import { AlarmClockPlus, CheckCircle, Eye, NotebookPen, Paperclip } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { TaskByLine } from "@/api/WeeklyProductionPlanAPI";
 import { Dispatch, SetStateAction } from "react";
@@ -19,17 +13,10 @@ type Props = {
   setModalCierre: Dispatch<React.SetStateAction<boolean>>;
   setModalRendimiento: Dispatch<React.SetStateAction<boolean>>;
   setModalTimeOut: Dispatch<React.SetStateAction<boolean>>;
-  // setModalNotasProblemas: Dispatch<React.SetStateAction<boolean>>; // Añadi esta linea
+  setModalNotas: Dispatch<React.SetStateAction<boolean>>;
   modalCierre: boolean;
 };
-export default function TaskProduction({
-  task,
-  setSelectedTask,
-  setModalCierre,
-  setModalRendimiento,
-  setModalTimeOut,
-  // setModalNotasProblemas, // Recibimos la función para abrir el modal
-}: Props) {
+export default function TaskProduction({ task, setSelectedTask, setModalCierre, setModalRendimiento, setModalTimeOut, setModalNotas }: Props) {
   const params = useParams();
   const plan_id = params.plan_id!!;
   const linea_id = params.linea_id!!;
@@ -49,24 +36,17 @@ export default function TaskProduction({
   });
   return (
     <div
-      className={`grid grid-cols-6 shadow-xl p-10 text-xl ${
-        !task.available && "opacity-35 cursor-not-allowed"
-      }`}
+      className={`grid grid-cols-6 shadow-xl p-10 text-xl ${!task.available && "opacity-35 cursor-not-allowed"
+        }`}
     >
       <div className="col-span-5">
         <TaskLabel label={"ID"} text={task.id} />
         <TaskLabel label={"SKU"} text={task.sku} />
         <TaskLabel label={"Producto"} text={task.product} />
         <TaskLabel
-          label={"Total de Tarimas"}
-          text={task.total_tarimas.toString()}
+          label={"Total de Libras"}
+          text={task.total_lbs.toString()}
         />
-        {task.end_date && (
-          <TaskLabel
-            label={"Tarimas Terminadas"}
-            text={task.finished_tarimas.toString()}
-          />
-        )}
         <TaskLabel label={"Fecha de Operación"} text={task.operation_date} />
         <TaskLabel
           label={"Fecha de Inicio"}
@@ -141,16 +121,17 @@ export default function TaskProduction({
           {task.start_date && task.end_date && (
             <>
               <CheckCircle className="text-green-500 cursor-pointer" />
-              <Eye />
-              {/* Aquí coloque el icono de NotebookPen para abrir el ModalNotasProblemas */}
-              <NotebookPen
-                className="text-yellow-500 hover:text-gray-500 cursor-pointer"
-                onClick={() => {
-                  setSelectedTask(task);
-                  // setModalNotasProblemas(true);
-                }}
-              />
             </>
+          )}
+
+          {(task.end_date && !task.is_minimum_requrire && !task.is_justified) && (
+            <NotebookPen
+              className="text-yellow-500 hover:text-gray-500 cursor-pointer"
+              onClick={() => {
+                setSelectedTask(task);
+                setModalNotas(true);
+              }}
+            />
           )}
         </div>
       </div>

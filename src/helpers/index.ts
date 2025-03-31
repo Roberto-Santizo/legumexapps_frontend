@@ -15,7 +15,7 @@ export function formatDate(dateStr: string): string {
     return new Intl.DateTimeFormat('es-ES', options).format(dateObj);
 }
 
-export function downloadBase64File(base64 : string, filename : string) {
+export function downloadBase64File(base64: string, filename: string) {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
@@ -39,14 +39,23 @@ export function getWeekNumber(): number {
 }
 
 
-export function formatearQuetzales(number : number) {
+export function formatearQuetzales(number: number) {
     return new Intl.NumberFormat("es-GT", {
-      style: "currency",
-      currency: "GTQ",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+        style: "currency",
+        currency: "GTQ",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
     }).format(number);
-  }
-  
+}
 
+export function validarDiferenciaFechas(fechaActual: string, fechaDestino: string) {
+    const fecha1 = new Date(fechaActual);
+    const fecha2 = new Date(fechaDestino+1);
 
+    return fecha1 == fecha2;
+}
+
+export function getCurrentDate(){
+    const today = new Date().toLocaleDateString("es-ES", { timeZone: "America/Guatemala" }).split("/").reverse().map(num => num.padStart(2, "0")).join("-");
+    return today;
+}

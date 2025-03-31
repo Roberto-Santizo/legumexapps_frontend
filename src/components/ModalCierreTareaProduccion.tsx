@@ -16,16 +16,17 @@ type Props = {
 
 export type DraftCloseTask = {
     total_tarimas: number;
+    total_lbs_bascula: number;
 }
 
 export default function ModalCierreTareaProduccion({ task, setModalCierre, modal, setSelectedTask, refetch }: Props) {
     const { mutate, isPending } = useMutation({
         mutationFn: ({ id, data }: { id: TaskProduction['id'], data: DraftCloseTask }) => closeTaskProduction(id, data),
-        onError: () => {
-            toast.error('Hubo un error al cerrar la tarea');
+        onError: (error) => {
+            toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Tarea cerrada correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             setModalCierre(false);
             setSelectedTask({} as TaskByLine);
             refetch();
@@ -76,7 +77,6 @@ export default function ModalCierreTareaProduccion({ task, setModalCierre, modal
                                 </button>
                             </div>
 
-                            {/* Formulario */}
                             <form className="p-10 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
                                 <div className="flex flex-col gap-2">
                                     <label className="text-lg font-bold uppercase" htmlFor="total_tarimas">
@@ -92,6 +92,23 @@ export default function ModalCierreTareaProduccion({ task, setModalCierre, modal
                                     />
                                     {errors.total_tarimas?.message && <p className="text-red-500">{errors.total_tarimas.message.toString()}</p>}
                                 </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-lg font-bold uppercase" htmlFor="total_lbs_bascula">
+                                        Total de Libras Producidas (báscula):
+                                    </label>
+                                    <input
+                                        autoComplete="off"
+                                        id="total_lbs_bascula"
+                                        type="number"
+                                        placeholder="Total de libras producidas (báscula)"
+                                        className="border border-gray-300 p-3 rounded-md"
+                                        {...register('total_lbs_bascula', { required: 'El total de libras producidas es necesario' })}
+                                    />
+                                    {errors.total_lbs_bascula?.message && <p className="text-red-500">{errors.total_lbs_bascula.message.toString()}</p>}
+                                </div>
+
+
                                 <button
                                     type="submit"
                                     disabled={isPending}

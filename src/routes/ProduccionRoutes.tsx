@@ -17,12 +17,6 @@ const routes = [
   { path: "/skus", component: lazy(() => import("../views/produccion/sku/IndexSKU")), roles: ['admin','audiproceso'] },
   { path: "/skus/crear", component: lazy(() => import("../views/produccion/sku/CreateSKU")), roles: ['admin','audiproceso'] },
   
-  { path: "/productos-sku", component: lazy(() => import("../views/produccion/productos/IndexProductosSku")), roles: ['admin'] },
-  { path: "/productos-sku/crear", component: lazy(() => import("../views/produccion/productos/CrearProductoSku")), roles: ['admin'] },
-  
-  { path: "/clientes", component: lazy(() => import("../views/produccion/clientes/IndexClientes")), roles: ['admin'] },
-  { path: "/clientes/crear", component: lazy(() => import("../views/produccion/clientes/CrearCliente")), roles: ['admin'] },
-  
   { path: "/lineas", component: lazy(() => import("../views/produccion/lineas/IndexLineas")), roles: ['admin','audiproceso'] },
   { path: "/lineas/crear", component: lazy(() => import("../views/produccion/lineas/CrearLinea")), roles: ['admin','audiproceso'] },
   { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin','audiproceso'] },

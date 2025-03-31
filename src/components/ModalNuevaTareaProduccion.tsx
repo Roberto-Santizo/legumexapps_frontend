@@ -1,13 +1,13 @@
 import { createTaskProduction, TaskByDate } from "@/api/WeeklyProductionPlanAPI";
 import { Dialog, Transition } from "@headlessui/react";
-import { Dispatch, Fragment, useEffect } from "react";
+import { Dispatch, Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 import Error from "./Error";
 import Spinner from "./Spinner";
-import { useParams } from "react-router-dom";
 
 
 type Props = {
@@ -43,12 +43,7 @@ export default function ModalNuevaTareaProduccion({ task, setModalNewTask, modal
         handleSubmit,
         register,
         formState: { errors },
-        setValue
     } = useForm<DraftTaskProduction>();
-
-    useEffect(() => {
-        setValue('tarimas', task.total_tarimas - task.finished_tarimas)
-    }, [modal]);
 
     const onSubmit = (data: DraftTaskProduction) => {
         data.task_production_plan_id = task.id;
@@ -95,24 +90,6 @@ export default function ModalNuevaTareaProduccion({ task, setModalNewTask, modal
                                 </div>
 
                                 <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-lg font-bold uppercase" htmlFor="tarimas">
-                                            Tarimas:
-                                        </label>
-                                        <input
-                                            autoComplete="off"
-                                            id="tarimas"
-                                            type="number"
-                                            placeholder="Total de tarimas producidas"
-                                            className="border border-black p-3"
-                                            {...register('tarimas', {
-                                                required: 'El número de tarimas son necesarias',
-                                                max: { value: task.total_tarimas - task.finished_tarimas, message: 'La diferencia de tarimas es mayor a las que se quieren producir' }
-                                            })}
-                                        />
-                                        {errors.tarimas?.message && <Error>{errors.tarimas.message.toString()}</Error>}
-                                    </div>
-
                                     <div className="flex flex-col gap-2">
                                         <label className="text-lg font-bold uppercase" htmlFor="total_hours">
                                             Horas:
