@@ -1,20 +1,37 @@
-import { LineWeeklyPlan } from "@/api/WeeklyProductionPlanAPI";
-import { createAssigmentsProductionTasks } from "@/api/WeeklyProductionPlanAPI";
 import { Dialog, Transition } from "@headlessui/react";
-import { Dispatch, Fragment, useCallback, useState } from "react";
+import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { QueryObserverResult, useMutation } from "@tanstack/react-query";
+import { Fragment } from "react/jsx-runtime";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updatePositionsLine } from "@/api/LineasAPI";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import Spinner from "./Spinner";
 
 type Props = {
     isOpen: boolean;
     setIsOpen: Dispatch<React.SetStateAction<boolean>>;
-    linea: LineWeeklyPlan;
-    refetch: () => Promise<QueryObserverResult<LineWeeklyPlan[]>>
 }
 
-export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch }: Props) {
+export default function ModalCargaPosicionesLinea({ isOpen, setIsOpen }: Props) {
+    const params = useParams();
+    const line_id = params.id!!;
+    const queryClient = useQueryClient();
+
     const [file, setFile] = useState<File[] | null>(null);
+
+    const { mutate, isPending } =  useMutation({
+        mutationFn: updatePositionsLine,
+        onError: (error) => {
+            toast.error(error.message);
+        },
+        onSuccess: (data) => {
+            toast.success(data);
+            setIsOpen(false);
+            setFile(null);
+            queryClient.invalidateQueries({queryKey:['getLineaById',line_id]});
+        }
+    });
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -24,22 +41,9 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: createAssigmentsProductionTasks,
-        onError: (error) => {
-            toast.error(error.message);
-        },
-        onSuccess: (data) => {
-            toast.success(data);
-            setIsOpen(false);
-            refetch();
-            setFile(null);
-        }
-    });
-
     const handleCreatePlan = async () => {
         if (file) {
-            mutate({ file, id: linea.id });
+            mutate({ file, id: line_id });
         }
     };
 
@@ -47,6 +51,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
         e.preventDefault();
         handleCreatePlan();
     };
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={() => setIsOpen(false)}>
@@ -76,7 +81,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
                             <Dialog.Panel className="relative transform overflow-hidden bg-white shadow-xl sm:w-full sm:max-w-3xl">
                                 <div className="flex justify-between items-center bg-indigo-600 px-6 py-4 text-white">
                                     <h3 className="text-xl font-bold uppercase">
-                                        Carga de Plantilla {linea.line}
+                                        Carga de Plantilla
                                     </h3>
                                     <button
                                         className="text-white hover:text-gray-300"
@@ -116,7 +121,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
                                         </div>
 
                                         <button type="submit" className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-                                            Cargar Asignaciones
+                                            {isPending ? <Spinner /> : <p>Cargar Posiciones</p>}
                                         </button>
                                     </form>
                                 </div>
@@ -126,7 +131,5 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
                 </div>
             </Dialog>
         </Transition >
-    );
+    )
 }
-
-

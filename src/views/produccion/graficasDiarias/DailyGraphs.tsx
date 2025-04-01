@@ -1,42 +1,76 @@
-import React from "react";
+import { getAllLines, getLinePerformanceByDay } from "@/api/LineasAPI";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/Spinner";
 
-const DailyGraphs: React.FC = () => {
-  const colores = {
-    "H. Biometrico": "bg-orange-500",
-    "H. Plan": "bg-blue-500",
-    "H. Linea": "bg-yellow-400",
-    "H. Rendimiento": "bg-lime-600",
-  };
+const colores = {
+  "HBiometrico": "bg-orange-500",
+  "HPlan": "bg-blue-500",
+  "HLinea": "bg-yellow-400",
+  "HRendimiento": "bg-lime-600",
+};
 
-  const graphData = {
-    "H. Biometrico": 52,
-    "H. Plan": 30,
-    "H. Linea": 23,
-    "H. Rendimiento": 80,
-  };
+const initialValues = {
+  HBiometrico: 0,
+  HPlan: 0,
+  HLinea: 0,
+  HRendimiento: 0,
+};
 
-  const valorMaximo = Math.max(...(Object.values(graphData) as number[]));
+type GraphDataType = {
+  HBiometrico: number,
+  HPlan: number,
+  HLinea: number,
+  HRendimiento: number,
+}
 
-  return (
-    <>
+export default function DailyGraphs() {
+  const [graphData, setGraphData] = useState<GraphDataType>(initialValues);
+  const [lineId, setLineId] = useState<string>('');
+  const [date, setDate] = useState<string>('');
+  const [valorMaximo, setValorMaximo] = useState<number>(0);
+
+  const { data, isFetching } = useQuery({
+    queryKey: ['getPerformanceByDay', lineId, date],
+    queryFn: () => getLinePerformanceByDay(lineId, date),
+    enabled: !!date && !!lineId
+  });
+
+  const { data: lines, isLoading, isError } = useQuery({
+    queryKey: ['getAllLines'],
+    queryFn: getAllLines
+  });
+
+  useEffect(() => {
+    if (data) {
+      setGraphData(data.summary);
+      setValorMaximo(data.max_value)
+    }
+  }, [data]);
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
+  if (lines) return (
+    <div>
       <h1 className="text-2xl font-bold text-center mb-8">Gráficas Diarias</h1>
-      
-      <div className="flex justify-center mb-6 ">
+
+      <div className="flex mb-6">
         <input
           type="date"
-          className="p-2 border border-gray-300 rounded-lg mr-4 w-1/6"
+          className="p-2 border border-gray-300 rounded-lg mr-4 w-1/2"
+          onChange={(e) => (setDate(e.target.value))}
         />
-        <select className="p-2 border border-gray-300 rounded-lg mr-4 bg-white w-1/6">
-          <option value="Option1">Option1</option>
-          <option value="Option2">Option2</option>
-          <option value="Pastel3">Pastel3</option>
+        <select className="p-2 border border-gray-300 rounded-lg mr-4 bg-white w-1/2" onChange={(e) => (setLineId(e.target.value))}>
+          <option value={''}>--SELECCIONE UNA LINEA--</option>
+          {lines.map(line => (
+            <option key={line.value} value={line.value}>{line.label}</option>
+          ))}
         </select>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-40">
-          Buscar
-        </button>
+        {isFetching && <Spinner />}
       </div>
 
-      <div className="w-4/6 p-6 bg-white rounded-lg shadow-lg mx-auto ">
+      <div className="p-6 bg-white rounded-lg shadow-lg mx-auto ">
         <div className="bg-gray-50 p-4 rounded-lg">
           <div className="flex justify-between h-64 bg-gray-50 p-4 rounded-lg">
             {(Object.keys(graphData) as Array<keyof typeof graphData>).map(
@@ -72,7 +106,6 @@ const DailyGraphs: React.FC = () => {
           )}
         </div>
       </div>
-    </>
-  );
-};
-export default DailyGraphs;
+    </div>
+  )
+}

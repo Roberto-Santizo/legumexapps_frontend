@@ -1,4 +1,4 @@
-import { PlusIcon, Edit2 } from "lucide-react";
+import { PlusIcon, Edit2, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import Pagination from "@/components/Pagination";
 import { Link } from "react-router-dom";
@@ -64,9 +64,13 @@ export default function IndexLineas() {
                 <td className="tbody-td">{linea.name}</td>
                 <td className="tbody-td">{linea.shift}</td>
                 <td className="tbody-td">{linea.total_persons}</td>
-                <td className="tbody-td">
+                <td className="tbody-td flex gap-5">
                   <Link to={`/lineas/editar/${linea.id}`}>
-                    <Edit2 />
+                    <Edit2 className="hover:text-gray-500"/>
+                  </Link>
+
+                  <Link to={`/lineas/posiciones/${linea.id}`}>
+                    <Users className="hover:text-gray-500"/>
                   </Link>
                 </td>
               </tr>

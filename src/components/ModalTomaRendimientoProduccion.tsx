@@ -55,7 +55,7 @@ export default function ModalTomaRendimientoProduccion({ task, modal, setModal, 
                 </Transition.Child>
 
                 <div className="fixed inset-0 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <div className="flex min-h-full items-center justify-center p-4 ">
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
@@ -89,7 +89,7 @@ export default function ModalTomaRendimientoProduccion({ task, modal, setModal, 
                                             type="number"
                                             placeholder="Total de tarimas producidas"
                                             className="border border-gray-300 p-3 w-full rounded-md"
-                                            {...register('tarimas_produced', { required: 'El total de tarimas producidas es necesario' })}
+                                            {...register('tarimas_produced')}
                                         />
                                         {errors.tarimas_produced?.message && (
                                             <p className="text-red-600 text-sm mt-1">{errors.tarimas_produced.message.toString()}</p>

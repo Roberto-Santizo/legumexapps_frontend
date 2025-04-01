@@ -8,13 +8,14 @@ import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from '@dnd-kit
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import { useMutation } from "@tanstack/react-query";
+import { PlusIcon } from "lucide-react";
+import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
 import ColumnContainer from "@/components/ColumnContainer";
 import EmployeeDraggable from "@/components/EmployeeDraggable";
 import ModalChangeEmployee from "@/components/ModalChangeEmployee";
-import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import { PlusIcon } from "lucide-react";
+import ModalAddEmployee from "@/components/ModalAddEmployee";
 
 export type Column = {
     id: string,
@@ -31,6 +32,7 @@ export default function ShowTaskProductionDetails() {
     const task_p_id = params.task_p_id!!;
     const [columns] = useState<Column[]>(initialValues);
     const [modal, setModal] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const [activeColumn, setActiveColumn] = useState<Column | null>(null);
     const [activeEmployee, setActiveEmployee] = useState<EmployeeProduction | null>(null);
     const [taskData, setTaskData] = useState<TaskProductionDetails>();
@@ -69,7 +71,7 @@ export default function ShowTaskProductionDetails() {
             const uniqueEmployees = [...new Map([...employeesFromTask, ...employeesFromComodines].map(emp => [emp.id, emp])).values()];
 
             setEmployees(uniqueEmployees);
-            setAvailableEmployees(uniqueEmployees.filter(employee => employee.column_id === '1'));
+            setAvailableEmployees(uniqueEmployees.filter(employee => employee.column_id === '1' && employee.active === 0));
         }
     }, [results[0]?.data, results[1]?.data]);
 
@@ -148,23 +150,25 @@ export default function ShowTaskProductionDetails() {
     const isLoading = results.some(result => result.isLoading);
     if (isLoading) return <Spinner />
 
-    return (
+    if(taskData) return (
         <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>
             <div className="p-5 shadow-xl grid grid-cols-2">
                 <div>
-                    <div className="font-bold">Línea: <span className="font-normal ml-2">{taskData?.line ?? 'N/A'}</span></div>
-                    <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskData?.operation_date ? formatDate(taskData.operation_date) : 'N/A'}</span></div>
-                    <div className="font-bold">Total de tarimas:<span className="font-normal ml-2">{taskData?.total_lbs ?? 0}</span></div>
-                    <div className="font-bold">SKU:<span className="font-normal ml-2">{taskData?.sku?.code ?? 'N/A'}</span></div>
-                    <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData?.sku?.product_name ?? 'N/A'}</span></div>
-                    <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData?.employees?.length ?? 0}</span></div>
+                    <div className="font-bold">Línea: <span className="font-normal ml-2">{taskData.line ?? 'N/A'}</span></div>
+                    <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskData.operation_date ? formatDate(taskData.operation_date) : 'N/A'}</span></div>
+                    <div className="font-bold">Total de tarimas:<span className="font-normal ml-2">{taskData.total_lbs ?? 0}</span></div>
+                    <div className="font-bold">SKU:<span className="font-normal ml-2">{taskData.sku.code ?? 'N/A'}</span></div>
+                    <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData.sku.product_name ?? 'N/A'}</span></div>
+                    <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData.employees.length ?? 0}</span></div>
                 </div>
                 <div>
-                    <button className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2">
-                        <PlusIcon />
-                        <p>Agregar Empleado</p>
-                    </button>
+                    {taskData?.flag && (
+                        <button className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" onClick={() => setIsOpen(true)}>
+                            <PlusIcon />
+                            <p>Agregar Empleado</p>
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -194,6 +198,8 @@ export default function ShowTaskProductionDetails() {
             {(modal && activeEmployee) && (
                 <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} />
             )}
+
+            <ModalAddEmployee isOpen={isOpen} setIsOpen={setIsOpen} fijos={employees.filter(employee => employee.column_id === '1')} comodines={employees.filter(employee => employee.column_id === '2')} positions={taskData.positions}/>
 
             <button onClick={() => handleStartTask()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                 {isPending ? <Spinner /> : <p>Cerrar Asignación</p>}

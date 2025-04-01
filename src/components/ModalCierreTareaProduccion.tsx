@@ -88,7 +88,7 @@ export default function ModalCierreTareaProduccion({ task, setModalCierre, modal
                                         type="number"
                                         placeholder="Total de tarimas producidas"
                                         className="border border-gray-300 p-3 rounded-md"
-                                        {...register('total_tarimas', { required: 'El total de tarimas producidas es necesario' })}
+                                        {...register('total_tarimas')}
                                     />
                                     {errors.total_tarimas?.message && <p className="text-red-500">{errors.total_tarimas.message.toString()}</p>}
                                 </div>

@@ -49,6 +49,7 @@ export default function CreateSKU() {
         <form
           className="mt-10 w-2/3 mx-auto shadow-xl p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
+          noValidate
         >
           <div className="flex flex-col gap-2">
             <label className="text-lg font-bold uppercase" htmlFor="code">

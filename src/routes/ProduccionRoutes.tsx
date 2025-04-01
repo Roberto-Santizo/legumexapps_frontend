@@ -18,8 +18,8 @@ const routes = [
   { path: "/skus/crear", component: lazy(() => import("../views/produccion/sku/CreateSKU")), roles: ['admin','audiproceso'] },
   
   { path: "/lineas", component: lazy(() => import("../views/produccion/lineas/IndexLineas")), roles: ['admin','audiproceso'] },
+  { path: "/lineas/posiciones/:id", component: lazy(() => import("../views/produccion/lineas/PosicionesLinea")), roles: ['admin','audiproceso'] },
   { path: "/lineas/crear", component: lazy(() => import("../views/produccion/lineas/CrearLinea")), roles: ['admin','audiproceso'] },
-  { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin','audiproceso'] },
   { path: "/lineas/editar/:id", component: lazy(() => import("../views/produccion/lineas/EditarLinea")), roles: ['admin','audiproceso'] },
   
   { path: "/lineas-skus", component: lazy(() => import("../views/produccion/lineas_skus/IndexLineasSku")), roles: ['admin'] },
@@ -29,9 +29,7 @@ const routes = [
   { path: "/tiempos-muertos/crear", component: lazy(() => import("../views/produccion/tiempos_muertos/CrearTiempoMuerto")), roles: ['admin','audiproceso'] },
   { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("../views/produccion/tiempos_muertos/EditarTiempoMuerto")), roles: ['admin','audiproceso'] },
 
-
   { path: "/graficas-diarias", component: lazy(() => import("../views/produccion/graficasDiarias/DailyGraphs")), roles: ['admin','audiproceso'] },
-
 
 ];
 
