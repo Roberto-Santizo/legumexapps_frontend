@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import Spinner from "@/components/Spinner";
+import { Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const colores = {
   "HBiometrico": "bg-orange-500",
@@ -53,7 +55,7 @@ export default function DailyGraphs() {
   if (isError) return <ShowErrorAPI />;
   if (lines) return (
     <div>
-      <h1 className="text-2xl font-bold text-center mb-8">Gráficas Diarias</h1>
+      <h1 className="text-2xl font-bold text-center mb-8 uppercase">Gráficas Diarias</h1>
 
       <div className="flex mb-6">
         <input
@@ -106,6 +108,33 @@ export default function DailyGraphs() {
           )}
         </div>
       </div>
+
+      <table className="table mt-10">
+        <thead>
+          <tr className="thead-tr">
+            <th className="thead-th">SKU</th>
+            <th className="thead-th">Descripción</th>
+            <th className="thead-th">Fecha de Inicio</th>
+            <th className="thead-th">Fecha Final</th>
+            <th className="thead-th">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data?.details?.map(task => (
+              <tr key={task.id} className="tbody-tr">
+                  <td className="tbody-td">{task.sku}</td>
+                  <td className="tbody-td">{task.sku_description}</td>
+                  <td className="tbody-td">{task.start_date}</td>
+                  <td className="tbody-td">{task.end_date}</td>
+                  <td className="tbody-td">
+                    <Link to={`/planes-produccion/tarea-produccion/${task.id}`} target="_blank">
+                      <Eye className="hover:text-gray-500 cursor-pointer"/>
+                    </Link>
+                  </td>
+              </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

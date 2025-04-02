@@ -11,6 +11,7 @@ type Props = {
     setModal: Dispatch<React.SetStateAction<boolean>>;
     employee: EmployeeProduction;
     availableEmployees: EmployeeProduction[];
+    fijos: EmployeeProduction[];
     setEmployees: Dispatch<React.SetStateAction<EmployeeProduction[]>>;
 }
 
@@ -21,7 +22,7 @@ export type DraftChangePosition = {
     new_position: EmployeeProduction['position'],
 }
 
-export default function ModalChangeEmployee({ modal, setModal, employee, availableEmployees, setEmployees }: Props) {
+export default function ModalChangeEmployee({ modal, setModal, employee, availableEmployees, setEmployees, fijos }: Props) {
 
     const { mutate, isPending } = useMutation({
         mutationFn: changePosition,
@@ -37,39 +38,44 @@ export default function ModalChangeEmployee({ modal, setModal, employee, availab
     const swapEmployees = (position: EmployeeProduction['position'], column_id: EmployeeProduction['column_id']) => {
         const newEmployee = employee;
         const oldEmployee = availableEmployees.filter(employee => employee.position === position)[0];
-        Swal.fire({
-            title: "¿Deseas hacer el cambio de posición?",
-            text: `Se cambiara a ${newEmployee.name} por ${oldEmployee.name}, este cambio no se podrá revertir`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "¡Si, cambiar!",
-            cancelButtonText: "Cancelar"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const data: DraftChangePosition = {
-                    assignment_id: oldEmployee.id,
-                    new_name: employee.name,
-                    new_code: employee.code,
-                    new_position: employee.position,
+        const exists = fijos.findIndex(fijo => fijo.code === newEmployee.code);
+        if (exists > 0) {
+            toast.error('El empleado ya se encuentra asignado');
+        } else {
+            Swal.fire({
+                title: "¿Deseas hacer el cambio de posición?",
+                text: `Se cambiara a ${newEmployee.name} por ${oldEmployee.name}, este cambio no se podrá revertir`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "¡Si, cambiar!",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const data: DraftChangePosition = {
+                        assignment_id: oldEmployee.id,
+                        new_name: employee.name,
+                        new_code: employee.code,
+                        new_position: employee.position,
+                    }
+
+                    mutate(data);
+
+                    setEmployees(prevEmployees =>
+                        prevEmployees.map(emp => {
+                            if (emp.position === position)
+                                return { ...emp, column_id: employee.column_id };
+
+                            if (emp.position === employee.position)
+                                return { ...emp, column_id: column_id };
+
+                            return emp;
+                        })
+                    );
                 }
-
-                mutate(data);
-
-                setEmployees(prevEmployees =>
-                    prevEmployees.map(emp => {
-                        if (emp.position === position)
-                            return { ...emp, column_id: employee.column_id };
-
-                        if (emp.position === employee.position)
-                            return { ...emp, column_id: column_id };
-
-                        return emp;
-                    })
-                );
-            }
-        });
+            });
+        }
     }
 
     if (isPending) return <LoadingOverlay />

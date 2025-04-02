@@ -414,12 +414,14 @@ export const TaskByDateSchema = z.object({
     start_date: z.string().nullable(),
     end_date: z.string().nullable(),
     hours: z.number().nullable(),
-    priority: z.number()
+    priority: z.number(),
+    line_id: z.string()
 });
 
 export const SummaryHoursByLineSchema = z.object({
     line: z.string(),
-    total_hours: z.number()
+    total_hours: z.number(),
+    id: z.string()
 });
 
 export const TasksByDateSchema = z.object({

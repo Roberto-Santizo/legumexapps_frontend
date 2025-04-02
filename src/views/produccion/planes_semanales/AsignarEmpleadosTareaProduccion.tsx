@@ -196,7 +196,7 @@ export default function ShowTaskProductionDetails() {
             </div>
 
             {(modal && activeEmployee) && (
-                <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} />
+                <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} fijos={employees.filter(employee => employee.column_id === '1')}/>
             )}
 
             <ModalAddEmployee isOpen={isOpen} setIsOpen={setIsOpen} fijos={employees.filter(employee => employee.column_id === '1')} comodines={employees.filter(employee => employee.column_id === '2')} positions={taskData.positions}/>

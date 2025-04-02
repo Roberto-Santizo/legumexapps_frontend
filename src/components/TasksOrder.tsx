@@ -22,6 +22,8 @@ export default function TasksOrder() {
 
     const navigate = useNavigate();
     const [tasks, setTasks] = useState<TaskByDate[]>([]);
+    const [lineId, setLineId] = useState<string>('');
+    const [selectedTasks, setSelectedTasks] = useState<TaskByDate[]>([]);
 
     const { data, isLoading, isError, isFetching } = useQuery({
         queryKey: ['getTasksProductionByDate', plan_id, date],
@@ -48,7 +50,7 @@ export default function TasksOrder() {
     }, [data]);
 
     const itemsId = useMemo(() => {
-        return tasks?.map(task => task.priority)
+        return selectedTasks?.map(task => task.priority)
     }, [tasks]);
 
     const onDragEnd = (event: DragOverEvent) => {
@@ -63,10 +65,10 @@ export default function TasksOrder() {
 
         if (isOverEmployee && isActiveEmployee) {
             const newTasks = () => {
-                const activeIndex = tasks.findIndex(task => task.priority === activeId);
-                const overIndex = tasks.findIndex(task => task.priority === overId);
+                const activeIndex = selectedTasks.findIndex(task => task.priority === activeId);
+                const overIndex = selectedTasks.findIndex(task => task.priority === overId);
 
-                return arrayMove(tasks, activeIndex, overIndex);
+                return arrayMove(selectedTasks, activeIndex, overIndex);
             }
 
             const UpdatedTasks = newTasks();
@@ -76,16 +78,24 @@ export default function TasksOrder() {
             });
 
             mutate(reorderIds);
-            setTasks(UpdatedTasks);
+            setSelectedTasks(UpdatedTasks);
         }
     };
+
+    const handleSelectTasks = (id: string) => {
+        setLineId(id);
+        const newTasks = tasks.filter(task => task.line_id === id);
+        setSelectedTasks(newTasks);
+    }
 
     if (isError) return <ShowErrorAPI />
 
     if (tasks && itemsId) return (
         <Transition appear show={show} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => {
+            <Dialog as="div" className="relative z-50" onClose={() => {
                 navigate(location.pathname);
+                setSelectedTasks([]);
+                setLineId('');
             }}>
                 <Transition.Child
                     as={Fragment}
@@ -96,52 +106,66 @@ export default function TasksOrder() {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-black bg-opacity-70" />
+                    <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm" />
                 </Transition.Child>
 
-                <div className="fixed inset-0 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4 text-center">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0 scale-95"
-                            enterTo="opacity-100 scale-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100 scale-100"
-                            leaveTo="opacity-0 scale-95"
-                        >
-                            <Dialog.Panel className="relative transform overflow-hidden rounded-2xl bg-white shadow-xl sm:w-full sm:max-w-3xl">
-                                <div className="mt-10 p-10">
-                                    <table className="table">
-                                        <thead>
-                                            <tr className="thead-tr">
-                                                <th className="thead-tr">Linea</th>
-                                                <th className="thead-tr">Total Horas del Día</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data?.summary.map(item => (
-                                                <tr className="tbody-tr">
-                                                    <td className="tbody-td">{item.line}</td>
-                                                    <td className="tbody-td">{item.total_hours} horas</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="p-5 w-full">
-                                    {(!isFetching && !isLoading && tasks.length === 0) && <p className="font-bold text-xl">No existen tareas en esta fecha</p>}
-                                    <DndContext onDragEnd={onDragEnd}>
-                                        <SortableContext items={itemsId}>
-                                            {tasks.map(task => (
-                                                <TaskProductionComponent key={task.id} task={task} isDraggable={task.end_date ? false : true} />
-                                            ))}
-                                        </SortableContext>
-                                    </DndContext>
-                                </div>
-                            </Dialog.Panel>
-                        </Transition.Child>
-                    </div>
+                <div className="fixed inset-0 flex items-center justify-center p-6">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                    >
+                        <Dialog.Panel className="w-full max-w-3xl rounded-2xl bg-white shadow-2xl p-6 transition-all">
+                            <div className="w-full">
+                                {(!isFetching && !isLoading && tasks.length === 0) ? (
+                                    <p className="text-xl font-semibold text-gray-700 text-center">No existen tareas en esta fecha</p>
+                                ) : (
+                                    <>
+                                        <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm mt-5">
+                                            <table className="w-full text-left text-gray-700">
+                                                <thead className="bg-gray-100">
+                                                    <tr>
+                                                        <th className="px-6 py-3 text-sm font-medium">Línea</th>
+                                                        <th className="px-6 py-3 text-sm font-medium">Total Horas del Día</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {data?.summary.map(item => (
+                                                        <tr
+                                                            key={item.line}
+                                                            className={`cursor-pointer hover:bg-gray-50 transition ${lineId === item.id ? 'font-bold bg-gray-100' : ''}`}
+                                                            onClick={() => handleSelectTasks(item.id)}
+                                                        >
+                                                            <td className="px-6 py-3 border-b">{item.line}</td>
+                                                            <td className="px-6 py-3 border-b">{item.total_hours} horas</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <DndContext onDragEnd={onDragEnd}>
+                                            <SortableContext items={itemsId}>
+                                                <div className="mt-5 space-y-3">
+                                                    {selectedTasks.map(task => (
+                                                        <TaskProductionComponent
+                                                            key={task.id}
+                                                            task={task}
+                                                            isDraggable={!task.end_date}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </SortableContext>
+                                        </DndContext>
+                                    </>
+                                )}
+                            </div>
+                        </Dialog.Panel>
+                    </Transition.Child>
                 </div>
             </Dialog>
         </Transition>
