@@ -270,10 +270,9 @@ export const TaskProductionInProgressSchema = z.object({
         line: z.string(),
         sku: z.string(),
         start_date: z.string(),
-        biometric_hours: z.number(),
-        total_hours: z.number(),
-        line_hours: z.number(),
-        performance_hours: z.number(),
+        HPlan: z.number(),
+        HLinea: z.number(),
+        HRendimiento: z.number(),
         employees: z.array(AssignedEmployeeTaskProductionSchema),
         performances: z.array(PerformanceTaskProductionSchema),
         timeouts: z.array(TimeoutTaskProductionSchema)
@@ -557,5 +556,70 @@ export async function createTaskProductionEmployee({ id, FormData }: { id: TaskP
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
         }
+    }
+}
+
+export const SummaryGraphHoursByTaskProductionSchema = z.object({
+    HPlan: z.number(),
+    HLinea: z.number(),
+    HRendimiento: z.number()
+});
+
+export const NoteTaskProductionSchema = z.object({
+    reason: z.string(),
+    action: z.string()
+});
+
+export const BitacoraTaskProductionEmployeeSchema = z.object({
+    id: z.string(),
+    original_name: z.string(),
+    original_position: z.string()
+});
+
+export const TaskProductionEmployeeSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    code: z.string(),
+    position: z.string(),
+    bitacoras: z.array(BitacoraTaskProductionEmployeeSchema)
+});
+
+export const FinishedTaskProductionDetailsSchema = z.object({
+    id: z.string(),
+    line: z.string(),
+    sku: z.string(),
+    sku_description: z.string(),
+    client: z.string(),
+    total_lbs_produced: z.number(),
+    total_lbs_bascula: z.number(),
+    destination: z.string(),
+    start_date: z.string(),
+    end_date: z.string(),
+    max_value: z.number(),
+    is_minimum_require: z.boolean(),
+    summary: SummaryGraphHoursByTaskProductionSchema,
+    note: NoteTaskProductionSchema.nullable(),
+    timeouts: z.array(TimeoutTaskProductionSchema),
+    employees: z.array(TaskProductionEmployeeSchema)
+});
+
+export type FinishedTaskProductionDetails = z.infer<typeof FinishedTaskProductionDetailsSchema>;
+export type TaskProductionEmployee = z.infer<typeof TaskProductionEmployeeSchema>;
+
+
+export async function getFinishedTaskProductionDetails(id: TaskProduction['id']) : Promise<FinishedTaskProductionDetails> {
+    try {
+        const url = `/api/tasks_production_plan/finished/details/${id}`;
+        const { data } = await clienteAxios(url);
+        console.log(data);
+        const result = FinishedTaskProductionDetailsSchema.safeParse(data);
+        if(result.success){
+            return result.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
     }
 }

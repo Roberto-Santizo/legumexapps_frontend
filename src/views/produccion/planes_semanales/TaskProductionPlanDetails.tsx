@@ -3,11 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getTaskProductionInProgressDetail } from "@/api/WeeklyProductionPlanAPI";
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
-import GraphicsPlanSemanal from "./GraphicsPlanSemanal";
+import GraphicsPlanSemanal, { graphDataType } from "./GraphicsPlanSemanal";
+import { useEffect, useState } from "react";
 
 export default function TaskProductionPlanDetails() {
   const params = useParams();
   const task_p_id = params.task_p_id!!;
+  const [graphData, setGraphData] = useState<graphDataType>({} as graphDataType);
 
   const { data: task, isLoading, isError, } = useQuery({
     queryKey: ["getTaskProductionInProgressDetail", task_p_id],
@@ -15,6 +17,16 @@ export default function TaskProductionPlanDetails() {
     refetchInterval: 1000
   });
 
+  useEffect(()=>{
+    if(task){
+      setGraphData({
+        HPlan: task.data.HPlan,
+        HLinea: task.data.HLinea,
+        HRendimiento: task.data.HRendimiento,
+      })
+    }
+  },[task])
+  
   if (isLoading) return <Spinner />;
   if (isError) return <ShowErrorAPI />;
   if (task)
@@ -104,7 +116,7 @@ export default function TaskProductionPlanDetails() {
           </tbody>
         </table>
         <div className="mt-10">
-          <GraphicsPlanSemanal task={task} />
+          <GraphicsPlanSemanal graphData={graphData} />
         </div>
       </div>
     );

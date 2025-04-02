@@ -1,21 +1,20 @@
-import { TaskProductionInProgress } from "@/api/WeeklyProductionPlanAPI";
-
 type Props = {
-  task: TaskProductionInProgress;
+  graphData: graphDataType;
 };
 
-const GraphicsPlanSemanal = ({ task }: Props) => {
+export type graphDataType = {
+  HPlan: number;
+  HLinea: number;
+  HRendimiento: number;
+}
+
+const GraphicsPlanSemanal = ({ graphData }: Props) => {
   const colores = {
-    "H. Plan": "bg-blue-500",
-    "H. Linea": "bg-yellow-400",
-    "H. Rendimiento": "bg-lime-600",
+    "HPlan": "bg-blue-500",
+    "HLinea": "bg-yellow-400",
+    "HRendimiento": "bg-lime-600",
   };
 
-  const graphData = {
-    "H. Plan": task.data.total_hours || 0,
-    "H. Linea": task.data.line_hours || 0,
-    "H. Rendimiento": task.data.performance_hours || 0,
-  };
   const valorMaximo = Math.max(...(Object.values(graphData) as number[]));
 
   return (
