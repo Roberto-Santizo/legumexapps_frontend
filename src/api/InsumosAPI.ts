@@ -52,7 +52,7 @@ export const AllInsumosSchema = z.object({
 
 export async function getAllInsumos() : Promise<Insumo[]> {
     try {
-        const url = '/api/insumos';
+        const url = '/api/insumos-all';
         const { data } = await clienteAxios(url);
         const result = AllInsumosSchema.safeParse(data);
         if(result.success){
