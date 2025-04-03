@@ -91,7 +91,7 @@ export default function TareaProduccionDetails() {
             </TableHeader>
             <TableBody>
               {task_details.employees.map(employee => (
-                <HoverCardDemo employee={employee}/> 
+                <HoverCardDemo key={employee.id} employee={employee}/> 
               ))}
             </TableBody>
           </Table>
@@ -104,5 +104,3 @@ export default function TareaProduccionDetails() {
     </div>
   );
 }
-
-// onMouseEnter={() => alert(employee.id)}

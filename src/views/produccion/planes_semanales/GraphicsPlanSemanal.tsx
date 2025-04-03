@@ -6,6 +6,7 @@ export type graphDataType = {
   HPlan: number;
   HLinea: number;
   HRendimiento: number;
+  HTiemposMuertos: number;
 }
 
 const GraphicsPlanSemanal = ({ graphData }: Props) => {
@@ -13,6 +14,7 @@ const GraphicsPlanSemanal = ({ graphData }: Props) => {
     "HPlan": "bg-blue-500",
     "HLinea": "bg-yellow-400",
     "HRendimiento": "bg-lime-600",
+    "HTiemposMuertos": "bg-black"
   };
 
   const valorMaximo = Math.max(...(Object.values(graphData) as number[]));

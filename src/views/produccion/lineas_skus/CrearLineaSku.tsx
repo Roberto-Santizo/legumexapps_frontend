@@ -14,6 +14,7 @@ export type DraftLineaSku = {
     line_id: string;
     lbs_performance: number;
     accepted_percentage: number;
+    payment_method: number;
 }
 
 export default function CrearLineaSku() {
@@ -135,6 +136,22 @@ export default function CrearLineaSku() {
                         })}
                     />
                     {errors.accepted_percentage && <Error>{errors.accepted_percentage?.message?.toString()}</Error>}
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className="text-lg font-bold uppercase" htmlFor="accepted_percentage">
+                        Método de Pago:
+                    </label>
+
+                    <select
+                        className="border p-3 border-black"
+                        {...register("payment_method", { required: 'El método de pago es requerido' })}
+                    >
+                        <option value="">--SELECCIONE UNA OPCION--</option>
+                        <option value="0">HORAS RENDIMIENTO</option>
+                        <option value="1">HORAS LINEA</option>
+                    </select>
+                    {errors.payment_method && <Error>{errors.payment_method?.message?.toString()}</Error>}
                 </div>
 
 

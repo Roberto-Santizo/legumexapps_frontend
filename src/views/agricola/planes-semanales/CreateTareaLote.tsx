@@ -54,11 +54,6 @@ export default function CreateTareaLote() {
     if (results[2].data) setPlans(results[2].data)
   }, [results])
 
-  useEffect(() => {
-    console.log(selectedInsumos);
-  }, [selectedInsumos])
-
-
   const lotesOptions = lotes.map((lote) => ({
     value: lote.id,
     label: lote.name,

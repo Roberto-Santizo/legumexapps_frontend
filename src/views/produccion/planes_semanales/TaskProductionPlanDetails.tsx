@@ -23,6 +23,7 @@ export default function TaskProductionPlanDetails() {
         HPlan: task.data.HPlan,
         HLinea: task.data.HLinea,
         HRendimiento: task.data.HRendimiento,
+        HTiemposMuertos: task.data.HTiemposMuertos
       })
     }
   },[task])

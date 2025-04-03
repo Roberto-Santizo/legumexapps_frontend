@@ -273,6 +273,7 @@ export const TaskProductionInProgressSchema = z.object({
         HPlan: z.number(),
         HLinea: z.number(),
         HRendimiento: z.number(),
+        HTiemposMuertos: z.number(),
         employees: z.array(AssignedEmployeeTaskProductionSchema),
         performances: z.array(PerformanceTaskProductionSchema),
         timeouts: z.array(TimeoutTaskProductionSchema)
@@ -562,7 +563,8 @@ export async function createTaskProductionEmployee({ id, FormData }: { id: TaskP
 export const SummaryGraphHoursByTaskProductionSchema = z.object({
     HPlan: z.number(),
     HLinea: z.number(),
-    HRendimiento: z.number()
+    HRendimiento: z.number(),
+    HTiemposMuertos: z.number()
 });
 
 export const NoteTaskProductionSchema = z.object({
@@ -611,7 +613,6 @@ export async function getFinishedTaskProductionDetails(id: TaskProduction['id'])
     try {
         const url = `/api/tasks_production_plan/finished/details/${id}`;
         const { data } = await clienteAxios(url);
-        console.log(data);
         const result = FinishedTaskProductionDetailsSchema.safeParse(data);
         if(result.success){
             return result.data

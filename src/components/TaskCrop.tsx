@@ -40,8 +40,6 @@ export default function TaskCrop({ task, refetch, setId, setIsOpen }: TaskCropPr
 
   const handleCloseTask = async (task_id: TaskCropWeeklyPlan["id"]) => mutate(task_id);
 
-  console.log(role);
-
   if (isPending) return <Spinner />
   if (isError) return <ShowErrorAPI />
   return (

@@ -50,12 +50,29 @@ export function formatearQuetzales(number: number) {
 
 export function validarDiferenciaFechas(fechaActual: string, fechaDestino: string) {
     const fecha1 = new Date(fechaActual);
-    const fecha2 = new Date(fechaDestino+1);
+    const fecha2 = new Date(fechaDestino + 1);
 
     return fecha1 == fecha2;
 }
 
-export function getCurrentDate(){
+export function getCurrentDate() {
     const today = new Date().toLocaleDateString("es-ES", { timeZone: "America/Guatemala" }).split("/").reverse().map(num => num.padStart(2, "0")).join("-");
     return today;
+}
+export function getYesterdayDate() {
+    const today = new Date();
+    today.setDate(today.getDate() - 1);
+
+    const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        timeZone: "America/Guatemala",
+    };
+    return new Intl.DateTimeFormat("es-ES", options)
+        .format(today)
+        .split("/")
+        .reverse()
+        .map(num => num.padStart(2, "0")) 
+        .join("-");
 }

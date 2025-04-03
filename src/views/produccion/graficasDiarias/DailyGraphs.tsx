@@ -5,6 +5,7 @@ import ShowErrorAPI from "@/components/ShowErrorAPI";
 import Spinner from "@/components/Spinner";
 import { Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getYesterdayDate } from "@/helpers";
 
 const colores = {
   "HBiometrico": "bg-orange-500",
@@ -62,6 +63,7 @@ export default function DailyGraphs() {
           type="date"
           className="p-2 border border-gray-300 rounded-lg mr-4 w-1/2"
           onChange={(e) => (setDate(e.target.value))}
+          max={getYesterdayDate()}
         />
         <select className="p-2 border border-gray-300 rounded-lg mr-4 bg-white w-1/2" onChange={(e) => (setLineId(e.target.value))}>
           <option value={''}>--SELECCIONE UNA LINEA--</option>

@@ -39,11 +39,6 @@ export default function Boleta_form3({ boleta }: Props) {
     return percentage * 100 < boleta.minimun_percentage;
   }, [percentage]);
 
-  useEffect(()=>{
-    console.log(percentage);
-  },[percentage]);
-
-
   const {
     register,
     handleSubmit,
@@ -129,7 +124,6 @@ export default function Boleta_form3({ boleta }: Props) {
   }
 
   const onSubmit = async (data : DraftBoletaCalidad) => {
-    console.log(data)
     setLoading(true);
     try {
       await createQualityDoc(data, boleta.id, results);
