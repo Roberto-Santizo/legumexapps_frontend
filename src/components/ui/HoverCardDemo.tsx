@@ -2,6 +2,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { TableCell } from "@/components/ui/table";
 import { TableRow } from "@mui/material";
 import { TaskProductionEmployee } from "@/api/WeeklyProductionPlanAPI";
+import { AlertCircleIcon } from "lucide-react";
 
 type Props = {
     employee: TaskProductionEmployee;
@@ -14,6 +15,11 @@ const HoverCardDemo = ({ employee }: Props) => (
                 <TableCell>{employee.code}</TableCell>
                 <TableCell>{employee.name}</TableCell>
                 <TableCell>{employee.position}</TableCell>
+                <TableCell>
+                    {employee.bitacoras.length > 0 && (
+                        <AlertCircleIcon className="text-red-500" />
+                    )}
+                </TableCell>
             </TableRow>
         </HoverCard.Trigger>
         <HoverCard.Portal>
@@ -27,22 +33,22 @@ const HoverCardDemo = ({ employee }: Props) => (
                         {employee.bitacoras.length === 0 ? (
                             <p className="text-center">No existen cambios en esta posición</p>
                         ) : (
-                        <table className="table">
-                            <thead>
-                                <tr className="thead-tr">
-                                    <th className="thead-tr">Empleado Original</th>
-                                    <th className="thead-tr">Posicion Original</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {employee.bitacoras.map((bitacora) => (
-                                    <tr className="tbody-tr" key={bitacora.id}>
-                                        <td className="tbody-td">{bitacora.original_name}</td>
-                                        <td className="tbody-td">{bitacora.original_position}</td>
+                            <table className="table">
+                                <thead>
+                                    <tr className="thead-tr">
+                                        <th className="thead-tr">Empleado Original</th>
+                                        <th className="thead-tr">Posicion Original</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {employee.bitacoras.map((bitacora) => (
+                                        <tr className="tbody-tr" key={bitacora.id}>
+                                            <td className="tbody-td">{bitacora.original_name}</td>
+                                            <td className="tbody-td">{bitacora.original_position}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         )}
 
 

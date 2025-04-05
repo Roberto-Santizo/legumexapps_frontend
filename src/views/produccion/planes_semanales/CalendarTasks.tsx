@@ -8,6 +8,7 @@ import ModalCrearTareaProduccion from "@/components/ModalCrearTareaProduccion";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import Spinner from "@/components/Spinner";
 import TasksOrder from "@/components/TasksOrder";
+import HoverCardColorDictionary from "@/components/ui/HoverCardColorDictionary";
 
 export default function CalendarTasks() {
   const params = useParams();
@@ -37,16 +38,22 @@ export default function CalendarTasks() {
   if (DataEvents && hoursByDates) return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold mb-10">Tareas Programadas</h1>
-        <button type="button" className="button bg-indigo-500 flex justify-end hover:bg-indigo-600" onClick={() => {
-          navigate(`${location.pathname}?newTask=true`);
-        }}>
+        <div className="flex justify-center items-center gap-5">
+          <h1 className="text-4xl font-bold">Tareas Programadas</h1>
+          <HoverCardColorDictionary />
+        </div>
+        <button type="button" className="button bg-indigo-500 flex justify-end hover:bg-indigo-600"
+          onClick={() => {
+            navigate(`${location.pathname}?newTask=true`);
+          }}
+        >
           <PlusIcon />
           <p>Crear Tarea</p>
         </button>
+
       </div>
 
-      <div className="mb-10">
+      <div className="my-10">
         <FullCalendarComponent events={events} setEvents={setEvents} hoursByDates={hoursByDates} />
       </div>
 

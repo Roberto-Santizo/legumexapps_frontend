@@ -29,12 +29,14 @@ export default function TaskProductionComponent({ task, isDraggable }: Props) {
                 <div className="col-span-5 grid grid-cols-12">
                     <div className="col-start-2 col-span-11">
                         <TaskLabel label={"ID"} text={task.id} />
-                        {/* <TaskLabel label={"Prioridad"} text={task.priority.toString()} /> */}
                         <TaskLabel label={"SKU"} text={task.sku} />
                         <TaskLabel label={"Linea"} text={task.line} />
                         <TaskLabel label={"Total Libras"} text={task.total_lbs.toString()} />
                         <TaskLabel label={"Horas Programadas"} text={task.hours?.toString() ?? ''} />
                         <TaskLabel label={"Fecha de Operación"} text={task.operation_date} />
+                        {task.start_date && (
+                            <TaskLabel label={"Fecha de Inicio"} text={task.start_date} />
+                        )}
                     </div>
                 </div>
             </div>
@@ -46,14 +48,19 @@ export default function TaskProductionComponent({ task, isDraggable }: Props) {
             <div className="flex justify-between">
                 <div className="flex-1">
                     <TaskLabel label={"ID"} text={task.id} />
-                    {/* <TaskLabel label={"Prioridad"} text={task.priority.toString()} /> */}
                     <TaskLabel label={"SKU"} text={task.sku} />
                     <TaskLabel label={"Linea"} text={task.line} />
                     <TaskLabel label={"Total Libras"} text={task.total_lbs.toString()} />
                     <TaskLabel label={"Horas Programadas"} text={task.hours?.toString() ?? 'SIN RENDIMIENTO ASOCIADO'} />
                     <TaskLabel label={"Fecha de Operación"} text={task.operation_date} />
+                    {task.start_date && (
+                        <TaskLabel label={"Fecha de Inicio"} text={task.start_date} />
+                    )}
                     {task.end_date && (
-                        <p className="mt-5 w-1/2 button bg-green-500">Tarea Terminada</p>
+                        <p className="mt-5 w-1/2 button bg-green-500 text-center">Tarea Terminada</p>
+                    )}
+                    {(task.start_date && !task.end_date) && (
+                        <p className="mt-5 w-1/2 button bg-orange-500 text-center">Tarea En Progreso</p>
                     )}
                 </div>
             </div>

@@ -47,9 +47,14 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
         e.preventDefault();
         handleCreatePlan();
     };
+
+    const handleCloseModal = () => {
+        setFile(null);
+        setIsOpen(false);
+    }
     return (
         <Transition appear show={isOpen} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => setIsOpen(false)}>
+            <Dialog as="div" className="relative z-10" onClose={() => handleCloseModal()}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -80,7 +85,7 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
                                     </h3>
                                     <button
                                         className="text-white hover:text-gray-300"
-                                        onClick={() => { setIsOpen(false) }}
+                                        onClick={() => handleCloseModal()}
                                     >
                                         ✕
                                     </button>

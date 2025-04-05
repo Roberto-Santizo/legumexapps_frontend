@@ -125,7 +125,7 @@ export default function TasksOrder() {
                                     <p className="text-xl font-semibold text-gray-700 text-center">No existen tareas en esta fecha</p>
                                 ) : (
                                     <>
-                                        <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm mt-5">
+                                        <div className="overflow-y-scroll rounded-lg border border-gray-200 shadow-sm mt-5 scrollbar-hide">
                                             <table className="w-full text-left text-gray-700">
                                                 <thead className="bg-gray-100">
                                                     <tr>
@@ -148,19 +148,21 @@ export default function TasksOrder() {
                                             </table>
                                         </div>
 
-                                        <DndContext onDragEnd={onDragEnd}>
-                                            <SortableContext items={itemsId}>
-                                                <div className="mt-5 space-y-3">
-                                                    {selectedTasks.map(task => (
-                                                        <TaskProductionComponent
-                                                            key={task.id}
-                                                            task={task}
-                                                            isDraggable={!task.end_date}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </SortableContext>
-                                        </DndContext>
+                                        <div className="w-full max-h-96 overflow-y-scroll scrollbar-hide">
+                                            <DndContext onDragEnd={onDragEnd}>
+                                                <SortableContext items={itemsId}>
+                                                    <div className="mt-5 space-y-3">
+                                                        {selectedTasks.map(task => (
+                                                            <TaskProductionComponent
+                                                                key={task.id}
+                                                                task={task}
+                                                                isDraggable={task.isDraggable}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </SortableContext>
+                                            </DndContext>
+                                        </div>
                                     </>
                                 )}
                             </div>

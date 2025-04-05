@@ -1,8 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { HoursByDate, TaskForCalendar, TaskProduction, updateTaskProductionOperationDate } from "@/api/WeeklyProductionPlanAPI";
-import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { Dispatch, SetStateAction, useState } from "react";
+import { HoursByDate, TaskForCalendar } from "@/api/WeeklyProductionPlanAPI";
+import { useNavigate } from "react-router-dom";
 import { EventDropArg } from "@fullcalendar/core/index.js";
 import { getCurrentDate } from "@/helpers";
 import FullCalendar from "@fullcalendar/react";
@@ -10,6 +8,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import Swal from "sweetalert2";
+import ModalChangeOperationDate from "./ModalChangeOperationDate";
 
 type Props = {
   events: TaskForCalendar[];
@@ -18,38 +17,16 @@ type Props = {
 }
 
 export default function CustomCalendar({ events, setEvents, hoursByDates }: Props) {
-  const params = useParams();
-  const plan_id = params.plan_id!!;
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
-  const { mutate } = useMutation({
-    mutationFn: ({ id, date }: { id: TaskProduction['id'], date: string }) => updateTaskProductionOperationDate(id, date),
-  });
+  const [modal, setModal] = useState<boolean>(false);
+  const [info,setInfo] = useState<EventDropArg | null>(null);
+  const navigate = useNavigate();
 
   const handleEventDrop = async (info: EventDropArg) => {
     const total_hours = hoursByDates.find(item => item.date === info.event.startStr && item.line_id === info.event.extendedProps.line_id)?.total_hours || 0;
     const today = getCurrentDate();
     const newTotalHours = total_hours + info.event.extendedProps.total_hours;
-
-    const updateTask = () => {
-      mutate({ id: info.event.id, date: info.event.startStr }, {
-        onSuccess: () => {
-          setEvents(events.map(event =>
-            event.id === info.event.id
-              ? { ...event, start: info.event.startStr }
-              : event
-          ));
-          queryClient.invalidateQueries({ queryKey: ['getAllTasksForCalendar', plan_id] });
-          queryClient.invalidateQueries({ queryKey: ['getTotalHoursByDate', plan_id] });
-          toast.success('Tarea Actualizada Correctamente');
-        },
-        onError: (error) => {
-          info.revert();
-          toast.error(error.message);
-        }
-      });
-    };
+    setInfo(info);
 
     const showConfirmation = (title: string, text: string) => {
       Swal.fire({
@@ -63,7 +40,7 @@ export default function CustomCalendar({ events, setEvents, hoursByDates }: Prop
         cancelButtonText: "Cancelar"
       }).then((result) => {
         if (result.isConfirmed) {
-          updateTask();
+          setModal(true);
         } else {
           info.revert();
         }
@@ -81,7 +58,7 @@ export default function CustomCalendar({ events, setEvents, hoursByDates }: Prop
         `El día destino contará con ${newTotalHours} horas totales`
       );
     } else {
-      updateTask();
+      setModal(true);
     }
   };
 
@@ -95,19 +72,25 @@ export default function CustomCalendar({ events, setEvents, hoursByDates }: Prop
   };
 
   return (
-    <FullCalendar
-      plugins={[dayGridPlugin, interactionPlugin]}
-      initialView="dayGridMonth"
-      events={events}
-      editable={true}
-      locale={esLocale}
-      eventDrop={handleEventDrop}
-      eventOrder="priority"
-      dateClick={handleOpenDate}
-      eventAllow={(dropInfo) => {
-        const today = getCurrentDate()
-        return dropInfo.startStr >= today;
-      }}
-    />
+    <>
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        events={events}
+        editable={true}
+        locale={esLocale}
+        eventDrop={handleEventDrop}
+        eventOrder="line_id"
+        dateClick={handleOpenDate}
+        eventAllow={(dropInfo) => {
+          const today = getCurrentDate()
+          return dropInfo.startStr >= today;
+        }}
+      />
+
+      {info && (
+        <ModalChangeOperationDate modal={modal} setModal={setModal} setEvents={setEvents} info={info} events={events} setInfo={setInfo}/>
+      )}
+    </>
   );
 }

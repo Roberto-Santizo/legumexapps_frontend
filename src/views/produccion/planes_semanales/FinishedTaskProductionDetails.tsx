@@ -3,14 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useState } from "react";
 import Spinner from "@/components/Spinner";
 import ShowErrorAPI from "@/components/ShowErrorAPI";
 import GraphicsPlanSemanal from "./GraphicsPlanSemanal";
 import HoverCardDemo from "@/components/ui/HoverCardDemo";
+import ModalHistoryChangeOperation from "@/components/ModalHistoryChangeOperation";
+import HoverCardNote from "@/components/ui/HoverCardNote";
 
 export default function TareaProduccionDetails() {
   const params = useParams();
   const task_p_id = params.task_p_id!!;
+
+  const [modal, setModal] = useState(false);
 
   const { data: task_details, isLoading, isError } = useQuery({
     queryKey: ['getFinishedTaskProductionDetails', task_p_id],
@@ -26,7 +31,7 @@ export default function TareaProduccionDetails() {
 
       <Card className="bg-white shadow-lg rounded-lg overflow-hidden">
         <CardHeader className="bg-blue-600 text-white p-4">
-          <CardTitle className="text-2xl font-semibold">Información de la Tarea</CardTitle>
+          <CardTitle className="text-2xl font-semibold flex justify-between">Información de la Tarea</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 text-md text-gray-700">
           <div className="flex flex-col">
@@ -35,7 +40,7 @@ export default function TareaProduccionDetails() {
             <p className="font-medium"><strong>Producto:</strong> {task_details.sku_description}</p>
           </div>
           <div className="flex flex-col">
-            <p className="font-medium"><strong>Libras Planificadas:</strong> {task_details.total_lbs_produced}</p>
+            <p className="font-medium"><strong>Libras Planificadas:</strong> {task_details.total_lbs}</p>
             <p className="font-medium"><strong>Libras Producidas:</strong> {task_details.total_lbs_produced}</p>
             <p className="font-medium"><strong>Libras Basculadas:</strong> {task_details.total_lbs_bascula}</p>
             <p className="font-medium"><strong>Destino:</strong> {task_details.destination}</p>
@@ -43,10 +48,13 @@ export default function TareaProduccionDetails() {
           <div className="flex flex-col">
             <p className="font-medium"><strong>Fecha de Inicio:</strong> {task_details.start_date}</p>
             <p className="font-medium"><strong>Fecha Final:</strong> {task_details.end_date}</p>
+            {!task_details.is_minimum_require && (
+              <HoverCardNote note={task_details.note}/>
+
+            )}
           </div>
         </CardContent>
       </Card>
-
 
       <Card>
         <CardHeader>
@@ -62,16 +70,25 @@ export default function TareaProduccionDetails() {
                 <TableHead>Horas Totales</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {task_details.timeouts.map(timeout => (
-                <TableRow key={timeout.id}>
-                  <TableCell>{timeout.name}</TableCell>
-                  <TableCell>{timeout.start_date}</TableCell>
-                  <TableCell>{timeout.end_date ?? 'SIN CIERRE'}</TableCell>
-                  <TableCell>{timeout.total_hours ?? 'SIN HORAS'}</TableCell>
+            {task_details.timeouts.length === 0 ? (
+              <TableBody>
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center text-lg">No hay tiempos muertos registrados</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
+              </TableBody>
+            ) : (
+              <TableBody>
+                {task_details.timeouts.map(timeout => (
+                  <TableRow key={timeout.id}>
+                    <TableCell>{timeout.name}</TableCell>
+                    <TableCell>{timeout.start_date}</TableCell>
+                    <TableCell>{timeout.end_date ?? 'SIN CIERRE'}</TableCell>
+                    <TableCell>{timeout.total_hours ?? 'SIN HORAS'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            )}
+
           </Table>
         </CardContent>
       </Card>
@@ -81,26 +98,37 @@ export default function TareaProduccionDetails() {
           <CardTitle className="text-2xl">Empleados Asignados</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Posición</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {task_details.employees.map(employee => (
-                <HoverCardDemo key={employee.id} employee={employee}/> 
-              ))}
-            </TableBody>
-          </Table>
+          <div className="w-full p-2 h-96 overflow-y-scroll scrollbar-hide">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Código</TableHead>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Posición</TableHead>
+                  <TableHead>Cambios</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {task_details.employees.map(employee => (
+                  <HoverCardDemo key={employee.id} employee={employee} />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
+
+      <div className="flex justify-end mt-4">
+        <button className="button bg-indigo-500 hover:bg-indigo-600" onClick={() => setModal(true)}>
+          Historial de Cambios
+        </button>
+      </div>
 
       <div className="mt-6">
         <GraphicsPlanSemanal graphData={task_details.summary} />
       </div>
+
+      <ModalHistoryChangeOperation modal={modal} setModal={setModal} changes={task_details.history_operation_date} />
     </div>
   );
 }

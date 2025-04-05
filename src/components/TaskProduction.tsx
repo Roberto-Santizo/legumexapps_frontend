@@ -1,5 +1,5 @@
 import { AlarmClockPlus, CheckCircle, Eye, NotebookPen, Paperclip } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { TaskByLine } from "@/api/WeeklyProductionPlanAPI";
 import { Dispatch, SetStateAction } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,6 +21,7 @@ export default function TaskProduction({ task, setSelectedTask, setModalCierre, 
   const plan_id = params.plan_id!!;
   const linea_id = params.linea_id!!;
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: closeTaskTimeOut,
@@ -113,20 +114,23 @@ export default function TaskProduction({ task, setSelectedTask, setModalCierre, 
           )}
 
           {!task.start_date && task.available && (
-            <Link to={`/planes-produccion/asignacion/${task.id}`}>
+            <button onClick={() => navigate(`/planes-produccion/asignacion/${task.id}`, { state: { url: location.pathname, plan_id: plan_id, linea_id: linea_id } })}>
               <Paperclip className="cursor-pointer hover:text-gray-500" />
-            </Link>
+            </button>
           )}
 
           {task.start_date && task.end_date && (
             <>
               <CheckCircle className="text-green-500 cursor-pointer" />
+              <Link to={`/planes-produccion/tarea-produccion/${task.id}`}>
+                <Eye className="cursor-pointer hover:text-gray-500" />
+              </Link>
             </>
           )}
 
           {(task.end_date && !task.is_minimum_requrire && !task.is_justified) && (
             <NotebookPen
-              className="text-yellow-500 hover:text-gray-500 cursor-pointer"
+              className="text-red-500 hover:text-gray-500 cursor-pointer"
               onClick={() => {
                 setSelectedTask(task);
                 setModalNotas(true);

@@ -12,6 +12,7 @@ import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
 import { DraftNote } from "@/components/ModalNotasProblemas";
 import { DraftTaskProductionEmployee } from "@/components/ModalAddEmployee";
+import { DraftChangeOperationDate } from "@/components/ModalChangeOperationDate";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
@@ -391,12 +392,10 @@ export async function getAllTasksForCalendar(id: WeeklyPlanProductionPlan['id'])
     }
 }
 
-export async function updateTaskProductionOperationDate(id: TaskProduction['id'], date: string) {
+export async function updateTaskProductionOperationDate({ id, FormData }: { id: TaskProduction['id'], FormData: DraftChangeOperationDate }) {
     try {
         const url = `/api/tasks_production_plan/change-operation-date/${id}`;
-        await clienteAxios.patch(url, {
-            date: date
-        });
+        await clienteAxios.patch(url, FormData);
     } catch (error) {
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg)
@@ -415,7 +414,8 @@ export const TaskByDateSchema = z.object({
     end_date: z.string().nullable(),
     hours: z.number().nullable(),
     priority: z.number(),
-    line_id: z.string()
+    line_id: z.string(),
+    isDraggable: z.boolean()
 });
 
 export const SummaryHoursByLineSchema = z.object({
@@ -569,7 +569,8 @@ export const SummaryGraphHoursByTaskProductionSchema = z.object({
 
 export const NoteTaskProductionSchema = z.object({
     reason: z.string(),
-    action: z.string()
+    action: z.string(),
+    user: z.string(),
 });
 
 export const BitacoraTaskProductionEmployeeSchema = z.object({
@@ -586,12 +587,22 @@ export const TaskProductionEmployeeSchema = z.object({
     bitacoras: z.array(BitacoraTaskProductionEmployeeSchema)
 });
 
+export const HistoryOperationDateSchema = z.object({
+    id: z.string(),
+    user: z.string(),
+    reason: z.string(),
+    original_date: z.string(),
+    new_date: z.string(),
+    created_at: z.string()
+});
+
 export const FinishedTaskProductionDetailsSchema = z.object({
     id: z.string(),
     line: z.string(),
     sku: z.string(),
     sku_description: z.string(),
     client: z.string(),
+    total_lbs: z.number(),
     total_lbs_produced: z.number(),
     total_lbs_bascula: z.number(),
     destination: z.string(),
@@ -602,21 +613,23 @@ export const FinishedTaskProductionDetailsSchema = z.object({
     summary: SummaryGraphHoursByTaskProductionSchema,
     note: NoteTaskProductionSchema.nullable(),
     timeouts: z.array(TimeoutTaskProductionSchema),
-    employees: z.array(TaskProductionEmployeeSchema)
+    employees: z.array(TaskProductionEmployeeSchema),
+    history_operation_date: z.array(HistoryOperationDateSchema),
 });
 
 export type FinishedTaskProductionDetails = z.infer<typeof FinishedTaskProductionDetailsSchema>;
 export type TaskProductionEmployee = z.infer<typeof TaskProductionEmployeeSchema>;
+export type HistoryOperationDate = z.infer<typeof HistoryOperationDateSchema>;
+export type NoteTaskProduction = z.infer<typeof NoteTaskProductionSchema>;
 
-
-export async function getFinishedTaskProductionDetails(id: TaskProduction['id']) : Promise<FinishedTaskProductionDetails> {
+export async function getFinishedTaskProductionDetails(id: TaskProduction['id']): Promise<FinishedTaskProductionDetails> {
     try {
         const url = `/api/tasks_production_plan/finished/details/${id}`;
         const { data } = await clienteAxios(url);
         const result = FinishedTaskProductionDetailsSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data
-        }else{
+        } else {
             throw new Error("Información no valida");
         }
     } catch (error) {

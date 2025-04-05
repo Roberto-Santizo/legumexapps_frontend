@@ -17,8 +17,8 @@ export default function TaskProductionPlanDetails() {
     refetchInterval: 1000
   });
 
-  useEffect(()=>{
-    if(task){
+  useEffect(() => {
+    if (task) {
       setGraphData({
         HPlan: task.data.HPlan,
         HLinea: task.data.HLinea,
@@ -26,8 +26,8 @@ export default function TaskProductionPlanDetails() {
         HTiemposMuertos: task.data.HTiemposMuertos
       })
     }
-  },[task])
-  
+  }, [task])
+
   if (isLoading) return <Spinner />;
   if (isError) return <ShowErrorAPI />;
   if (task)
@@ -98,24 +98,28 @@ export default function TaskProductionPlanDetails() {
           </div>
         </div>
 
-        <table className="table mt-5">
-          <thead>
-            <tr className="thead-tr">
-              <th className="thead-th">CODIGO</th>
-              <th className="thead-th">NOMBRE</th>
-              <th className="thead-th">POSICIÓN</th>
-            </tr>
-          </thead>
-          <tbody>
-            {task.data.employees.map((employee) => (
-              <tr key={employee.code} className="tbody-tr">
-                <td className="tbody-td">{employee.code}</td>
-                <td className="tbody-td">{employee.name}</td>
-                <td className="tbody-td">{employee.position}</td>
+        <div className="w-full p-2 h-96 overflow-y-scroll scrollbar-hide">
+
+          <table className="table mt-5">
+            <thead>
+              <tr className="thead-tr">
+                <th className="thead-th">CODIGO</th>
+                <th className="thead-th">NOMBRE</th>
+                <th className="thead-th">POSICIÓN</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {task.data.employees.map((employee) => (
+                <tr key={employee.code} className="tbody-tr">
+                  <td className="tbody-td">{employee.code}</td>
+                  <td className="tbody-td">{employee.name}</td>
+                  <td className="tbody-td">{employee.position}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         <div className="mt-10">
           <GraphicsPlanSemanal graphData={graphData} />
         </div>

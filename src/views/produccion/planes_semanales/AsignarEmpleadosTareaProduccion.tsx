@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQueries } from "@tanstack/react-query";
 import { EmployeeProduction, getTaskProductionDetails, startTaskProduction, TaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
 import { getComodines } from "@/api/WeeklyProductionPlanAPI";
@@ -7,7 +7,7 @@ import { formatDate } from "@/helpers";
 import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import Spinner from "@/components/Spinner";
@@ -30,6 +30,13 @@ const initialValues = [
 export default function ShowTaskProductionDetails() {
     const params = useParams();
     const task_p_id = params.task_p_id!!;
+
+    const queryClient = useQueryClient();
+    const location = useLocation();
+    const url = location.state.url ?? '/planes-produccion';
+    const plan_id = location.state.plan_id!!;
+    const linea_id = location.state.linea_id!!;
+
     const [columns] = useState<Column[]>(initialValues);
     const [modal, setModal] = useState<boolean>(false);
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -47,7 +54,9 @@ export default function ShowTaskProductionDetails() {
         },
         onSuccess: () => {
             toast.success('Tarea Iniciada Correctamente');
-            navigate('/planes-produccion');
+            navigate(url, { replace: true });
+            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
+
         }
     });
 
@@ -150,7 +159,7 @@ export default function ShowTaskProductionDetails() {
     const isLoading = results.some(result => result.isLoading);
     if (isLoading) return <Spinner />
 
-    if(taskData) return (
+    if (taskData) return (
         <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>
             <div className="p-5 shadow-xl grid grid-cols-2">
@@ -196,10 +205,10 @@ export default function ShowTaskProductionDetails() {
             </div>
 
             {(modal && activeEmployee) && (
-                <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} fijos={employees.filter(employee => employee.column_id === '1')}/>
+                <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} fijos={employees.filter(employee => employee.column_id === '1')} />
             )}
 
-            <ModalAddEmployee isOpen={isOpen} setIsOpen={setIsOpen} fijos={employees.filter(employee => employee.column_id === '1')} comodines={employees.filter(employee => employee.column_id === '2')} positions={taskData.positions}/>
+            <ModalAddEmployee isOpen={isOpen} setIsOpen={setIsOpen} fijos={employees.filter(employee => employee.column_id === '1')} comodines={employees.filter(employee => employee.column_id === '2')} positions={taskData.positions} />
 
             <button onClick={() => handleStartTask()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                 {isPending ? <Spinner /> : <p>Cerrar Asignación</p>}

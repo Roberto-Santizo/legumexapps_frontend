@@ -14,7 +14,7 @@ const routes = [
   { path: "/planes-produccion/asignacion/:task_p_id", component: lazy(() => import("../views/produccion/planes_semanales/AsignarEmpleadosTareaProduccion")), roles: ['admin','audiproceso'] },
   { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("../views/produccion/planes_semanales/TaskProductionPlanDetails")), roles: ['admin','audiproceso'] },
   { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("../views/produccion/planes_semanales/FinishedTaskProductionDetails")), roles: ['admin','audiproceso'] },
-
+  
   { path: "/skus", component: lazy(() => import("../views/produccion/sku/IndexSKU")), roles: ['admin','audiproceso'] },
   { path: "/skus/crear", component: lazy(() => import("../views/produccion/sku/CreateSKU")), roles: ['admin','audiproceso'] },
   
