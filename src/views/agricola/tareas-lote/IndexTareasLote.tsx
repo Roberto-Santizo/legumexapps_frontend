@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import Task from "@/components/Task";
 import { useQueries } from "@tanstack/react-query";
 import { getTasks } from "@/api/TasksWeeklyPlanAPI";
 import { TasksWeeklyPlan } from "@/types";
+import Task from "@/components/Task";
 import Spinner from "@/components/Spinner";
 
 export default function IndexTareasLote() {
@@ -22,7 +22,7 @@ export default function IndexTareasLote() {
     ]
   });
 
-  const isLoading = results.some(result => result.isFetching);
+  const isLoading = results.some(result => result.isLoading);
 
   useEffect(() => {
     if (results[0].data) setRole(results[0].data);

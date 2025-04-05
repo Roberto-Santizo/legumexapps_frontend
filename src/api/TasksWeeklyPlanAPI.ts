@@ -1,8 +1,11 @@
 import clienteAxios from "@/config/axios";
-import { DraftCreateTaskWeeklyPlan, DraftTaskWeeklyPlan, Employee, TaskInsumo, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "@/types";
+import { DraftCreateTaskWeeklyPlan, Employee, TaskInsumo, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "@/types";
 import { EmployeesSchema } from "@/utils/employee-schema";
 import { TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from "@/utils/taskWeeklyPlan-schema";
+import { isAxiosError } from "axios";
 import { DraftSelectedInsumo } from "views/agricola/planes-semanales/CreateTareaLote";
+import { DraftTaskWeeklyPlan } from "views/agricola/tareas-lote/EditarTareaLote";
+import { z } from "zod";
 
 export async function getTasks(id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) {
     try {
@@ -127,6 +130,35 @@ export async function closeAssigment(Employees: Employee[], task_id: TaskWeeklyP
     }
 }
 
+export const EditTaskWeeklyPlanSchema = z.object({
+    budget: z.number(),
+    end_date: z.string().nullable(),
+    end_time: z.string().nullable(),
+    start_date: z.string().nullable(),
+    start_time: z.string().nullable(),
+    weekly_plan_id: z.string(),
+    slots: z.number(),
+    hours: z.number()
+});
+
+export type EditTaskWeeklyPlan = z.infer<typeof EditTaskWeeklyPlanSchema>
+
+export async function getEditTask(id: TaskWeeklyPlan['id']): Promise<EditTaskWeeklyPlan> {
+    try {
+        const url = `/api/tasks-lotes/edit/${id}`;
+        const { data } = await clienteAxios(url);
+        const result = EditTaskWeeklyPlanSchema.safeParse(data.data);
+        if (result.success) {
+            return result.data;
+        } else {
+            throw new Error("Información no válida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export async function getTask(id: TaskWeeklyPlan['id']): Promise<TaskWeeklyPlan> {
     try {
         const url = `/api/tasks-lotes/${id}`;
@@ -186,12 +218,14 @@ export async function registerUsedInsumos(data: TaskInsumo[]) {
     }
 }
 
-export async function editTask(data: DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id']) {
+export async function editTask({FormData, id} : {FormData: DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id']}) {
     try {
         const url = `/api/tasks-lotes/${id}`
-        await clienteAxios.put(url, data);
+        const { data } = await clienteAxios.put<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.msg);
+        }
     }
 }

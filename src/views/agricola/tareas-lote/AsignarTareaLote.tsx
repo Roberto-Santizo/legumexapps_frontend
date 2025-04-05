@@ -1,14 +1,14 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Fuse from "fuse.js";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import Swal from "sweetalert2";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Employee, TaskWeeklyPlan } from "@/types";
 import { Trash2Icon } from "lucide-react";
-import Spinner from "@/components/Spinner";
-import Worker from "@/components/Worker";
 import { toast } from "react-toastify";
 import { closeAssigment, getEmployees, getTask } from "@/api/TasksWeeklyPlanAPI";
 import { useMutation, useQueries } from "@tanstack/react-query";
+import Swal from "sweetalert2";
+import Fuse from "fuse.js";
+import Spinner from "@/components/Spinner";
+import Worker from "@/components/Worker";
 
 export default function AsignarTareaLote() {
   const params = useParams();
@@ -22,6 +22,7 @@ export default function AsignarTareaLote() {
   const [query, setQuery] = useState<string>("");
   const [assignedEmployees, setAssignedEmployees] = useState<Employee[]>([]);
   const [results, setResults] = useState<Employee[]>(employees);
+  const isTaskInitialized = useRef(false);
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
@@ -32,7 +33,7 @@ export default function AsignarTareaLote() {
     onSuccess: () => {
       toast.success("Asignación cerrada correctamente");
       navigate(previousUrl);
-    }
+    },
   });
 
   const resultsQuery = useQueries({
@@ -43,11 +44,17 @@ export default function AsignarTareaLote() {
   });
 
   useEffect(() => {
-    if (resultsQuery[0].data) setTask(resultsQuery[0].data);
-    if (resultsQuery[1].data) setEmployees(resultsQuery[1].data);
+    if (resultsQuery[0].data && !isTaskInitialized.current) {
+      setTask(resultsQuery[0].data);
+      isTaskInitialized.current = true;
+    }
+    if (resultsQuery[1].data) {
+      setEmployees(resultsQuery[1].data);
+    }
   }, [resultsQuery]);
 
-  const isLoading = resultsQuery.some(result => result.isFetching);
+
+  const isLoading = resultsQuery.some(result => result.isLoading);
 
   const necesarySlots = useMemo(() => {
     return assignedEmployees.length >= task.minimum_slots;
@@ -79,6 +86,11 @@ export default function AsignarTareaLote() {
   useEffect(() => {
     setResults(employees);
   }, [employees]);
+
+  const uniqueEmployees = useMemo(() => {
+    return [...new Map(results.map(e => [e.emp_id, e])).values()];
+  }, [results]);
+
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -138,59 +150,39 @@ export default function AsignarTareaLote() {
   }, []);
 
   if (isLoading) return <Spinner />
-  return (
+  if(task && task.insumos) return (
     <>
-      <h1 className="text-4xl font-bold">Asignación de Empleados</h1>
+      <h1 className="text-4xl font-bold text-center mb-8">
+        Asignación de Empleados
+      </h1>
 
-      <div className="flex flex-col md:grid md:grid-cols-6 mt-10">
-        <div className="grid md:grid-cols-2 col-span-4 gap-5">
-          <div className="space-y-5">
-            <div>
-              <h2 className="font-bold text-2xl">Información de la tarea:</h2>
-              <p className="text-lg">
-                <span className="font-bold">Cupos Dispoibles:</span>{" "}
-                {task.slots}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Tarea:</span> {task.task}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Finca:</span> {task.lote}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Semana:</span> {task.week}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Cupos Minimos:</span>{" "}
-                {task.minimum_slots}
-              </p>
-            </div>
+      <div className="grid md:grid-cols-6 gap-8">
+        <div className="md:col-span-4 space-y-8">
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-indigo-600 mb-4">
+              Información de la Tarea
+            </h2>
+            <p><span className="font-semibold">Cupos Disponibles:</span> {task.slots}</p>
+            <p><span className="font-semibold">Tarea:</span> {task.task}</p>
+            <p><span className="font-semibold">Finca:</span> {task.lote}</p>
+            <p><span className="font-semibold">Semana:</span> {task.week}</p>
+            <p><span className="font-semibold">Cupos Mínimos:</span> {task.minimum_slots}</p>
 
             {task.insumos.length > 0 && (
-              <div>
-                <h2 className="font-bold text-2xl">Insumos Asignados:</h2>
-                <table className="table mt-5">
-                  <thead>
-                    <tr className="thead-tr">
-                      <th scope="col" className="thead-th">
-                        Insumo
-                      </th>
-                      <th scope="col" className="thead-th">
-                        Cantidad Asignada
-                      </th>
+              <div className="mt-6">
+                <h3 className="text-xl font-bold text-indigo-600 mb-2">Insumos Asignados</h3>
+                <table className="w-full text-left border-t border-gray-200">
+                  <thead className="bg-gray-100 text-sm font-semibold">
+                    <tr>
+                      <th className="py-2 px-4">Insumo</th>
+                      <th className="py-2 px-4">Cantidad</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {task.insumos.map((insumo) => (
-                      <tr className="tbody-tr" key={insumo.id}>
-                        <td className="tbody-td">
-                          <p>{insumo.name} </p>
-                        </td>
-                        <td className="tbody-td">
-                          <p>
-                            {insumo.assigned_quantity} {insumo.measure}
-                          </p>
-                        </td>
+                    {task.insumos.map(insumo => (
+                      <tr key={insumo.id} className="border-t">
+                        <td className="py-2 px-4">{insumo.name}</td>
+                        <td className="py-2 px-4">{insumo.assigned_quantity} {insumo.measure}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -199,67 +191,72 @@ export default function AsignarTareaLote() {
             )}
           </div>
 
-          <div>
-            <h2 className="font-bold text-xl">Empleados Asignados</h2>
-            <div className="mt-10 space-y-2 h-96 overflow-y-auto shadow-lg rounded-md p-5">
-              {assignedEmployees.length === 0 && (
-                <p className="text-lg text-center">
-                  No hay empleados asignados
-                </p>
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-xl font-bold text-indigo-600 mb-4">Empleados Asignados</h2>
+            <div className="h-96 overflow-y-auto space-y-2">
+              {assignedEmployees.length === 0 ? (
+                <p className="text-gray-500 text-center">No hay empleados asignados</p>
+              ) : (
+                assignedEmployees.map((employee) => (
+                  <div
+                    key={employee.emp_id}
+                    className="flex justify-between items-center bg-indigo-100 text-indigo-800 font-medium px-4 py-2 rounded-md shadow-sm"
+                  >
+                    <span>{employee.name}</span>
+                    <Trash2Icon
+                      className="cursor-pointer hover:text-red-500"
+                      onClick={() => handleRemoveEmployee(employee)}
+                    />
+                  </div>
+                ))
               )}
-              {assignedEmployees.map((employee) => (
-                <div
-                  className="flex gap-2 p-2 justify-between bg-indigo-500 text-white rounded-md font-bold"
-                  key={employee.emp_id}
-                >
-                  <p>{employee.name}</p>
-                  <Trash2Icon
-                    className="hover:text-red-500 cursor-pointer"
-                    onClick={() => handleRemoveEmployee(employee)}
-                  />
-                </div>
-              ))}
             </div>
           </div>
         </div>
 
-        <div className="col-start-5 col-span-2">
-          <div className="mt-5 overflow-y-auto h-96 shadow-lg rounded-md p-5 space-y-2">
-            <p className="font-bold text-2xl text-center">
+        <div className="md:col-span-2">
+          <div className="bg-white shadow-md rounded-lg p-6 overflow-y-auto h-96 flex flex-col">
+            <h2 className="text-2xl font-bold text-indigo-600 text-center mb-4">
               Empleados Disponibles
-            </p>
+            </h2>
             <input
               type="text"
               value={query}
               onChange={handleSearch}
               placeholder="Buscar empleado..."
-              className="border p-2 rounded mb-4 w-full text-lg"
+              className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
-            {results.length === 0 && (
-              <p className="text-lg text-center">No hay resultados</p>
-            )}
-            {results.map((employee) => (
-              <Worker
-                key={employee.emp_id}
-                employee={employee}
-                handleAddEmployee={handleAddEmployee}
-                assignedEmployees={assignedEmployees}
-              />
-            ))}
+            <div className="flex-1 overflow-y-auto space-y-2">
+              {results.length === 0 ? (
+                <p className="text-gray-500 text-center">No hay resultados</p>
+              ) : (
+                uniqueEmployees.map((employee) => (
+                  <Worker
+                    key={employee.emp_id}
+                    employee={employee}
+                    handleAddEmployee={handleAddEmployee}
+                    assignedEmployees={assignedEmployees}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      <button
-        className={`p-2 rounded mt-5 uppercase font-bold transition-colors w-1/2 mx-auto flex justify-center items-center ${assignedEmployees.length === 0 || isPending
-          ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-          : "bg-indigo-500 text-white hover:bg-indigo-600"
-          }`}
-        onClick={handleCloseAssignment}
-        disabled={assignedEmployees.length === 0 || isPending}
-      >
-        {isPending ? <Spinner /> : <p>Cerrar Asignación</p>}
-      </button>
+      <div className="flex justify-center my-5 w-full">
+        <button
+          className={`flex w-full items-center justify-center px-6 py-3 rounded-lg font-semibold text-lg transition duration-300 ${assignedEmployees.length === 0 || isPending
+            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+            : "bg-indigo-600 text-white hover:bg-indigo-700"
+            }`}
+          onClick={handleCloseAssignment}
+          disabled={assignedEmployees.length === 0 || isPending}
+        >
+          {isPending ? <Spinner /> : "Cerrar Asignación"}
+        </button>
+      </div>
     </>
   );
+
 }

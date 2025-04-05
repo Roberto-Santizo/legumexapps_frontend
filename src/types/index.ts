@@ -7,7 +7,7 @@ import { CDPSchema, Crop, DraftCDP, Plantation, PlantationsPaginateSchema, Plant
 import { DraftLote, LoteSchema, LotesPaginateSchema } from '@/utils/lotes-schema'
 import { Finca } from '@/utils/fincas-schema'
 import { SummaryWeeklyPlanSchema, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '@/utils/weekly_plans-schema'
-import { DraftTaskWeeklyPlan, EditTaskWeeklySchema, TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '@/utils/taskWeeklyPlan-schema'
+import { DraftTaskWeeklyPlan, TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '@/utils/taskWeeklyPlan-schema'
 import { EmployeeSchema } from '@/utils/employee-schema'
 import { DraftTaskCropWeeklyPlanSchema, EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '@/utils/taskCropWeeklyPlan-schema'
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
@@ -90,7 +90,6 @@ export type SummaryWeeklyPlan = z.infer<typeof SummaryWeeklyPlanSchema>
 
 //TAREA LOTE
 export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>
-export type DraftTaskWeeklyPlan = z.infer<typeof EditTaskWeeklySchema>
 export type DraftCreateTaskWeeklyPlan = z.infer<typeof DraftTaskWeeklyPlan>
 export type TasksWeeklyPlan = z.infer<typeof TasksWeeklyPlanSchema>
 export type TaskWeeklyPlanDetails = z.infer<typeof TaskWeeklyPlanDetailsSchema>

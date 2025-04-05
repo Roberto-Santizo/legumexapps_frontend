@@ -1,15 +1,26 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import Spinner from "@/components/Spinner";
 import { useForm } from "react-hook-form";
-import { DraftTaskWeeklyPlan, TaskWeeklyPlan, WeeklyPlan } from "@/types";
-import Error from "@/components/Error";
+import { WeeklyPlan } from "@/types";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import { getAllPlans } from "@/api/WeeklyPlansAPI";
-import { editTask, getTask } from "@/api/TasksWeeklyPlanAPI";
+import { editTask, EditTaskWeeklyPlan, getEditTask } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/Spinner";
+import Error from "@/components/Error";
+
+export type DraftTaskWeeklyPlan = {
+  hours: number,
+  budget: number,
+  slots: number,
+  weekly_plan_id: string,
+  start_date: string | null,
+  start_time: string | null,
+  end_date: string | null,
+  end_time: string | null,
+}
 
 export default function EditarTareaLote() {
   const params = useParams();
@@ -17,16 +28,15 @@ export default function EditarTareaLote() {
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
   const [plans, setPlans] = useState<WeeklyPlan[]>([]);
-  const [task, setTask] = useState<TaskWeeklyPlan>({} as TaskWeeklyPlan);
+  const [task, setTask] = useState<EditTaskWeeklyPlan>({} as EditTaskWeeklyPlan);
   const [role, setRole] = useState<string>('');
 
   const navigate = useNavigate();
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken)
 
-
   const results = useQueries({
     queries: [
-      { queryKey: ['getTask', id], queryFn: () => getTask(id) },
+      { queryKey: ['getTask', id], queryFn: () => getEditTask(id) },
       { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken },
       { queryKey: ['getAllPlans'], queryFn: getAllPlans },
     ]
@@ -38,16 +48,16 @@ export default function EditarTareaLote() {
     if (results[2].data) setPlans(results[2].data);
   }, [results]);
 
-  const isLoading = results.some(result => result.isFetching);
+  const isLoading = results.some(result => result.isLoading);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: ({ id, data }: { id: string, data: DraftTaskWeeklyPlan }) => editTask(data, id),
-    onError: () => {
-
+    mutationFn: editTask,
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       navigate(previousUrl);
-      toast.success("Tarea Editada Correctamente");
+      toast.success(data);
     }
   });
 
@@ -59,15 +69,19 @@ export default function EditarTareaLote() {
   } = useForm<DraftTaskWeeklyPlan>();
 
   useEffect(() => {
-    if (task) {
+    if (task && plans.length > 0) {
       setValue("budget", task.budget);
       setValue("hours", task.hours);
       setValue("slots", task.slots);
       setValue("weekly_plan_id", task.weekly_plan_id);
+      setValue("end_date", task.end_date);
+      setValue("start_date", task.start_date);
+      setValue("start_time", task.start_time);
+      setValue("end_time", task.end_time);
     }
-  }, [task]);
+  }, [task, plans]);
 
-  const editTaskForm = async (data: DraftTaskWeeklyPlan) => mutate({ data, id });
+  const editTaskForm = async (FormData: DraftTaskWeeklyPlan) => mutate({ id, FormData });
 
   if (isLoading) return <Spinner />
   return (
@@ -140,7 +154,7 @@ export default function EditarTareaLote() {
             id="weekly_plan_id"
             className="border border-black p-3"
             {...register("weekly_plan_id", {
-              required: "El rol es obligatorio",
+              required: "El plan semanal es obligatorio",
             })}
           >
             <option value="">--SELECCIONE UNA OPCIÓN--</option>
@@ -156,7 +170,7 @@ export default function EditarTareaLote() {
           )}
         </div>
 
-        {(role === "admin" && task.end_date && task.start_date) && (
+        {((role === "admin" || role === 'adminagricola') && task.end_date && task.start_date) && (
           <fieldset>
             <div className="grid grid-cols-2 gap-5">
               <div className="flex flex-col gap-2 p-2">

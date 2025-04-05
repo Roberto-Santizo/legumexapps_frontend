@@ -42,17 +42,6 @@ export const TaskWeeklyPlanSchema = z.object({
   extraordinary: z.boolean()
 });
 
-export const EditTaskWeeklySchema = z.object({
-  task: z.string(),
-  hours: z.number(),
-  budget: z.number(),
-  slots: z.number(),
-  weekly_plan_id: z.string(),
-  start_date: z.string(),
-  start_time: z.string(),
-  end_date: z.string(),
-  end_time: z.string(),
-});
 
 export const TaskWeeklyPlanDetailsSchema = z.object({
   task: z.string(),
