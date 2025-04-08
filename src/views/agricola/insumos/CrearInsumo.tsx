@@ -1,17 +1,24 @@
-import { Button } from "@mui/material";
-import { useState } from "react";
-import { DraftInsumo } from "@/types";
-import Spinner from "@/components/Spinner";
 import { useForm } from "react-hook-form";
-import Error from "@/components/Error";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
-import { createInsumo } from "@/api/InsumosAPI";
+import { createInsumo, DraftInsumo } from "@/api/InsumosAPI";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
 
 export default function CrearInsumo() {
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createInsumo,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate('/insumos');
+    }
+  });
 
   const {
     register,
@@ -19,22 +26,7 @@ export default function CrearInsumo() {
     formState: { errors },
   } = useForm<DraftInsumo>();
 
-  const handleCreateInsumo = async (data: DraftInsumo) => {
-    setLoading(true);
-    try {
-      const errors = await createInsumo(data);
-      if (errors) {
-        errors.forEach(error => toast.error(error[0]));
-        return;
-      }
-      toast.success("Insumo creado correctamente");
-      navigate('/insumos');
-    } catch (error) {
-      toast.error('Hubo un error al crear el insumo');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleCreateInsumo = async (data: DraftInsumo) => mutate(data);
 
   return (
     <>
@@ -97,20 +89,9 @@ export default function CrearInsumo() {
           )}
         </div>
 
-        <Button
-          disabled={loading}
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-        >
-          {loading ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Crear Insumo</p>
-          )}
-        </Button>
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear Insumo</p>}
+        </button>
       </form>
     </>
   );

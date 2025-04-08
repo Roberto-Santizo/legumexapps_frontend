@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 import { getAllPlans } from "@/api/WeeklyPlansAPI";
 import { editTask, EditTaskWeeklyPlan, getEditTask } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import Spinner from "@/components/Spinner";
-import Error from "@/components/Error";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
 
 export type DraftTaskWeeklyPlan = {
   hours: number,

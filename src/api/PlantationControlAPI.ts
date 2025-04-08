@@ -1,28 +1,61 @@
 import clienteAxios from "@/config/axios";
-import { Crop, DraftCDP, Plantation, PlantationsPaginate, Recipe } from "@/types";
-import { CropsSchema, PlantationsPaginateSchema, PlantationsSchema, Recipes } from "@/utils/plantation-schema";
+import { DraftCDP } from "@/views/agricola/cdps/CreateCdp";
+import { isAxiosError } from "axios";
+import { z } from "zod";
 
-export async function createCDP(cdp: DraftCDP): Promise<void | string[]> {
+export async function createCDP(cdp: DraftCDP) {
     try {
         const url = '/api/cdps'
-        await clienteAxios.post(url, cdp)
-    } catch (error: any) {
-        console.log(error);
-        return Object.values(error.response.data.errors);
+        const { data } = await clienteAxios.post<string>(url, cdp);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }
 
-export async function uploadCDPS(file : File[]) : Promise<void | string[]>{
+export async function uploadCDPS(file: File[]) {
     try {
         const url = '/api/cdps/upload';
         const formData = new FormData();
         formData.append("file", file[0]);
-        await clienteAxios.post(url, formData);
-    } catch (error: any) {
-        console.log(error);
-        return error.response.data.message;
+        const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }
+
+
+export const Plantation = z.object({
+    crop: z.string(),
+    id: z.string(),
+    name: z.string(),
+    recipe: z.string(),
+    density: z.number(),
+    start_date: z.string(),
+    end_date: z.union([z.string(), z.null()]),
+    size: z.string(),
+    aplication_week: z.number(),
+    status: z.boolean()
+
+});
+
+export type Plantation = z.infer<typeof Plantation>
+
+export const PlantationsPaginateSchema = z.object({
+    data: z.array(Plantation),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    })
+});
+
+export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>
+
 
 export async function getPaginatedCDPS(page: number): Promise<PlantationsPaginate> {
     try {
@@ -40,6 +73,11 @@ export async function getPaginatedCDPS(page: number): Promise<PlantationsPaginat
     }
 }
 
+
+export const PlantationsSchema = z.object({
+    data: z.array(Plantation),
+});
+
 export async function getCDPS(): Promise<Plantation[]> {
     try {
         const url = `/api/cdps-list/all`;
@@ -55,6 +93,19 @@ export async function getCDPS(): Promise<Plantation[]> {
         throw error;
     }
 }
+
+export const CropSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    variety: z.string()
+});
+
+export const CropsSchema = z.object({
+    data: z.array(CropSchema)
+})
+
+export type Crop = z.infer<typeof CropSchema>
+
 
 export async function getCrops(): Promise<Crop[]> {
     try {
@@ -72,11 +123,23 @@ export async function getCrops(): Promise<Crop[]> {
     }
 }
 
+export const RecipeSchema = z.object({
+    id: z.string(),
+    name: z.string()
+});
+
+export const RecipesSchema = z.object({
+    data: z.array(RecipeSchema)
+});
+
+export type Recipe = z.infer<typeof RecipeSchema>
+
+
 export async function getRecipes(): Promise<Recipe[]> {
     try {
         const url = '/api/recipes'
         const { data } = await clienteAxios(url)
-        const result = Recipes.safeParse(data);
+        const result = RecipesSchema.safeParse(data);
         if (result.success) {
             return result.data.data
         } else {

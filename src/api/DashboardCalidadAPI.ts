@@ -1,5 +1,5 @@
-import clienteAxios from "@/config/axios";
 import { z } from "zod";
+import clienteAxios from "@/config/axios";
 
 const getReceptionsPendingQualityTestSchema = z.object({
     total_docs: z.number()

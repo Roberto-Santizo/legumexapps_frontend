@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { getAllPlantas } from '@/api/PlantasAPI';
+import { getAllPlantas, Planta } from '@/api/PlantasAPI';
 import { useQueries } from '@tanstack/react-query';
-import { Boleta, DraftBoletaTransporte, Planta, Product, TransporteCondition } from '@/types';
-import { getAllBoletasRMP } from '@/api/ReceptionsDocAPI';
-import { getProducts } from '@/api/ProductsAPI';
+import { Boleta, getAllBoletasRMP } from '@/api/ReceptionsDocAPI';
+import { getProducts, Product } from '@/api/ProductsAPI';
 import { Controller, useForm } from 'react-hook-form';
-import Error from '@/components/Error';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { createBoletaTransporte, getTransporteCondiciones } from '@/api/BoletaTransporteAPI';
+import { createBoletaTransporte, DraftBoletaTransporte, getTransporteCondiciones, TransporteCondition } from '@/api/BoletaTransporteAPI';
 import { Button } from '@mui/material';
-import Spinner from '@/components/Spinner';
+import Error from '@/components/utilities-components/Error';
+import Spinner from '@/components/utilities-components/Spinner';
 import SignatureCanvas from "react-signature-canvas";
 import Swal from 'sweetalert2';
 

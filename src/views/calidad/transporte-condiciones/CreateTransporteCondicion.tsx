@@ -1,12 +1,11 @@
-import Spinner from "@/components/Spinner";
-import { DraftTransporteCondicion } from "@/types";
+import Spinner from "@/components/utilities-components/Spinner";
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { createTransporteCondicion } from "@/api/BoletaTransporteAPI";
+import { createTransporteCondicion, DraftTransporteCondicion } from "@/api/BoletaTransporteAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import Error from "@/components/Error";
+import Error from "@/components/utilities-components/Error";
 
 export default function CreateTransporteCondicion() {
   const navigate = useNavigate();

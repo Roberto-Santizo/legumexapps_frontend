@@ -1,43 +1,35 @@
 import { useEffect, useState } from "react";
-import Spinner from "@/components/Spinner";
-import { Insumos } from "@/types";
-import Pagination from "@/components/Pagination";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-
 import { getPaginatedInsumos } from "@/api/InsumosAPI";
+import { useQuery } from "@tanstack/react-query";
+import Pagination from "@/components/utilities-components/Pagination";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function IndexInsumos() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const [insumos, setInsumos] = useState<Insumos>({} as Insumos);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const handleGetInsumos = async (page: number) => {
-    setLoading(true);
-    try {
-      const insumos = await getPaginatedInsumos(page);
-      setInsumos(insumos);
+  const { data: insumos, isLoading, isError } = useQuery({
+    queryKey: ['getPaginatedInsumos', currentPage],
+    queryFn: () => getPaginatedInsumos(currentPage)
+  });
+  
+  useEffect(()=>{
+    if(insumos){
       setPageCount(insumos.meta.last_page);
       setCurrentPage(insumos.meta.current_page);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
     }
-  };
+  },[insumos]);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
 
-  useEffect(() => {
-    handleGetInsumos(currentPage);
-  }, [currentPage]);
-
-  return (
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
+  if (insumos) return (
     <>
       <h2 className="font-bold text-4xl">Insumos</h2>
 
@@ -61,56 +53,50 @@ export default function IndexInsumos() {
 
 
       <div className="mt-10">
-        {loading && <Spinner />}
-        {!loading && error && <ShowErrorAPI />}
-        {(!loading && !error && insumos.data) && (
-          <table className="table">
-            <thead>
-              <tr className="thead-tr">
-                <th scope="col" className="thead-th">
-                  ID
-                </th>
-                <th scope="col" className="thead-th">
-                  Insumo
-                </th>
-                <th scope="col" className="thead-th">
-                  Codigo
-                </th>
-                <th scope="col" className="thead-th">
-                  Unidad de Medida
-                </th>
+        <table className="table">
+          <thead>
+            <tr className="thead-tr">
+              <th scope="col" className="thead-th">
+                ID
+              </th>
+              <th scope="col" className="thead-th">
+                Insumo
+              </th>
+              <th scope="col" className="thead-th">
+                Codigo
+              </th>
+              <th scope="col" className="thead-th">
+                Unidad de Medida
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {insumos.data.map((insumo) => (
+              <tr className="tbody-tr" key={insumo.id}>
+                <td className="tbody-td">
+                  <p>{insumo.id}</p>
+                </td>
+                <td className="tbody-td">
+                  <p>{insumo.name}</p>
+                </td>
+                <td className="tbody-td">
+                  <p>{insumo.code}</p>
+                </td>
+                <td className="tbody-td flex gap-2">
+                  <p>{insumo.measure}</p>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {insumos.data.map((insumo) => (
-                <tr className="tbody-tr" key={insumo.id}>
-                  <td className="tbody-td">
-                    <p>{insumo.id}</p>
-                  </td>
-                  <td className="tbody-td">
-                    <p>{insumo.name}</p>
-                  </td>
-                  <td className="tbody-td">
-                    <p>{insumo.code}</p>
-                  </td>
-                  <td className="tbody-td flex gap-2">
-                    <p>{insumo.measure}</p>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <div className="mb-10 flex justify-end">
-        {!loading && (
-          <Pagination
-            currentPage={currentPage}
-            pageCount={pageCount}
-            handlePageChange={handlePageChange}
-          />
-        )}
+        <Pagination
+          currentPage={currentPage}
+          pageCount={pageCount}
+          handlePageChange={handlePageChange}
+        />
       </div>
     </>
   );

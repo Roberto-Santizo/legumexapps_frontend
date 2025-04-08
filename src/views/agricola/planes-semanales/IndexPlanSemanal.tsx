@@ -6,12 +6,12 @@ import { Link } from "react-router-dom";
 import { CheckCircle, Download, PlusIcon, Sheet, XIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { downloadWeeklyPlanReport } from "@/api/WeeklyPlansAPI";
-import Spinner from "@/components/Spinner";
 import { WeeklyPlan } from "@/types";
-import Pagination from "@/components/Pagination";
 import { formatearQuetzales } from "@/helpers";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import LoadingOverlay from "@/components/LoadingOverlay";
+import Pagination from "@/components/utilities-components/Pagination";
+import Spinner from "@/components/utilities-components/Spinner";
+import LoadingOverlay from "@/components/utilities-components/LoadingOverlay";
 
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
@@ -21,6 +21,11 @@ export default function IndexPlanSemanal() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [role, setRole] = useState<string>("");
   const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
+
+  const canSeeBudgetRoles = ['admin', 'adminagricola'];
+  const canCreatePlanSemanalRoles = ['admin', 'adminagricola'];
+  const canSeeBudget = canSeeBudgetRoles.includes(role);
+  const canCreatePlanSemanal = canCreatePlanSemanalRoles.includes(role);
 
   const { mutate: handleDowloadReportMutation, isPending: handleDowloadReportMutationPending } = useMutation({
     mutationFn: ({ plansId }: { plansId: WeeklyPlan['id'][] }) => downloadWeeklyPlanReport(plansId),
@@ -47,7 +52,7 @@ export default function IndexPlanSemanal() {
     ]
   });
 
-  const isLoading = results.every(query => query.isFetching);
+  const isLoading = results.every(query => query.isLoading);
 
   useEffect(() => {
     if (results[0].data) setRole(results[0].data);
@@ -83,12 +88,11 @@ export default function IndexPlanSemanal() {
   const handleDownloadInsumosReport = async (planId: WeeklyPlan['id']) => { HandleDownloadReportInsumosMutation({ planId }) };
 
   if (isLoading) return <Spinner />
-
   return (
     <>
       <h2 className="font-bold text-4xl">Planes Semanales</h2>
       {HandleDownloadReportInsumosPending && <LoadingOverlay />}
-      {(role === "admin" || role === "adminagricola") && (
+      {canCreatePlanSemanal && (
         <div className="flex flex-row justify-end gap-5 mb-5">
           <Link
             to="/planes-semanales/crear"
@@ -157,7 +161,7 @@ export default function IndexPlanSemanal() {
             <th scope="col" className="thead-th">
               Año
             </th>
-            {(role === "admin" || role === "adminagricola") && (
+            {canSeeBudget && (
               <>
                 <th scope="col" className="thead-th">
                   Control de Presupuesto
@@ -167,7 +171,6 @@ export default function IndexPlanSemanal() {
                 </th>
               </>
             )}
-
             <th scope="col" className="thead-th">
               Control de Tareas
             </th>
@@ -202,7 +205,7 @@ export default function IndexPlanSemanal() {
               <td className="tbody-td">{plan.finca}</td>
               <td className="tbody-td">{plan.week}</td>
               <td className="tbody-td">{plan.year}</td>
-              {(role === "admin" || role === "adminagricola") && (
+              {canSeeBudget && (
                 <>
                   <td className="tbody-td font-bold text-green-500">
                     {`${formatearQuetzales(plan.used_budget)}/${formatearQuetzales(plan.total_budget)}`}

@@ -1,12 +1,12 @@
-import Error from "@/components/Error";
+import Error from "@/components/utilities-components/Error";
 import { Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/utilities-components/Spinner";
 import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Select from "react-select";
 import { createPlaca, DraftPlaca } from "@/api/PlacasAPI";
 import { toast } from "react-toastify";

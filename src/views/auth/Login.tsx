@@ -3,8 +3,8 @@ import { TextField, Button, Box } from "@mui/material";
 import { useAppStore } from "../../stores/useAppStore";
 import { LoginUser } from "../../types";
 import { useNavigate } from "react-router-dom";
-import Error from "../../components/Error";
-import Spinner from "../../components/Spinner";
+import Error from "../../components/utilities-components/Error";
+import Spinner from "../../components/utilities-components/Spinner";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 

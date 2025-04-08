@@ -1,6 +1,6 @@
-import { DraftDefecto } from "@/types";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import Error from "@/components/Error";
+import Error from "@/components/utilities-components/Error";
+import { DraftDefecto } from "./CreateDefectoModal";
 
 type Props = {
     register: UseFormRegister<DraftDefecto>;

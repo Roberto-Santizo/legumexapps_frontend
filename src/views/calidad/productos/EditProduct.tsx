@@ -2,23 +2,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
-import Select from "react-select";
 import { Edit, PlusIcon } from "lucide-react";
-import { getProductById } from "@/api/ProductsAPI";
-import { Defect, DraftDefecto, DraftProduct, Product, ProductDetail, Variety } from "@/types";
-import { Button } from "@mui/material";
-import Error from "@/components/Error";
-import CreateDefectoModal from "@/components/defectos/CreateDefectoModal";
-import EditDefectoModal from "@/components/defectos/EditDefectoModal";
+import { getProductById, Product, ProductDetail } from "@/api/ProductsAPI";
+import { Variety } from "@/types";
 import { editProduct } from "@/api/ProductsAPI";
 import { getAllVarieties } from "@/api/VarietiesAPI";
 import { useQueries } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
-import Spinner from "@/components/Spinner";
+import { DraftProduct } from "./CrearProduct";
+import Select from "react-select";
+import Error from "@/components/utilities-components/Error";
+import CreateDefectoModal, { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
+import EditDefectoModal from "@/components/defectos/EditDefectoModal";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function EditProduct() {
-  const { product_id } = useParams();
+  const params = useParams();
+  const product_id = params.product_id!!;
   const [product, setProduct] = useState<ProductDetail>({} as ProductDetail);
   const [varieties, setVarieties] = useState<Variety[]>([]);
   const [defects, setDefects] = useState<DraftDefecto[]>([]);
@@ -40,8 +41,8 @@ export default function EditProduct() {
   const results = useQueries({
     queries: [
       { queryKey: ['getAllVarieties'], queryFn: getAllVarieties },
-      { queryKey: ['getProductById'], queryFn: () => product_id ? getProductById(product_id) : Promise.reject('Product ID es indefinido') },
-      { queryKey: ['getDefectsByQualityProduct'], queryFn: () => product_id ? getDefectsByQualityProduct(product_id) : Promise.reject('Product ID es indefinido') }
+      { queryKey: ['getProductById'], queryFn: () => getProductById(product_id) },
+      { queryKey: ['getDefectsByQualityProduct'], queryFn: () => getDefectsByQualityProduct(product_id) }
     ]
   })
 
@@ -57,7 +58,7 @@ export default function EditProduct() {
 
   useEffect(() => {
     if (results[2].data) {
-      setDefects(results[2].data.map((defect: Defect) => ({ ...defect, id: Number(defect.id) })));
+      setDefects(results[2].data.map((defect: DraftDefecto) => ({ ...defect, id: Number(defect.id) })));
     }
   }, [results[2].data]);
 
@@ -67,7 +68,6 @@ export default function EditProduct() {
     label: variety.name,
   }));
 
-
   const {
     handleSubmit,
     register,
@@ -75,8 +75,6 @@ export default function EditProduct() {
     formState: { errors },
     setValue
   } = useForm<DraftProduct>();
-
-
 
   useEffect(() => {
     if (product) {
@@ -101,7 +99,7 @@ export default function EditProduct() {
     }
   }
 
-  if(isLoading) return <Spinner />
+  if (isLoading) return <Spinner />
 
   return (
     <>
@@ -205,20 +203,9 @@ export default function EditProduct() {
           )}
         </fieldset>
 
-        <Button
-          disabled={isPending}
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-        >
-          {isPending ? (
-              <Spinner />
-            ) : ( 
-          <p className="font-bold text-lg">Actualizar Producto</p>
-          )}
-        </Button>
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Guardar Cambios</p>}
+        </button>
       </form>
 
       <CreateDefectoModal modal={modal} setModal={setModal} setDefects={setDefects} defects={defects} />

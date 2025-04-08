@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Spinner from "@/components/Spinner";
 import { formatDate } from "@/helpers";
 import { EmployeeCrop } from "@/types";
-import EmployeeTaskCrop from "@/components/EmployeeTaskCrop";
 import { AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { closeDailyAssignment, getCropEmployees } from "@/api/TaskCropWeeklyPlanAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import EmployeeTaskCrop from "@/components/tareas-lote-plan/EmployeeTaskCrop";
 
 export default function TomarLibrasPersonal() {
   const params = useParams();

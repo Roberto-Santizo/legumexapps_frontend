@@ -2,21 +2,20 @@ import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon, RefreshCcwDot } 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
-import { getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
+import { Boleta, getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 import { useAppStore } from "@/stores/useAppStore";
-import { Boleta, FiletrsBoletaRMP } from "@/types";
-import Spinner from "@/components/Spinner";
-import Pagination from "@/components/Pagination";
-import FiltersRMP from "@/components/boleta-rmp/FiltersRMP";
+import { FiletrsBoletaRMP } from "@/types";
 import { Bars3Icon } from "@heroicons/react/16/solid";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
 import { toast } from "react-toastify";
+import Spinner from "@/components/utilities-components/Spinner";
+import Pagination from "@/components/utilities-components/Pagination";
+import FiltersRMP from "@/components/boleta-rmp/FiltersRMP";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
 import Swal from "sweetalert2";
 import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
 export default function IndexRMP() {
-
     const [filters, setFilters] = useState<FiletrsBoletaRMP>({} as FiletrsBoletaRMP);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -35,11 +34,11 @@ export default function IndexRMP() {
 
     const { mutate } = useMutation({
         mutationFn: rejectBoleta,
-        onError: () => {
-            toast.error('Hubo un error al actualizar la información');
+        onError: (error) => {
+            toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Información actualizada correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             refetch();
         }
     });
@@ -78,7 +77,6 @@ export default function IndexRMP() {
             confirmButtonText: "Rechazar",
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire("Boleta cancelada correctamente", "", "success");
                 mutate(id);
             }
         });
@@ -86,7 +84,6 @@ export default function IndexRMP() {
 
     if (isError) return <ShowErrorAPI />
     if (isLoading) return <Spinner />
-
     if (role) return (
         <div className="p-4">
             <h2 className="font-bold text-2xl md:text-4xl">
@@ -143,19 +140,19 @@ export default function IndexRMP() {
                                 </td>
                                 <td className="tbody-td flex gap-3">
                                     <>
-                                        {(boleta.quality_status_id === 1 && role === 'pprod') && (
+                                        {(boleta.quality_status_id === 1 && role === 'admin') && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {(boleta.quality_status_id === 2 && role === 'pcalidad') && (
+                                        {(boleta.quality_status_id === 2 && role === 'admin') && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {(boleta.quality_status_id === 3 && role === 'pprod') && (
+                                        {(boleta.quality_status_id === 3 && role === 'admin') && (
                                             <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
                                         )}
 

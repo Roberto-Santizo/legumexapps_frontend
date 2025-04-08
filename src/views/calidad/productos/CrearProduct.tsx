@@ -1,21 +1,25 @@
-import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { DraftDefecto, DraftProduct, Variety } from "@/types";
-import { Button } from "@mui/material";
-import Spinner from "@/components/Spinner";
-import Error from "@/components/Error";
-import CreateDefectoModal from "@/components/defectos/CreateDefectoModal";
-import EditDefectoModal from "@/components/defectos/EditDefectoModal";
+import { Variety } from "@/types";
 import { createProduct } from "@/api/ProductsAPI";
 import { getAllVarieties } from "@/api/VarietiesAPI";
 import { useQuery } from "@tanstack/react-query";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Select from "react-select";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
+import CreateDefectoModal, { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
+import EditDefectoModal from "@/components/defectos/EditDefectoModal";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
+export type DraftProduct = {
+  name: string,
+  variety_product_id: string,
+  accepted_percentage: string
+}
 export default function CrearVariedad() {
   const [varieties, setVarieties] = useState<Variety[]>([]);
   const [modal, setModal] = useState<boolean>(false);
@@ -24,13 +28,13 @@ export default function CrearVariedad() {
   const [editingId, setEditingId] = useState<number>(0);
   const navigate = useNavigate();
 
-  const { mutate } = useMutation({
-    mutationFn: ({ data, defects }: { data: DraftProduct; defects: DraftDefecto[] }) => createProduct(data, defects),
-    onError: () => {
-      toast.error('Hubo un error al crear el producto, intentelo de nuevo más tarde');
+  const { mutate, isPending } = useMutation({
+    mutationFn: createProduct,
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Producto creado correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/productos');
     }
   });
@@ -72,7 +76,7 @@ export default function CrearVariedad() {
       toast.error('Debe relacionar al menos un defecto al producto');
       return;
     }
-    mutate({ data, defects });
+    mutate({ FormData: data, defects });
   }
 
   if (isError) return <ShowErrorAPI />
@@ -136,7 +140,7 @@ export default function CrearVariedad() {
               type="number"
               placeholder="Porcentaje aceptado de calidad del producto"
               className="border border-black p-3"
-              {...register('accepted_percentage', { required: 'El porcentaje de calidad aceptado es obligatorio' ,min:{value:0,message:'El valor minimo requerido es 0'}})}
+              {...register('accepted_percentage', { required: 'El porcentaje de calidad aceptado es obligatorio', min: { value: 0, message: 'El valor minimo requerido es 0' } })}
             />
 
             {errors.accepted_percentage && (
@@ -176,20 +180,9 @@ export default function CrearVariedad() {
             )}
           </fieldset>
 
-          <Button
-            disabled={isLoading}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Producto</p>
-            )}
-          </Button>
+          <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Crear Producto</p>}
+          </button>
         </form>
       </div>
 

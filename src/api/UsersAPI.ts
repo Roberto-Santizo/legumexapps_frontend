@@ -1,28 +1,44 @@
 import clienteAxios from "@/config/axios";
+import { isAxiosError } from "axios";
+import { DraftUser } from "views/admin/users/CreateUser";
+import { z } from "zod";
 
-import { DraftUser, User, UserDetail, Users } from "@/types";
-import { UserDetailsSchema, UsersSchema } from "@/utils/users-schema";
 
-
-export async function createUser(user: DraftUser): Promise<void | string[]> {
-    const url = `/api/users`;
+export async function createUser(user: DraftUser) {
     try {
-        await clienteAxios.post(url, user);
+        const url = `/api/users`;
+        const { data } = await clienteAxios.post<string>(url, user);
+        return data;
     } catch (error: any) {
-        if (error.response?.data?.errors) {
-            return Object.values(error.response.data.errors);
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
-        return ["Error desconocido"];
     }
 }
 
-export async function getUsers(): Promise<Users> {
+export const UserSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    email: z.string().nullable(),
+    username: z.string(),
+    status: z.number(),
+    roles: z.string(),
+});
+
+export const UsersSchema = z.object({
+    data: z.array(UserSchema),
+});
+
+export type User = z.infer<typeof UserSchema>
+
+
+export async function getUsers(): Promise<User[]> {
     try {
         const url = `/api/users`;
         const { data } = await clienteAxios(url);
         const result = UsersSchema.safeParse(data);
         if (result.success) {
-            return result.data;
+            return result.data.data;
         } else {
             throw new Error("Información no válida");
         }
@@ -42,23 +58,39 @@ export async function changeActiveUser(id: User['id']) {
     }
 }
 
-export async function updateUser(id: User['id'], user: DraftUser): Promise<void | string[]> {
+export async function updateUser({ id, user }: { id: User['id'], user: DraftUser }) {
     const url = `/api/users/${id}`;
     try {
-        await clienteAxios.put(url, user);
+        const { data } = await clienteAxios.put<string>(url, user);
+        return data;
     } catch (error: any) {
-        if (error.response?.data?.errors) {
-            return Object.values(error.response.data.errors);
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
-        return ["Error desconocido"];
     }
 }
 
-export async function getUser(id: User['id']) : Promise<UserDetail>{
+export const UserDetailsSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    email: z.string().nullable(),
+    username: z.string(),
+    status: z.boolean(),
+    roles: z.string(),
+    permissions: z.array(
+        z.object({
+            id: z.number(),
+            name: z.string(),
+        })
+    ),
+});
+
+export type UserDetail = z.infer<typeof UserDetailsSchema>
+
+export async function getUserById(id: User['id']): Promise<UserDetail> {
     const url = `/api/users-info/${id}/info`;
     try {
         const { data } = await clienteAxios(url);
-        console.log(data);
         const result = UserDetailsSchema.safeParse(data.data);
         if (result.success) {
             return result.data;

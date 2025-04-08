@@ -1,10 +1,9 @@
 import React from 'react';
 import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
-import type { BoletaInfoAll } from "@/types";
 import LogoLegumex from "../../../public/LOGO_LX.png";
-import Signature from '../Signature';
+import Signature from '../utilities-components/Signature';
+import { BoletaInfoAll } from '@/api/ReceptionsDocAPI';
 
-// Crear estilos
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
@@ -267,11 +266,9 @@ const styles = StyleSheet.create({
   },
 });
 
-// Componente principal usando la prop boleta
 const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
-      {/* Encabezado */}
       <View style={styles.header}>
         <View style={styles.logoContainer}>
           <Image

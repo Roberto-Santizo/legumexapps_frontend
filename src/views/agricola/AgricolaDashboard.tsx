@@ -1,14 +1,14 @@
-import DronHours from "@/components/dashboard-agricola-components/DronHours";
-import SummaryHoursEmployees from "@/components/dashboard-agricola-components/SummaryHoursEmployees";
-import TasksInProgress from "@/components/dashboard-agricola-components/TasksInProgress";
-import FinishedTasks from "@/components/dashboard-agricola-components/FinishedTasks";
-import TasksCropInProgress from "@/components/dashboard-agricola-components/TasksCropInProgress";
-import FinishedTasksCrop from "@/components/dashboard-agricola-components/FinishedTasksCrop";
 import { useAppStore } from "@/stores/useAppStore";
 import { useNavigate } from "react-router-dom";
-import Spinner from "@/components/Spinner";
-import SummaryTasksFincas from "@/components/dashboard-agricola-components/SummaryTasksFincas";
 import { useQuery } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
+import SummaryTasksFincas from "@/components/dashboard-agricola/SummaryTasksFincas";
+import DronHours from "@/components/dashboard-agricola/DronHours";
+import SummaryHoursEmployees from "@/components/dashboard-agricola/SummaryHoursEmployees";
+import TasksInProgress from "@/components/dashboard-agricola/TasksInProgress";
+import FinishedTasks from "@/components/dashboard-agricola/FinishedTasks";
+import TasksCropInProgress from "@/components/dashboard-agricola/TasksCropInProgress";
+import FinishedTasksCrop from "@/components/dashboard-agricola/FinishedTasksCrop";
 
 export default function AgricolaDashboard() {
   const navigate = useNavigate();

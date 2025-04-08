@@ -1,23 +1,25 @@
-import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { DraftRole } from "@/types";
-import Error from "@/components/Error";
-import Spinner from "@/components/Spinner";
 import { createRole } from "@/api/RolesAPI";
 import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
+import RolesForm from "./RolesForm";
+
+export type DraftRole = {
+  name: string;
+};
 
 export default function CreateRole() {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createRole,
-    onError: () => {
-      toast.error('Hubo un error al crear el rol');
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success("Usuario creado correctamente");
+    onSuccess: (data) => {
+      toast.success(data);
       navigate("/roles");
     }
   });
@@ -39,35 +41,12 @@ export default function CreateRole() {
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(handleCreateRole)}
         >
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="name">
-              Nombre:
-            </label>
-            <input
-              autoComplete="off"
-              id="name"
-              type="text"
-              placeholder={"Nombre del rol"}
-              className="border border-black p-3"
-              {...register("name", { required: "El nombre es obligatorio" })}
-            />
-            {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-          </div>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Rol</p>
-            )}
-          </Button>
+          <RolesForm register={register} errors={errors} />
+
+          <button type="submit" disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Crear Rol</p>}
+          </button>
         </form>
       </div>
     </>

@@ -1,25 +1,35 @@
 import { useEffect, useState } from "react";
-import { DraftCreateTaskWeeklyPlan, Lote, Tarea, WeeklyPlan } from "@/types";
+import { Tarea, WeeklyPlan } from "@/types";
 import { Controller, useForm } from "react-hook-form";
-import Select from "react-select";
-import Error from "@/components/Error";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllPlans } from "@/api/WeeklyPlansAPI";
-import { getAllLotes } from "@/api/LotesAPI";
+import { getAllLotes, Lote } from "@/api/LotesAPI";
 import { getAllTasks } from "@/api/TasksAPI";
 import { useQueries } from "@tanstack/react-query";
 import { Delete, PlusIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import ModalAddInsumo from "@/components/ModalAddInsumo";
-import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
+import Select from "react-select";
+import Error from "@/components/utilities-components/Error";
+import Spinner from "@/components/utilities-components/Spinner";
+import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 
 export type DraftSelectedInsumo = {
-  insumo_id: string,
-  quantity: string,
-  name: string
+  insumo_id: string;
+  quantity: string;
+  name: string;
+}
+
+export type DraftNewTaskWeeklyPlan = {
+  weekly_plan_id: string;
+  lote_id: string;
+  tarea_id: string;
+  workers_quantity: string;
+  budget: string;
+  hours: string;
+  extraordinary: string;
+  insumos: DraftSelectedInsumo[]
 }
 
 export default function CreateTareaLote() {
@@ -31,12 +41,12 @@ export default function CreateTareaLote() {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: ({ data, selectedInsumos }: { data: DraftCreateTaskWeeklyPlan, selectedInsumos: DraftSelectedInsumo[] }) => createTaskWeeklyPlan(data, selectedInsumos),
-    onError: () => {
-      toast.error('Hubo un error al crear la tarea, vuelva a intentarlo más tarde')
+    mutationFn: createTaskWeeklyPlan,
+    onError: (error) => {
+      toast.error(error.message)
     },
-    onSuccess: () => {
-      toast.success('Tarea Creada Correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/planes-semanales');
     }
   });
@@ -74,14 +84,21 @@ export default function CreateTareaLote() {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<DraftCreateTaskWeeklyPlan>();
+  } = useForm<DraftNewTaskWeeklyPlan>();
 
   const deleteItem = (insumo_id: DraftSelectedInsumo['insumo_id']) => {
     const newSelectedItems = selectedInsumos.filter(insumo => insumo.insumo_id != insumo_id);
     setSelectedInsumos(newSelectedItems)
   }
 
-  const CreateTareaLote = async (data: DraftCreateTaskWeeklyPlan) => mutate({ data, selectedInsumos });
+  const CreateTareaLote = async (data: DraftNewTaskWeeklyPlan) => {
+    const FormData = {
+      ...data,
+      insumos: selectedInsumos
+    }
+
+    mutate({ FormData });
+  };
   return (
     <>
       <div className="my-10 w-1/2 mx-auto">
@@ -271,7 +288,7 @@ export default function CreateTareaLote() {
 
           <fieldset className="border p-5">
             <legend className="font-bold text-3xl">Insumos</legend>
-            <button type="button" className="button bg-blue-500 hover:bg-blue-600 flex" onClick={() => setOpen(true)}>
+            <button type="button" className="button bg-indigo-500 hover:bg-indigo-600 flex" onClick={() => setOpen(true)}>
               <PlusIcon />
               <p>Agregar Insumo</p>
             </button>
@@ -301,20 +318,9 @@ export default function CreateTareaLote() {
 
           </fieldset>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Tarea Lote</p>
-            )}
-          </Button>
+          <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Crear Tarea Lote</p>}
+          </button>
         </form>
       </div>
 

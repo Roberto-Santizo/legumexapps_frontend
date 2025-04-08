@@ -1,6 +1,8 @@
 import clienteAxios from "@/config/axios";
-import { DraftTaskCropWeeklyPlan, Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "@/types";
+import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan, TaskWeeklyPlan } from "@/types";
 import { EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema, TaskCropWeeklyPlanSchema, TasksCropIncompleteSchema, TasksCropWeeklyPlanSchema } from "@/utils/taskCropWeeklyPlan-schema";
+import { isAxiosError } from "axios";
+import { DraftTaskCropWeeklyPlan } from "views/agricola/planes-semanales/CreateTareaLoteCosecha";
 
 export async function getTasksCrop(lote_plantation_control_id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']): Promise<TasksCropWeeklyPlan> {
     try {
@@ -82,13 +84,15 @@ export async function closeDailyAssignment(id: TaskCropWeeklyPlan['id'], data: E
     }
 }
 
-export async function createTaskCropWeeklyPlan(data: DraftTaskCropWeeklyPlan) {
+export async function createTaskCropWeeklyPlan(FormData: DraftTaskCropWeeklyPlan) {
     try {
         const url = '/api/tasks-crops-lotes';
-        await clienteAxios.post(url, data);
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        };
     }
 }
 

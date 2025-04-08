@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import TaskCrop from "@/components/TaskCrop";
 import { getTasksCrop } from "@/api/TaskCropWeeklyPlanAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import ModalTomaLibras from "@/components/ModalTomaLibras";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import TaskCrop from "@/components/tareas-lote-plan/TaskCrop";
+import ModalTomaLibras from "@/components/modals/ModalTomaLibras";
+
 
 export default function IndexTareasCosechaLote() {
   const params = useParams();

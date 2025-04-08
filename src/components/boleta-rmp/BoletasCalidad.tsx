@@ -1,6 +1,6 @@
 
-import { BoletaInfoAll } from "@/types";
-import LogoLegumex from "../LogoLegumex";
+import { BoletaInfoAll } from "@/api/ReceptionsDocAPI";
+import LogoLegumex from "../logos/LogoLegumex";
 
 type Props = {
     boleta: BoletaInfoAll;

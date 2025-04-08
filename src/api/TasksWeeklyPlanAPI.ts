@@ -1,9 +1,9 @@
 import clienteAxios from "@/config/axios";
-import { DraftCreateTaskWeeklyPlan, Employee, TaskInsumo, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "@/types";
+import { Employee, TaskInsumo, TaskWeeklyPlan, TaskWeeklyPlanDetails } from "@/types";
 import { EmployeesSchema } from "@/utils/employee-schema";
 import { TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from "@/utils/taskWeeklyPlan-schema";
 import { isAxiosError } from "axios";
-import { DraftSelectedInsumo } from "views/agricola/planes-semanales/CreateTareaLote";
+import { DraftNewTaskWeeklyPlan } from "views/agricola/planes-semanales/CreateTareaLote";
 import { DraftTaskWeeklyPlan } from "views/agricola/tareas-lote/EditarTareaLote";
 import { z } from "zod";
 
@@ -28,60 +28,72 @@ export async function getTasks(id: TaskWeeklyPlan['lote_plantation_control_id'],
 export async function closeTask(id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/close/${id}`;
-        await clienteAxios.patch(url);
+        const { data } = await clienteAxios.patch<string>(url);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
 export async function cleanTask(id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/erase/${id}`;
-        await clienteAxios.delete(url);
+        const { data } = await clienteAxios.delete<string>(url);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
 export async function createPartialClosure(id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/partial-close/close/${id}`;
-        await clienteAxios.patch(url);
-    } catch (error: any) {
-        console.log(error);
-        throw error;
+        const { data } = await clienteAxios.patch<string>(url);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
 export async function closePartialClosure(id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/partial-close/open/${id}`;
-        await clienteAxios.patch(url);
-    } catch (error: any) {
-        console.log(error);
-        throw error;
-
+        const { data } = await clienteAxios.patch<string>(url);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
 export async function closeAssigmentDron(task_id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/close-assignment/${task_id}`
-        await clienteAxios.post(url);
+        const { data } = await clienteAxios.post<string>(url);
+        return data;
     } catch (error) {
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
 export async function deteleteTask(id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/${id}`;
-        await clienteAxios.delete(url);
+        const { data } = await clienteAxios.delete<string>(url);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw new Error("Hubo un problema para cerrar la tarea");
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
@@ -118,15 +130,15 @@ export async function getTaskDetailsById(id: TaskWeeklyPlan['id']): Promise<Task
     }
 }
 
-export async function closeAssigment(Employees: Employee[], task_id: TaskWeeklyPlan['id']) {
+export async function closeAssigment({Employees, task_id} : {Employees: Employee[], task_id: TaskWeeklyPlan['id']}) {
     try {
         const url = `/api/tasks-lotes/close-assignment/${task_id}`
-        await clienteAxios.post(url, {
-            data: Employees
-        });
+        const { data } = await clienteAxios.post<string>(url, {data: Employees});
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
@@ -194,15 +206,17 @@ export async function getEmployees(id: TaskWeeklyPlan['finca_id']): Promise<Empl
     }
 }
 
-export async function createTaskWeeklyPlan(data: DraftCreateTaskWeeklyPlan, insumos: DraftSelectedInsumo[]) {
+export async function createTaskWeeklyPlan({ FormData }: { FormData: DraftNewTaskWeeklyPlan }) {
     try {
         const url = '/api/tasks-lotes';
-        await clienteAxios.post(url, {
-            data,
-            insumos: insumos
+        const { data } = await clienteAxios.post<string>(url, {
+            data: FormData
         });
+        return data;
     } catch (error) {
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
@@ -218,13 +232,13 @@ export async function registerUsedInsumos(data: TaskInsumo[]) {
     }
 }
 
-export async function editTask({FormData, id} : {FormData: DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id']}) {
+export async function editTask({ FormData, id }: { FormData: DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id'] }) {
     try {
         const url = `/api/tasks-lotes/${id}`
         const { data } = await clienteAxios.put<string>(url, FormData);
         return data;
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
         }
     }

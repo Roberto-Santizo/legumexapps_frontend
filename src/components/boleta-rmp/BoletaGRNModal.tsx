@@ -1,14 +1,11 @@
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
-
 import { Dialog, Transition } from "@headlessui/react";
-import { Button } from "@mui/material";
-import { Boleta, BoletasPaginate } from "@/types";
-import Error from "@/components/Error";
-import Spinner from "../Spinner";
 import { toast } from "react-toastify";
-import { updateGRN } from "@/api/ReceptionsDocAPI";
+import { Boleta, BoletasPaginate, updateGRN } from "@/api/ReceptionsDocAPI";
 import { QueryObserverResult, RefetchOptions, useMutation } from "@tanstack/react-query";
+import Spinner from "../utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
 
 type Props = {
     modal: boolean;
@@ -30,19 +27,18 @@ export default function BoletaGRNModal({ modal, boleta, setModal, refetch }: Pro
     } = useForm<FormData>();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: ({ grn, id }: { grn: string, id: Boleta['id'] }) => updateGRN(grn, id),
-        onError: () => {
-            toast.error('Hubo un error al guardar el GRN');
+        mutationFn: updateGRN,
+        onError: (error) => {
+            toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('GRN guardado correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             setModal(false);
             refetch();
         }
     });
 
     const onSubmit = async (data: FormData) => mutate({ grn: data.grn, id: boleta.id });
-
 
     return (
         <Transition appear show={modal} as={Fragment}>
@@ -92,20 +88,9 @@ export default function BoletaGRNModal({ modal, boleta, setModal, refetch }: Pro
                                             {errors.grn && <Error>{errors.grn?.message?.toString()}</Error>}
                                         </div>
 
-                                        <Button
-                                            disabled={isPending}
-                                            type="submit"
-                                            variant="contained"
-                                            color="primary"
-                                            fullWidth
-                                            sx={{ marginTop: 2 }}
-                                        >
-                                            {isPending ? (
-                                                <Spinner />
-                                            ) : (
-                                                <p className="font-bold text-lg">Crear GRN</p>
-                                            )}
-                                        </Button>
+                                        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                                            {isPending ? <Spinner /> : <p>Generar GRN</p>}
+                                        </button>
                                     </form>
                                 </div>
                             </Dialog.Panel>

@@ -1,17 +1,22 @@
 import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
-
 import { Dialog, Transition } from "@headlessui/react";
 import { Button } from "@mui/material";
-import Spinner from "../Spinner";
-import { DraftDefecto } from "@/types";
 import DefectForm from "./DefectForm";
+import Spinner from "../utilities-components/Spinner";
 
 type Props = {
     modal: boolean;
     setModal: React.Dispatch<React.SetStateAction<boolean>>;
     setDefects: React.Dispatch<React.SetStateAction<DraftDefecto[]>>;
     defects: DraftDefecto[];
+}
+
+export type DraftDefecto = {
+    id: number;
+    name: string;
+    tolerance_percentage: number;
+    status: boolean;
 }
 
 export default function CreateDefectoModal({ modal, setModal, setDefects, defects }: Props) {

@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-import { getPaginatedTransporteInspections } from "@/api/BoletaTransporteAPI";
+import { getPaginatedTransporteInspections, TransporteInspection } from "@/api/BoletaTransporteAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { TransporteInspection } from "@/types";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Pagination from "@/components/Pagination";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Pagination from "@/components/utilities-components/Pagination";
 
 export default function IndexCamion() {
     const [docs, setDocs] = useState<TransporteInspection[]>([]);

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Sidebar } from "../components/Sidebar";
-import { Header } from "../components/Header";
-import MobileSidebar from "@/components/MobileSidebar";
+import { Header } from "../components/layouts/Header";
 import { useAppStore } from "@/stores/useAppStore";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/utilities-components/Spinner";
+import { Sidebar } from "@/components/layouts/Sidebar";
+import MobileSidebar from "@/components/layouts/MobileSidebar";
 
 export default function Layout() {
   const [modal, setModal] = useState(false);

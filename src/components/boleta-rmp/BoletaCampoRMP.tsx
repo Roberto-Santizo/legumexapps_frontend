@@ -1,6 +1,6 @@
-import { BoletaInfoAll } from "@/types";
-import LogoLegumex from "../LogoLegumex";
 import { AlertCircle, CheckCircle } from "lucide-react";
+import { BoletaInfoAll } from "@/api/ReceptionsDocAPI";
+import LogoLegumex from "../logos/LogoLegumex";
 import DownloadPDF from './DownloadPDF';
 
 type Props = {

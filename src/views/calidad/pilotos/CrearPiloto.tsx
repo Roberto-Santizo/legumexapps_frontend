@@ -1,10 +1,10 @@
-import Error from "@/components/Error";
+import Error from "@/components/utilities-components/Error";
 import { Controller, useForm } from "react-hook-form"
 import Select from "react-select";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import { useEffect, useState } from "react";
 import { createPiloto, DraftPiloto } from "@/api/PilotosAPI";
 import { useMutation } from "@tanstack/react-query";

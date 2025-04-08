@@ -1,177 +1,145 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import { Plantation } from "@/types";
-import Pagination from "@/components/Pagination";
-import { toast } from "react-toastify";
-
-import { getPaginatedCDPS } from "@/api/PlantationControlAPI";
+import { getPaginatedCDPS, Plantation } from "@/api/PlantationControlAPI";
+import { useQuery } from "@tanstack/react-query";
+import Pagination from "@/components/utilities-components/Pagination";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function IndexCdps() {
   const [cdps, setCdps] = useState<Plantation[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [role, setRole] = useState<string>("");
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-  const handleGetUserRole = async () => {
-    setLoading(true);
-    try {
-      const role = await getUserRoleByToken();
-      setRole(role);
-    } catch (error) {
-      toast.error("Error al cargar el contenido");
-      setError(false);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['getPaginatedCDPS', currentPage],
+    queryFn: () => getPaginatedCDPS(currentPage)
+  });
 
-  const handleGetCDPS = async (page: number) => {
-    setLoading(true);
-    try {
-      const cdps = await getPaginatedCDPS(page);
-      setCdps(cdps.data);
-      setPageCount(cdps.meta.last_page);
-      setCurrentPage(cdps.meta.current_page);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (data) {
+      setCdps(data.data);
+      setPageCount(data.meta.last_page);
+      setCurrentPage(data.meta.current_page);
     }
-  };
+  }, [data]);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
 
-  useEffect(() => {
-    handleGetCDPS(currentPage);
-    handleGetUserRole();
-  }, [currentPage]);
-
-  return (
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
+  if (cdps) return (
     <>
       <h2 className="font-bold text-4xl">Control de Plantaciones</h2>
 
-      {(role === "admin" || role === "adminagricola") && (
-        <div className="flex flex-row justify-end gap-5">
-          <Link
-            to="/cdps/crear"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-          >
-            <PlusIcon className="w-8" />
-            <p>Crear CDP</p>
-          </Link>
+      <div className="flex flex-row justify-end gap-5">
+        <Link
+          to="/cdps/crear"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+        >
+          <PlusIcon className="w-8" />
+          <p>Crear CDP</p>
+        </Link>
 
-          <Link
-            to="/cdps/carga-masiva"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-          >
-            <p>Carga Masiva</p>
-          </Link>
-        </div>
-      )}
+        <Link
+          to="/cdps/carga-masiva"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+        >
+          <p>Carga Masiva</p>
+        </Link>
+      </div>
 
-      {loading && <Spinner />}
-      {!loading && error && <ShowErrorAPI />}
-      {!loading && !error && (
-        <table className="table mt-10">
-          <thead>
-            <tr className="thead-tr">
-              <th scope="col" className="thead-th">
-                ID
-              </th>
-              <th scope="col" className="thead-th">
-                CDP
-              </th>
-              <th scope="col" className="thead-th">
-                Cultivo
-              </th>
-              <th scope="col" className="thead-th">
-                Receta
-              </th>
-              <th scope="col" className="thead-th">
-                Densidad
-              </th>
-              <th scope="col" className="thead-th">
-                Tamaño
-              </th>
-              <th scope="col" className="thead-th">
-                Fecha de Inicio
-              </th>
-              <th scope="col" className="thead-th">
-                Fecha Final
-              </th>
-              <th scope="col" className="thead-th">
-                Semanas de Aplicación
-              </th>
-              <th scope="col" className="thead-th">
-                Estado
-              </th>
+      <table className="table mt-10">
+        <thead>
+          <tr className="thead-tr">
+            <th scope="col" className="thead-th">
+              ID
+            </th>
+            <th scope="col" className="thead-th">
+              CDP
+            </th>
+            <th scope="col" className="thead-th">
+              Cultivo
+            </th>
+            <th scope="col" className="thead-th">
+              Receta
+            </th>
+            <th scope="col" className="thead-th">
+              Densidad
+            </th>
+            <th scope="col" className="thead-th">
+              Tamaño
+            </th>
+            <th scope="col" className="thead-th">
+              Fecha de Inicio
+            </th>
+            <th scope="col" className="thead-th">
+              Fecha Final
+            </th>
+            <th scope="col" className="thead-th">
+              Semanas de Aplicación
+            </th>
+            <th scope="col" className="thead-th">
+              Estado
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {cdps.map((cdp) => (
+            <tr className="tbody-tr" key={cdp.id}>
+              <td className="tbody-td">
+                <p>{cdp.id}</p>
+              </td>
+              <td className="tbody-td">
+                <p>{cdp.name}</p>
+              </td>
+              <td className="tbody-td">
+                <p>{cdp.crop}</p>
+              </td>
+              <td className="tbody-td">
+                <p>{cdp.recipe}</p>
+              </td>
+              <td className="tbody-td">
+                <p>{cdp.density}</p>
+              </td>
+              <td className="tbody-td">
+                <p>{cdp.size}</p>
+              </td>
+              <td className="tbody-td">
+                <p>{cdp.start_date}</p>
+              </td>
+              <td className="tbody-td">
+                <p>{cdp.end_date}</p>
+              </td>
+              <td className="tbody-td">
+                <p>
+                  {cdp.aplication_week > 0
+                    ? cdp.aplication_week
+                    : "SIN INCIO"}
+                </p>
+              </td>
+              <td className="tbody-td">
+                <p
+                  className={`button text-center ${cdp.status ? "bg-red-500" : " bg-green-500"
+                    }`}
+                >
+                  {cdp.status ? "CERRADO" : "ACTIVO"}
+                </p>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {cdps.map((cdp) => (
-              <tr className="tbody-tr" key={cdp.id}>
-                <td className="tbody-td">
-                  <p>{cdp.id}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.name}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.crop}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.recipe}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.density}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.size}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.start_date}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.end_date}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>
-                    {cdp.aplication_week > 0
-                      ? cdp.aplication_week
-                      : "SIN INCIO"}
-                  </p>
-                </td>
-                <td className="tbody-td">
-                  <p
-                    className={`button text-center ${cdp.status ? "bg-red-500" : " bg-green-500"
-                      }`}
-                  >
-                    {cdp.status ? "CERRADO" : "ACTIVO"}
-                  </p>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
 
       <div className="mb-10 flex justify-end">
-        {!loading && (
-          <Pagination
-            currentPage={currentPage}
-            pageCount={pageCount}
-            handlePageChange={handlePageChange}
-          />
-        )}
+        <Pagination
+          currentPage={currentPage}
+          pageCount={pageCount}
+          handlePageChange={handlePageChange}
+        />
       </div>
     </>
   );

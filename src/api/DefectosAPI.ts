@@ -1,6 +1,6 @@
 import clienteAxios from "@/config/axios";
-import { Product } from "@/types";
 import { DefectsSchema } from "@/utils/defectos-schema";
+import { Product } from "./ProductsAPI";
 
 export async function getDefectsByQualityProduct(id: Product['id']) {
     try {

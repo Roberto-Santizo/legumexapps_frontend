@@ -7,8 +7,8 @@ import { closeAssigment, getEmployees, getTask } from "@/api/TasksWeeklyPlanAPI"
 import { useMutation, useQueries } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import Fuse from "fuse.js";
-import Spinner from "@/components/Spinner";
-import Worker from "@/components/Worker";
+import Spinner from "@/components/utilities-components/Spinner";
+import Worker from "@/components/tareas-lote-plan/Worker";
 
 export default function AsignarTareaLote() {
   const params = useParams();
@@ -26,12 +26,12 @@ export default function AsignarTareaLote() {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: ({ Employees, task_id }: { Employees: Employee[], task_id: TaskWeeklyPlan['id'] }) => closeAssigment(Employees, task_id),
-    onError: () => {
-      toast.error('Hubo un error al cerrar la asignación');
+    mutationFn: closeAssigment,
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success("Asignación cerrada correctamente");
+    onSuccess: (data) => {
+      toast.success(data);
       navigate(previousUrl);
     },
   });
@@ -150,7 +150,7 @@ export default function AsignarTareaLote() {
   }, []);
 
   if (isLoading) return <Spinner />
-  if(task && task.insumos) return (
+  if (task && task.insumos) return (
     <>
       <h1 className="text-4xl font-bold text-center mb-8">
         Asignación de Empleados

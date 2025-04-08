@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
-import { DraftTaskCropWeeklyPlan, Lote, TaskCrop, WeeklyPlan } from "@/types";
+import { TaskCrop, WeeklyPlan } from "@/types";
 import { Controller, useForm } from "react-hook-form";
-import Select from "react-select";
-import Error from "@/components/Error";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllPlans } from "@/api/WeeklyPlansAPI";
-import { getAllLotes } from "@/api/LotesAPI";
+import { getAllLotes, Lote } from "@/api/LotesAPI";
 import { getAllTasksCrop } from "@/api/TasksCropAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { createTaskCropWeeklyPlan } from "@/api/TaskCropWeeklyPlanAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import Select from "react-select";
+import Error from "@/components/utilities-components/Error";
 
+export type DraftTaskCropWeeklyPlan = {
+  weekly_plan_id: string;
+  lote_id: string;
+  task_crop_id: string;
+}
 export default function CreateTareaLoteCosecha() {
   const [lotes, setLotes] = useState<Lote[]>([]);
   const [plans, setPlans] = useState<WeeklyPlan[]>([]);
@@ -21,11 +25,11 @@ export default function CreateTareaLoteCosecha() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: createTaskCropWeeklyPlan,
-    onError: () => {
-      toast.error("Hubo un error al crear la actividad");
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success("Actividad creada correctamente");
+    onSuccess: (data) => {
+      toast.success(data);
       navigate("/planes-semanales");
     }
   });
@@ -162,20 +166,9 @@ export default function CreateTareaLoteCosecha() {
         )}
       </div>
 
-      <Button
-        disabled={isPending}
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{ marginTop: 2 }}
-      >
-        {isPending ? (
-          <Spinner />
-        ) : (
-          <p className="font-bold text-lg">Crear Tarea de Cosecha</p>
-        )}
-      </Button>
+      <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+        {isPending ? <Spinner /> : <p>Crear Tarea de Cosecha</p>}
+      </button>
     </form>
   );
 }
