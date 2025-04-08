@@ -1,4 +1,4 @@
-import Error from "@/components/Error"
+import Error from "@/components/utilities-components/Error";
 import { FieldValues, UseFormRegister, FieldErrors } from "react-hook-form"
 import { DraftTiempoMuerto } from "./CrearTiempoMuerto";
 

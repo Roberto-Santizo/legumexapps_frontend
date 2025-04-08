@@ -1,25 +1,21 @@
 import { Controller, useForm } from "react-hook-form";
-import SignatureCanvas from "react-signature-canvas";
 import { useEffect, useRef, useState } from 'react';
 import { toast } from "react-toastify";
-import Select from "react-select";
 import { useNavigate } from "react-router-dom";
-
-import { getAllBaskets } from "@/api/BasketsAPI";
-import { createBoletaRMP } from "@/api/ReceptionsDocAPI";
-import { getAllProducers } from "@/api/ProducersAPI";
-import { getProducts } from "@/api/ProductsAPI";
-import { getAllFincas } from "@/api/FincasAPI";
-
-import { Button } from "@mui/material";
-import { Basket, DraftBoletaRMP, Finca, Producer, Product } from "@/types";
-import Error from "@/components/Error";
-import Spinner from "@/components/Spinner";
+import { Basket, getAllBaskets } from "@/api/BasketsAPI";
+import { createBoletaRMP, DraftBoletaRMP } from "@/api/ReceptionsDocAPI";
+import { getAllProducers, Producer } from "@/api/ProducersAPI";
+import { getProducts, Product } from "@/api/ProductsAPI";
+import { Finca, getAllFincas } from "@/api/FincasAPI";
 import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import { getPilotosByTransportistaId, Piloto } from "@/api/PilotosAPI";
 import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
 import { getPlacasByCarrierId, Placa } from "@/api/PlacasAPI";
 import { getAllProductorCDPS, ProductorCDP } from "@/api/ProductorPlantationAPI";
+import SignatureCanvas from "react-signature-canvas";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
+import Select from "react-select";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -121,11 +117,11 @@ export default function Boleta_form1() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: createBoletaRMP,
-    onError: () => {
-      toast.error('Hubo un error al crear la boleta');
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Boleta creada correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/rmp');
     }
   });
@@ -481,20 +477,9 @@ export default function Boleta_form1() {
             {(errors.calidad_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
           </div>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Boleta</p>
-            )}
-          </Button>
+          <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Crear Boleta</p>}
+          </button>
         </form>
       </div>
     </>

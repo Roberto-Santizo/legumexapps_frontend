@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 import { DraftTiempoMuerto } from "./CrearTiempoMuerto";
 import { useEffect } from "react";
 import { Button } from "@mui/material";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import FormTiempoMuerto from "./FormTiempoMuerto";
 import { toast } from "react-toastify";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import FormTiempoMuerto from "./FormTiempoMuerto";
 
 export default function EditarTiempoMuerto() {
     const params = useParams();

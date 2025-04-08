@@ -5,7 +5,7 @@ import { createTimeOut } from "@/api/TimeOutsAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import FormTiempoMuerto from "./FormTiempoMuerto";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export type DraftTiempoMuerto = {
   name: string;

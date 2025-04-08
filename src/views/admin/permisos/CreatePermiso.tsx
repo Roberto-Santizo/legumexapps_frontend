@@ -2,22 +2,24 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createPermission } from "@/api/PermissionsAPI";
-import { DraftPermssion } from "@/types";
-import { Button } from "@mui/material";
-import Error from "@/components/Error";
-import Spinner from "@/components/Spinner";
 import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
+import PermisosForm from "./PermisosForm";
+
+export type DraftPermiso = {
+  name: string;
+}
 
 export default function CreatePermiso() {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createPermission,
-    onError: () => {
-      toast.error('Hubo un error al crear el permiso')
+    onError: (error) => {
+      toast.error(error.message)
     },
-    onSuccess: () => {
-      toast.success("Permiso creado correctamente");
+    onSuccess: (data) => {
+      toast.success(data);
       navigate("/permisos");
     }
   });
@@ -26,9 +28,9 @@ export default function CreatePermiso() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<DraftPermssion>();
+  } = useForm<DraftPermiso>();
 
-  const handleCreatePermission = async (data: DraftPermssion) => mutate(data);
+  const handleCreatePermission = async (data: DraftPermiso) => mutate(data);
 
   return (
     <>
@@ -39,35 +41,11 @@ export default function CreatePermiso() {
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(handleCreatePermission)}
         >
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="name">
-              Nombre:
-            </label>
-            <input
-              autoComplete="off"
-              id="name"
-              type="text"
-              placeholder={"Nombre del permiso"}
-              className="border border-black p-3"
-              {...register("name", { required: "El nombre es obligatorio" })}
-            />
-            {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-          </div>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Permiso</p>
-            )}
-          </Button>
+          <PermisosForm register={register} errors={errors} />
+          <button type="submit" disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Crear Permiso</p>}
+          </button>
         </form>
       </div>
     </>

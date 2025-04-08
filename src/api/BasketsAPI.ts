@@ -1,6 +1,17 @@
 import clienteAxios from "@/config/axios";
-import { Basket } from "@/types";
-import { BasketsSchema } from "@/utils/baskets-schema";
+import { z } from "zod";
+
+export const BasketSchema = z.object({
+    id: z.string(),
+    code: z.string(),
+    weight: z.number()
+});
+
+export const BasketsSchema = z.object({
+    data: z.array(BasketSchema)
+});
+
+export type Basket = z.infer<typeof BasketSchema>;
 
 export async function getAllBaskets(): Promise<Basket[]> {
     try {

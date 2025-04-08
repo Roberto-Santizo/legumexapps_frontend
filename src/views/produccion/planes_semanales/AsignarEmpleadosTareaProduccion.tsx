@@ -10,12 +10,12 @@ import { createPortal } from "react-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
-import ColumnContainer from "@/components/ColumnContainer";
-import EmployeeDraggable from "@/components/EmployeeDraggable";
-import ModalChangeEmployee from "@/components/ModalChangeEmployee";
+import Spinner from "@/components/utilities-components/Spinner";
+import ColumnContainer from "@/components/produccion/ColumnContainer";
+import EmployeeDraggable from "@/components/produccion/EmployeeDraggable";
+import ModalChangeEmployee from "@/components/modals/ModalChangeEmployee";
 import Swal from "sweetalert2";
-import ModalAddEmployee from "@/components/ModalAddEmployee";
+import ModalAddEmployee from "@/components/modals/ModalAddEmployee";
 
 export type Column = {
     id: string,

@@ -1,18 +1,43 @@
-import clienteAxios from "@/config/axios";
-import { CDP, DraftLote, Finca, Lote, loteCDPDetails, PaginatedLotes } from "@/types";
+import { z } from "zod";
+import { CDP, loteCDPDetails } from "@/types";
 import { LoteCDPDetailsSchema } from "@/utils/loteCDPDetails-schema";
-import { LotesPaginateSchema, LotesSchema, LotesSchemaSelect } from "@/utils/lotes-schema";
 import { CDPsSchema } from "@/utils/plantation-schema";
+import { DraftLote } from "@/views/agricola/lotes/CreateLote";
+import { isAxiosError } from "axios";
+import { Finca } from "./FincasAPI";
+import clienteAxios from "@/config/axios";
 
-
-export async function createLote(draftlote: DraftLote): Promise<void | string[]> {
+export async function createLote(draftlote: DraftLote) {
     try {
         const url = '/api/lotes';
-        await clienteAxios.post(url, draftlote);
-    } catch (error: any) {
-        return Object.values(error.response.data.errors);
+        const { data } = await clienteAxios.post<string>(url, draftlote);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }
+
+export const LoteSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    finca: z.string(),
+    cdp: z.string()
+});
+
+export type Lote = z.infer<typeof LoteSchema>
+
+export const LotesPaginateSchema = z.object({
+    data: z.array(LoteSchema),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    })
+});
+
+export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
+
 
 export async function getPaginatedLotes(page: number): Promise<PaginatedLotes> {
     try {
@@ -30,6 +55,11 @@ export async function getPaginatedLotes(page: number): Promise<PaginatedLotes> {
     }
 }
 
+export const LotesSchema = z.object({
+    data: z.array(LoteSchema)
+});
+
+
 export async function getAllLotes(): Promise<Lote[]> {
     try {
         const url = '/api/lotes-all';
@@ -45,6 +75,10 @@ export async function getAllLotes(): Promise<Lote[]> {
         throw error;
     }
 }
+
+export const LotesSchemaSelect = z.object({
+    data: z.array(LoteSchema)
+});
 
 export async function getAllLotesByFincaId(id: Finca['id']): Promise<Lote[]> {
     try {
@@ -101,9 +135,11 @@ export async function updateLotes(file: File[]) {
         const url = '/api/lotes-all/update';
         const formData = new FormData();
         formData.append("file", file[0]);
-        await clienteAxios.post(url, formData);
+        const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
     } catch (error: any) {
-        console.log(error);
-        return error.response.data.message;
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }

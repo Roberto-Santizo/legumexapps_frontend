@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { createProductionPlan } from "@/api/WeeklyProductionPlanAPI";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
 import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function CreatePlanSemanal() {
   const [file, setFile] = useState<File[] | null>(null);

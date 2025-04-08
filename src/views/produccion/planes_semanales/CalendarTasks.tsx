@@ -3,12 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import FullCalendarComponent from "@/components/FullCalendarComponent";
-import ModalCrearTareaProduccion from "@/components/ModalCrearTareaProduccion";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Spinner from "@/components/Spinner";
-import TasksOrder from "@/components/TasksOrder";
+import ModalCrearTareaProduccion from "@/components/modals/ModalCrearTareaProduccion";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import TasksOrder from "@/components/produccion/TasksOrder";
 import HoverCardColorDictionary from "@/components/ui/HoverCardColorDictionary";
+import FullCalendarComponent from "@/components/produccion/FullCalendarComponent";
 
 export default function CalendarTasks() {
   const params = useParams();

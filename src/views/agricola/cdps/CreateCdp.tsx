@@ -1,28 +1,56 @@
 import { useEffect, useState } from "react";
-import Spinner from "@/components/Spinner";
-import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { Crop, DraftCDP, Recipe } from "@/types";
-import Error from "@/components/Error";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-
-import { getCrops } from "@/api/PlantationControlAPI";
+import { Crop, getCrops, Recipe } from "@/api/PlantationControlAPI";
 import { getRecipes } from "@/api/PlantationControlAPI";
-
 import { createCDP } from "@/api/PlantationControlAPI";
+import { useQueries, useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
+
+export type DraftCDP = {
+  crop_id: string,
+  id: string,
+  name: string,
+  recipe_id: string,
+  density: number,
+  start_date: string,
+  end_date: string | null,
+  size: string
+}
 
 export default function CreateCdp() {
-  const [loadingGetCrops, setLoadingGetCrops] = useState<boolean>(false);
   const [crops, setCrops] = useState<Crop[]>([]);
-
-  const [loadingGetRecipes, setLoadingGetRecipes] = useState<boolean>(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-
-  const [loadingCreateCDP, setLoadingCreateCDP] = useState<boolean>(false);
-
-
   const navigate = useNavigate();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createCDP,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate('/cdps');
+    }
+  });
+
+  const results = useQueries({
+    queries: [
+      { queryKey: ['getCrops'], queryFn: getCrops },
+      { queryKey: ['getRecipes'], queryFn: getRecipes },
+    ]
+  });
+
+  useEffect(() => {
+    if (results) {
+      if (results[0].data) setCrops(results[0].data);
+      if (results[1].data) setRecipes(results[1].data);
+    }
+  }, [results]);
+
+  const isLoading = results.some(result => result.isLoading);
 
   const {
     register,
@@ -30,64 +58,16 @@ export default function CreateCdp() {
     formState: { errors },
   } = useForm<DraftCDP>();
 
-  const handleGetCrops = async () => {
-    setLoadingGetCrops(true);
-    try {
-      const crops = await getCrops();
-      setCrops(crops);
-    } catch (error) {
-      toast.error(
-        "Hubo un error al traer las recetas, intentelo de nuevo más tarde"
-      );
-    } finally {
-      setLoadingGetCrops(false);
-    }
-  };
+  const handleCreateCDP = async (data: DraftCDP) => mutate(data);
 
-  const handleGetRecipes = async () => {
-    setLoadingGetRecipes(true);
-    try {
-      const recipes = await getRecipes();
-      setRecipes(recipes);
-    } catch (error) {
-      toast.error(
-        "Hubo un error al traer las recetas, intentelo de nuevo más tarde"
-      );
-    } finally {
-      setLoadingGetRecipes(false);
-    }
-  };
-
-  const handleCreateCDP = async (data: DraftCDP) => {
-    setLoadingCreateCDP(true);
-    try {
-      const errors = await createCDP(data);
-      if (errors) {
-        errors.forEach(error => toast.error(error[0]));
-        setLoadingCreateCDP(false);
-        return;
-      }
-      navigate("/cdps");
-      toast.success("Control de Plantación creado exitosamente");
-    } catch (error) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }finally{
-      setLoadingCreateCDP(false);
-    }
-  };
-
-  useEffect(() => {
-    handleGetCrops();
-    handleGetRecipes();
-  }, []);
-
+  if (isLoading) return <Spinner />;
   return (
     <>
       <h2 className="text-4xl font-bold">Crear Control de Plantación</h2>
 
       <form
         action=""
-        className="space-y-5 w-2/3 mx-auto p-5"
+        className="space-y-5 w-2/3 mx-auto p-5 mt-10"
         onSubmit={handleSubmit(handleCreateCDP)}
       >
         <div className="flex flex-col gap-2">
@@ -170,76 +150,59 @@ export default function CreateCdp() {
           )}
         </div>
 
-        {loadingGetCrops && loadingGetRecipes ? (
-          <Spinner />
-        ) : (
-          <>
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="crop">
-                Cultivo:
-              </label>
+        <div className="flex flex-col gap-2">
+          <label className="text-lg font-bold uppercase" htmlFor="crop">
+            Cultivo:
+          </label>
 
-              <select
-                id="crop"
-                className="border border-black p-3"
-                {...register("crop_id", {
-                  required: "Especifique el cultivo relacionado al CDP",
-                })}
-              >
-                <option value="">--SELECCIONE UNA OPCIÓN--</option>
-                {crops.map((crop) => (
-                  <option value={crop.id} key={crop.id}>
-                    {crop.name} - {crop.variety}
-                  </option>
-                ))}
-              </select>
+          <select
+            id="crop"
+            className="border border-black p-3"
+            {...register("crop_id", {
+              required: "Especifique el cultivo relacionado al CDP",
+            })}
+          >
+            <option value="">--SELECCIONE UNA OPCIÓN--</option>
+            {crops.map((crop) => (
+              <option value={crop.id} key={crop.id}>
+                {crop.name} - {crop.variety}
+              </option>
+            ))}
+          </select>
 
-              {errors.crop_id && (
-                <Error>{errors.crop_id?.message?.toString()}</Error>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="recipe">
-                Receta:
-              </label>
-
-              <select
-                id="recipe"
-                className="border border-black p-3"
-                {...register("recipe_id", {
-                  required: "Especifique la receta relacionada al CDP",
-                })}
-              >
-                <option value="">--SELECCIONE UNA OPCIÓN--</option>
-                {recipes.map((recipe) => (
-                  <option value={recipe.id} key={recipe.id}>
-                    {recipe.name}
-                  </option>
-                ))}
-              </select>
-
-              {errors.recipe_id && (
-                <Error>{errors.recipe_id?.message?.toString()}</Error>
-              )}
-            </div>
-          </>
-        )}
-
-        <Button
-          disabled={loadingCreateCDP}
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-        >
-          {loadingCreateCDP ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Crear Control de Plantación</p>
+          {errors.crop_id && (
+            <Error>{errors.crop_id?.message?.toString()}</Error>
           )}
-        </Button>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-lg font-bold uppercase" htmlFor="recipe">
+            Receta:
+          </label>
+
+          <select
+            id="recipe"
+            className="border border-black p-3"
+            {...register("recipe_id", {
+              required: "Especifique la receta relacionada al CDP",
+            })}
+          >
+            <option value="">--SELECCIONE UNA OPCIÓN--</option>
+            {recipes.map((recipe) => (
+              <option value={recipe.id} key={recipe.id}>
+                {recipe.name}
+              </option>
+            ))}
+          </select>
+
+          {errors.recipe_id && (
+            <Error>{errors.recipe_id?.message?.toString()}</Error>
+          )}
+        </div>
+
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear CDP</p>}
+        </button>
       </form>
     </>
   );

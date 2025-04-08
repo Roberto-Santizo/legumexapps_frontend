@@ -1,16 +1,13 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
-import { toast } from "react-toastify";
-import { Button } from "@mui/material";
-import Spinner from "@/components/Spinner";
-
 import { uploadTareas } from "@/api/TasksAPI";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function CargaMasivaTareas() {
   const [file, setFile] = useState<File[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -21,24 +18,22 @@ export default function CargaMasivaTareas() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleUploadFile = async () => {
-    setLoading(true);
-    try {
-      if(file){
-        await uploadTareas(file);
-        navigate("/tareas");
-        toast.success("Tareas Creadas Correctamente");
-      }
-    } catch (error) {
-      toast.error('Hubo un error al cargar las tareas');
-    } finally {
-      setLoading(false);
+  const { mutate, isPending } = useMutation({
+    mutationFn: uploadTareas,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate('/tareas');
     }
-  };
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleUploadFile();
+    if (file) {
+      mutate(file)
+    }
   };
 
   return (
@@ -56,7 +51,7 @@ export default function CargaMasivaTareas() {
             backgroundColor: isDragActive ? "#e3f2fd" : "#f9f9f9",
           }}
         >
-          <input {...getInputProps()} disabled={loading || !!file} />
+          <input {...getInputProps()} disabled={isPending || !!file} />
           {file ? (
             <p className="text-green-600 font-medium">
               Archivo: {file[0].name}
@@ -72,20 +67,9 @@ export default function CargaMasivaTareas() {
           )}
         </div>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-          disabled={!file || loading}
-        >
-          {loading ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Crear Tareas</p>
-          )}
-        </Button>
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-2">
+          {isPending ? <Spinner /> : <p>Crear Tareas</p>}
+        </button>
       </form>
     </>
   );

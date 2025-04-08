@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { closeEmployeePermission, getPermisoEmployeeById, PermisoEmpleado } from "@/api/PermisosEmpleadosAPI";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Spinner from "@/components/Spinner";
-import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Swal from "sweetalert2";
 
 export default function ShowPermisoEmpleado() {
   const params = useParams();

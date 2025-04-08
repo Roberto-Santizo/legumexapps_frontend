@@ -1,21 +1,21 @@
 import { formatDate } from "../../../helpers";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { getPermissions } from "@/api/PermissionsAPI";
 import { useQuery } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function IndexPermisos() {
-  const { data : permissions, isLoading, isError } = useQuery({
+  const { data: permissions, isLoading, isError } = useQuery({
     queryKey: ['getPermissions'],
     queryFn: getPermissions
   });
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />
-  
-  return (
+
+  if (permissions) return (
     <>
       <h2 className="font-bold text-4xl">Administración de Permisos</h2>
       <div className="flex flex-row justify-end gap-5">
@@ -47,7 +47,7 @@ export default function IndexPermisos() {
             </tr>
           </thead>
           <tbody>
-            {permissions?.map((permission) => (
+            {permissions.map((permission) => (
               <tr className="tbody-tr" key={permission.id}>
                 <td className="tbody-td">
                   <p>{permission.id}</p>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import { getAllLines } from "@/api/LineasAPI";
 import Select from "react-select";
-import Error from "@/components/Error";
+import Error from "@/components/utilities-components/Error";
 
 export type DraftLineaSku = {
     sku_id: string;

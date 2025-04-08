@@ -1,21 +1,20 @@
 import { Link } from "react-router-dom";
 import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
-import { getUsers, changeActiveUser } from "@/api/UsersAPI";
-import Spinner from "@/components/Spinner";
-import { User } from "@/types";
+import { getUsers, changeActiveUser, User } from "@/api/UsersAPI";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function IndexUsers() {
-  const { data : users, isLoading, isError, refetch } = useQuery({
+  const { data: users, isLoading, isError, refetch } = useQuery({
     queryKey: ['getUsers'],
     queryFn: getUsers
   });
 
-  const { mutate,isPending } = useMutation({
-    mutationFn: (id : User['id']) => changeActiveUser(id),
-    onError:() => {
+  const { mutate, isPending } = useMutation({
+    mutationFn: (id: User['id']) => changeActiveUser(id),
+    onError: () => {
       toast.error('Hubo un error al actualizar el estado del empleado')
     },
     onSuccess: () => {
@@ -24,12 +23,11 @@ export default function IndexUsers() {
     }
   });
 
+  const handleChangeUserStatus = async (id: User["id"]) => mutate(id);
 
-  const handleChangeUserStatus = async (id: User["id"]) => {mutate(id)};
-
-  if(isLoading || isPending) return <Spinner />
-  if(isError) return <ShowErrorAPI />
-  return (
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+  if (users) return (
     <>
       <h2 className="font-bold text-4xl">Administración de Usuarios</h2>
       <div>
@@ -68,7 +66,7 @@ export default function IndexUsers() {
               </tr>
             </thead>
             <tbody>
-              {users?.data.map((user) => (
+              {users.map((user) => (
                 <tr className="tbody-tr" key={user.id}>
                   <td className="tbody-td">
                     <p>{user.name}</p>
@@ -96,8 +94,8 @@ export default function IndexUsers() {
                       <button
                         disabled={isPending}
                         className={`w-24 ${isPending
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
                           }`}
                       >
                         {isPending ? (

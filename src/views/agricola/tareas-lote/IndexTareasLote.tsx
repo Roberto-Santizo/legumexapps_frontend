@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
-import Task from "@/components/Task";
 import { useQueries } from "@tanstack/react-query";
 import { getTasks } from "@/api/TasksWeeklyPlanAPI";
 import { TasksWeeklyPlan } from "@/types";
-import Spinner from "@/components/Spinner";
+import Task from "@/components/tareas-lote-plan/Task";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function IndexTareasLote() {
   const params = useParams();
@@ -22,7 +22,7 @@ export default function IndexTareasLote() {
     ]
   });
 
-  const isLoading = results.some(result => result.isFetching);
+  const isLoading = results.some(result => result.isLoading);
 
   useEffect(() => {
     if (results[0].data) setRole(results[0].data);
@@ -30,15 +30,15 @@ export default function IndexTareasLote() {
   }, [results]);
 
   if (isLoading) return <Spinner />
-  
-  if(tasks.data) return (
+
+  if (tasks.data) return (
     <>
       <h2 className="font-bold text-3xl">
         Plan Semanal Semana {tasks.week} - FINCA {tasks.finca} - LOTE{" "}
         {tasks.lote}
       </h2>
       <div className="flex flex-col gap-10 mt-10">
-        {tasks.data.map((task) => <Task key={task.id} task={task} role={role} getTasks={() => results[1].refetch()}/>)}
+        {tasks.data.map((task) => <Task key={task.id} task={task} role={role} getTasks={() => results[1].refetch()} />)}
       </div>
     </>
   );

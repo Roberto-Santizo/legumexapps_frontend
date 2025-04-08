@@ -2,13 +2,13 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTasksByLineId, TaskByLine } from "@/api/WeeklyProductionPlanAPI";
 import { useState } from "react";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import TaskProduction from "@/components/TaskProduction";
-import ModalCierreTareaProduccion from "@/components/ModalCierreTareaProduccion";
-import ModalTomaRendimientoProduccion from "@/components/ModalTomaRendimientoProduccion";
-import ModalTiempoMuerto from "@/components/ModalTiempoMuerto";
-import ModalNotasProblemas from "@/components/ModalNotasProblemas";
+import TaskProduction from "@/components/produccion/TaskProduction";
+import ModalCierreTareaProduccion from "@/components/modals/ModalCierreTareaProduccion";
+import ModalTomaRendimientoProduccion from "@/components/modals/ModalTomaRendimientoProduccion";
+import ModalTiempoMuerto from "@/components/modals/ModalTiempoMuerto";
+import ModalNotasProblemas from "@/components/modals/ModalNotasProblemas";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function ShowLineaDetalles() {
     const params = useParams();

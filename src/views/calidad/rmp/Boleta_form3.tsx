@@ -1,25 +1,40 @@
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
-import SignatureCanvas from "react-signature-canvas";
-
 import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
-
-import { Button } from "@mui/material";
-import { BoletaDetail, Defect, DraftBoletaCalidad,ResultBoletaCalidad } from "@/types";
-import { createQualityDoc } from "@/api/ReceptionsDocAPI";
-import Spinner from "@/components/Spinner";
-import Error from "@/components/Error";
+import { Defect } from "@/types";
+import { BoletaDetail, createQualityDoc, ResultBoletaCalidad } from "@/api/ReceptionsDocAPI";
 import { useNavigate } from "react-router-dom";
+import { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import SignatureCanvas from "react-signature-canvas";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 type Props = {
   boleta: BoletaDetail
 }
 
+export type DraftBoletaControlCalidad = {
+  producer_id: string,
+  net_weight: number,
+  no_doc_cosechero: string,
+  sample_units: number,
+  total_baskets: number,
+  ph: number,
+  brix: number,
+  percentage: number,
+  valid_pounds: number,
+  observations: string,
+  isMinimunRequire: boolean,
+  inspector_signature: string,
+}
+
+
 export default function Boleta_form3({ boleta }: Props) {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [defects, setDefects] = useState<Defect[]>([]);
+  const [defects, setDefects] = useState<DraftDefecto[]>([]);
   const inspector_signature = useRef({} as SignatureCanvas);
   const [results, setResults] = useState<ResultBoletaCalidad[]>([]);
   const navigate = useNavigate();
@@ -39,32 +54,29 @@ export default function Boleta_form3({ boleta }: Props) {
     return percentage * 100 < boleta.minimun_percentage;
   }, [percentage]);
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['getDefectsByQualityProduct', boleta.product_id],
+    queryFn: () => getDefectsByQualityProduct(boleta.product_id)
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createQualityDoc,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate('/rmp');
+    }
+  });
+
   const {
     register,
     handleSubmit,
     control,
     setValue,
     formState: { errors },
-  } = useForm<DraftBoletaCalidad>();
-
-  const handleGetDefects = async () => {
-    setLoading(true);
-    try {
-      const data = await getDefectsByQualityProduct(boleta.product_id);
-      const initialResults = data.map((defect) => ({
-        input: 0,
-        id: defect.id,
-        result: 0,
-        tolerance_percentage: defect.tolerance_percentage
-      }));
-      setDefects(data.filter(defect => defect.status));
-      setResults(initialResults);
-    } catch (error) {
-      toast.error('Hubo un error al traer la información');
-    } finally {
-      setLoading(false);
-    }
-  }
+  } = useForm<DraftBoletaControlCalidad>();
 
   useEffect(() => {
     if (boleta) {
@@ -73,20 +85,27 @@ export default function Boleta_form3({ boleta }: Props) {
     }
   }, [boleta, setValue]);
 
-  useEffect(() => { 
+  useEffect(() => {
     setValue("isMinimunRequire", !isMinimunRequire);
-    setValue("percentage",percentage*100);
-    setValue("valid_pounds",percentage * (boleta.prod_net_weight ?? 0))
+    setValue("percentage", percentage * 100);
+    setValue("valid_pounds", percentage * (boleta.prod_net_weight ?? 0))
   }, [percentage]);
 
   useEffect(() => {
-    if (boleta) {
-      handleGetDefects();
+    if (data) {
+      const initialResults = data.map((defect) => ({
+        input: 0,
+        id: defect.id.toString(),
+        result: 0,
+        tolerance_percentage: defect.tolerance_percentage
+      }));
+      setDefects(data.filter(defect => defect.status));
+      setResults(initialResults);
     }
-  }, []);
+  }, [data]);
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const defect = defects.find(defect => defect.id === e.target.id);
+    const defect = defects.find(defect => defect.id === Number(e.target.id));
     const inputName = e.target.name;
 
     const existingResultIndex = results.findIndex((value) => value.id === inputName);
@@ -110,7 +129,7 @@ export default function Boleta_form3({ boleta }: Props) {
   };
 
   const handleGetResult = (id: Defect['id']) => {
-    const result = results.find(result => (result.id === id && result.result));
+    const result = results.find(result => (result.id === id.toString() && result.result));
     if (result) {
       if (result.result < 0) {
         return 0;
@@ -123,19 +142,10 @@ export default function Boleta_form3({ boleta }: Props) {
 
   }
 
-  const onSubmit = async (data : DraftBoletaCalidad) => {
-    setLoading(true);
-    try {
-      await createQualityDoc(data, boleta.id, results);
-      navigate('/rmp');
-      toast.success('Boleta de calidad creada correctamente');
-    } catch (error) {
-      toast.error('Hubo un error al crear la boleta de calidad');
-    }finally{
-      setLoading(false);
-    }
-  }
+  const onSubmit = async (data: DraftBoletaControlCalidad) => mutate({ FormData: data, id: boleta.id, results })
 
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
   return (
     <>
       <div>
@@ -262,7 +272,7 @@ export default function Boleta_form3({ boleta }: Props) {
                       <tr className="tbody-tr" key={defect.id}>
                         <td className="tbody-td font-bold">{defect.name}</td>
                         <td className="tbody-td">
-                          <input name={defect.id} id={defect.id} type="number" className="border border-black p-0.5" onChange={e => handleInput(e)} />
+                          <input name={defect.id.toString()} id={defect.id.toString()} type="number" className="border border-black p-0.5" onChange={e => handleInput(e)} />
                         </td>
                         <td className="tbody-td">{defect.tolerance_percentage}%</td>
                         <td className="tbody-td">
@@ -369,17 +379,17 @@ export default function Boleta_form3({ boleta }: Props) {
                     ref={inspector_signature}
                     penColor="black"
                     canvasProps={{ className: "w-full h-40 border" }}
-                  onEnd={() => {
-                    field.onChange(inspector_signature.current.toDataURL());
-                  }}
+                    onEnd={() => {
+                      field.onChange(inspector_signature.current.toDataURL());
+                    }}
                   />
                   <button
                     type="button"
                     className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
-                  onClick={() => {
-                    inspector_signature.current.clear();
-                    field.onChange("");
-                  }}
+                    onClick={() => {
+                      inspector_signature.current.clear();
+                      field.onChange("");
+                    }}
                   >
                     Limpiar Firma
                   </button>
@@ -391,18 +401,9 @@ export default function Boleta_form3({ boleta }: Props) {
             </label>
           </div>
 
-          <Button
-            disabled={loading}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {loading ? <Spinner /> : (
-              <p className="font-bold text-lg">Crear Boleta de Calidad</p>
-            )}
-          </Button>
+          <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Crear Boleta</p>}
+          </button>
         </form>
       </div >
     </>

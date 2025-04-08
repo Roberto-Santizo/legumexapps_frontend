@@ -3,9 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-import Pagination from "@/components/Pagination";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Spinner from "@/components/Spinner";
+import Pagination from "@/components/utilities-components/Pagination";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+
 
 export default function IndexLineasSku() {
     const [skus, setSkus] = useState<LineaSKU[]>([]);

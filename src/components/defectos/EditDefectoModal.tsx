@@ -1,11 +1,10 @@
 import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
 import { Dialog, Transition } from "@headlessui/react";
 import { Button } from "@mui/material";
-import Spinner from "../Spinner";
-import { DraftDefecto } from "@/types";
+import Spinner from "../utilities-components/Spinner";
 import DefectForm from "./DefectForm";
+import { DraftDefecto } from "./CreateDefectoModal";
 
 type Props = {
     modal: boolean;

@@ -1,12 +1,11 @@
 import { useForm } from "react-hook-form";
 import { DraftVariety } from "@/types";
-import Spinner from "@/components/Spinner";
-import { Button } from "@mui/material";
-import Error from "@/components/Error";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { createVariety } from "@/api/VarietiesAPI";
 import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
 
 export default function CrearVariedad() {
     const navigate = useNavigate();
@@ -27,10 +26,10 @@ export default function CrearVariedad() {
         register
     } = useForm<DraftVariety>();
 
-    const onSubmit = async (data : DraftVariety) => mutate(data);
+    const onSubmit = async (data: DraftVariety) => mutate(data);
 
     return (
-        <>
+        <div>
             <h2 className="font-bold text-3xl">Crear Variedad</h2>
 
             <form className="mt-5 w-1/2 mx-auto" noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -49,21 +48,10 @@ export default function CrearVariedad() {
                     {errors.name?.message && <Error>{errors.name.message}</Error>}
                 </div>
 
-                <Button
-                    disabled={isPending}
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                >
-                    {isPending ? (
-                        <Spinner />
-                    ) : (
-                        <p className="font-bold text-lg">Crear Variedad</p>
-                    )}
-                </Button>
+                <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-5">
+                    {isPending ? <Spinner /> : <p>Crear Variedad</p>}
+                </button>
             </form>
-        </>
+        </div>
     )
 }

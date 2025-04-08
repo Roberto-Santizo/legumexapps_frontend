@@ -1,5 +1,20 @@
 import clienteAxios from "@/config/axios";
-import { FincasSchema } from "@/utils/fincas-schema";
+import { z } from "zod";
+
+
+export const FincaSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    code: z.string(),
+    terminal_id: z.number()
+});
+
+
+export const FincasSchema = z.object({
+    data: z.array(FincaSchema)
+});
+
+export type Finca = z.infer<typeof FincaSchema>;
 
 export async function getAllFincas() {
     try {

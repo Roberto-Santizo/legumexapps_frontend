@@ -1,12 +1,9 @@
-//HOOKS
 import { useEffect, useState } from "react";
 import { useAppStore } from "../stores/useAppStore";
-
-//COMPONENTES
-import AgricolaDashboard from "../views/agricola/AgricolaDashboard";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "./Spinner";
+import AgricolaDashboard from "../views/agricola/AgricolaDashboard";
+import Spinner from "./utilities-components/Spinner";
 import GeneralDashboard from "../views/admin/GeneralDashboards";
 import CalidadDashboard from "../views/calidad/CalidadDashboard";
 import ProduccionCDashboard from "../views/calidad/ProduccionCDashboard";

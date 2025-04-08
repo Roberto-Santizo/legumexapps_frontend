@@ -1,8 +1,7 @@
 import  { useState } from "react";
-import Modal from "react-modal";
-import TaskLabel from "../../../components/TaskLabel";
 import { CircleCheck, PlayCircleIcon } from "lucide-react";
-
+import Modal from "react-modal";
+import TaskLabel from "@/components/utilities-components/TaskLabel";
 Modal.setAppElement("#root"); 
 
 export default function ModalSku() {

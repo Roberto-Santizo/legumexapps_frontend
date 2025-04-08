@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useQueries } from '@tanstack/react-query';
 import { getReceptionsByPercentageDiference, getReceptionsPendingQualityTest, ReceptionByPercentage } from '@/api/DashboardCalidadAPI';
-import Spinner from '@/components/Spinner';
+import Spinner from '@/components/utilities-components/Spinner';
 
 
 const CalidadDashboard: React.FC = () => {

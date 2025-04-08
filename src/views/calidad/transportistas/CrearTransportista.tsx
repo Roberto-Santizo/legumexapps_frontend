@@ -1,8 +1,8 @@
-import Error from "@/components/Error";
+import Error from "@/components/utilities-components/Error";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@mui/material";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/utilities-components/Spinner";
 import { createTransportista, DraftTransportista } from "@/api/TransportistasAPI";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

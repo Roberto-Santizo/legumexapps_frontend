@@ -2,8 +2,8 @@ import { useParams } from "react-router-dom";
 import { formatDate } from "@/helpers";
 import { getTaskCropDetails } from "@/api/TaskCropWeeklyPlanAPI";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function ResumenTareaCosechaLote() {
   const params = useParams();

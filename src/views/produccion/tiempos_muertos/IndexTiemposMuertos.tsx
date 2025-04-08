@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPaginatedTimeouts, Timeout } from "@/api/TimeOutsAPI";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { Edit, PlusIcon } from "lucide-react";
-import Pagination from "@/components/Pagination";
 import { Link } from "react-router-dom";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Pagination from "@/components/utilities-components/Pagination";
 
 export default function IndexTiemposMuertos() {
   const [timeouts, setTimeouts] = useState<Timeout[]>([]);

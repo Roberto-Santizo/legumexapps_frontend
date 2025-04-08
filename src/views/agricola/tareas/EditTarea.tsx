@@ -1,63 +1,34 @@
-//DEPENDENCIAS
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { getTareaById, updateTarea } from "@/api/TasksAPI";
+import { DraftTarea } from "./CreateTarea";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-
-//ESTADO GLOBAL
-
-//COMPONENTES
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Spinner from "@/components/Spinner";
-import { Button } from "@mui/material";
-import Error from "@/components/Error";
-
-//TYPES
-import { DraftTarea, Tarea } from "@/types";
-
-import { getTareaById } from "@/api/TasksAPI";
-import { updateTarea } from "@/api/TasksAPI";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import TareasForm from "./TareasForm";
 
 export default function EditTarea() {
-
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id!!;
   const navigate = useNavigate();
-  const [editingTarea, setEditingTarea] = useState<Tarea>({} as Tarea);
-  const [loadingGet, setLoadingGet] = useState<boolean>(false);
-  const [errorGet, setErrorGet] = useState<boolean>(false);
-  const [loadingPost, setLoadingPost] = useState<boolean>(false);
 
-  const handleGetTareaById = async () => {
-    setLoadingGet(true);
-    setErrorGet(false);
-    try {
-      if (id) {
-        const tarea = await getTareaById(id)
-        setEditingTarea(tarea);
-        setLoadingGet(false);
-      }
-    } catch (error) {
-      setErrorGet(true);
+  const { data: editingTarea, isLoading, isError } = useQuery({
+    queryKey: ['getTareaById', id],
+    queryFn: () => getTareaById(id)
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateTarea,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate('/tareas');
     }
-  }
-
-  const handleUpdateTarea = async (data: DraftTarea) => {
-    setLoadingPost(true);
-    if (id) {
-      const errors = await updateTarea(id, data);
-      if (errors) {
-        errors.forEach(error => toast.error(error[0]))
-        return;
-      }
-      toast.success("Tarea actualizada correctamente");
-      navigate("/tareas");
-    }
-    setLoadingPost(false);
-  }
-
-  useEffect(() => {
-    handleGetTareaById();
-  }, []);
+  });
 
   const {
     register,
@@ -75,89 +46,25 @@ export default function EditTarea() {
   }, [editingTarea, setValue]);
 
 
-  return (
+  const onSubmit = (data: DraftTarea) => mutate({ id, FormData: data })
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
+  if (editingTarea) return (
     <>
-      {!loadingGet && !errorGet && (
-        <>
-          <h2 className="text-4xl font-bold">Editar Tarea {editingTarea.name}</h2>
-        </>
-      )}
-      {loadingGet && <Spinner />}
+      <h2 className="text-4xl font-bold">Editar Tarea {editingTarea.name}</h2>
+      <div>
+        <form
+          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <TareasForm register={register} errors={errors} />
 
-      {!loadingGet && errorGet && <ShowErrorAPI />}
-
-      {!loadingGet && !errorGet && (
-        <div>
-          <form
-            className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
-            onSubmit={handleSubmit(handleUpdateTarea)}
-          >
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="name">
-                Nombre:
-              </label>
-              <input
-                autoComplete="off"
-                id="name"
-                type="text"
-                placeholder={"Nombre de la tarea"}
-                className="border border-black p-3"
-                {...register("name", { required: "El nombre es obligatorio" })}
-              />
-              {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="code">
-                Codigo:
-              </label>
-              <input
-                autoComplete="off"
-                id="code"
-                type="text"
-                placeholder={"Codigo de la tarea"}
-                className="border border-black p-3"
-                {...register("code", { required: "El codigo es obligatorio" })}
-              />
-              {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="name">
-                Descripción:
-              </label>
-              <input
-                autoComplete="off"
-                id="name"
-                type="text"
-                placeholder={"Descripción de la tarea"}
-                className="border border-black p-3"
-                {...register("description", {
-                  required: "La descripción es obligatorio",
-                })}
-              />
-              {errors.description && (
-                <Error>{errors.description?.message?.toString()}</Error>
-              )}
-            </div>
-
-            <Button
-              disabled={loadingPost}
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ marginTop: 2 }}
-            >
-              {loadingPost ? (
-                <Spinner />
-              ) : (
-                <p className="font-bold text-lg">Actualizar Tarea</p>
-              )}
-            </Button>
-          </form>
-        </div>
-      )}
+          <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+            {isPending ? <Spinner /> : <p>Guardar Cambios</p>}
+          </button>
+        </form>
+      </div>
     </>
   );
 }

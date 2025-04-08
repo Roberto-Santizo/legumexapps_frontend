@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
-import Spinner from "../components/Spinner";
-import ProtectedAgricolaRoutes from "../components/ProtectedAgricolaRoutes";
+import Spinner from "@/components/utilities-components/Spinner";
+import ProtectedRoutes from "@/components/middlewares/ProtectedRoutes";
 
 const routes = [
   { path: "/permisos-empleados", component: lazy(() => import("../views/rrhh/permisos/IndexPermisosEmpleados")), roles: ['admin'] },
@@ -18,9 +18,9 @@ export default function RecursosRoutes() {
           path={path}
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedAgricolaRoutes roles={roles}>
+              <ProtectedRoutes roles={roles}>
                 <Component />
-              </ProtectedAgricolaRoutes>
+              </ProtectedRoutes>
             </Suspense>
           }
         />

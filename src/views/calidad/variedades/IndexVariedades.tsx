@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/utilities-components/Spinner";
 import { Variety } from "@/types";
 import { PlusIcon } from "lucide-react";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import { Link } from "react-router-dom";
-import Pagination from "@/components/Pagination";
+import Pagination from "@/components/utilities-components/Pagination";
 import { getPaginatedVarieties } from "@/api/VarietiesAPI";
 import { useQuery } from "@tanstack/react-query";
 

@@ -1,25 +1,26 @@
-import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { DraftProducer } from "@/types";
-import Error from "@/components/Error";
-import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
 import { createProducer } from "@/api/ProducersAPI";
 import { useMutation } from "@tanstack/react-query";
+import Error from "@/components/utilities-components/Error";
+import Spinner from "@/components/utilities-components/Spinner";
+
+export type DraftProducer = {
+  code: string,
+  name: string
+}
 
 export default function CreateProducer() {
   const navigate = useNavigate();
 
-
   const { mutate, isPending } = useMutation({
     mutationFn: createProducer,
-    onError: () => {
-      toast.error('Hubo un error al crear el productor');
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Productor creado correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/productores');
     }
   });
@@ -66,20 +67,9 @@ export default function CreateProducer() {
             {errors.code?.message && <Error>{errors.code.message.toString()}</Error>}
           </div>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Productor</p>
-            )}
-          </Button>
+          <button className="button bg-indigo-500 hover:bg-indigo-600 min-w-full">
+              {isPending ? <Spinner /> : <p>Crear Productor</p>}
+          </button>
         </form>
       </div>
       

@@ -1,6 +1,20 @@
 import clienteAxios from "@/config/axios";
-import { DraftRole, Role } from "@/types";
-import { RolesSchema } from "@/utils/roles-schema";
+import { isAxiosError } from "axios";
+import { DraftRole } from "views/admin/roles/CreateRole";
+import { z } from "zod";
+
+export const RoleSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    created_at: z.string(),
+    updated_at: z.string()
+});
+
+export type Role = z.infer<typeof RoleSchema>
+
+export const RolesSchema = z.object({
+    data: z.array(RoleSchema)
+})
 
 export async function getRoles(): Promise<Role[]> {
     try {
@@ -17,14 +31,14 @@ export async function getRoles(): Promise<Role[]> {
     }
 }
 
-export async function createRole(rol : DraftRole): Promise<string[] | void> {
+export async function createRole(rol: DraftRole) {
     try {
         const url = '/api/roles';
-        await clienteAxios.post(url, rol);
+        const { data } = await clienteAxios.post<string>(url, rol);
+        return data;
     } catch (error: any) {
-        if (error.response?.data?.errors) {
-            return Object.values(error.response.data.errors);
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
-        return ["Error desconocido"];
     }
 }

@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
-import Error from "@/components/Error";
 import { createLinea } from "@/api/LineasAPI";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
+
 
 export type DraftLinea = {
   code: string;

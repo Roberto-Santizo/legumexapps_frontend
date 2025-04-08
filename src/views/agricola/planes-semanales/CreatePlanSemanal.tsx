@@ -7,7 +7,7 @@ import { createPlan } from "@/api/WeeklyPlansAPI";
 //COMPONENTES
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function CreatePlanSemanal() {
   const [file, setFile] = useState<File[] | null>(null);

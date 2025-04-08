@@ -4,10 +4,11 @@ import { downloadPlanillaProduction, getWeeklyPlanDetails, LineWeeklyPlan } from
 import { CircleCheck, Eye, FileDown, Upload } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import ModalCargaPosiciones from "@/components/ModalCargaPosiciones";
-import LoadingOverlay from "@/components/LoadingOverlay";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import ModalCargaPosiciones from "@/components/modals/ModalCargaPosiciones";
+import LoadingOverlay from "@/components/utilities-components/LoadingOverlay";
+
 
 export default function ShowPlanSemanalProduccion() {
   const params = useParams();

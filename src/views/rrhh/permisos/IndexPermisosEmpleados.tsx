@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { closeEmployeePermission, getPermisosEmpleadosPaginated, PermisoEmpleado } from "@/api/PermisosEmpleadosAPI";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { formatDate } from "@/helpers";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
-import Pagination from "@/components/Pagination";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { Eye } from "lucide-react";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Pagination from "@/components/utilities-components/Pagination";
+import Swal from "sweetalert2";
 
 export default function IndexPermisosEmpleados() {
   const [pageCount, setPageCount] = useState<number>(0);

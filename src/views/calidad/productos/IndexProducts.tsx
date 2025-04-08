@@ -1,11 +1,10 @@
 import { Edit, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Spinner from "@/components/Spinner";
-import { Product } from "@/types";
-import Pagination from "@/components/Pagination";
-import { getPaginatedProducts } from "@/api/ProductsAPI";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import Pagination from "@/components/utilities-components/Pagination";
+import { getPaginatedProducts, Product } from "@/api/ProductsAPI";
 import { useQuery } from "@tanstack/react-query";
 
 

@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-import { getAllFincas } from "@/api/FincasAPI";
+import { Finca, getAllFincas } from "@/api/FincasAPI";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { FiletrsBoletaRMP, Finca, Producer, Product } from "@/types";
-import { getProducts } from "@/api/ProductsAPI";
-import Spinner from "../Spinner";
-import { getAllProducers } from "@/api/ProducersAPI";
+import { FiletrsBoletaRMP } from "@/types";
+import { getProducts, Product } from "@/api/ProductsAPI";
+import Spinner from "../utilities-components/Spinner";
+import { getAllProducers, Producer } from "@/api/ProducersAPI";
 import { useQueries } from "@tanstack/react-query";
 import { getQualityStatuses, QualityStatus } from "@/api/ReceptionsDocAPI";
 

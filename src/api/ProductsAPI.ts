@@ -1,16 +1,40 @@
+import { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
 import clienteAxios from "@/config/axios";
-import { DraftDefecto, DraftProduct, PaginateProducts, Product } from "@/types";
-import { DetailProductSchema, ProductsPaginateSchema, ProductsSchema } from "@/utils/product-schema";
+import { DraftProduct } from "@/views/calidad/productos/CrearProduct";
+import { isAxiosError } from "axios";
+import { z } from "zod";
 
-export async function createProduct(data: DraftProduct, defects: DraftDefecto[]): Promise<void | string[]> {
+export async function createProduct({ FormData, defects }: { FormData: DraftProduct, defects: DraftDefecto[] }) {
     try {
         const url = '/api/products';
-        await clienteAxios.post(url, { data, defects });
+        const { data } = await clienteAxios.post<string>(url, { data : FormData, defects });
+        return data;
     } catch (error: any) {
-        console.log(error);
-        return Object.values(error.response.data.errors);
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }
+
+export const ProductSchema = z.object({
+    id: z.string(),
+    product: z.string(),
+    variety: z.string(),
+});
+
+export type Product = z.infer<typeof ProductSchema>
+
+
+export const ProductsPaginateSchema = z.object({
+    data: z.array(ProductSchema),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    })
+});
+
+export type PaginateProducts = z.infer<typeof ProductsPaginateSchema>
+
 
 export async function getPaginatedProducts(page: number): Promise<PaginateProducts> {
     try {
@@ -29,6 +53,10 @@ export async function getPaginatedProducts(page: number): Promise<PaginateProduc
     }
 }
 
+export const ProductsSchema = z.object({
+    data:z.array(ProductSchema)
+});
+
 export async function getProducts(): Promise<Product[]> {
     try {
         const url = '/api/products-all';
@@ -45,7 +73,26 @@ export async function getProducts(): Promise<Product[]> {
     }
 }
 
-export async function getProductById(id : Product['id']) {
+export const DefectSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    tolerance_percentage: z.number(),
+    status: z.boolean(),
+});
+
+export const DetailProductSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    variety_product_id: z.string(),
+    accepted_percentage: z.number(),
+    defects: z.array(DefectSchema)
+
+});
+
+export type ProductDetail = z.infer<typeof DetailProductSchema>
+
+
+export async function getProductById(id: Product['id']) {
     try {
         const url = `/api/products/${id}`;
         const { data } = await clienteAxios(url);
@@ -61,7 +108,7 @@ export async function getProductById(id : Product['id']) {
     }
 }
 
-export async function editProduct(id: Product['id'], data: DraftProduct, defects: DraftDefecto[]) : Promise<void> {
+export async function editProduct(id: Product['id'], data: DraftProduct, defects: DraftDefecto[]): Promise<void> {
     try {
         const url = `/api/products/${id}`;
         await clienteAxios.put(url, { data, defects });

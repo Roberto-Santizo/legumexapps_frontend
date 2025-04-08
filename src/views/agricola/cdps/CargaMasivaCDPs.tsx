@@ -1,16 +1,25 @@
-import { Button } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
-
 import { uploadCDPS } from "@/api/PlantationControlAPI";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function CargaMasivaCDPs() {
   const [file, setFile] = useState<File[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: uploadCDPS,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate('/cdps');
+    }
+  });
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles) {
@@ -20,27 +29,13 @@ export default function CargaMasivaCDPs() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleUploadFile = async () => {
-    setLoading(true);
-    try {
-      if (file) {
-        const errors = await uploadCDPS(file);
-        if (errors) {
-          toast.error(errors);
-          return;
-        }
-        navigate("/cdps");
-        toast.success("CDPS creados correctamente");
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleUploadFile();
+    if (file) {
+      mutate(file);
+    }else{
+      toast.error('El archivo de carga es necesario');
+    }
   };
   return (
     <>
@@ -57,7 +52,7 @@ export default function CargaMasivaCDPs() {
             backgroundColor: isDragActive ? "#e3f2fd" : "#f9f9f9",
           }}
         >
-          <input {...getInputProps()} disabled={loading || !!file} />
+          <input {...getInputProps()} disabled={isPending || !!file} />
           {file ? (
             <p className="text-green-600 font-medium">
               Archivo: {file[0].name}
@@ -73,20 +68,9 @@ export default function CargaMasivaCDPs() {
           )}
         </div>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-          disabled={!file || loading}
-        >
-          {loading ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Crear CDPS</p>
-          )}
-        </Button>
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-2">
+          {isPending ? <Spinner /> : <p>Actualizar CDPS</p>}
+        </button>
       </form>
     </>
   );

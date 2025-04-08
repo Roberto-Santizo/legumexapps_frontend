@@ -1,99 +1,46 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { CDP, Finca, loteCDPDetails } from "@/types";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
-import { Lote } from "@/types";
-import TaskLabel from "@/components/TaskLabel";
-import { formatDate } from "@/helpers";
-import { EyeIcon, Search } from "lucide-react";
-
+import { Search } from "lucide-react";
 import { getAllFincas } from "@/api/FincasAPI";
-import { getAllLotesByFincaId, getAllCdpsByLoteId, getCDPInfoByCDPId } from "@/api/LotesAPI";
-
+import { getAllCdpsByLoteId, getAllLotesByFincaId, getCDPInfoByCDPId } from "@/api/LotesAPI";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
+import LoteDetails from "@/components/consulta-lote/LoteDetails";
 
 export default function ConsultaLote() {
-  const [fincas, setFincas] = useState<Finca[]>([]);
-  const [lotes, setLotes] = useState<Lote[]>([]);
-  const [cdps, setCDPS] = useState<CDP[]>([]);
-  const [search, setSearch] = useState({
-    cdp_id: "",
-    lote_id: "",
+  const [selectedFincaId, setSelectedFincaId] = useState<string>("");
+  const [selectedLoteId, setSelectedLoteId] = useState<string>("");
+  const [selectedCdpId, setSelectedCdpId] = useState<string>("");
+
+  const { data: fincas } = useQuery({
+    queryKey: ['getAllFincas'],
+    queryFn: getAllFincas,
   });
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<loteCDPDetails>({} as loteCDPDetails);
 
-  const handleGetFincas = async () => {
-    setLoading(true);
-    try {
-      const fincas = await getAllFincas();
-      setFincas(fincas);
-    } catch (error) {
-      toast.error("Error al trear fincas, intentelo de nuevo más tarde");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: lotes } = useQuery({
+    queryKey: ['getAllLotesByFincaId', selectedFincaId],
+    queryFn: () => getAllLotesByFincaId(selectedFincaId),
+    enabled: !!selectedFincaId,
+  });
 
-  const handleGetLotes = async (id: string) => {
-    setLoading(true);
-    try {
-      const lotes = await getAllLotesByFincaId(id);
-      setLotes(lotes);
-    } catch (error) {
-      toast.error(
-        "Existe un error al cargar los lotes, vuelve a intenterlo más tarde"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: cdps } = useQuery({
+    queryKey: ['getAllCdpsByLoteId', selectedLoteId],
+    queryFn: () => getAllCdpsByLoteId(selectedLoteId),
+    enabled: !!selectedLoteId,
+  });
 
-  const handleGetCDPS = async (id: Lote["id"]) => {
-    setLoading(true);
-    try {
-      const cdps = await getAllCdpsByLoteId(id);
-      setCDPS(cdps);
-    } catch (error) {
-      toast.error(
-        "Hubo un error al traer los CDPS, intentelo de nuevo más tarde"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    handleGetFincas();
-  }, []);
-
-  const handleChange = async (e: ChangeEvent<HTMLSelectElement>) => {
-    setData({} as loteCDPDetails);
-    if (e.target.name === "finca_id") {
-      handleGetLotes(e.target.value);
-    }
-    if (e.target.name === "lote_id") {
-      handleGetCDPS(e.target.value);
-    }
-
-    setSearch({ ...search, [e.target.name]: e.target.value });
-  };
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: ['getCDPInfoByCDPId', selectedCdpId],
+    queryFn: () => getCDPInfoByCDPId(selectedCdpId),
+    enabled: false,
+  });
 
   const searchInfo = async () => {
-    if (Object.values(search).some((value) => value === "")) {
-      toast.error('Todos los datos son obligatorios');
+    if (!selectedCdpId) {
+      toast.error("El CDP es necesario para la búsqueda");
       return;
     }
-    setLoading(true);
-    try {
-      const data = await getCDPInfoByCDPId(search.cdp_id);
-      setData(data);
-    } catch (error) {
-      toast.warning(
-        "Hubo un error al buscar los datos o no exite información relacionada"
-      );
-    } finally {
-      setLoading(false);
-    }
+    refetch();
   };
 
   return (
@@ -109,11 +56,16 @@ export default function ConsultaLote() {
             <select
               id="finca_id"
               name="finca_id"
+              value={selectedFincaId}
+              onChange={(e) => {
+                setSelectedFincaId(e.target.value);
+                setSelectedLoteId("");
+                setSelectedCdpId("");
+              }}
               className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md"
-              onChange={(e) => handleChange(e)}
             >
               <option value="">--SELECCIONE UNA OPCIÓN--</option>
-              {fincas.map((finca) => (
+              {fincas?.map((finca) => (
                 <option key={finca.id} value={finca.id}>
                   {finca.name}
                 </option>
@@ -128,11 +80,16 @@ export default function ConsultaLote() {
             <select
               id="lote_id"
               name="lote_id"
+              value={selectedLoteId}
+              onChange={(e) => {
+                setSelectedLoteId(e.target.value);
+                setSelectedCdpId("");
+              }}
               className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md"
-              onChange={(e) => handleChange(e)}
+              disabled={!selectedFincaId}
             >
               <option value="">--SELECCIONE UNA OPCIÓN--</option>
-              {lotes.map((lote) => (
+              {lotes?.map((lote) => (
                 <option key={lote.id} value={lote.id}>
                   {lote.name}
                 </option>
@@ -147,102 +104,31 @@ export default function ConsultaLote() {
             <select
               id="cdp_id"
               name="cdp_id"
+              value={selectedCdpId}
+              onChange={(e) => setSelectedCdpId(e.target.value)}
               className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md"
-              onChange={(e) => handleChange(e)}
+              disabled={!selectedLoteId}
             >
               <option value="">--SELECCIONE UNA OPCIÓN--</option>
-              {cdps.map((cdp) => (
+              {cdps?.map((cdp) => (
                 <option key={cdp.id} value={cdp.id}>
                   {cdp.cdp}
                 </option>
               ))}
             </select>
           </div>
-
         </div>
+
         <button
-          disabled={loading}
+          disabled={isLoading}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() => searchInfo()}
+          onClick={searchInfo}
         >
-          {loading ? <Spinner /> : <Search />}
+          {isLoading ? <Spinner /> : <Search />}
         </button>
       </div>
 
-
-      {(!loading && data.data && data.data_lote) && (
-        <div className="space-y-5">
-          <div className="mt-10 shadow-xl p-5">
-            <h2 className="text-center text-xl font-bold uppercase">
-              Información del Lote
-            </h2>
-            <TaskLabel label="Control de Plantación" text={data.data_lote.cdp} />
-            <TaskLabel label="Fecha de Incio" text={formatDate(data.data_lote.start_date_cdp)} />
-            <TaskLabel label="Fecha Final" text={data.data_lote.end_date_cdp ? formatDate(data.data_lote.start_date_cdp) : 'SIN CIERRE'} />
-          </div>
-
-          <div className="space-y-5">
-            {Object.entries(data.data).map(([week, tasks]) => (
-              <div key={week} className="p-5">
-                <h1
-                  className="font-bold text-center uppercase text-xl mb-5"
-                >
-                  Semana {week} <span className="text-xs">(Calendario)</span>
-                </h1>
-                <table className="table">
-                  <thead>
-                    <tr className="thead-tr">
-                      <th scope="col" className="thead-th">
-                        TAREA
-                      </th>
-                      <th scope="col" className="thead-th">
-                        ESTADO
-                      </th>
-                      <th scope="col" className="thead-th">
-                        Semana de Aplicación
-                      </th>
-                      <th scope="col" className="thead-th">
-                        HORAS TEORICAS
-                      </th>
-                      <th scope="col" className="thead-th">
-                        HORAS REALES
-                      </th>
-                      <th scope="col" className="thead-th">
-                        RENDIMIENTO
-                      </th>
-                      <th scope="col" className="thead-th">
-                        ACCIONES
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="font-bold">
-                    {tasks.map((task) => (
-                      <tr className="tbody-tr" key={task.id}>
-                        <td className="tbody-td">{task.task}</td>
-                        <td className="tbody-td uppercase  text-center font-bold text-white">{task.closed ? <p className="bg-green-500">CERRADA</p> : <p className="bg-red-500">SIN CIERRE</p>}</td>
-                        <td className="tbody-td">{(task.aplication_week)}</td>
-                        <td className="tbody-td">{task.hours}</td>
-                        <td className="tbody-td">{task.real_hours ?? 0}</td>
-                        <td className="tbody-td">{task.performance ?? 0} %</td>
-                        <td className="tbody-td">
-                          {task.closed ? (
-                            <EyeIcon className="cursor-pointer hover:text-gray-500" onClick={() => {
-                              window.open(
-                                `/planes-semanales/tareas-lote/informacion/${task.id}`,
-                              );
-                            }} />
-                          ) : <></>}
-                        </td>
-
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {data && <LoteDetails data={data} />}
     </div>
   );
 }

@@ -1,15 +1,13 @@
-import { Button } from "@mui/material";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "@/components/Spinner";
-
 import { updateLotes } from "@/api/LotesAPI";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function ActualizacionMasiva() {
   const [file, setFile] = useState<File[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -20,24 +18,22 @@ export default function ActualizacionMasiva() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleUploadFile = async () => {
-    setLoading(true);
-    try {
-      if (file) {
-        await updateLotes(file);
-        navigate("/lotes");
-        toast.success("Lotes Actualizados Correctamente");
-      }
-    } catch (error) {
-      toast.error('Error al actualizar los lotes');
-    } finally {
-      setLoading(false);
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateLotes,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate('/lotes');
     }
-  };
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleUploadFile();
+    if (file) {
+      mutate(file)
+    }
   };
   return (
     <>
@@ -54,7 +50,7 @@ export default function ActualizacionMasiva() {
             backgroundColor: isDragActive ? "#e3f2fd" : "#f9f9f9",
           }}
         >
-          <input {...getInputProps()} disabled={loading || !!file} />
+          <input {...getInputProps()} disabled={isPending || !!file} />
           {file ? (
             <p className="text-green-600 font-medium">
               Archivo: {file[0].name}
@@ -70,20 +66,9 @@ export default function ActualizacionMasiva() {
           )}
         </div>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-          disabled={!file || loading}
-        >
-          {loading ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Actualizar Lotes</p>
-          )}
-        </Button>
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-2">
+          {isPending ? <Spinner /> : <p>Actualizar Lotes</p>}
+        </button>
       </form>
     </>
   );

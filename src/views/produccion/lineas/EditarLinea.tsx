@@ -5,9 +5,9 @@ import { getLineaById, updateLinea } from "@/api/LineasAPI";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { DraftLinea } from "./CrearLinea";
-import Spinner from "@/components/Spinner";
-import Error from "@/components/Error";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function EditarLinea() {
   const navigate = useNavigate();

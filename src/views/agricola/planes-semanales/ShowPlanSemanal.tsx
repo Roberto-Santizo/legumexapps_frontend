@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { getPlanById } from "@/api/WeeklyPlansAPI";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function ShowPlanSemanal() {
   const params = useParams();

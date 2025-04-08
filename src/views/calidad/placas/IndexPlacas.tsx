@@ -1,10 +1,10 @@
-import Pagination from "@/components/Pagination";
+import Pagination from "@/components/utilities-components/Pagination";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import { getPlacasPaginated, Placa } from "@/api/PlacasAPI";
 
 export default function IndexPlacas() {

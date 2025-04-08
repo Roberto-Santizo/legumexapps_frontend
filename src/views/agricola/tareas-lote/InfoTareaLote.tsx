@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/utilities-components/Spinner";
 import { Trash } from "lucide-react";
-import DronIcon from "@/components/DronIcon";
+import DronIcon from "@/components/dashboard-agricola/DronIcon";
 import { useQuery } from "@tanstack/react-query";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import { getTaskDetailsById } from "@/api/TasksWeeklyPlanAPI";
 
 export default function InfoTareaLote() {

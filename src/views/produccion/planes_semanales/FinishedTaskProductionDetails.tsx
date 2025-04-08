@@ -4,11 +4,11 @@ import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import GraphicsPlanSemanal from "./GraphicsPlanSemanal";
 import HoverCardDemo from "@/components/ui/HoverCardDemo";
-import ModalHistoryChangeOperation from "@/components/ModalHistoryChangeOperation";
+import ModalHistoryChangeOperation from "@/components/modals/ModalHistoryChangeOperation";
 import HoverCardNote from "@/components/ui/HoverCardNote";
 
 export default function TareaProduccionDetails() {

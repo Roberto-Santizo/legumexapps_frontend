@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { getPaginatedWeeklyProductionPlans, WeeklyPlanProductionPlan } from "@/api/WeeklyProductionPlanAPI";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
-import Pagination from "@/components/Pagination";
 import { CalendarRange, Clock, Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Pagination from "@/components/utilities-components/Pagination";
 
 export default function IndexPlanSemanalProduccion() {
     const [pageCount, setPageCount] = useState<number>(0);

@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTaskProductionInProgressDetail } from "@/api/WeeklyProductionPlanAPI";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import GraphicsPlanSemanal, { graphDataType } from "./GraphicsPlanSemanal";
 import { useEffect, useState } from "react";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function TaskProductionPlanDetails() {
   const params = useParams();

@@ -5,8 +5,8 @@ import { useParams } from "react-router-dom";
 import InspeccionTransporte from "@/components/boleta-camion/InspeccionTransporte";
 import { useQuery } from "@tanstack/react-query";
 import { getBoletaInfoAll } from "@/api/ReceptionsDocAPI";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function ShowRMP() {
   const params = useParams();

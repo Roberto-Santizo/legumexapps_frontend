@@ -3,8 +3,8 @@ import { createSKU } from "@/api/SkusAPI";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import Spinner from "@/components/Spinner";
-import Error from "@/components/Error";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
 
 export type DraftSku = {
   code: string;

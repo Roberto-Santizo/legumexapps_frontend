@@ -2,10 +2,10 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getLineaById } from "@/api/LineasAPI";
 import { FileUp } from "lucide-react";
-import Spinner from "@/components/Spinner";
-import ShowErrorAPI from "@/components/ShowErrorAPI";
 import { useState } from "react";
-import ModalCargaPosicionesLinea from "@/components/ModalCargaPosicionesLinea";
+import ModalCargaPosicionesLinea from "@/components/modals/ModalCargaPosicionesLinea";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function PosicionesLinea() {
     const params = useParams();

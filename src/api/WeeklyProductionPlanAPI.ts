@@ -1,18 +1,18 @@
 import clienteAxios from "@/config/axios";
 import { z } from 'zod';
 import { SKUSchema } from "./SkusAPI";
-import { DraftChangePosition } from "@/components/ModalChangeEmployee";
-import { DraftPerformance } from "@/components/ModalTomaRendimientoProduccion";
-import { DraftCloseTask } from "@/components/ModalCierreTareaProduccion";
-import { DraftTaskProduction } from "@/components/ModalNuevaTareaProduccion";
+import { DraftChangePosition } from "@/components/modals/ModalChangeEmployee";
+import { DraftPerformance } from "@/components/modals/ModalTomaRendimientoProduccion";
+import { DraftCloseTask } from "@/components/modals/ModalCierreTareaProduccion";
+import { DraftTaskProduction } from "@/components/modals/ModalNuevaTareaProduccion";
 import { Linea, PositionSchema } from "./LineasAPI";
-import { DraftNewTaskProduction } from "@/components/ModalCrearTareaProduccion";
+import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
 import { isAxiosError } from "axios";
 import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
-import { DraftNote } from "@/components/ModalNotasProblemas";
-import { DraftTaskProductionEmployee } from "@/components/ModalAddEmployee";
-import { DraftChangeOperationDate } from "@/components/ModalChangeOperationDate";
+import { DraftNote } from "@/components/modals/ModalNotasProblemas";
+import { DraftTaskProductionEmployee } from "@/components/modals/ModalAddEmployee";
+import { DraftChangeOperationDate } from "@/components/modals/ModalChangeOperationDate";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
