@@ -145,7 +145,7 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
 
             <fieldset className="shadow p-5">
                 <legend className="text-3xl font-bold">Permisos</legend>
-                <div className="flex flex-col gap-5 my-5 w-full p-2 max-h-96 overflow-y-scroll">
+                <div className="flex flex-col gap-5 my-5 w-full p-2 max-h-96 overflow-y-scroll scrollbar-hide">
                     <table className="table">
                         <thead>
                             <tr className="thead-tr">
@@ -155,7 +155,7 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
                         </thead>
                         <tbody>
                             {permissions.map(permission => (
-                                <tr className="tbody-tr">
+                                <tr className="tbody-tr" key={permission.id}>
                                     <td className="tbody-td">
                                         {permission.name}
                                     </td>

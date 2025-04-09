@@ -4,7 +4,6 @@ import { SKUSchema } from "./SkusAPI";
 import { DraftChangePosition } from "@/components/modals/ModalChangeEmployee";
 import { DraftPerformance } from "@/components/modals/ModalTomaRendimientoProduccion";
 import { DraftCloseTask } from "@/components/modals/ModalCierreTareaProduccion";
-import { DraftTaskProduction } from "@/components/modals/ModalNuevaTareaProduccion";
 import { Linea, PositionSchema } from "./LineasAPI";
 import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
 import { isAxiosError } from "axios";
@@ -337,15 +336,6 @@ export async function createNewTaskProduction(FormData: DraftNewTaskProduction) 
     }
 }
 
-export async function createTaskProduction(data: DraftTaskProduction) {
-    try {
-        const url = '/api/task_production_plan';
-        await clienteAxios.post(url, data);
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export async function changeTasksPriority(data: string[]) {
     try {

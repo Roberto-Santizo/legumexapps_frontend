@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import AgricolaDashboard from "../agricola/AgricolaDashboard";
 import AdminDashboard from "./AdminDashboard";
+import AgricolaDashboard from "./AgricolaDashboard";
 
 export default function GeneralDashboard() {
   const [activeForm, setActiveForm] = useState<string>("A");

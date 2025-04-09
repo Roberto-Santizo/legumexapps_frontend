@@ -1,19 +1,14 @@
-import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
-import { HomeIcon, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { Dispatch } from "react";
-import AdminNavegation from "../menus-navegations/AdminNavegation";
-import AgricolaNavegation from "../menus-navegations/AgricolaNavegation";
-import BoletaRMPNavigation from "../menus-navegations/BoletaRMPNavigation";
-import ProduccionNavigation from "../menus-navegations/ProduccionNavegation";
+import Navegation from "../Navegation";
 
 type Props = {
-    role: string;
     modal: boolean;
     setModal: Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function MobileSidebar({ role, modal, setModal }: Props) {
+export default function MobileSidebar({ modal, setModal }: Props) {
     return (
         <>
             <div
@@ -41,33 +36,7 @@ export default function MobileSidebar({ role, modal, setModal }: Props) {
                                 Menu
                             </h2>
                             <nav className="gap-2 py-2 flex flex-col w-full">
-                                <NavLink
-                                    to="/dashboard"
-                                    className={({ isActive }) =>
-                                        `flex items-center gap-2 rounded transition-colors w-full p-2 ${isActive ? "bg-gray-200" : "hover:bg-gray-200"
-                                        }`
-                                    }
-                                >
-                                    <HomeIcon className="w-6" />
-                                    <p className="text-sm font-bold">Dashboard</p>
-                                </NavLink>
-
-                                {["admin"].includes(role) && (
-                                    <>
-                                        <AdminNavegation />
-                                        <AgricolaNavegation role={role} />
-                                        <BoletaRMPNavigation role={role} />
-                                        <ProduccionNavigation />
-                                    </>
-                                )}
-
-                                {["auxagricola", "adminagricola"].includes(role) && (
-                                    <AgricolaNavegation role={role} />
-                                )}
-
-                                {["pprod", "admincalidad", "auxcalidad", "pcostos", "pcalidad"].includes(role) && (
-                                    <BoletaRMPNavigation role={role} />
-                                )}
+                                <Navegation />
                             </nav>
                         </div>
                     </div>

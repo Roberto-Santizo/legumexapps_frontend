@@ -5,8 +5,8 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ProtectedRoutes from "@/components/middlewares/ProtectedRoutes";
 
 const routes = [
-  { path: "/permisos-empleados", component: lazy(() => import("../views/rrhh/permisos/IndexPermisosEmpleados")), roles: ['admin'] },
-  { path: "/permisos-empleados/:id", component: lazy(() => import("../views/rrhh/permisos/ShowPermisoEmpleado")), roles: ['admin'] },
+  { path: "/permisos-empleados", component: lazy(() => import("../views/rrhh/permisos/IndexPermisosEmpleados")), roles: ['admin','auxrrhh'] },
+  { path: "/permisos-empleados/:id", component: lazy(() => import("../views/rrhh/permisos/ShowPermisoEmpleado")), roles: ['admin','auxrrhh'] },
 ];
 
 export default function RecursosRoutes() {

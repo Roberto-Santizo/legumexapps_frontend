@@ -41,7 +41,7 @@ export default function IndexUsers() {
           </Link>
         </div>
 
-        <div className="p-2 h-96 overflow-y-auto mt-10">
+        <div className="p-2 h-96 overflow-y-auto mt-10 scrollbar-hide">
           <table className="table">
             <thead>
               <tr className="thead-tr">

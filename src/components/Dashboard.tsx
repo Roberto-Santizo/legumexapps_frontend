@@ -1,52 +1,48 @@
-import { useEffect, useState } from "react";
-import { useAppStore } from "../stores/useAppStore";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import AgricolaDashboard from "../views/agricola/AgricolaDashboard";
+import { Navigate } from "react-router-dom";
+import { getUserRoleByToken } from "@/api/LoginAPI";
 import Spinner from "./utilities-components/Spinner";
-import GeneralDashboard from "../views/admin/GeneralDashboards";
-import CalidadDashboard from "../views/calidad/CalidadDashboard";
-import ProduccionCDashboard from "../views/calidad/ProduccionCDashboard";
-import CostosDashboard from "../views/calidad/CostosDashboard";
-import PersonalCalidadDashboard from "../views/calidad/PersonalCalidadDashboard";
+import GeneralDashboard from "./dashboards/GeneralDashboards";
+import AgricolaDashboard from "./dashboards/AgricolaDashboard";
+import PersonalCalidadDashboard from "./dashboards/PersonalCalidadDashboard";
+import CalidadDashboard from "./dashboards/CalidadDashboard";
+import ProduccionCDashboard from "./dashboards/ProduccionCDashboard";
+import CostosDashboard from "./dashboards/CostosDashboard";
+import RecursosDashboard from "./dashboards/RecursosDashboard";
+import LogisticsDashboard from "./dashboards/LogisticsDashboard";
+import GerenciaDashboard from "./dashboards/GerenciaDashboard";
 
 export default function Dashboard() {
   const dashboards = {
     'admin': (<GeneralDashboard />),
-    'adminagricola':  (<AgricolaDashboard />),
+    'adminagricola': (<AgricolaDashboard />),
     'auxagricola': (<AgricolaDashboard />),
     'pcalidad': (<PersonalCalidadDashboard />),
     'auxcalidad': (<CalidadDashboard />),
     'admincalidad': (<CalidadDashboard />),
     'pprod': (<ProduccionCDashboard />),
     'pcostos': (<CostosDashboard />),
+    'auxrrhh': (<RecursosDashboard />),
+    'logistics': (<LogisticsDashboard />),
+    'gerencia': (<GerenciaDashboard />),
   };
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [role, setRole] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
+  const { data: role, isLoading, isError, error } = useQuery({
+    queryKey: ['getUserRoleByToken'],
+    queryFn: getUserRoleByToken,
+    retry: false
+  });
 
-  useEffect(() => {
-    const handleGetUserRoleByToken = async () => {
-      try {
-        const userRole = await getUserRoleByToken();
-        setRole(userRole);
-      } catch (error) {
-        toast.error("Hubo un error al cargar el contenido");
-        navigate("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (isError) {
+    toast.error(error.message, { toastId: 'loginError' });
+    return <Navigate to={'/'} />
+  }
 
-    handleGetUserRoleByToken();
-  }, []);
-
-  return (
+  if (isLoading) return <Spinner />;
+  if (role) return (
     <>
-      {loading && <Spinner />}
-      {!loading && dashboards[role as keyof typeof dashboards]}
+      {dashboards[role as keyof typeof dashboards]}
     </>
   );
 }

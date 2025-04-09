@@ -18,7 +18,8 @@
       "@/config/*": ["config/*"],
       "@/helpers": ["helpers/index.ts"],
       "@/lib/*": ["lib/*"],
-      "@/views/*": ["views/*"]
+      "@/views/*": ["views/*"],
+      "@/hooks/*": ["hooks/*"]
     },
 
     "moduleResolution": "bundler",

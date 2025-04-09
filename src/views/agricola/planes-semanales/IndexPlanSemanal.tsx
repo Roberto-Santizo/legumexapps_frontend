@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { useAppStore } from "@/stores/useAppStore";
 import { motion } from "framer-motion";
-import { downloadReportInsumos, getPaginatedPlans } from "@/api/WeeklyPlansAPI";
+import { getPaginatedPlans } from "@/api/WeeklyPlansAPI";
 import { Link } from "react-router-dom";
-import { CheckCircle, Download, PlusIcon, Sheet, XIcon } from "lucide-react";
+import { CheckCircle, Download, PlusIcon, XIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { downloadWeeklyPlanReport } from "@/api/WeeklyPlansAPI";
 import { WeeklyPlan } from "@/types";
-import { formatearQuetzales } from "@/helpers";
-import { useQueries, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { usePermissions } from "@/hooks/usePermissions";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
-import LoadingOverlay from "@/components/utilities-components/LoadingOverlay";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import InsumosColumns from "@/components/planes-semanales-finca/InsumosColumns";
+import ActionsColumns from "@/components/planes-semanales-finca/ActionsColumns";
+import BudgetColumns from "@/components/planes-semanales-finca/BudgetColumns";
 
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
@@ -19,13 +21,7 @@ export default function IndexPlanSemanal() {
   const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [role, setRole] = useState<string>("");
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
-
-  const canSeeBudgetRoles = ['admin', 'adminagricola'];
-  const canCreatePlanSemanalRoles = ['admin', 'adminagricola'];
-  const canSeeBudget = canSeeBudgetRoles.includes(role);
-  const canCreatePlanSemanal = canCreatePlanSemanalRoles.includes(role);
+  const { hasPermission } = usePermissions();
 
   const { mutate: handleDowloadReportMutation, isPending: handleDowloadReportMutationPending } = useMutation({
     mutationFn: ({ plansId }: { plansId: WeeklyPlan['id'][] }) => downloadWeeklyPlanReport(plansId),
@@ -38,30 +34,18 @@ export default function IndexPlanSemanal() {
     }
   });
 
-  const { mutate: HandleDownloadReportInsumosMutation, isPending: HandleDownloadReportInsumosPending } = useMutation({
-    mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadReportInsumos(planId),
-    onError: () => {
-      toast.error('Hubo un error al descargar')
-    }
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['getPaginatedPlans', currentPage],
+    queryFn: () => getPaginatedPlans(currentPage)
   });
-
-  const results = useQueries({
-    queries: [
-      { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken },
-      { queryKey: ['getPaginatedPlans', currentPage], queryFn: () => getPaginatedPlans(currentPage) }
-    ]
-  });
-
-  const isLoading = results.every(query => query.isLoading);
 
   useEffect(() => {
-    if (results[0].data) setRole(results[0].data);
-    if (results[1].data) {
-      setWeeklyPlans(results[1].data.data);
-      setPageCount(results[1].data.meta.last_page);
-      setCurrentPage(results[1].data.meta.current_page);
+    if (data) {
+      setWeeklyPlans(data.data);
+      setPageCount(data.meta.last_page);
+      setCurrentPage(data.meta.current_page);
     }
-  }, [results])
+  }, [data])
 
 
   const handlePageChange = (selectedItem: { selected: number }) => {
@@ -85,14 +69,13 @@ export default function IndexPlanSemanal() {
   };
 
   const handleDowloadReport = async ({ plansId }: { plansId: WeeklyPlan['id'][] }) => { handleDowloadReportMutation({ plansId }) };
-  const handleDownloadInsumosReport = async (planId: WeeklyPlan['id']) => { HandleDownloadReportInsumosMutation({ planId }) };
 
   if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />;
   return (
     <>
       <h2 className="font-bold text-4xl">Planes Semanales</h2>
-      {HandleDownloadReportInsumosPending && <LoadingOverlay />}
-      {canCreatePlanSemanal && (
+      {hasPermission('create plan semanal') && (
         <div className="flex flex-row justify-end gap-5 mb-5">
           <Link
             to="/planes-semanales/crear"
@@ -111,6 +94,7 @@ export default function IndexPlanSemanal() {
           </Link>
         </div>
       )}
+
 
       {selectingReport && (
         <motion.div
@@ -161,16 +145,12 @@ export default function IndexPlanSemanal() {
             <th scope="col" className="thead-th">
               Año
             </th>
-            {canSeeBudget && (
-              <>
-                <th scope="col" className="thead-th">
-                  Control de Presupuesto
-                </th>
-                <th scope="col" className="thead-th">
-                  Monto Extraordinario
-                </th>
-              </>
-            )}
+            <th scope="col" className="thead-th">
+              Control de Presupuesto
+            </th>
+            <th scope="col" className="thead-th">
+              Monto Extraordinario
+            </th>
             <th scope="col" className="thead-th">
               Control de Tareas
             </th>
@@ -205,35 +185,17 @@ export default function IndexPlanSemanal() {
               <td className="tbody-td">{plan.finca}</td>
               <td className="tbody-td">{plan.week}</td>
               <td className="tbody-td">{plan.year}</td>
-              {canSeeBudget && (
-                <>
-                  <td className="tbody-td font-bold text-green-500">
-                    {`${formatearQuetzales(plan.used_budget)}/${formatearQuetzales(plan.total_budget)}`}
-                  </td>
-                  <td className="tbody-td font-bold text-green-500">
-                    {`${formatearQuetzales(plan.used_total_budget_ext)}/${formatearQuetzales(plan.total_budget_ext)}`}
-                  </td>
-                </>
-              )}
+
+              <BudgetColumns plan={plan} />
+
               <td className="tbody-td">
                 {`${plan.finished_total_tasks}/${plan.total_tasks}`}
               </td>
               <td className="tbody-td">{`${plan.finished_total_tasks_crops}/${plan.total_tasks_crop}`}</td>
-              <td className="tbody-td w-1/5">
-                <Link
-                  to={`/planes-semanales/${plan.finca}/${plan.id}`}
-                  className={`button flex justify-center w-2/3 bg-indigo-500 hover:bg-indigo-600 text-base rounded-lg`}
-                >
-                  Tareas
-                </Link>
-              </td>
-              <td className="tbody-td">
-                <button
-                  onClick={() => handleDownloadInsumosReport(plan.id)}
-                >
-                  <Sheet className="hover:text-gray-400" />
-                </button>
-              </td>
+
+              <ActionsColumns plan={plan} />
+
+              <InsumosColumns planId={plan.id} />
             </tr>
           ))}
         </tbody>

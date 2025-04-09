@@ -5,7 +5,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ProtectedAgricolaRoutes from "@/components/middlewares/ProtectedRoutes";
 
 const routes = [
-  { path: "/planes-semanales", component: lazy(() => import("@/views/agricola/planes-semanales/IndexPlanSemanal")), roles: ['admin','adminagricola','auxagricola'] },
+  { path: "/planes-semanales", component: lazy(() => import("@/views/agricola/planes-semanales/IndexPlanSemanal")), roles: ['admin','adminagricola','auxagricola','auxrrhh'] },
   { path: "/planes-semanales/crear", component: lazy(() => import("@/views/agricola/planes-semanales/CreatePlanSemanal")), roles: ['admin','adminagricola'] },
   { path: "/planes-semanales/:finca/:id", component: lazy(() => import("@/views/agricola/planes-semanales/ShowPlanSemanal")), roles: ['admin','adminagricola','auxagricola'] },
   

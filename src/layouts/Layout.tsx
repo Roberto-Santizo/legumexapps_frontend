@@ -1,21 +1,27 @@
 import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { Header } from "../components/layouts/Header";
-import { useAppStore } from "@/stores/useAppStore";
 import { useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/utilities-components/Spinner";
 import { Sidebar } from "@/components/layouts/Sidebar";
+import { getUserRoleByToken } from "@/api/LoginAPI";
+import { toast } from "react-toastify";
+import Spinner from "@/components/utilities-components/Spinner";
 import MobileSidebar from "@/components/layouts/MobileSidebar";
 
 export default function Layout() {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
-  const { data: role, isLoading, isError } = useQuery({
+  const { data: role, isLoading, isError, error } = useQuery({
     queryKey: ['getUserRoleByToken'],
-    queryFn: getUserRoleByToken
+    queryFn: getUserRoleByToken,
+    retry: false
   });
+
+  if(isError){
+    toast.error(error.message,{toastId: 'loginError'});
+    return <Navigate to={'/'} />
+  }
 
   if (isError) navigate('/login');
   if (isLoading) return <Spinner />
@@ -23,11 +29,11 @@ export default function Layout() {
     <>
       <div className="flex h-screen bg-gray-100">
         <div className="hidden lg:block">
-          <Sidebar role={role} />
+          <Sidebar />
         </div>
 
         {modal && (
-          <MobileSidebar role={role} modal={modal} setModal={setModal} />
+          <MobileSidebar modal={modal} setModal={setModal} />
         )}
 
         <div className="flex-1 flex flex-col overflow-hidden">

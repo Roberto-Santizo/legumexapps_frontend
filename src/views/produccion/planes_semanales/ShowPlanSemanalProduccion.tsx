@@ -4,6 +4,7 @@ import { downloadPlanillaProduction, getWeeklyPlanDetails, LineWeeklyPlan } from
 import { CircleCheck, Eye, FileDown, Upload } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { usePermissions } from "@/hooks/usePermissions";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalCargaPosiciones from "@/components/modals/ModalCargaPosiciones";
@@ -16,6 +17,7 @@ export default function ShowPlanSemanalProduccion() {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedLinea, setSelectedLinea] = useState<LineWeeklyPlan>({} as LineWeeklyPlan);
+  const { hasPermission } = usePermissions();
 
   const { mutate, isPending } = useMutation({
     mutationFn: downloadPlanillaProduction,
@@ -47,16 +49,27 @@ export default function ShowPlanSemanalProduccion() {
               {assigment.status ? (
                 <div className="flex flex-col gap-5">
                   <CircleCheck className="text-green-500" />
-                  <Link to={`/planes-produccion/${id}/${assigment.id}`}>
-                    <Eye className="hover:text-gray-600" />
-                  </Link>
-                  <FileDown className="hover:text-gray-600 cursor-pointer" onClick={() => mutate({ plan_id: id, line_id: assigment.id })} />
+
+                  {hasPermission('see tasks production') && (
+                    <Link to={`/planes-produccion/${id}/${assigment.id}`}>
+                      <Eye className="hover:text-gray-600" />
+                    </Link>
+                  )}
+
+                  {hasPermission('download hours line report') && (
+                    <FileDown className="hover:text-gray-600 cursor-pointer" onClick={() => mutate({ plan_id: id, line_id: assigment.id })} />
+                  )}
                 </div>
               ) : (
-                <Upload className="cursor-pointer hover:text-gray-500" onClick={() => {
-                  setIsOpen(true);
-                  setSelectedLinea(assigment)
-                }} />
+                <>
+                  {hasPermission('assign people production lines') && (
+                    <Upload className="cursor-pointer hover:text-gray-500" onClick={() => {
+                      setIsOpen(true);
+                      setSelectedLinea(assigment)
+                    }} />
+                  )}
+
+                </>
               )}
             </div>
           </div>

@@ -18,8 +18,6 @@ export async function createPermission(permission: DraftPermiso) {
 export const PermissionSchema = z.object({
     id: z.number(),
     name: z.string(),
-    created_at: z.string(),
-    updated_at: z.string()
 });
 
 
@@ -40,6 +38,28 @@ export async function getPermissions(): Promise<Permission[]> {
             throw new Error("Información no válida");
         }
     } catch (error) {
+        throw error;
+    }
+}
+
+export const PermissionsUserSchema = z.object({
+    data: z.array(z.object({
+        name: z.string()
+    }))
+});
+
+export async function getPermissionsByUser() {
+    try {
+        const url = '/api/permissions/user';
+        const { data } = await clienteAxios(url);
+        const result = PermissionsUserSchema.safeParse(data);
+        if(result.success){
+            return result.data.data
+        }else{
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
         throw error;
     }
 }

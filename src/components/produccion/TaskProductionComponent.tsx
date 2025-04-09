@@ -1,7 +1,9 @@
-import TaskLabel from "@/components/utilities-components/TaskLabel";
 import { TaskByDate } from "@/api/WeeklyProductionPlanAPI";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Link } from "react-router-dom";
+import { Eye } from "lucide-react";
+import TaskLabel from "@/components/utilities-components/TaskLabel";
 
 type Props = {
     task: TaskByDate;
@@ -62,6 +64,20 @@ export default function TaskProductionComponent({ task, isDraggable }: Props) {
                     {(task.start_date && !task.end_date) && (
                         <p className="mt-5 w-1/2 button bg-orange-500 text-center">Tarea En Progreso</p>
                     )}
+                </div>
+
+                <div>
+                    {(task.start_date && !task.end_date) && (
+                        <Link to={`/planes-produccion/informacion/${task.id}`} target="_blank">
+                            <Eye className="cursor-pointer hover:text-gray-500" />
+                        </Link>
+                    )}
+                    {task.end_date && (
+                        <Link to={`/planes-produccion/tarea-produccion/${task.id}`} target="_blank">
+                            <Eye className="cursor-pointer hover:text-gray-500" />
+                        </Link>
+                    )}
+
                 </div>
             </div>
         </div>

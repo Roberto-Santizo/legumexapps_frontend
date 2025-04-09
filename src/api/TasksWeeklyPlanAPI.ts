@@ -118,7 +118,6 @@ export async function getTaskDetailsById(id: TaskWeeklyPlan['id']): Promise<Task
         const url = `/api/tasks-lotes/${id}/details`;
         const { data } = await clienteAxios(url);
         const result = TaskWeeklyPlanDetailsSchema.safeParse(data.data);
-        console.log(result);
         if (result.success) {
             return result.data;
         } else {

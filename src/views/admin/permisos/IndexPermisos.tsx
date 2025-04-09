@@ -1,4 +1,3 @@
-import { formatDate } from "../../../helpers";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { getPermissions } from "@/api/PermissionsAPI";
@@ -27,22 +26,12 @@ export default function IndexPermisos() {
           <p>Crear Permiso</p>
         </Link>
       </div>
-
-      <div className="mt-10">
+      <div className="w-full p-2 h-96 overflow-y-scroll mt-10 scrollbar-hide">
         <table className="table">
           <thead>
             <tr className="thead-tr">
               <th scope="col" className="thead-th">
-                No.
-              </th>
-              <th scope="col" className="thead-th">
                 Permiso
-              </th>
-              <th scope="col" className="thead-th">
-                Fecha de Creación
-              </th>
-              <th scope="col" className="thead-th">
-                Última fecha de Modificación
               </th>
             </tr>
           </thead>
@@ -50,16 +39,7 @@ export default function IndexPermisos() {
             {permissions.map((permission) => (
               <tr className="tbody-tr" key={permission.id}>
                 <td className="tbody-td">
-                  <p>{permission.id}</p>
-                </td>
-                <td className="tbody-td">
                   <p>{permission.name}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{formatDate(permission.created_at)}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{formatDate(permission.updated_at)}</p>
                 </td>
               </tr>
             ))}

@@ -5,6 +5,7 @@ import { CalendarRange, Clock, Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
+import { usePermissions } from "@/hooks/usePermissions";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
@@ -13,6 +14,7 @@ export default function IndexPlanSemanalProduccion() {
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [plans, setPlans] = useState<WeeklyPlanProductionPlan[]>([]);
+    const { hasPermission } = usePermissions();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['getPaginatedWeeklyProductionPlans', currentPage],
@@ -36,23 +38,25 @@ export default function IndexPlanSemanalProduccion() {
     return (
         <>
             <h1 className="font-bold text-4xl">Plan Semanal Produccion</h1>
-            <div className="flex flex-row justify-end gap-5 mb-5">
-                <div className="flex flex-row justify-end gap-5">
-                    <Link
-                        to="/planes-produccion/crear"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-                    >
-                        <PlusIcon className="w-8" />
-                        <p>crear plan semanal</p>
-                    </Link>
+            {hasPermission('create plan production semanal') && (
+                <div className="flex flex-row justify-end gap-5 mb-5">
+                    <div className="flex flex-row justify-end gap-5">
+                        <Link
+                            to="/planes-produccion/crear"
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                        >
+                            <PlusIcon className="w-8" />
+                            <p>crear plan semanal</p>
+                        </Link>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className="mt-10">
                 <table className="table">
                     <thead>
                         <tr className="thead-tr">
-                            <th className="thead-th"></th>
+                            <th className="thead-th">Estatus</th>
                             <th className="thead-th">Año</th>
                             <th className="thead-th">Semana</th>
                             <th className="thead-th">Acción</th>
@@ -65,7 +69,7 @@ export default function IndexPlanSemanalProduccion() {
                                     {plan.completed ? (
                                         <CheckBadgeIcon className="w-8 text-green-500" />
                                     ) : (
-                                        <Clock className="w-8 text-orange-500"/>
+                                        <Clock className="w-8 text-orange-500" />
                                     )}
                                 </td>
                                 <td className="tbody-td">{plan.year}</td>
@@ -75,9 +79,12 @@ export default function IndexPlanSemanalProduccion() {
                                     <Link to={`/planes-produccion/${plan.id}`}>
                                         <Eye />
                                     </Link>
-                                    <Link to={`/planes-produccion/calendario/${plan.id}`}>
-                                        <CalendarRange />
-                                    </Link>
+
+                                    {hasPermission('administrate plans production') && (
+                                        <Link to={`/planes-produccion/calendario/${plan.id}`}>
+                                            <CalendarRange />
+                                        </Link>
+                                    )}
                                 </td>
                             </tr>
                         ))}

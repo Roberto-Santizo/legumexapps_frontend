@@ -6,12 +6,15 @@ import { PlusIcon } from "lucide-react";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
+import ModalEditLineSkuData from "@/components/modals/ModalEditLineSkuData";
 
 
 export default function IndexLineasSku() {
     const [skus, setSkus] = useState<LineaSKU[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [modal, setModal] = useState<boolean>(false);
+    const [selectedSku, setSelectedSku] = useState<LineaSKU>({} as LineaSKU);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected + 1);
@@ -60,14 +63,17 @@ export default function IndexLineasSku() {
                 </thead>
                 <tbody>
                     {skus.map(sku => (
-                        <tr key={sku.id} className="tbody-tr">
+                        <tr key={sku.id} className="tbody-tr" onDoubleClick={() => {
+                            setModal(true)
+                            setSelectedSku(sku);
+                        }}>
                             <td className="tbody-td">{sku.line}</td>
                             <td className="tbody-td">{sku.sku}</td>
                             <td className="tbody-td">{sku.client}</td>
                             <td className="tbody-td">{sku.product}</td>
                             <td className="tbody-td">{sku.shift}</td>
                             <td className="tbody-td">{sku.performance}</td>
-                            <td className="tbody-td">{sku.accepted_percentage} %</td>
+                            <td className="tbody-td"><span>{sku.accepted_percentage} %</span></td>
                         </tr>
                     ))}
                 </tbody>
@@ -80,6 +86,8 @@ export default function IndexLineasSku() {
                     handlePageChange={handlePageChange}
                 />
             </div>
+
+            <ModalEditLineSkuData modal={modal} setModal={setModal} sku={selectedSku} setSelectedSku={setSelectedSku} currentPage={currentPage} />
         </div>
     )
 }
