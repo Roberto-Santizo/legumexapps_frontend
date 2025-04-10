@@ -15,7 +15,8 @@ import { getAllProductorCDPS, ProductorCDP } from "@/api/ProductorPlantationAPI"
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
-import Select from "react-select";
+import InputComponent from "@/components/form/InputComponent";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -146,301 +147,186 @@ export default function Boleta_form1() {
           noValidate
         >
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="ref_doc">
-              No. DOC:
-            </label>
-            <input
-              autoComplete="off"
-              id="ref_doc"
-              type="text"
-              placeholder={"Número de referencia fisica"}
-              className="border border-black p-3"
-              {...register("ref_doc", {
-                required: "La referencia de documento es necesaria",
-              })}
-            />
+          <InputComponent<DraftBoletaRMP>
+            label="No. DOC"
+            id="ref_doc"
+            name="ref_doc"
+            placeholder="Número de referencia fisica"
+            register={register}
+            validation={{ required: 'La referencia del documento es necesaria' }}
+            errors={errors}
+            type={'text'}
+          >
             {errors.ref_doc && <Error>{errors.ref_doc?.message?.toString()}</Error>}
-          </div>
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="producer_id">
-              PRODUCTOR:
-            </label>
-            <Controller
-              name="producer_id"
-              control={control}
-              rules={{ required: "Seleccione un productor" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={producersOptions}
-                  id="producer_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  value={producersOptions.find(option => option.value === field.value) || null}
-                  onChange={(option) => {
-                    if (option) {
-                      field.onChange(option.value)
-                    }
-                  }}
-                />
-              )}
-            />
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="Productor"
+            id="producer_id"
+            name="producer_id"
+            options={producersOptions}
+            control={control}
+            rules={{ required: 'El productor es obligatorio' }}
+            errors={errors}
+          >
             {errors.producer_id && <Error>{errors.producer_id?.message?.toString()}</Error>}
-          </div>
+          </InputSelectSearchComponent>
 
-          <div>
-            <label className="text-lg font-bold uppercase" htmlFor="coordinador">
-              TIPO DE PRODUCTO:
-            </label>
-            <Controller
-              name="product_id"
-              control={control}
-              rules={{ required: "Seleccione un producto" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={productsOptions}
-                  id="product_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={productsOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
+
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="Tipo de Producto"
+            id="product_id"
+            name="product_id"
+            options={productsOptions}
+            control={control}
+            rules={{ required: 'El producto es obligatorio' }}
+            errors={errors}
+          >
             {errors.product_id && <Error>{errors.product_id?.message?.toString()}</Error>}
-          </div>
+          </InputSelectSearchComponent>
 
-          <div>
-            <label className="text-lg font-bold uppercase" htmlFor="finca_id">
-              FINCA:
-            </label>
-            <Controller
-              name="finca_id"
-              control={control}
-              rules={{ required: "Seleccione una finca" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={fincasOptions}
-                  id="finca_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={fincasOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="Finca"
+            id="finca_id"
+            name="finca_id"
+            options={fincasOptions}
+            control={control}
+            rules={{ required: 'La finca es obligatoria' }}
+            errors={errors}
+          >
             {errors.finca_id && <Error>{errors.finca_id?.message?.toString()}</Error>}
-          </div>
+          </InputSelectSearchComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="date">
-              FECHA DE BOLETA:
-            </label>
-            <input
-              autoComplete="off"
-              id="date"
-              type="date"
-              className="border border-black p-3"
-              {...register("date", { required: "La fecha es obligatoria" })}
-            />
+
+          <InputComponent<DraftBoletaRMP>
+            label="Fecha de Boleta"
+            id="date"
+            name="date"
+            placeholder=""
+            register={register}
+            validation={{ required: 'La fecha es obligatoria' }}
+            errors={errors}
+            type={'date'}
+          >
             {errors.date && <Error>{errors.date?.message?.toString()}</Error>}
-          </div>
+          </InputComponent>
 
-          <div>
-            <label className="text-lg font-bold uppercase" htmlFor="carrier_id">
-              TRANSPORTISTA:
-            </label>
-            <Controller
-              name="carrier_id"
-              control={control}
-              rules={{ required: "Seleccione un transportista" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={transportistasOptions}
-                  id="carrier_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  onChange={(selected) => {
-                    field.onChange(selected?.value)
-                    setTransportistaId(selected?.value ?? '')
-                  }}
-                  value={transportistasOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="Transportista"
+            id="carrier_id"
+            name="carrier_id"
+            options={transportistasOptions}
+            control={control}
+            rules={{ required: 'El transportista es requerido' }}
+            errors={errors}
+            onChange={(value) => setTransportistaId(value ?? '')}
+          >
             {errors.carrier_id && <Error>{errors.carrier_id?.message?.toString()}</Error>}
-          </div>
+          </InputSelectSearchComponent>
 
-          <div>
-            <label className="text-lg font-bold uppercase" htmlFor="driver_id">
-              PILOTOS:
-            </label>
-            <Controller
-              name="driver_id"
-              control={control}
-              rules={{ required: "Seleccione un piloto" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={pilotosOptions}
-                  id="driver_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={pilotosOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="Pilotos"
+            id="driver_id"
+            name="driver_id"
+            options={pilotosOptions}
+            control={control}
+            rules={{ required: 'El piloto es obligatorio' }}
+            errors={errors}
+          >
             {errors.driver_id && <Error>{errors.driver_id?.message?.toString()}</Error>}
-          </div>
+          </InputSelectSearchComponent>
 
-          <div>
-            <label className="text-lg font-bold uppercase" htmlFor="plate_id">
-              PLACA:
-            </label>
-            <Controller
-              name="plate_id"
-              control={control}
-              rules={{ required: "Seleccione una placa" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={placasOptions}
-                  id="plate_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={placasOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="Placa"
+            id="plate_id"
+            name="plate_id"
+            options={placasOptions}
+            control={control}
+            rules={{ required: 'La placa es obligatoria' }}
+            errors={errors}
+          >
             {errors.plate_id && <Error>{errors.plate_id?.message?.toString()}</Error>}
-          </div>
+          </InputSelectSearchComponent>
 
-          <div>
-            <label className="text-lg font-bold uppercase" htmlFor="productor_plantation_control_id">
-              CDP:
-            </label>
-            <Controller
-              name="productor_plantation_control_id"
-              control={control}
-              rules={{ required: "Seleccione un CDP" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={cdpsOptions}
-                  id="productor_plantation_control_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={cdpsOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="CDP"
+            id="productor_plantation_control_id"
+            name="productor_plantation_control_id"
+            options={cdpsOptions}
+            control={control}
+            rules={{ required: 'El CDP es obligatorio' }}
+            errors={errors}
+          >
             {errors.productor_plantation_control_id && <Error>{errors.productor_plantation_control_id?.message?.toString()}</Error>}
-          </div>
+          </InputSelectSearchComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="inspector_name">
-              Nombre Inspector:
-            </label>
-            <input
-              autoComplete="off"
-              id="inspector_name"
-              type="text"
-              placeholder={"Nombre del inspector"}
-              className="border border-black p-3"
-              {...register("inspector_name", { required: "El nombre del inspector es obligatorio" })}
-            />
+          <InputComponent<DraftBoletaRMP>
+            label="Nombre del Inspector"
+            id="inspector_name"
+            name="inspector_name"
+            placeholder="Nombre del inspector"
+            register={register}
+            validation={{ required: 'El nombre del inspector es obligatorio' }}
+            errors={errors}
+            type={'text'}
+          >
             {errors.inspector_name && <Error>{errors.inspector_name?.message?.toString()}</Error>}
-          </div>
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="weight">
-              Peso Bruto:
-            </label>
-            <input
-              autoComplete="off"
-              id="weight"
-              type="number"
-              placeholder={"Peso bruto"}
-              className="border border-black p-3"
-              {...register("weight", { required: "El peso bruto es obligatorio", min: { value: 0.1, message: 'La cantidad minima es 0.1' } })}
-            />
+          <InputComponent<DraftBoletaRMP>
+            label="Peso Bruto"
+            id="weight"
+            name="weight"
+            placeholder="Peso Bruto"
+            register={register}
+            validation={{
+              required: "El peso bruto es obligatorio", min: { value: 0.1, message: 'La cantidad minima es 0.1' }
+            }}
+            errors={errors}
+            type={'number'}
+          >
             {errors.weight && <Error>{errors.weight?.message?.toString()}</Error>}
-          </div>
+          </InputComponent>
+          
+          <InputSelectSearchComponent<DraftBoletaRMP>
+            label="Tipo de Canasta"
+            id="basket_id"
+            name="basket_id"
+            options={basketsOptions}
+            control={control}
+            rules={{required: 'El tipo de canasta es obligatorio'}}
+            errors={errors}
+          >
+              {errors.basket_id && <Error>{errors.basket_id?.message?.toString()}</Error>}
+          </InputSelectSearchComponent>
+         
 
-          <div>
-            <label className="text-lg font-bold uppercase" htmlFor="coordinador">
-              TIPO DE CANASTA:
-            </label>
-            <Controller
-              name="basket_id"
-              control={control}
-              rules={{ required: "Seleccione un tipo de canasta" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={basketsOptions}
-                  id="basket_id"
-                  placeholder={"SELECCIONE UNA OPCION"}
-                  className="border border-black"
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={basketsOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
-            {errors.basket_id && <Error>{errors.basket_id?.message?.toString()}</Error>}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="total_baskets">
-              Cantidad de Canastas:
-            </label>
-            <input
-              autoComplete="off"
+          <InputComponent<DraftBoletaRMP>
+              label="Cantidad de Canastas"
               id="total_baskets"
-              type="number"
-              placeholder={"Cantidad de canastas"}
-              className="border border-black p-3"
-              {...register("total_baskets", { required: "La cantidad de canastas es obligatoria", min: { value: 1, message: 'La cantidad minima de canstas es 1' } })}
-            />
-            {errors.total_baskets && <Error>{errors.total_baskets?.message?.toString()}</Error>}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="quality_percentage">
-              Porcentaje De Calidad:
-            </label>
-            <input
-              autoComplete="off"
+              name="total_baskets"
+              placeholder="Cantidad de Canastas"
+              register={register}
+              validation={{required: "La cantidad de canastas es obligatoria", min: { value: 1, message: 'La cantidad minima de canstas es 1' }}}
+              errors={errors}
+              type={'number'}
+          >
+              {errors.total_baskets && <Error>{errors.total_baskets?.message?.toString()}</Error>}
+          </InputComponent>
+       
+          
+          <InputComponent<DraftBoletaRMP>
+              label="Porcentaje de Calidad"
               id="quality_percentage"
-              type="number"
-              placeholder={"Porcentaje de calidad"}
-              className="border border-black p-3"
-              {...register("quality_percentage", { required: "El porcentaje de calidad es obligatorio", min: { value: 1, message: 'La cantidad minima es 1' } })}
-            />
-            {errors.quality_percentage && <Error>{errors.quality_percentage?.message?.toString()}</Error>}
-          </div>
+              name="quality_percentage"
+              placeholder="Porcentaje de Calidad"
+              register={register}
+              validation={{required: "El porcentaje de calidad es obligatorio", min: { value: 1, message: 'La cantidad minima es 1' }}}
+              errors={errors}
+              type={'number'}
+          >
+              {errors.quality_percentage && <Error>{errors.quality_percentage?.message?.toString()}</Error>}
+          </InputComponent>
 
           <div className="space-y-2 text-center">
             <Controller

@@ -5,6 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import InputComponent from "../form/InputComponent";
+import Error from "../utilities-components/Error";
 
 type Props = {
     task: TaskByLine;
@@ -43,39 +45,31 @@ export default function ModalTomaRendimientoProduccion({ task, modal, setModal, 
     return (
         <Modal modal={modal} closeModal={() => setModal(false)} title="Toma de Rendimiento">
             <form className="p-6 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2" htmlFor="tarimas_produced">
-                        Tarimas Producidas:
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="tarimas_produced"
-                        type="number"
-                        placeholder="Total de tarimas producidas"
-                        className="border border-gray-300 p-3 w-full rounded-md"
-                        {...register('tarimas_produced')}
-                    />
-                    {errors.tarimas_produced?.message && (
-                        <p className="text-red-600 text-sm mt-1">{errors.tarimas_produced.message.toString()}</p>
-                    )}
-                </div>
+                <InputComponent<DraftPerformance>
+                    label="Tarimas Producidas"
+                    id="tarimas_produced"
+                    name="tarimas_produced"
+                    placeholder="Total Tarimas Producidas"
+                    register={register}
+                    validation={{}}
+                    errors={errors}
+                    type={'number'}
+                >
+                    {errors.tarimas_produced && <Error>{errors.tarimas_produced?.message?.toString()}</Error>}
+                </InputComponent>
 
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2" htmlFor="lbs_bascula">
-                        Libras Báscula:
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="lbs_bascula"
-                        type="number"
-                        placeholder="Total de tarimas producidas"
-                        className="border border-gray-300 p-3 w-full rounded-md"
-                        {...register('lbs_bascula', { required: 'El total de libras de la tarima son necesarias' })}
-                    />
-                    {errors.lbs_bascula?.message && (
-                        <p className="text-red-600 text-sm mt-1">{errors.lbs_bascula.message.toString()}</p>
-                    )}
-                </div>
+                <InputComponent<DraftPerformance>
+                    label="Libras Báscula"
+                    id="lbs_bascula"
+                    name="lbs_bascula"
+                    placeholder="Total Libras Basculadas"
+                    register={register}
+                    validation={{ required: 'Las libras basculadas son obligatorias' }}
+                    errors={errors}
+                    type={'number'}
+                >
+                    {errors.lbs_bascula && <Error>{errors.lbs_bascula?.message?.toString()}</Error>}
+                </InputComponent>
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                     {isPending ? <Spinner /> : <p>Guardar Registro</p>}

@@ -8,11 +8,12 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { createBoletaTransporte, DraftBoletaTransporte, getTransporteCondiciones, TransporteCondition } from '@/api/BoletaTransporteAPI';
-import { Button } from '@mui/material';
-import Error from '@/components/utilities-components/Error';
-import Spinner from '@/components/utilities-components/Spinner';
 import SignatureCanvas from "react-signature-canvas";
 import Swal from 'sweetalert2';
+import Error from '@/components/utilities-components/Error';
+import Spinner from '@/components/utilities-components/Spinner';
+import InputComponent from '@/components/form/InputComponent';
+import InputSelectComponent from '@/components/form/InputSelectComponent';
 
 const BoletaCamion = () => {
 
@@ -62,6 +63,17 @@ const BoletaCamion = () => {
       if (results[3].data) setConditions(results[3].data);
     }
   }, [results]);
+
+  const plantasOptions = plantas.map((planta) => ({
+    value: planta.id.toString(),
+    label: planta.name,
+  }));
+
+  const productsOptions = products.map((product) => ({
+    value: product.id.toString(),
+    label: `${product.product} - ${product.variety}`,
+  }));
+
 
   const handleChangeCondition = (id: string) => {
     setSelectedConditions(prev => ({
@@ -142,161 +154,51 @@ const BoletaCamion = () => {
         Inspección de Transporte
       </h2>
 
-      <div>
-        <form className="mt-10 w-2/3 mx-auto bg-gradient-to-b from-white to-gray-50 rounded-xl shadow-xl p-8 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-6">
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase text-gray-700" htmlFor="planta_id">
-                Planta:
-              </label>
-              <select className='border border-black p-3' {...register('planta_id', { required: 'Seleccione una planta' })}>
-                <option value="">--SELECCIONE UNA OPCIÓN--</option>
-                {plantas.map(planta => (
-                  <option key={planta.id} value={planta.id}>{planta.name}</option>
-                ))}
-              </select>
-              {errors.planta_id?.message && <Error >{errors.planta_id.message}</Error>}
-            </div>
+      <form className="mt-10 w-2/3 mx-auto bg-gradient-to-b from-white to-gray-50 rounded-xl shadow-xl p-8 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
 
-            <div className="w-full overflow-x-auto mt-8">
-              <div className="min-w-max overflow-hidden rounded-xl border border-black bg-white">
-                <table className="w-full border-collapse text-left">
-                  <thead>
-                    <tr className="thead-tr">
-                      <th className="tbody-th px-4 py-3">Finca</th>
-                      <th className="tbody-th px-4 py-3">Productor</th>
-                      <th className="tbody-th px-4 py-3">Placa</th>
-                      <th className="tbody-th px-4 py-3">Piloto</th>
-                      <th className="tbody-th px-4 py-3">Fecha</th>
-                      <th className="tbody-th px-4 py-3">Producto</th>
-                      <th className="tbody-th px-4 py-3">Variedad</th>
-                      <th className="tbody-th px-4 py-3 text-center">Seleccionar</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {boletas.map((boleta) => (
-                      <tr key={boleta.id} className="tbody-tr">
-                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.finca}</td>
-                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.coordinator}</td>
-                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.plate}</td>
-                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.pilot_name}</td>
-                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.date}</td>
-                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.product}</td>
-                        <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.variety}</td>
-                        <td className="tbody-td flex justify-center px-4 py-3">
-                          <input
-                            type="checkbox"
-                            checked={selectedBoletas.some(selectedBoleta => selectedBoleta.id === boleta.id)}
-                            onChange={() => handleChangeInputBoleta(boleta.id)}
-                            className="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+        <InputSelectComponent<DraftBoletaTransporte>
+          label="Planta"
+          id="planta_id"
+          name="planta_id"
+          options={plantasOptions}
+          register={register}
+          validation={{ required: 'La planta es obligatoria' }}
+          errors={errors}
+        >
+          {errors.planta_id && <Error>{errors.planta_id?.message?.toString()}</Error>}
+        </InputSelectComponent>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase text-gray-700" htmlFor="truck_type">
-                Tipo de Camión:
-              </label>
-              <input
-                autoComplete="off"
-                id="truck_type"
-                type="text"
-                placeholder="Tipo de camión"
-                className="border border-black p-3 "
-                {...register('truck_type', { required: 'El tipo de camión es requerido' })}
-              />
-              {errors.truck_type?.message && <Error >{errors.truck_type.message}</Error>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase text-gray-700" htmlFor="product_id">
-                Producto:
-              </label>
-              <select className='border border-black p-3' {...register('product_id', { required: 'El tipo de producto es requerido' })}>
-                <option value="">--SELECCIONE UNA OPCIÓN--</option>
-                {products.map(product => (
-                  <option key={product.id} value={product.id}>{`${product.product} - ${product.variety}`}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase text-gray-700" htmlFor="pilot_name">
-                Piloto:
-              </label>
-              <input
-                autoComplete="off"
-                id="pilot_name"
-                type="text"
-                placeholder="Placa"
-                className="border border-black p-3 "
-                {...register('pilot_name', { required: 'El nombre del piloto es requerido' })}
-              />
-              {errors.pilot_name?.message && <Error >{errors.pilot_name.message}</Error>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase text-gray-700" htmlFor="plate">
-                Placa:
-              </label>
-              <input
-                autoComplete="off"
-                id="plate"
-                type="text"
-                placeholder="Placa"
-                className="border border-black p-3 "
-                {...register('plate', { required: 'La placa es requierida' })}
-              />
-              {errors.plate?.message && <Error >{errors.plate.message}</Error>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase text-gray-700" htmlFor="observations">
-                Obsevaciones:
-              </label>
-              <input
-                autoComplete="off"
-                id="observations"
-                type="text"
-                placeholder="Observaciones"
-                className="border border-black p-3 "
-                {...register('observations')}
-              />
-              {errors.observations?.message && <Error >{errors.observations.message}</Error>}
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-xl border border-black bg-white mt-8">
+        <div className="w-full overflow-x-auto mt-8 scrollbar-hide">
+          <div className="min-w-max overflow-hidden rounded-xl border border-black bg-white">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-black">
-                  <th className="bg-gray-50 p-4 text-lg font-semibold text-gray-900">Condición</th>
-                  <th className="bg-gray-50 p-4 text-lg font-semibold text-gray-900 w-24 text-center">Estado</th>
+                <tr className="thead-tr">
+                  <th className="tbody-th px-4 py-3">Finca</th>
+                  <th className="tbody-th px-4 py-3">Productor</th>
+                  <th className="tbody-th px-4 py-3">Placa</th>
+                  <th className="tbody-th px-4 py-3">Piloto</th>
+                  <th className="tbody-th px-4 py-3">Fecha</th>
+                  <th className="tbody-th px-4 py-3">Producto</th>
+                  <th className="tbody-th px-4 py-3">Variedad</th>
+                  <th className="tbody-th px-4 py-3 text-center">Seleccionar</th>
                 </tr>
               </thead>
               <tbody>
-                {conditions.map((condicion) => (
-                  <tr
-                    key={condicion.id}
-                    className="border-b border-black last:border-0 transition-colors duration-150">
-                    <td className="p-4">
-                      <label
-                        className="text-base text-gray-700 font-medium cursor-pointer hover:text-gray-900 flex items-center gap-2"
-                      >
-                        {condicion.name}
-                      </label>
-                    </td>
-                    <td className='flex justify-center p-5'>
+                {boletas.map((boleta) => (
+                  <tr key={boleta.id} className="tbody-tr">
+                    <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.finca}</td>
+                    <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.coordinator}</td>
+                    <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.plate}</td>
+                    <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.pilot_name}</td>
+                    <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.date}</td>
+                    <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.product}</td>
+                    <td className="tbody-td whitespace-nowrap px-4 py-3">{boleta.variety}</td>
+                    <td className="tbody-td flex justify-center px-4 py-3">
                       <input
                         type="checkbox"
-                        checked={selectedConditions[condicion.id] || false}
-                        onChange={() => handleChangeCondition(condicion.id)}
-                        className="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        checked={selectedBoletas.some(selectedBoleta => selectedBoleta.id === boleta.id)}
+                        onChange={() => handleChangeInputBoleta(boleta.id)}
+                        className="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                       />
                     </td>
                   </tr>
@@ -304,61 +206,149 @@ const BoletaCamion = () => {
               </tbody>
             </table>
           </div>
+        </div>
 
-          <fieldset className='grid grid-cols-1 mx-auto '>
+        <InputComponent<DraftBoletaTransporte>
+          label="Tipo de Camión"
+          id="truck_type"
+          name="truck_type"
+          placeholder="Tipo de Camión"
+          register={register}
+          validation={{ required: 'El tipo de camión es requerido' }}
+          errors={errors}
+          type={'text'}
+        >
+          {errors.truck_type && <Error>{errors.truck_type?.message?.toString()}</Error>}
+        </InputComponent>
 
-            <div className="space-y-2 text-center">
-              <Controller
-                name="verify_by_signature"
-                control={control}
-                rules={{ required: 'Asegurese de haber firmado' }}
-                render={({ field }) => (
-                  <div className="p-2">
-                    <SignatureCanvas
-                      ref={verify_by_signature}
-                      penColor="black"
-                      canvasProps={{ className: "w-3/6 h-40 border mx-auto" }}
-                      onEnd={() => {
-                        field.onChange(verify_by_signature.current.toDataURL());
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
-                      onClick={() => {
-                        verify_by_signature.current.clear();
-                        field.onChange("");
-                      }}
+
+        <InputSelectComponent<DraftBoletaTransporte>
+          label="Producto"
+          id="product_id"
+          name="product_id"
+          options={productsOptions}
+          register={register}
+          validation={{ required: 'El producto es requerido' }}
+          errors={errors}
+        >
+          {errors.product_id && <Error>{errors.product_id?.message?.toString()}</Error>}
+        </InputSelectComponent>
+
+        <InputComponent<DraftBoletaTransporte>
+          label="Piloto"
+          id="pilot_name"
+          name="pilot_name"
+          placeholder="Nombre del piloto"
+          register={register}
+          validation={{ required: 'El nombre del piloto es requerido' }}
+          errors={errors}
+          type={'text'}
+        >
+          {errors.pilot_name && <Error>{errors.pilot_name?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <InputComponent<DraftBoletaTransporte>
+          label="Placa"
+          id="plate"
+          name="plate"
+          placeholder="Placa. Ej: C123ABC"
+          register={register}
+          validation={{ required: 'La placa es obligatoria' }}
+          errors={errors}
+          type={'text'}
+        >
+          {errors.plate && <Error>{errors.plate?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <InputComponent<DraftBoletaTransporte>
+          label="Observaciones Generales"
+          id="observations"
+          name="observations"
+          placeholder="Observaciones generales"
+          register={register}
+          validation={{}}
+          errors={errors}
+          type={'text'}
+        >
+          {errors.observations && <Error>{errors.observations?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <div className="overflow-hidden bg-white mt-8">
+          <table className="table">
+            <thead>
+              <tr className="thead-tr">
+                <th className="thead-tr">Codición</th>
+                <th className="thead-tr">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {conditions.map((condicion) => (
+                <tr
+                  key={condicion.id}
+                  className="tbody-tr">
+                  <td className="tbody-td">
+                    <label
+                      className="text-base text-gray-700 font-medium cursor-pointer hover:text-gray-900 flex items-center gap-2"
                     >
-                      Limpiar Firma
-                    </button>
-                  </div>
-                )}
-              />
-              <label className="block font-medium text-xl">
-                Inspeccionado por:
-              </label>
+                      {condicion.name}
+                    </label>
+                  </td>
+                  <td className='tbody-td'>
+                    <input
+                      type="checkbox"
+                      checked={selectedConditions[condicion.id] || false}
+                      onChange={() => handleChangeCondition(condicion.id)}
+                      className="w-8 h-8 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-              {(errors.verify_by_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
-            </div>
-          </fieldset>
+        <fieldset className='grid grid-cols-1 mx-auto '>
 
-          <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Boleta</p>
-            )}
-          </Button>
-        </form>
-      </div>
+          <div className="space-y-2 text-center">
+            <Controller
+              name="verify_by_signature"
+              control={control}
+              rules={{ required: 'Asegurese de haber firmado' }}
+              render={({ field }) => (
+                <div className="p-2">
+                  <SignatureCanvas
+                    ref={verify_by_signature}
+                    penColor="black"
+                    canvasProps={{ className: "w-3/6 h-40 border mx-auto" }}
+                    onEnd={() => {
+                      field.onChange(verify_by_signature.current.toDataURL());
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                    onClick={() => {
+                      verify_by_signature.current.clear();
+                      field.onChange("");
+                    }}
+                  >
+                    Limpiar Firma
+                  </button>
+                </div>
+              )}
+            />
+            <label className="block font-medium text-xl">
+              Inspeccionado por:
+            </label>
+
+            {(errors.verify_by_signature) && <Error>{'Asegurese de haber firmado'}</Error>}
+          </div>
+        </fieldset>
+
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear Boleta</p>}
+        </button>
+      </form>
     </>
   );
 };

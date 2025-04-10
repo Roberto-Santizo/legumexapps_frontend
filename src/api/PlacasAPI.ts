@@ -1,6 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { z } from "zod";
 import { Transportista } from "./TransportistasAPI";
+import { isAxiosError } from "axios";
 
 export const PlacaSchema = z.object({
     id: z.string(),
@@ -27,9 +28,9 @@ export async function getPlacasPaginated(page: number) {
         const url = `/api/plates?page=${page}`;
         const { data } = await clienteAxios(url);
         const result = PlacasPaginatedSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data
-        }else{
+        } else {
             throw new Error("Información no valida");
         }
     } catch (error) {
@@ -38,14 +39,14 @@ export async function getPlacasPaginated(page: number) {
     }
 }
 
-export async function getPlacasByCarrierId(id : Transportista['id']) : Promise<Placa[]>{
+export async function getPlacasByCarrierId(id: Transportista['id']): Promise<Placa[]> {
     try {
         const url = `/api/plates-by-carrier/${id}`;
         const { data } = await clienteAxios(url);
         const result = PlacasSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data.data
-        }else{
+        } else {
             throw new Error("Información no valida");
         }
     } catch (error) {
@@ -60,11 +61,13 @@ export type DraftPlaca = {
     carrier_id: string,
 }
 
-export async function createPlaca(data: DraftPlaca) {
+export async function createPlaca(FormData: DraftPlaca) {
     try {
-        await clienteAxios.post('/api/plates', data);
+        const { data } = await clienteAxios.post<string>('/api/plates', FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }

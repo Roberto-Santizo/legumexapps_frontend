@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { getCDPS, Plantation } from "@/api/PlantationControlAPI";
 import { Finca, getAllFincas } from "@/api/FincasAPI";
 import { createLote } from "@/api/LotesAPI";
 import { toast } from "react-toastify";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
+import InputComponent from "@/components/form/InputComponent";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 export type DraftLote = {
   name: string;
@@ -73,81 +74,44 @@ export default function CreateLote() {
         className="w-1/2 mx-auto p-5 space-y-5"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="name">
-            Nombre:
-          </label>
-          <input
-            autoComplete="off"
-            id="name"
-            type="text"
-            placeholder={"Nombre del lote"}
-            className="border border-black p-3"
-            {...register("name", {
-              required: "El nombre del Lote es obligatorio",
-            })}
-          />
+
+        <InputComponent<DraftLote>
+          label="Nombre"
+          id="name"
+          name="name"
+          placeholder="Nombre del lote"
+          register={register}
+          validation={{ required: 'El nombre del lote es obligatorio' }}
+          errors={errors}
+          type={'text'}
+        >
           {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+        </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label
-              className="text-lg font-bold uppercase"
-              htmlFor="finca_id"
-            >
-              Finca:
-            </label>
 
-            <Controller
-              name="finca_id"
-              control={control}
-              rules={{ required: "Seleccione una Finca" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={fincasOptions}
-                  id="finca_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={fincasOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
+        <InputSelectSearchComponent<DraftLote>
+          label="Finca"
+          id="finca_id"
+          name="finca_id"
+          options={fincasOptions}
+          control={control}
+          rules={{ required: 'La finca es obligatoria' }}
+          errors={errors}
+        >
+          {errors.finca_id && <Error>{errors.finca_id?.message?.toString()}</Error>}
+        </InputSelectSearchComponent>
 
-            {errors.finca_id && (
-              <Error>{errors.finca_id?.message?.toString()}</Error>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="cdp_id">
-              CDP:
-            </label>
-
-            <Controller
-              name="cdp_id"
-              control={control}
-              rules={{ required: "Seleccione un CDP" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={cdpsOptions}
-                  id="cdp_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={cdpsOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
-
-            {errors.cdp_id && (
-              <Error>{errors.cdp_id?.message?.toString()}</Error>
-            )}
-          </div>
-        </div>
+        <InputSelectSearchComponent<DraftLote>
+          label="CDP"
+          id="cdp_id"
+          name="cdp_id"
+          options={cdpsOptions}
+          control={control}
+          rules={{ required: 'El CDP es obligatorio' }}
+          errors={errors}
+        >
+          {errors.cdp_id && <Error>{errors.cdp_id?.message?.toString()}</Error>}
+        </InputSelectSearchComponent>
 
         <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
           {isPending ? <Spinner /> : <p>Crear Lote</p>}

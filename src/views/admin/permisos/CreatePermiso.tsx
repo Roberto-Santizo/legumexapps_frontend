@@ -38,11 +38,12 @@ export default function CreatePermiso() {
 
       <div>
         <form
-          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
           onSubmit={handleSubmit(handleCreatePermission)}
         >
 
           <PermisosForm register={register} errors={errors} />
+          
           <button type="submit" disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
             {isPending ? <Spinner /> : <p>Crear Permiso</p>}
           </button>

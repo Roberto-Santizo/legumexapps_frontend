@@ -1,15 +1,15 @@
-import Error from "@/components/utilities-components/Error";
-import { Button } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import Spinner from "@/components/utilities-components/Spinner";
 import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import Select from "react-select";
 import { createPlaca, DraftPlaca } from "@/api/PlacasAPI";
 import { toast } from "react-toastify";
+import Error from "@/components/utilities-components/Error";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import InputComponent from "@/components/form/InputComponent";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 export default function CrearPlaca() {
   const [transportistas, setTransportistas] = useState<Transportista[]>([]);
@@ -34,11 +34,11 @@ export default function CrearPlaca() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: createPlaca,
-    onError: () => {
-      toast.error('Hubo un error al crear la placa');
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Placa creado correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/transportistas/placas');
     }
   });
@@ -60,63 +60,35 @@ export default function CrearPlaca() {
       <h1 className="font-bold text-3xl">Crear Placa</h1>
 
       <form className="w-1/2 mx-auto mt-10 space-y-5" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="name">
-            Placa:
-          </label>
-          <input
-            autoComplete="off"
+
+        <InputComponent<DraftPlaca>
+            label="Placa"
             id="name"
-            type="text"
-            placeholder={"Placa, ej: C123ABC"}
-            className="border border-black p-3"
-            {...register("name", {
-              required: "La placa es obligatoria",
-            })}
-          />
-          {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-        </div>
-
-        <div>
-          <label className="text-lg font-bold uppercase" htmlFor="carrier_id">
-            TRANSPORTISTA:
-          </label>
-          <Controller
-            name="carrier_id"
-            control={control}
-            rules={{ required: "Seleccione un transportista" }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={transportistasOptions}
-                id="carrier_id"
-                placeholder={"--SELECCIONE UNA OPCION--"}
-                className="border border-black"
-                onChange={(selected) => field.onChange(selected?.value)}
-                value={transportistasOptions.find(
-                  (option) => option.value === field.value
-                )}
-              />
-            )}
-          />
-          {errors.carrier_id && <Error>{errors.carrier_id?.message?.toString()}</Error>}
-        </div>
-
-
-        <Button
-          disabled={isPending}
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
+            name="name"
+            placeholder="Placa, ej; C123ABC"
+            register={register}
+            validation={{required: 'La placa es obligatoria'}}
+            errors={errors}
+            type={'text'}
         >
-          {isPending ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Crear Piloto</p>
-          )}
-        </Button>
+            {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+        </InputComponent>        
+
+        <InputSelectSearchComponent<DraftPlaca>
+          label="Transportista"
+          id="carrier_id"
+          name="carrier_id"
+          options={transportistasOptions}
+          control={control}
+          rules={{required:'Seleccione un transportista'}}
+          errors={errors}
+        >
+            {errors.carrier_id && <Error>{errors.carrier_id?.message?.toString()}</Error>}
+        </InputSelectSearchComponent>
+
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear Placa</p>}
+        </button>
       </form>
     </>
   )

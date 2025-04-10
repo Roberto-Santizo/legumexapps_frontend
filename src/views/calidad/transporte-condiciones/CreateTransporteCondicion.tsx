@@ -1,11 +1,11 @@
-import Spinner from "@/components/utilities-components/Spinner";
-import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { createTransporteCondicion, DraftTransporteCondicion } from "@/api/BoletaTransporteAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
+import InputComponent from "@/components/form/InputComponent";
 
 export default function CreateTransporteCondicion() {
   const navigate = useNavigate();
@@ -31,35 +31,24 @@ export default function CreateTransporteCondicion() {
     <>
       <h1 className="font-bold text-4xl">Crear Condición</h1>
 
-      <form className="w-1/2 mx-auto mt-10" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase text-gray-700" htmlFor="name">
-            Condición:
-          </label>
-          <input
-            autoComplete="off"
+      <form className="w-3/4 shadow-xl p-10 mx-auto mt-10" noValidate onSubmit={handleSubmit(onSubmit)}>
+
+        <InputComponent<DraftTransporteCondicion>
+            label="Codición"
             id="name"
-            type="text"
-            placeholder="Condición"
-            className="border border-black p-3 "
-            {...register('name', { required: 'La condición es requerida' })}
-          />
-          {errors.name?.message && <Error>{errors.name.message}</Error>}
-        </div>
-        <Button
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: 2 }}
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <p className="font-bold text-lg">Crear Condición</p>
-            )}
-          </Button>
+            name="name"
+            placeholder="Nombre de la condición"
+            register={register}
+            validation={{required: 'El nombre codición es requerida'}}
+            errors={errors}
+            type={'text'}
+        >
+            {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+        </InputComponent>
+       
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-5">
+          {isPending ? <Spinner /> : <p>Crear Codición</p>}
+        </button>
       </form>
     </>
   )

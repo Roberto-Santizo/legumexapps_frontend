@@ -1,11 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllInsumos, Insumo } from "@/api/InsumosAPI";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DraftSelectedInsumo } from "views/agricola/planes-semanales/CreateTareaLote";
-import Select from "react-select";
 import Error from "../utilities-components/Error";
 import Modal from "../Modal";
+import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
+import InputComponent from "../form/InputComponent";
 
 type Props = {
     open: boolean,
@@ -67,42 +68,31 @@ export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Pr
         <Modal modal={open} closeModal={() => setOpen(false)} title="Agregar Insumo">
             <div className="p-6 space-y-6">
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700" htmlFor="insumo_id">
-                            Insumo:
-                        </label>
-                        <Controller
-                            name="insumo_id"
-                            control={control}
-                            rules={{ required: "Seleccione un insumo" }}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    options={insumosOptions}
-                                    id="insumo_id"
-                                    placeholder="--SELECCIONE UNA OPCIÓN--"
-                                    className="mt-1 border border-gray-300 rounded-md shadow-sm"
-                                    onChange={(selected) => field.onChange(selected?.value)}
-                                    value={insumosOptions.find((option) => option.value === field.value)}
-                                />
-                            )}
-                        />
+                    <InputSelectSearchComponent<DraftSelectedInsumo>
+                      label="Insumo"
+                      id="insumo_id"
+                      name="insumo_id"
+                      options={insumosOptions}
+                      control={control}
+                      rules={{required: 'Seleccione un insumo'}}
+                      errors={errors}
+                    >
                         {errors.insumo_id && <Error>{errors.insumo_id?.message?.toString()}</Error>}
-                    </div>
+                    </InputSelectSearchComponent>
+                   
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700" htmlFor="quantity">
-                            Cantidad:
-                        </label>
-                        <input
-                            id="quantity"
-                            type="number"
-                            placeholder="Cantidad del insumo"
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                            {...register("quantity", { required: "Ingrese una cantidad" })}
-                        />
+                    <InputComponent<DraftSelectedInsumo>
+                        label="Cantidad"
+                        id="quantity"
+                        name="quantity"
+                        placeholder="Cantidad a asignar"
+                        register={register}
+                        validation={{required:"La cantidad del insumo es obligatoria"}}
+                        errors={errors}
+                        type={'number'}
+                    >
                         {errors.quantity && <Error>{errors.quantity?.message?.toString()}</Error>}
-                    </div>
+                    </InputComponent>
 
                     <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                         <p>Agregar Insumo</p>

@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Modal from "../Modal";
+import InputComponent from "../form/InputComponent";
+import Error from "../utilities-components/Error";
 
 type Props = {
     task: TaskByLine;
@@ -37,44 +39,39 @@ export default function ModalCierreTareaProduccion({ task, setModalCierre, modal
         handleSubmit,
         register,
         formState: { errors },
-    }
-        = useForm<DraftCloseTask>();
+    } = useForm<DraftCloseTask>();
 
     const onSubmit = (data: DraftCloseTask) => mutate({ id: task.id, data });
 
     return (
         <Modal modal={modal} closeModal={() => setModalCierre(false)} title="Cierre de Tarea">
             <form className="p-10 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-bold uppercase" htmlFor="total_tarimas">
-                        Tarimas Producidas:
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="total_tarimas"
-                        type="number"
-                        placeholder="Total de tarimas producidas"
-                        className="border border-gray-300 p-3 rounded-md"
-                        {...register('total_tarimas')}
-                    />
-                    {errors.total_tarimas?.message && <p className="text-red-500">{errors.total_tarimas.message.toString()}</p>}
-                </div>
 
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-bold uppercase" htmlFor="total_lbs_bascula">
-                        Total de Libras Producidas (báscula):
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="total_lbs_bascula"
-                        type="number"
-                        placeholder="Total de libras producidas (báscula)"
-                        className="border border-gray-300 p-3 rounded-md"
-                        {...register('total_lbs_bascula', { required: 'El total de libras producidas es necesario' })}
-                    />
-                    {errors.total_lbs_bascula?.message && <p className="text-red-500">{errors.total_lbs_bascula.message.toString()}</p>}
-                </div>
+                <InputComponent<DraftCloseTask>
+                    label="Tarimas Producidas"
+                    id="total_tarimas"
+                    name="total_tarimas"
+                    placeholder="Total de Tarimas Producidas"
+                    register={register}
+                    validation={{}}
+                    errors={errors}
+                    type={'number'}
+                >
+                    {errors.total_tarimas && <Error>{errors.total_tarimas?.message?.toString()}</Error>}
+                </InputComponent>
 
+                <InputComponent<DraftCloseTask>
+                    label="Total de Libras Producidas (báscula)"
+                    id="total_lbs_bascula"
+                    name="total_lbs_bascula"
+                    placeholder="Total de libras producidas pesadas en báscula"
+                    register={register}
+                    validation={{ required: 'El total de libras producidas es obligatoria' }}
+                    errors={errors}
+                    type={'number'}
+                >
+                    {errors.total_lbs_bascula && <Error>{errors.total_lbs_bascula?.message?.toString()}</Error>}
+                </InputComponent>
 
                 <button
                     type="submit"

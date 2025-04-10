@@ -1,13 +1,15 @@
 import { getAllSkus } from "@/api/SkusAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { createLineaSku } from "@/api/LineasSkuAPI";
 import { useNavigate } from "react-router-dom";
-import { isAxiosError } from "axios";
 import { getAllLines } from "@/api/LineasAPI";
-import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import InputComponent from "@/components/form/InputComponent";
+import InputSelectComponent from "@/components/form/InputSelectComponent";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export type DraftLineaSku = {
     sku_id: string;
@@ -19,14 +21,12 @@ export type DraftLineaSku = {
 
 export default function CrearLineaSku() {
     const navigate = useNavigate();
+    const paymentMethodsOptions = [{ value: '0', label: 'Horas Rendimiento' }, { value: '1', label: 'Horas Linea' }];
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: createLineaSku,
         onError: (error) => {
-            if (isAxiosError(error) && error.response) {
-                const errors = Object.values(error.response.data.errors).flat().join('\n');
-                toast.error(errors);
-            }
+            toast.error(error.message)
         },
         onSuccess: (data) => {
             toast.success(data);
@@ -53,110 +53,75 @@ export default function CrearLineaSku() {
             <h2 className="font-bold text-4xl">Relacionar Linea a SKU</h2>
 
             <form className="mt-10 w-2/3 mx-auto space-y-5 p-10 shadow-xl" onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label className="text-lg font-bold uppercase" htmlFor="sku_id">
-                        SKU:
-                    </label>
-                    <Controller
-                        name="sku_id"
-                        control={control}
-                        rules={{ required: "Seleccione un transportista" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                options={results[0].data}
-                                id="sku_id"
-                                placeholder={"--SELECCIONE UNA OPCION--"}
-                                className="border border-black"
-                                onChange={(selected) => field.onChange(selected?.value)}
-                                value={results[0].data?.find(
-                                    (option) => option.value === field.value
-                                )}
-                            />
-                        )}
-                    />
+
+                <InputSelectSearchComponent<DraftLineaSku>
+                    label="SKU"
+                    id="sku_id"
+                    name="sku_id"
+                    options={results[0].data || []}
+                    control={control}
+                    rules={{ required: 'El sku es requerido' }}
+                    errors={errors}
+                >
                     {errors.sku_id && <Error>{errors.sku_id?.message?.toString()}</Error>}
-                </div>
+                </InputSelectSearchComponent>
 
-                <div>
-                    <label className="text-lg font-bold uppercase" htmlFor="line_id">
-                        Linea:
-                    </label>
-                    <Controller
-                        name="line_id"
-                        control={control}
-                        rules={{ required: "Seleccione una linea" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                options={results[1].data}
-                                id="line_id"
-                                placeholder={"--SELECCIONE UNA OPCION--"}
-                                className="border border-black"
-                                onChange={(selected) => field.onChange(selected?.value)}
-                                value={results[1].data?.find(
-                                    (option) => option.value === field.value
-                                )}
-                            />
-                        )}
-                    />
+                <InputSelectSearchComponent<DraftLineaSku>
+                    label="Linea"
+                    id="line_id"
+                    name="line_id"
+                    options={results[1].data || []}
+                    control={control}
+                    rules={{ required: 'La linea es obligatoria' }}
+                    errors={errors}
+                >
                     {errors.line_id && <Error>{errors.line_id?.message?.toString()}</Error>}
-                </div>
+                </InputSelectSearchComponent>
 
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-bold uppercase" htmlFor="lbs_performance">
-                        Libras/Horas:
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="lbs_performance"
-                        type="number"
-                        placeholder={"Rendiento en lbs"}
-                        className="border border-black p-3"
-                        {...register("lbs_performance", {
-                            min: { value: 0, message: 'El valor debe de ser mayor a 0' }
-                        })}
-                    />
+
+                <InputComponent<DraftLineaSku>
+                    label="Libras/Hora"
+                    id="lbs_performance"
+                    name="lbs_performance"
+                    placeholder="Rendimiento de lbs por hora"
+                    register={register}
+                    validation={{}}
+                    errors={errors}
+                    type={'number'}
+                >
                     {errors.lbs_performance && <Error>{errors.lbs_performance?.message?.toString()}</Error>}
-                </div>
+                </InputComponent>
 
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-bold uppercase" htmlFor="accepted_percentage">
-                        Porcentaje Aceptado:
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="accepted_percentage"
-                        type="number"
-                        placeholder={"Rendiento en lbs"}
-                        className="border border-black p-3"
-                        {...register("accepted_percentage", {
-                            required: "El porcentaje aceptado es requerido",
-                            min: { value: 0, message: 'El valor debe de ser mayor a 0' }
-                        })}
-                    />
+                <InputComponent<DraftLineaSku>
+                    label="Porcentaje Aceptado"
+                    id="accepted_percentage"
+                    name="accepted_percentage"
+                    placeholder="Porcentaje Aceptado"
+                    register={register}
+                    validation={{
+                        required: "El porcentaje aceptado es requerido",
+                        min: { value: 0, message: 'El valor debe de ser mayor a 0' }
+                    }}
+                    errors={errors}
+                    type={'number'}
+                >
                     {errors.accepted_percentage && <Error>{errors.accepted_percentage?.message?.toString()}</Error>}
-                </div>
+                </InputComponent>
 
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-bold uppercase" htmlFor="accepted_percentage">
-                        Método de Pago:
-                    </label>
-
-                    <select
-                        className="border p-3 border-black"
-                        {...register("payment_method", { required: 'El método de pago es requerido' })}
-                    >
-                        <option value="">--SELECCIONE UNA OPCION--</option>
-                        <option value="0">HORAS RENDIMIENTO</option>
-                        <option value="1">HORAS LINEA</option>
-                    </select>
+                <InputSelectComponent<DraftLineaSku>
+                    label="Método de Pago"
+                    id="payment_method"
+                    name="payment_method"
+                    options={paymentMethodsOptions}
+                    register={register}
+                    validation={{ required: 'El método de pago es obligatorio' }}
+                    errors={errors}
+                >
                     {errors.payment_method && <Error>{errors.payment_method?.message?.toString()}</Error>}
-                </div>
+                </InputSelectComponent>
 
-
-                <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-                    Relacionar Linea
+                <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                    {isPending ? <Spinner /> : <p>Relacionar Linea</p>}
                 </button>
             </form>
         </div>

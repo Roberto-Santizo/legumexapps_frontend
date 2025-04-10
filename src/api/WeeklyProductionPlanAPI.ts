@@ -251,7 +251,7 @@ export const TimeoutTaskProductionSchema = z.object({
 export const PerformanceTaskProductionSchema = z.object({
     id: z.string(),
     take_date: z.string(),
-    tarimas_produced: z.number(),
+    tarimas_produced: z.number().nullable(),
     lbs_bascula: z.number(),
     lbs_teoricas: z.number(),
     difference: z.number()

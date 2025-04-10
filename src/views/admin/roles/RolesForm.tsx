@@ -1,6 +1,7 @@
 import Error from "@/components/utilities-components/Error";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { DraftRole } from "./CreateRole";
+import InputTextComponent from "@/components/form/InputComponent";
 
 type Props = {
     register: UseFormRegister<DraftRole>;
@@ -9,19 +10,17 @@ type Props = {
 
 export default function RolesForm({ register, errors }: Props) {
     return (
-        <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="name">
-                Nombre:
-            </label>
-            <input
-                autoComplete="off"
-                id="name"
-                type="text"
-                placeholder={"Nombre del rol"}
-                className="border border-black p-3"
-                {...register("name", { required: "El nombre es obligatorio" })}
-            />
+        <InputTextComponent<DraftRole>
+            label="Nombre del Rol"
+            id="name"
+            name="name"
+            placeholder="Nombre del Rol"
+            register={register}
+            validation={{ required: "El nombre del rol es obligatorio" }}
+            errors={errors}
+        >
             {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-        </div>
+
+        </InputTextComponent>
     )
 }

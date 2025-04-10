@@ -5,7 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
-
+import InputComponent from "@/components/form/InputComponent";
+import InputSelectComponent from "@/components/form/InputSelectComponent";
 
 export type DraftLinea = {
   code: string;
@@ -16,6 +17,7 @@ export type DraftLinea = {
 
 export default function CreateSKU() {
   const navigate = useNavigate();
+  const shifts = [{ value: '1', label: 'AM' }, { value: '0', label: 'PM' }]
 
   const { mutate, isPending } = useMutation({
     mutationFn: createLinea,
@@ -41,71 +43,65 @@ export default function CreateSKU() {
 
       <div>
         <form
-          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          className="mt-10 w-2/3 shadow-xl mx-auto p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="code">
-              Código:
-            </label>
-            <input
-              autoComplete="off"
-              id="code"
-              type="text"
-              placeholder="Codificación de la línea"
-              className="border border-black p-3"
-              {...register("code", { required: "La codificación de la línea es obligatoria" })}
-            />
-            {errors.code?.message && <Error>{String(errors.code.message)}</Error>}
-          </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="name">
-              Nombre de la Linea:
-            </label>
-            <input
-              autoComplete="off"
-              id="name"
-              type="text"
-              placeholder="Nombre de la linea"
-              className="border border-black p-3"
-              {...register("name", { required: "El nombre de la linea es obligatoria" })}
-            />
-            {errors.name?.message && <Error>{String(errors.name.message)}</Error>}
-          </div>
+          <InputComponent<DraftLinea>
+            label="Código de Linea"
+            id="code"
+            name="code"
+            placeholder="Codificación de Linea"
+            register={register}
+            validation={{ required: 'El codigo de la linea es requerida' }}
+            errors={errors}
+            type={'text'}
+          >
+            {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
+          </InputComponent>
 
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="total_persons">
-              Total de personas:
-            </label>
-            <input
-              autoComplete="off"
-              id="total_persons"
-              type="number"
-              placeholder="Ingrese el total de personas"
-              className="border border-black p-3"
-              {...register("total_persons", { required: "El total de personas es obligatorio" })}
-            />
-            {errors.total_persons?.message && <Error>{String(errors.total_persons.message)}</Error>}
-          </div>
+          <InputComponent<DraftLinea>
+            label="Nombre de la linea"
+            id="name"
+            name="name"
+            placeholder="Nombre de la linea"
+            register={register}
+            validation={{ required: 'El nombre de la linea es obligatoria' }}
+            errors={errors}
+            type={'text'}
+          >
+            {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="total_persons">
-              Turno:
-            </label>
-            <select className="p-2 border border-black"
-              {...register("shift", { required: 'El turno es requerido' })}
-            >
-              <option value="" disabled selected>--SELECCIONE UNA OPCIÓN--</option>
-              <option value="1">AM</option>
-              <option value="2">PM</option>
-            </select>
-            {errors.shift?.message && <Error>{String(errors.shift.message)}</Error>}
-          </div>
+
+          <InputComponent<DraftLinea>
+            label="Total de Personas"
+            id="total_persons"
+            name="total_persons"
+            placeholder="Total de personas que conforman la linea"
+            register={register}
+            validation={{ required: 'El total de persona es obligatorio' }}
+            errors={errors}
+            type={'text'}
+          >
+            {errors.total_persons && <Error>{errors.total_persons?.message?.toString()}</Error>}
+          </InputComponent>
+
+          <InputSelectComponent<DraftLinea>
+            label="Turno"
+            id="shift"
+            name="shift"
+            options={shifts}
+            register={register}
+            validation={{ required: 'El turno es requerido' }}
+            errors={errors}
+          >
+            {errors.shift && <Error>{errors.shift?.message?.toString()}</Error>}
+          </InputSelectComponent>
 
           <button disabled={isPending} className="button w-full bg-indigo-500 hover:bg-indigo-600">
-              {isPending ? <Spinner /> : <p>Crear Linea</p>}
+            {isPending ? <Spinner /> : <p>Crear Linea</p>}
           </button>
         </form>
       </div>

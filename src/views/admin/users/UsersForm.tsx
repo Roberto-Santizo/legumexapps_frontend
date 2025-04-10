@@ -6,6 +6,9 @@ import { getRoles, Role } from "@/api/RolesAPI";
 import { getPermissions, Permission } from "@/api/PermissionsAPI";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
+import InputSelectComponent from "@/components/form/InputSelectComponent";
+import InputPasswordComponent from "@/components/form/InputPasswordComponent";
+import InputComponent from "@/components/form/InputComponent";
 
 type Props = {
     register: UseFormRegister<DraftUser>;
@@ -32,6 +35,10 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
         if (results[1].data) setPermissions(results[1].data)
     }, [results]);
 
+    const roleOptions = roles.map((role) => ({
+        value: role.name,
+        label: role.name,
+    }));
     const handleCheckboxChange = (permissionId: string) => {
         if (setSelectedPermissions) {
             setSelectedPermissions((prev) =>
@@ -45,103 +52,70 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
     if (isLoading) return <Spinner />
     return (
         <>
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-bold uppercase" htmlFor="name">
-                    Nombre:
-                </label>
-                <input
-                    autoComplete="off"
-                    id="name"
-                    type="text"
-                    placeholder={"Nombre del usuario"}
-                    className="border border-black p-3"
-                    {...register("name", { required: "El nombre es obligatorio" })}
-                />
-                {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-            </div>
+            <InputComponent<DraftUser>
+                label="Nombre"
+                id="name"
+                name="name"
+                placeholder="Nombre del usuario"
+                register={register}
+                validation={{ required: "El nombre es obligatorio" }}
+                errors={errors}
+            >
+                <Error>{errors.name?.message}</Error>
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-bold uppercase" htmlFor="username">
-                    Username:
-                </label>
-                <input
-                    autoComplete="off"
-                    id="username"
-                    type="text"
-                    placeholder={"Nombre del usuario"}
-                    className="border border-black p-3"
-                    {...register("username", {
-                        required: "El username es obligatorio",
-                        maxLength: {
-                            value: 16,
-                            message: "El username no puede tener más de 16 caracteres",
-                        },
-                    })}
-                />
-                {errors.username && (
-                    <Error>{errors.username?.message?.toString()}</Error>
-                )}
-            </div>
+            <InputComponent<DraftUser>
+                label="Nombre de Usuario"
+                id="username"
+                name="username"
+                placeholder="Nombre de Usuario"
+                register={register}
+                validation={{ required: "El username es obligatorio" }}
+                errors={errors}
+            >
+                <Error>{errors.username?.message}</Error>
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-bold uppercase" htmlFor="username">
-                    Email (Opcional):
-                </label>
-                <input
-                    autoComplete="off"
-                    id="email"
-                    type="email"
-                    placeholder={"Correo Electronico"}
-                    className="border border-black p-3"
-                    {...register("email", {
-                        pattern: {
-                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                            message: "El formato del email es inválido",
-                        },
-                    })}
-                />
-                {errors.email && <Error>{errors.email?.message?.toString()}</Error>}
-            </div>
+            <InputComponent<DraftUser>
+                label="Email (opcional)"
+                id="email"
+                name="email"
+                placeholder="Correo Eléctronico"
+                register={register}
+                validation={{
+                    pattern: {
+                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: "El formato del email es inválido",
+                    },
+                }}
+                errors={errors}
+            >
+                <Error>{errors.email?.message}</Error>
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-bold uppercase" htmlFor="password">
-                    Contraseña:
-                </label>
-                <input
-                    autoComplete="off"
-                    id="password"
-                    type="password"
-                    placeholder={"Contraseña"}
-                    className="border border-black p-3"
-                    {...register("password", {
-                        required: !isEditing && "La contraseña es obligatoria",
-                    })}
-                />
-                {errors.password && (
-                    <Error>{errors.password?.message?.toString()}</Error>
-                )}
-            </div>
+            <InputPasswordComponent<DraftUser>
+                label="Contraseña"
+                id="password"
+                name="password"
+                placeholder="Contraseña"
+                register={register}
+                validation={!isEditing ? { required: "La contraseña es obligatoria" } : {}}
+                errors={errors}
+            >
+                <Error>{errors.password?.message}</Error>
+            </InputPasswordComponent>
 
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-bold uppercase" htmlFor="role">
-                    Rol:
-                </label>
-
-                <select
-                    id="role"
-                    className="border border-black p-3"
-                    {...register("roles", { required: "El rol es obligatorio" })}
-                >
-                    <option value="">--SELECCIONE UNA OPCIÓN--</option>
-                    {roles.map((role) => (
-                        <option value={role.name} key={role.id}>
-                            {role.name}
-                        </option>
-                    ))}
-                </select>
-
-                {errors.roles && <Error>{errors.roles?.message?.toString()}</Error>}
-            </div>
+            <InputSelectComponent<DraftUser>
+                label="Rol"
+                id="roles"
+                name="roles"
+                options={roleOptions}
+                register={register}
+                validation={{ required: 'El rol es obligatorio' }}
+                errors={errors}
+            >
+                <Error>{errors.roles?.message}</Error>
+            </InputSelectComponent>
 
             <fieldset className="shadow p-5">
                 <legend className="text-3xl font-bold">Permisos</legend>

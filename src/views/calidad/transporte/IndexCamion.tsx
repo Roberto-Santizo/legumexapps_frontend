@@ -33,6 +33,7 @@ export default function IndexCamion() {
     if (isError) return <ShowErrorAPI />;
     return (
         <div>
+            <h2 className="font-bold text-4xl">Inspección de Camiones</h2>
             <div className="flex flex-row justify-end gap-5">
                 <Link
                     to="/transporte-boleta/crear"

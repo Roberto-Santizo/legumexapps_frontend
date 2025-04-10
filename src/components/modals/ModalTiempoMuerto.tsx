@@ -1,13 +1,15 @@
 import { TaskByLine, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { Dispatch } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { createTaskTimeout, getAllTimeouts } from "@/api/TimeOutsAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
-import Select from "react-select";
 import Modal from "../Modal";
+import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
+import Error from "../utilities-components/Error";
+import Spinner from "../utilities-components/Spinner";
 
 type Props = {
     task: TaskByLine;
@@ -59,42 +61,21 @@ export default function ModalTiempoMuerto({ setModalTimeout, modal, setSelectedT
 
     if (timeouts) return (
         <Modal modal={modal} closeModal={() => setModalTimeout(false)} title="Agregar Tiempo Muerto">
-            <form className="p-6 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2" htmlFor="timeout_id">
-                        Tiempo Muerto
-                    </label>
-                    <Controller
-                        name="timeout_id"
-                        control={control}
-                        rules={{ required: "Seleccione un tiempo muerto" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                options={timeouts}
-                                id="timeout_id"
-                                placeholder="-- SELECCIONE UNA OPCIÓN --"
-                                classNamePrefix="react-select"
-                                onChange={(selected) => field.onChange(selected?.value)}
-                                value={timeouts.find(option => option.value === field.value)}
-                            />
-                        )}
-                    />
-                    {errors.timeout_id && (
-                        <p className="text-red-600 text-sm mt-1">{errors.timeout_id?.message?.toString()}</p>
-                    )}
-                </div>
-
-                <button
-                    disabled={isPending}
-                    type="submit"
-                    className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2 px-4 rounded-md transition-all uppercase"
+            <form className="p-10 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
+                <InputSelectSearchComponent<DraftTaskTimeout>
+                    label="Tiempo Muerto"
+                    id="timeout_id"
+                    name="timeout_id"
+                    options={timeouts}
+                    control={control}
+                    rules={{ required: 'Seleccione un tiempo muerto' }}
+                    errors={errors}
                 >
-                    {isPending ? (
-                        <span className="animate-spin h-5 w-5 border-t-2 border-white rounded-full"></span>
-                    ) : (
-                        "Agregar Tiempo Muerto"
-                    )}
+                    {errors.timeout_id && <Error>{errors.timeout_id?.message?.toString()}</Error>}
+                </InputSelectSearchComponent>
+
+                <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                    {isPending ? <Spinner /> : <p>Iniciar</p>}
                 </button>
             </form>
         </Modal>

@@ -7,6 +7,7 @@ import { usePermissions } from "@/hooks/usePermissions";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
 import Modal from "../Modal";
+import InputComponent from "../form/InputComponent";
 
 type Props = {
     modal: boolean;
@@ -60,41 +61,32 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
     return (
         <Modal modal={modal} closeModal={handleCloseModal} title={`${sku.sku} - ${sku.line}`}>
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-bold uppercase" htmlFor="performance">
-                        Libras/Horas:
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="performance"
-                        type="number"
-                        placeholder={"Rendiento en lbs"}
-                        className="border border-black p-3"
-                        {...register("performance", {
-                            min: { value: 0, message: 'El valor debe de ser mayor a 0' }
-                        })}
-                    />
+                <InputComponent<DraftEditLineSku>
+                    label="Libras/Horas"
+                    id="performance"
+                    name="performance"
+                    placeholder="Rendimiento en LBS"
+                    register={register}
+                    validation={{}}
+                    errors={errors}
+                    type={'number'}
+                >
                     {errors.performance && <Error>{errors.performance?.message?.toString()}</Error>}
-                </div>
+                </InputComponent>
 
                 {hasPermission('can update sku percentage') && (
-                    <div className="flex flex-col gap-2">
-                        <label className="text-lg font-bold uppercase" htmlFor="accepted_percentage">
-                            Porcentaje Aceptado:
-                        </label>
-                        <input
-                            autoComplete="off"
-                            id="accepted_percentage"
-                            type="number"
-                            placeholder={"Rendiento en lbs"}
-                            className="border border-black p-3"
-                            {...register("accepted_percentage", {
-                                required: "El porcentaje aceptado es requerido",
-                                min: { value: 0, message: 'El valor debe de ser mayor a 0' }
-                            })}
-                        />
+                    <InputComponent<DraftEditLineSku>
+                        label="Porcentaje Aceptado"
+                        id="accepted_percentage"
+                        name="accepted_percentage"
+                        placeholder="Porcentaje Aceptado"
+                        register={register}
+                        validation={{}}
+                        errors={errors}
+                        type={'number'}
+                    >
                         {errors.accepted_percentage && <Error>{errors.accepted_percentage?.message?.toString()}</Error>}
-                    </div>
+                    </InputComponent>
                 )}
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

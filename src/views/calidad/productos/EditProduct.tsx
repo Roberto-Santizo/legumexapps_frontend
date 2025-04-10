@@ -13,8 +13,8 @@ import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
 import { DraftProduct } from "./CrearProduct";
 import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
-import CreateDefectoModal, { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
-import EditDefectoModal from "@/components/defectos/EditDefectoModal";
+import CreateDefectoModal, { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
+import EditDefectoModal from "@/components/modals/ModalEditarDefecto";
 import Spinner from "@/components/utilities-components/Spinner";
 
 export default function EditProduct() {

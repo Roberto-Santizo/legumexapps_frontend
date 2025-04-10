@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { Button } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { createTimeOut } from "@/api/TimeOutsAPI";
 import { toast } from "react-toastify";
@@ -38,22 +37,12 @@ export default function CrearTiempoMuerto() {
     <div>
       <h2 className="font-bold text-4xl">Crear Tiempo Muerto</h2>
 
-      <form className="mx-auto w-1/2 mt-10 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="mx-auto w-2/3 shadow-xl p-10 mt-10 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormTiempoMuerto register={register} errors={errors} />
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-        >
-          {isPending ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Crear Tiempo Muerto</p>
-          )}
-        </Button>
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear Tiempo Muerto</p>}
+        </button>
       </form>
     </div>
   )

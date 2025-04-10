@@ -6,6 +6,7 @@ import { createVariety } from "@/api/VarietiesAPI";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
+import InputComponent from "@/components/form/InputComponent";
 
 export default function CrearVariedad() {
     const navigate = useNavigate();
@@ -32,21 +33,19 @@ export default function CrearVariedad() {
         <div>
             <h2 className="font-bold text-3xl">Crear Variedad</h2>
 
-            <form className="mt-5 w-1/2 mx-auto" noValidate onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-2">
-                    <label className="text-lg font-bold uppercase" htmlFor="name">
-                        Nombre:
-                    </label>
-                    <input
-                        autoComplete="off"
-                        id="name"
-                        type="text"
-                        placeholder={"Nombre de la variedad"}
-                        className="border border-black p-3"
-                        {...register("name", { required: 'El nombre de la variedad es requerida' })}
-                    />
-                    {errors.name?.message && <Error>{errors.name.message}</Error>}
-                </div>
+            <form className="mt-5 w-2/3 shadow-xl p-5 mx-auto" noValidate onSubmit={handleSubmit(onSubmit)}>
+                <InputComponent<DraftVariety>
+                    label="Nombre de la variedad"
+                    id="name"
+                    name="name"
+                    placeholder="Nombre de la variedad"
+                    register={register}
+                    validation={{ requried: 'El nombre de la variedad es requerida' }}
+                    errors={errors}
+                    type={'text'}
+                >
+                    {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+                </InputComponent>
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-5">
                     {isPending ? <Spinner /> : <p>Crear Variedad</p>}

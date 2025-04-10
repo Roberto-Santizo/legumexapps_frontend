@@ -1,4 +1,4 @@
-import { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
+import { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
 import clienteAxios from "@/config/axios";
 import { DraftProduct } from "@/views/calidad/productos/CrearProduct";
 import { isAxiosError } from "axios";

@@ -51,7 +51,7 @@ export default function CreateUser() {
     <>
       <h2 className="text-4xl font-bold">Crear Usuario</h2>
       <form
-        className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+        className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5 my-5"
         onSubmit={handleSubmit(onSubmit)}
       >
 

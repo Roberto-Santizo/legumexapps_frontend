@@ -8,6 +8,8 @@ import { useQueries, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
+import InputComponent from "@/components/form/InputComponent";
+import InputSelectComponent from "@/components/form/InputSelectComponent";
 
 export type DraftCDP = {
   crop_id: string,
@@ -50,6 +52,17 @@ export default function CreateCdp() {
     }
   }, [results]);
 
+  const cropOptions = crops.map((crop) => ({
+    value: crop.id,
+    label: `${crop.name} - ${crop.variety}`,
+  }));
+
+  const recipeOptions = recipes.map((recipe) => ({
+    value: recipe.id,
+    label: recipe.name,
+  }));
+
+
   const isLoading = results.some(result => result.isLoading);
 
   const {
@@ -70,135 +83,88 @@ export default function CreateCdp() {
         className="space-y-5 w-2/3 mx-auto p-5 mt-10"
         onSubmit={handleSubmit(handleCreateCDP)}
       >
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="name">
-            Nombre:
-          </label>
-          <input
-            autoComplete="off"
-            id="name"
-            type="text"
-            placeholder={"Nombre del CDP"}
-            className="border border-black p-3"
-            {...register("name", {
-              required: "El nombre del CDP es obligatorio",
-            })}
-          />
+        <InputComponent<DraftCDP>
+          label="Nombre del CDP"
+          id="name"
+          name="name"
+          placeholder="Nombre del CDP"
+          register={register}
+          validation={{ required: 'El nombre del CDP es obligatorio' }}
+          errors={errors}
+          type={'text'}
+        >
           {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-        </div>
+        </InputComponent>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="density">
-            Densidad:
-          </label>
-          <input
-            autoComplete="off"
-            id="density"
-            type="number"
-            placeholder={"Densidad del CDP"}
-            className="border border-black p-3"
-            {...register("density", {
-              required: "El densidad es obligatoria",
-              pattern: {
-                value: /^[0-9]+(\.[0-9]+)?$/,
-                message: "Debe ser un número válido",
-              },
-            })}
-          />
-          {errors.density && (
-            <Error>{errors.density?.message?.toString()}</Error>
-          )}
-        </div>
+        <InputComponent<DraftCDP>
+          label="Densidad"
+          id="density"
+          name="density"
+          placeholder="Densidad de CDP"
+          register={register}
+          validation={{ required: 'La densidad es obligatoria' }}
+          errors={errors}
+          type={'number'}
+        >
+          {errors.density && <Error>{errors.density?.message?.toString()}</Error>}
+        </InputComponent>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="size">
-            Tamaño:
-          </label>
-          <input
-            autoComplete="off"
-            id="size"
-            type="text"
-            placeholder={"Tamaño del CDP"}
-            className="border border-black p-3"
-            {...register("size", {
-              required: "El tamaño del CDP es obligatorio",
-              pattern: {
-                value: /^\d{1,3}X\d{1,3}$/,
-                message:
-                  "El formato debe ser númeroXnúmero, por ejemplo: 45X45",
-              },
-            })}
-          />
+        <InputComponent<DraftCDP>
+          label="Tamaño"
+          id="size"
+          name="size"
+          placeholder="Tamaño de CDP"
+          register={register}
+          validation={{
+            required: "El tamaño del CDP es obligatorio",
+            pattern: {
+              value: /^\d{1,3}X\d{1,3}$/,
+              message:
+                "El formato debe ser númeroXnúmero, por ejemplo: 45X45",
+            },
+          }}
+          errors={errors}
+          type={'text'}
+        >
           {errors.size && <Error>{errors.size?.message?.toString()}</Error>}
-        </div>
+        </InputComponent>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="start_date">
-            Fecha de Incio del CDP:
-          </label>
-          <input
-            autoComplete="off"
-            id="start_date"
-            type="date"
-            className="border border-black p-3"
-            {...register("start_date", {
-              required: "La fecha de incio del CDP es obligatoria",
-            })}
-          />
-          {errors.start_date && (
-            <Error>{errors.start_date?.message?.toString()}</Error>
-          )}
-        </div>
+        <InputComponent<DraftCDP>
+          label="Fecha de Inicio del CDP"
+          id="start_date"
+          name="start_date"
+          placeholder=""
+          register={register}
+          validation={{ required: 'Fecha de inicio del CDP es obligatorio' }}
+          errors={errors}
+          type={'date'}
+        >
+          {errors.start_date && <Error>{errors.start_date?.message?.toString()}</Error>}
+        </InputComponent>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="crop">
-            Cultivo:
-          </label>
+        <InputSelectComponent<DraftCDP>
+          label="Cultivo"
+          id="crop_id"
+          name="crop_id"
+          options={cropOptions}
+          register={register}
+          validation={{ required: 'El cultivo es obligatario' }}
+          errors={errors}
+        >
+          {errors.crop_id && <Error>{errors.crop_id?.message?.toString()}</Error>}
+        </InputSelectComponent>
 
-          <select
-            id="crop"
-            className="border border-black p-3"
-            {...register("crop_id", {
-              required: "Especifique el cultivo relacionado al CDP",
-            })}
-          >
-            <option value="">--SELECCIONE UNA OPCIÓN--</option>
-            {crops.map((crop) => (
-              <option value={crop.id} key={crop.id}>
-                {crop.name} - {crop.variety}
-              </option>
-            ))}
-          </select>
-
-          {errors.crop_id && (
-            <Error>{errors.crop_id?.message?.toString()}</Error>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="recipe">
-            Receta:
-          </label>
-
-          <select
-            id="recipe"
-            className="border border-black p-3"
-            {...register("recipe_id", {
-              required: "Especifique la receta relacionada al CDP",
-            })}
-          >
-            <option value="">--SELECCIONE UNA OPCIÓN--</option>
-            {recipes.map((recipe) => (
-              <option value={recipe.id} key={recipe.id}>
-                {recipe.name}
-              </option>
-            ))}
-          </select>
-
-          {errors.recipe_id && (
-            <Error>{errors.recipe_id?.message?.toString()}</Error>
-          )}
-        </div>
+        <InputSelectComponent<DraftCDP>
+          label="Receta"
+          id="recipe_id"
+          name="recipe_id"
+          options={recipeOptions}
+          register={register}
+          validation={{ required: 'La receta es obligatoria' }}
+          errors={errors}
+        >
+          {errors.recipe_id && <Error>{errors.recipe_id?.message?.toString()}</Error>}
+        </InputSelectComponent>
 
         <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
           {isPending ? <Spinner /> : <p>Crear CDP</p>}

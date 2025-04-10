@@ -5,13 +5,14 @@ import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
 import { Defect } from "@/types";
 import { BoletaDetail, createQualityDoc, ResultBoletaCalidad } from "@/api/ReceptionsDocAPI";
 import { useNavigate } from "react-router-dom";
-import { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
+import { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import InputComponent from "@/components/form/InputComponent";
 
 type Props = {
   boleta: BoletaDetail
@@ -154,7 +155,8 @@ export default function Boleta_form3({ boleta }: Props) {
           noValidate
           onSubmit={handleSubmit(onSubmit)}
         >
-          <fieldset className="grid grid-cols-3 gap-5">
+          <fieldset className="grid grid-cols-3 gap-5 border p-5">
+            <legend className="font-bold text-3xl">Información general</legend>
             <div className="flex flex-col gap-2">
               <label className="text-lg font-bold uppercase">
                 VARIEDAD:
@@ -194,65 +196,57 @@ export default function Boleta_form3({ boleta }: Props) {
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="net_weight">
-                Peso Neto:
-              </label>
-              <input
-                autoComplete="off"
-                id="net_weight"
-                type="number"
-                placeholder={"Peso Neto"}
-                className="border border-black p-3"
-                {...register("net_weight", { required: "El peso neto es obligatorio" })}
-              />
+            <InputComponent<DraftBoletaControlCalidad>
+              label="Peso Neto"
+              id="net_weight"
+              name="net_weight"
+              placeholder="Peso Neto"
+              register={register}
+              validation={{ required: 'El peso neto es obligatorio' }}
+              errors={errors}
+              type={'number'}
+            >
               {errors.net_weight && <Error>{errors.net_weight?.message?.toString()}</Error>}
-            </div>
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="no_doc_cosechero">
-                No. Hoja Cosechero:
-              </label>
-              <input
-                autoComplete="off"
-                id="no_doc_cosechero"
-                type="text"
-                placeholder={"No. hoja cosechero"}
-                className="border border-black p-3"
-                {...register("no_doc_cosechero")}
-              />
+            <InputComponent<DraftBoletaControlCalidad>
+              label="No. Hoja Cosechero"
+              id="no_doc_cosechero"
+              name="no_doc_cosechero"
+              placeholder="Número de hoja de cosechero"
+              register={register}
+              validation={{}}
+              errors={errors}
+              type={'text'}
+            >
               {errors.no_doc_cosechero && <Error>{errors.no_doc_cosechero?.message?.toString()}</Error>}
-            </div>
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="sample_units">
-                Unidades Muestra:
-              </label>
-              <input
-                autoComplete="off"
-                id="sample_units"
-                type="text"
-                placeholder={"Unidades Muestra"}
-                className="border border-black p-3"
-                {...register("sample_units", { required: "El numero de unidades Muestra es obligatorio" })}
-              />
+            <InputComponent<DraftBoletaControlCalidad>
+              label="Unidades de Muestra"
+              id="sample_units"
+              name="sample_units"
+              placeholder="Unidades de Muestra"
+              register={register}
+              validation={{ required: 'Las unidades de muestra es obligatoria' }}
+              errors={errors}
+              type={'text'}
+            >
               {errors.sample_units && <Error>{errors.sample_units?.message?.toString()}</Error>}
-            </div>
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="total_baskets">
-                Cantidad de Canastas:
-              </label>
-              <input
-                autoComplete="off"
-                id="total_baskets"
-                type="number"
-                placeholder={"Total de Canastas"}
-                className="border border-black p-3"
-                {...register("total_baskets", { required: "El total de canastas es obligatorio" })}
-              />
+            <InputComponent<DraftBoletaControlCalidad>
+              label="Cantidad de Canastas"
+              id="total_baskets"
+              name="total_baskets"
+              placeholder="Total de Canastas"
+              register={register}
+              validation={{ required: 'La cantidad de canastas es obligatoria' }}
+              errors={errors}
+              type={'number'}
+            >
               {errors.total_baskets && <Error>{errors.total_baskets?.message?.toString()}</Error>}
-            </div>
+            </InputComponent>
           </fieldset>
 
           <fieldset>
@@ -290,83 +284,73 @@ export default function Boleta_form3({ boleta }: Props) {
             )}
           </fieldset>
 
-          <fieldset className="grid grid-cols-4 gap-5">
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="valid_pounds">
-                Libras Pagables:
-              </label>
-              <input
-                autoComplete="off"
+          <fieldset className="grid grid-cols-4 gap-5 border p-5">
+            <legend className="font-bold text-3xl">Información Calculada</legend>
+            <InputComponent<DraftBoletaControlCalidad>
+                label="Libras Pagables"
                 id="valid_pounds"
-                type="number"
-                placeholder={"Libras Pagables"}
-                className="border border-black p-3"
-                {...register("valid_pounds", { required: "El valid_pounds es obligatorio" })}
-              />
-              {errors.valid_pounds && <Error>{errors.valid_pounds?.message?.toString()}</Error>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="percentage">
-                % A Pagar:
-              </label>
-              <input
-                autoComplete="off"
+                name="valid_pounds"
+                placeholder="Libras Pagables"
+                register={register}
+                validation={{required: 'Las libras pagables son obligatorias'}}
+                errors={errors}
+                type={'number'}
+            >
+                {errors.valid_pounds && <Error>{errors.valid_pounds?.message?.toString()}</Error>}
+            </InputComponent>
+           
+            <InputComponent<DraftBoletaControlCalidad>
+                label="% A Pagar"
                 id="percentage"
-                type="number"
-                placeholder={"Porcentaje a pagar"}
-                value={percentage * 100}
-                className="border border-black p-3"
-                {...register("percentage", { required: "El percentage a pagar es obligatorio" })}
-              />
-              {errors.percentage && <Error>{errors.percentage?.message?.toString()}</Error>}
-            </div>
+                name="percentage"
+                placeholder="Porcentaje a pagar"
+                register={register}
+                validation={{requried: 'El porcentaje a pagar es obligatorio'}}
+                errors={errors}
+                type={'number'}
+            >
+                {errors.percentage && <Error>{errors.percentage?.message?.toString()}</Error>}
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="ph">
-                PH:
-              </label>
-              <input
-                autoComplete="off"
+            <InputComponent<DraftBoletaControlCalidad>
+                label="PH"
                 id="ph"
-                type="number"
-                placeholder={"Ph"}
-                className="border border-black p-3"
-                {...register("ph")}
-              />
-              {errors.ph && <Error>{errors.ph?.message?.toString()}</Error>}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-lg font-bold uppercase" htmlFor="brix">
-                Brix:
-              </label>
-              <input
-                autoComplete="off"
+                name="ph"
+                placeholder="PH"
+                register={register}
+                validation={{}}
+                errors={errors}
+                type={'number'}
+            >
+                {errors.ph && <Error>{errors.ph?.message?.toString()}</Error>}
+            </InputComponent>
+          
+            <InputComponent<DraftBoletaControlCalidad>
+                label="Brix"
                 id="brix"
-                type="number"
-                placeholder={"Dato del brix"}
-                className="border border-black p-3"
-                {...register("brix")}
-              />
-              {errors.brix && <Error>{errors.brix?.message?.toString()}</Error>}
-            </div>
+                name="brix"
+                placeholder="Datos del brix"
+                register={register}
+                validation={{}}
+                errors={errors}
+                type={'number'}
+            >
+                {errors.brix && <Error>{errors.brix?.message?.toString()}</Error>}
+            </InputComponent>
           </fieldset>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="observations">
-              Observaciones:
-            </label>
-            <input
-              autoComplete="off"
-              id="observations"
-              type="text"
-              placeholder={"Observaciones Generales"}
-              className="border border-black p-3"
-              {...register("observations")}
-            />
-          </div>
-
+            <InputComponent<DraftBoletaControlCalidad>
+                label="Observaciones"
+                id="observations"
+                name="observations"
+                placeholder="Observaciones Generales"
+                register={register}
+                validation={{}}
+                errors={errors}
+                type={'text'}
+            >
+                {errors.observations && <Error>{errors.observations?.message?.toString()}</Error>}
+            </InputComponent>
 
           <div className="space-y-2 text-center w-1/2 mx-auto">
             <Controller

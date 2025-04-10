@@ -83,7 +83,6 @@ export default function ModalChangeOperationDate({ modal, setModal, info, setEve
             Razón del Cambio:
           </label>
           <textarea ref={reasonRef} className="border border-gray-300 rounded-md p-2 w-full" placeholder="Escriba la razón del cambio de fecha">
-
           </textarea>
         </div>
 

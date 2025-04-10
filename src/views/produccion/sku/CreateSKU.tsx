@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
+import InputComponent from "@/components/form/InputComponent";
 
 export type DraftSku = {
   code: string;
@@ -51,156 +52,137 @@ export default function CreateSKU() {
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="code">
-              Código:
-            </label>
-            <input
-              autoComplete="off"
-              id="code"
-              type="text"
-              placeholder="Ingrese el código del SKU"
-              className="border border-black p-3"
-              {...register("code", { required: "El código del SKU es requerido" })}
-            />
-            {errors.code?.message && <Error>{String(errors.code.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Código del SKU"
+            id="code"
+            name="code"
+            placeholder="Código del SKU"
+            register={register}
+            validation={{ required: 'El código del SKU es requerido' }}
+            errors={errors}
+            type={'text'}
+          >
+            {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="product_name">
-              Nombre del Producto:
-            </label>
-            <input
-              autoComplete="off"
-              id="product_name"
-              type="text"
-              placeholder="Ingrese el nombre del producto"
-              className="border border-black p-3"
-              {...register("product_name", { required: "El nombre del producto es requerido" })}
-            />
-            {errors.product_name?.message && <Error>{String(errors.product_name.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Nombre del Producto"
+            id="product_name"
+            name="product_name"
+            placeholder="Nombre del producto del SKU"
+            register={register}
+            validation={{ required: 'El nombre del producto es obligatorio' }}
+            errors={errors}
+            type={'text'}
+          >
+            {errors.product_name && <Error>{errors.product_name?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="presentation">
-              Presentación:
-            </label>
-            <input
-              autoComplete="off"
-              id="presentation"
-              type="number"
-              placeholder="Presentación del producto, ej: 24lbs"
-              className="border border-black p-3"
-              {...register("presentation", { min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } })}
-            />
-            {errors.presentation?.message && <Error>{String(errors.presentation.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Presentación"
+            id="presentation"
+            name="presentation"
+            placeholder="Presentación del producto. Ej: 24LBS"
+            register={register}
+            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
+            errors={errors}
+            type={'number'}
+          >
+            {errors.presentation && <Error>{errors.presentation?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="boxes_pallet">
-              Cajas por Pallet:
-            </label>
-            <input
-              autoComplete="off"
-              id="boxes_pallet"
-              type="number"
-              placeholder="Número de cajas por pallet"
-              className="border border-black p-3"
-              {...register("boxes_pallet", { min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } })}
-            />
-            {errors.boxes_pallet?.message && <Error>{String(errors.boxes_pallet.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Cajas por Pallet"
+            id="boxes_pallet"
+            name="boxes_pallet"
+            placeholder="Número de cajas que componen un pallet"
+            register={register}
+            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
+            errors={errors}
+            type={'number'}
+          >
+            {errors.boxes_pallet && <Error>{errors.boxes_pallet?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="config_box">
-              Configuración de Caja:
-            </label>
-            <input
-              autoComplete="off"
-              id="config_box"
-              type="number"
-              placeholder="Configuración de caja"
-              className="border border-black p-3"
-              {...register("config_box", { min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } })}
-            />
-            {errors.config_box?.message && <Error>{String(errors.config_box.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Configuración de Caja"
+            id="config_box"
+            name="config_box"
+            placeholder="Configuración de caja"
+            register={register}
+            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
+            errors={errors}
+            type={'number'}
+          >
+            {errors.config_box && <Error>{errors.config_box?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="config_bag">
-              Configuración de Bolsa:
-            </label>
-            <input
-              autoComplete="off"
-              id="config_bag"
-              type="number"
-              placeholder="Configuración de bolsa"
-              className="border border-black p-3"
-              {...register("config_bag", { min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } })}
-            />
-            {errors.config_bag?.message && <Error>{String(errors.config_bag.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Configuración de Bolsa"
+            id="config_bag"
+            name="config_bag"
+            placeholder="Configuración de Bolsa"
+            register={register}
+            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
+            errors={errors}
+            type={'number'}
+          >
+            {errors.config_bag && <Error>{errors.config_bag?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="config_inner_bag">
-              Configuración de Inner Bolsa:
-            </label>
-            <input
-              autoComplete="off"
-              id="config_inner_bag"
-              type="number"
-              placeholder="Configuración de inner bolsa"
-              className="border border-black p-3"
-              {...register("config_inner_bag", { min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } })}
-            />
-            {errors.config_inner_bag?.message && <Error>{String(errors.config_inner_bag.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Configuración de Inner Bolsa"
+            id="config_inner_bag"
+            name="config_inner_bag"
+            placeholder="Configuración de Inner Bolsa"
+            register={register}
+            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
+            errors={errors}
+            type={'number'}
+          >
+            {errors.config_inner_bag && <Error>{errors.config_inner_bag?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="pallets_container">
-              Pallets Por Contenedor:
-            </label>
-            <input
-              autoComplete="off"
-              id="pallets_container"
-              type="number"
-              placeholder="Cantidad de Pallets por Contenedor"
-              className="border border-black p-3"
-              {...register("pallets_container", { min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } })}
-            />
-            {errors.pallets_container?.message && <Error>{String(errors.pallets_container.message)}</Error>}
-          </div>
+          <InputComponent<DraftSku>
+            label="Pallets por Contenedor"
+            id="pallets_container"
+            name="pallets_container"
+            placeholder="Cantidad de Pallets por Contenedor"
+            register={register}
+            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
+            errors={errors}
+            type={'number'}
+          >
+            {errors.pallets_container && <Error>{errors.pallets_container?.message?.toString()}</Error>}
+          </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="hours_container">
-              Horas Por Contenedor:
-            </label>
-            <input
-              autoComplete="off"
+          <InputComponent<DraftSku>
+              label="Horas Por Contenedor"
               id="hours_container"
-              type="number"
-              placeholder="Horas por contenedor"
-              className="border border-black p-3"
-              {...register("hours_container", { min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } })}
-            />
-            {errors.hours_container?.message && <Error>{String(errors.hours_container.message)}</Error>}
-          </div>
+              name="hours_container"
+              placeholder="Horas Por Contenedor"
+              register={register}
+              validation={{min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' }}}
+              errors={errors}
+              type={'number'}
+          >
+              {errors.hours_container && <Error>{errors.hours_container?.message?.toString()}</Error>}
+          </InputComponent>
+        
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="client_name">
-              Nombre del Cliente:
-            </label>
-            <input
-              autoComplete="off"
+          <InputComponent<DraftSku>
+              label="Nombre del Cliente"
               id="client_name"
-              type="text"
-              placeholder="Ingrese nombre del cliente"
-              className="border border-black p-3"
-              {...register("client_name", { required: "El nombre del cliente es requerido" })}
-            />
-            {errors.client_name?.message && <Error>{String(errors.client_name.message)}</Error>}
-          </div>
-
+              name="client_name"
+              placeholder="Nombre del Cliente"
+              register={register}
+              validation={{required: 'El nombre del cliente es obligatorio'}}
+              errors={errors}
+              type={'text'}
+          >
+              {errors.client_name && <Error>{errors.client_name?.message?.toString()}</Error>}
+          </InputComponent>
+       
           <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
             {isPending ? <Spinner /> : <p>Crear SKU</p>}
           </button>

@@ -4,7 +4,6 @@ import { getTimeoutById, updateTimeOut } from "@/api/TimeOutsAPI";
 import { useForm } from "react-hook-form";
 import { DraftTiempoMuerto } from "./CrearTiempoMuerto";
 import { useEffect } from "react";
-import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
@@ -59,22 +58,12 @@ export default function EditarTiempoMuerto() {
         <div>
             <h2 className="font-bold text-4xl">Editar Tiempo Muerto</h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-10 w-1/2 mx-auto space-y-5" noValidate>
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-10 w-2/3 shadow-xl p-10 mx-auto space-y-5" noValidate>
                 <FormTiempoMuerto register={register} errors={errors} />
 
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                >
-                    {isPending ? (
-                        <Spinner />
-                    ) : (
-                        <p className="font-bold text-lg">Actualizar Tiempo Muerto</p>
-                    )}
-                </Button>
+                <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                  {isPending ? <Spinner /> : <p>Guardar Cambios</p>}
+                </button>
             </form>
         </div>
     )

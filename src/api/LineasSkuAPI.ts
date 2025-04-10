@@ -48,7 +48,9 @@ export async function createLineaSku(FormData: DraftLineaSku) {
         const { data } = await clienteAxios.post<string>(url, FormData);
         return data;
     } catch (error) {
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }
 

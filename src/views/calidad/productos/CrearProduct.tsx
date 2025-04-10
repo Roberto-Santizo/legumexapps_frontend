@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
@@ -8,12 +8,13 @@ import { Variety } from "@/types";
 import { createProduct } from "@/api/ProductsAPI";
 import { getAllVarieties } from "@/api/VarietiesAPI";
 import { useQuery } from "@tanstack/react-query";
-import Select from "react-select";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
-import CreateDefectoModal, { DraftDefecto } from "@/components/defectos/CreateDefectoModal";
-import EditDefectoModal from "@/components/defectos/EditDefectoModal";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import ModalCrearDefecto, { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
+import ModalEditarDefecto from "@/components/modals/ModalEditarDefecto";
+import InputComponent from "@/components/form/InputComponent";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 export type DraftProduct = {
   name: string,
@@ -85,109 +86,85 @@ export default function CrearVariedad() {
     <>
       <h2 className="text-4xl font-bold">Crear Producto</h2>
 
-      <div>
-        <form className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="name">
-              Nombre:
-            </label>
-            <input
-              autoComplete="off"
-              id="name"
-              type="text"
-              placeholder="Nombre del producto"
-              className="border border-black p-3"
-              {...register('name', { required: 'El nombre del producto es obligatorio' })}
-            />
-            {errors.name && (
-              <Error>{errors.name?.message?.toString()}</Error>
-            )}
-          </div>
+      <form className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="variety_product_id">
-              Variedad:
-            </label>
-            <Controller
-              name="variety_product_id"
-              control={control}
-              rules={{ required: "La variedad es obligatoria" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={varietiesOptions}
-                  id="variety_product_id"
-                  placeholder={"--SELECCIONE UNA OPCION--"}
-                  onChange={(selected) => field.onChange(selected?.value)}
-                  value={varietiesOptions.find(
-                    (option) => option.value === field.value
-                  )}
-                />
-              )}
-            />
-            {errors.variety_product_id && (
-              <Error>{errors.variety_product_id?.message?.toString()}</Error>
-            )}
-          </div>
+        <InputComponent<DraftProduct>
+          label="Nombre"
+          id="name"
+          name="name"
+          placeholder="Nombre del Producto"
+          register={register}
+          validation={{ required: 'El nombre del producto es obligatorio' }}
+          errors={errors}
+          type={'text'}
+        >
+          {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+        </InputComponent>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase" htmlFor="accepted_percentage">
-              Porcentaje de Calidad Aceptado:
-            </label>
-            <input
-              autoComplete="off"
-              id="accepted_percentage"
-              type="number"
-              placeholder="Porcentaje aceptado de calidad del producto"
-              className="border border-black p-3"
-              {...register('accepted_percentage', { required: 'El porcentaje de calidad aceptado es obligatorio', min: { value: 0, message: 'El valor minimo requerido es 0' } })}
-            />
+        <InputSelectSearchComponent<DraftProduct>
+          label="Variedad"
+          id="variety_product_id"
+          name="variety_product_id"
+          options={varietiesOptions}
+          control={control}
+          rules={{ required: 'La variedad es obligatoria' }}
+          errors={errors}
+        >
+          {errors.variety_product_id && <Error>{errors.variety_product_id?.message?.toString()}</Error>}
+        </InputSelectSearchComponent>
 
-            {errors.accepted_percentage && (
-              <Error>{errors.accepted_percentage?.message?.toString()}</Error>
-            )}
-          </div>
+        <InputComponent<DraftProduct>
+          label="Porcentaje de Calidad Aceptado"
+          id="accepted_percentage"
+          name="accepted_percentage"
+          placeholder="Porcentaje de Calidad Aceptado de Producto"
+          register={register}
+          validation={{ required: 'El porcentaje de calidad aceptado es obligatorio' }}
+          errors={errors}
+          type={'number'}
+        >
+          {errors.accepted_percentage && <Error>{errors.accepted_percentage?.message?.toString()}</Error>}
+        </InputComponent>
 
-          <fieldset>
-            <button type="button" className="button bg-blue-500 flex gap-2 hover:bg-blue-600" onClick={() => setModal(!modal)}>
-              <PlusIcon />
-              <p>Relacionar Defecto</p>
-            </button>
-
-            {defects.length === 0 ? <p className="text-center py-5">No tiene defectos relacionados</p> : (
-              <table className="table mt-5">
-                <thead>
-                  <tr className="thead-tr">
-                    <th className="thead-th">Defecto</th>
-                    <th className="thead-th">Porcentaje de Tolerancia</th>
-                    <th className="thead-th">Acción</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {defects.map((defect) => (
-                    <tr key={defect.name} className="tbody-tr">
-                      <td className="tbody-td">{defect.name}</td>
-                      <td className="tbody-td">{defect.tolerance_percentage}</td>
-                      <td className="tbody-td flex gap-5">
-                        <Edit className="cursor-pointer hover:text-gray-500" onClick={() => handleEditDefect(defect.id)} />
-                        <DeleteIcon className="cursor-pointer hover:text-gray-500" onClick={() => deleteDefect(defect.id)} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </fieldset>
-
-          <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-            {isPending ? <Spinner /> : <p>Crear Producto</p>}
+        <fieldset>
+          <button type="button" className="button bg-indigo-500 flex gap-2 hover:bg-indigo-600" onClick={() => setModal(!modal)}>
+            <PlusIcon />
+            <p>Relacionar Defecto</p>
           </button>
-        </form>
-      </div>
 
-      <CreateDefectoModal modal={modal} setModal={setModal} setDefects={setDefects} defects={defects} />
-      <EditDefectoModal modal={editModal} setModal={setEditModal} setDefects={setDefects} defects={defects} id={editingId} />
+          {defects.length === 0 ? <p className="text-center py-5">No tiene defectos relacionados</p> : (
+            <table className="table mt-5">
+              <thead>
+                <tr className="thead-tr">
+                  <th className="thead-th">Defecto</th>
+                  <th className="thead-th">Porcentaje de Tolerancia</th>
+                  <th className="thead-th">Acción</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {defects.map((defect) => (
+                  <tr key={defect.name} className="tbody-tr">
+                    <td className="tbody-td">{defect.name}</td>
+                    <td className="tbody-td">{defect.tolerance_percentage}</td>
+                    <td className="tbody-td flex gap-5">
+                      <Edit className="cursor-pointer hover:text-gray-500" onClick={() => handleEditDefect(defect.id)} />
+                      <DeleteIcon className="cursor-pointer hover:text-gray-500" onClick={() => deleteDefect(defect.id)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </fieldset>
+
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear Producto</p>}
+        </button>
+      </form>
+
+      <ModalCrearDefecto modal={modal} setModal={setModal} setDefects={setDefects} defects={defects} />
+      <ModalEditarDefecto modal={editModal} setModal={setEditModal} setDefects={setDefects} defects={defects} id={editingId} />
     </>
   )
 }

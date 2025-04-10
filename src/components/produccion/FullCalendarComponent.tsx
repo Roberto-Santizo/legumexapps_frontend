@@ -19,7 +19,7 @@ type Props = {
 export default function FullCalendarComponent({ events, setEvents, hoursByDates }: Props) {
 
   const [modal, setModal] = useState<boolean>(false);
-  const [info,setInfo] = useState<EventDropArg | null>(null);
+  const [info, setInfo] = useState<EventDropArg | null>(null);
   const navigate = useNavigate();
 
   const handleEventDrop = async (info: EventDropArg) => {
@@ -48,10 +48,17 @@ export default function FullCalendarComponent({ events, setEvents, hoursByDates 
     };
 
     if (today === info.event.startStr) {
-      showConfirmation(
-        "¿Estás seguro que quieres mover esta tarea?",
-        "Mover una tarea hacia el día actual podría afectar la operación"
-      );
+      if (newTotalHours > 12) {
+        showConfirmation(
+          "¿Estás seguro que quieres mover esta tarea?",
+          `El día destino es hoy y contará con ${newTotalHours} horas totales. Esto podría afectar la operación.`
+        );
+      } else {
+        showConfirmation(
+          "¿Estás seguro que quieres mover esta tarea?",
+          "Mover una tarea hacia el día actual podría afectar la operación"
+        );
+      }
     } else if (newTotalHours > 12) {
       showConfirmation(
         "¿Estás seguro que quieres mover esta tarea?",
@@ -60,6 +67,7 @@ export default function FullCalendarComponent({ events, setEvents, hoursByDates 
     } else {
       setModal(true);
     }
+
   };
 
 
@@ -89,7 +97,7 @@ export default function FullCalendarComponent({ events, setEvents, hoursByDates 
       />
 
       {info && (
-        <ModalChangeOperationDate modal={modal} setModal={setModal} setEvents={setEvents} info={info} events={events} setInfo={setInfo}/>
+        <ModalChangeOperationDate modal={modal} setModal={setModal} setEvents={setEvents} info={info} events={events} setInfo={setInfo} />
       )}
     </>
   );

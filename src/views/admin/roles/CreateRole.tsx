@@ -38,7 +38,7 @@ export default function CreateRole() {
 
       <div>
         <form
-          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
           onSubmit={handleSubmit(handleCreateRole)}
         >
 

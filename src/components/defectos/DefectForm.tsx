@@ -1,48 +1,41 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { DraftDefecto } from "../modals/ModalCrearDefecto";
 import Error from "@/components/utilities-components/Error";
-import { DraftDefecto } from "./CreateDefectoModal";
+import InputComponent from "../form/InputComponent";
 
 type Props = {
     register: UseFormRegister<DraftDefecto>;
     errors: FieldErrors<DraftDefecto>;
 }
 
-export default function DefectForm({register,errors} : Props) {
+export default function DefectForm({ register, errors }: Props) {
     return (
         <>
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-bold uppercase" htmlFor="name">
-                    Nombre:
-                </label>
-                <input
-                    autoComplete="off"
-                    id="name"
-                    type="text"
-                    placeholder="Nombre del Defecto"
-                    className="border border-black p-3"
-                    {...register('name', {
-                        required: 'El nombre de la variedad es obligatorio'
-                    })}
-                />
+            <InputComponent<DraftDefecto>
+                label="Nombre del  Defecto"
+                id="name"
+                name="name"
+                placeholder="Nombre del Defecto"
+                register={register}
+                validation={{ required: 'El nombre del defecto es obligatorio' }}
+                errors={errors}
+                type={'text'}
+            >
                 {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-            </div>
+            </InputComponent>
 
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-bold uppercase" htmlFor="tolerance_percentage">
-                    Porcentaje de Tolerancia:
-                </label>
-                <input
-                    autoComplete="off"
-                    id="tolerance_percentage"
-                    type="number"
-                    placeholder="Porcentaje de Tolerancia"
-                    className="border border-black p-3"
-                    {...register('tolerance_percentage', {
-                        required: 'El porcentaje de tolerancia es obligatoria',
-                    })}
-                />
+            <InputComponent<DraftDefecto>
+                label="Porcentaje de Tolerancia"
+                id="tolerance_percentage"
+                name="tolerance_percentage"
+                placeholder="Porcentaje de Toleracia"
+                register={register}
+                validation={{ required: 'El porcentaje de tolerancia es obligatoria' }}
+                errors={errors}
+                type={'number'}
+            >
                 {errors.tolerance_percentage && <Error>{errors.tolerance_percentage?.message?.toString()}</Error>}
-            </div>
+            </InputComponent>
         </>
     )
 }

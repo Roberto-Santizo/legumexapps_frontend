@@ -11,7 +11,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersRMP from "@/components/boleta-rmp/FiltersRMP";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import BoletaGRNModal from "@/components/boleta-rmp/BoletaGRNModal";
+import ModalGRN from "@/components/modals/ModalGRN";
 import Swal from "sweetalert2";
 import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
@@ -180,7 +180,7 @@ export default function IndexRMP() {
             </div>
 
             {boletaSelected && (
-                <BoletaGRNModal
+                <ModalGRN
                     modal={modalGRN}
                     setModal={setModalGRN}
                     boleta={boletaSelected}
