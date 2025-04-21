@@ -1,27 +1,33 @@
-import { closeTaskProduction, TaskByLine, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
-import { QueryObserverResult } from "@tanstack/react-query";
-import { Dispatch } from "react";
+import { closeTaskProduction, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
 
-type Props = {
-    task: TaskByLine;
-    setModalCierre: Dispatch<React.SetStateAction<boolean>>;
-    modal: boolean;
-    refetch: () => Promise<QueryObserverResult<TaskByLine[]>>;
-    setSelectedTask: Dispatch<React.SetStateAction<TaskByLine>>;
-}
 
 export type DraftCloseTask = {
     total_tarimas: number;
     total_lbs_bascula: number;
 }
 
-export default function ModalCierreTareaProduccion({ task, setModalCierre, modal, setSelectedTask, refetch }: Props) {
+export default function ModalCierreTareaProduccion() {
+    const queryClient = useQueryClient();
+    const params = useParams();
+    const plan_id = params.plan_id!!;
+    const linea_id = params.linea_id!!;
+
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const taskId = queryParams.get('TaskId')!;
+    const modal = queryParams.get('modal')!;
+    const show = (taskId && +modal === 1) ? true : false;
+    const navigate = useNavigate();
+
     const { mutate, isPending } = useMutation({
         mutationFn: ({ id, data }: { id: TaskProduction['id'], data: DraftCloseTask }) => closeTaskProduction(id, data),
         onError: (error) => {
@@ -29,9 +35,8 @@ export default function ModalCierreTareaProduccion({ task, setModalCierre, modal
         },
         onSuccess: (data) => {
             toast.success(data);
-            setModalCierre(false);
-            setSelectedTask({} as TaskByLine);
-            refetch();
+            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
+            navigate(location.pathname,{replace:true});
         }
     });
 
@@ -41,10 +46,10 @@ export default function ModalCierreTareaProduccion({ task, setModalCierre, modal
         formState: { errors },
     } = useForm<DraftCloseTask>();
 
-    const onSubmit = (data: DraftCloseTask) => mutate({ id: task.id, data });
+    const onSubmit = (data: DraftCloseTask) => mutate({ id: taskId, data });
 
     return (
-        <Modal modal={modal} closeModal={() => setModalCierre(false)} title="Cierre de Tarea">
+        <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Cierre de Tarea">
             <form className="p-10 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
 
                 <InputComponent<DraftCloseTask>

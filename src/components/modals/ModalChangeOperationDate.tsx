@@ -27,7 +27,6 @@ export default function ModalChangeOperationDate({ modal, setModal, info, setEve
   const queryClient = useQueryClient();
   const reasonRef = useRef<HTMLTextAreaElement | null>(null);
 
-
   const { mutate, isPending } = useMutation({
     mutationFn: updateTaskProductionOperationDate,
   });

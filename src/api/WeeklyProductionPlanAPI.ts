@@ -12,6 +12,7 @@ import { downloadBase64File } from "@/helpers";
 import { DraftNote } from "@/components/modals/ModalNotasProblemas";
 import { DraftTaskProductionEmployee } from "@/components/modals/ModalAddEmployee";
 import { DraftChangeOperationDate } from "@/components/modals/ModalChangeOperationDate";
+import { DraftUnassignTaskProduction } from "@/components/modals/ModalUnassignNote";
 
 const WeeklyPlanProductionPlanSchema = z.object({
     id: z.string(),
@@ -132,11 +133,13 @@ export const EmployeeTaskProductionSchema = z.object({
 export const TaskProductionDetailSchema = z.object({
     id: z.string(),
     line: z.string(),
+    assigned_employees: z.number(),
     operation_date: z.string(),
     total_lbs: z.number(),
     sku: SKUSchema,
     flag: z.boolean(),
-    employees: z.array(EmployeeTaskProductionSchema),
+    in_employees: z.array(EmployeeTaskProductionSchema),
+    all_employees: z.array(EmployeeTaskProductionSchema),
     positions: z.array(PositionSchema)
 });
 
@@ -337,15 +340,18 @@ export async function createNewTaskProduction(FormData: DraftNewTaskProduction) 
 }
 
 
-export async function changeTasksPriority(data: string[]) {
+export async function changeTasksPriority(FormData: string[]) {
     try {
         const url = '/api/tasks_production_plan/change-priority';
-        await clienteAxios.put(url, {
-            data: data
+        const { data } = await clienteAxios.put<string>(url, {
+            data: FormData
         });
+        console.log(data);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }
 
@@ -625,5 +631,17 @@ export async function getFinishedTaskProductionDetails(id: TaskProduction['id'])
     } catch (error) {
         console.log(error);
         throw error;
+    }
+}
+
+export async function createTaskProductionUnassignment({ id, FormData }: { id: string, FormData: DraftUnassignTaskProduction }) {
+    try {
+        const url = `/api/tasks_production_plan/${id}/unassign`;
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
     }
 }

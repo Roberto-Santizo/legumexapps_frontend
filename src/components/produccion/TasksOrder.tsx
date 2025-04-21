@@ -33,11 +33,11 @@ export default function TasksOrder() {
 
     const { mutate } = useMutation({
         mutationFn: changeTasksPriority,
-        onError: () => {
-            toast.error('Hubo un error al cambiar la prioridad');
+        onError: (error) => {
+            toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Prioridad Cambiada Correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksProductionByDate', plan_id, date] });
             queryClient.invalidateQueries({ queryKey: ['getAllTasksForCalendar', plan_id] });
         }

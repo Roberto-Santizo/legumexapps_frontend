@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useQueries } from "@tanstack/react-query";
 import { EmployeeProduction, getTaskProductionDetails, startTaskProduction, TaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
 import { getComodines } from "@/api/WeeklyProductionPlanAPI";
 import { formatDate } from "@/helpers";
 import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -45,6 +44,7 @@ export default function ShowTaskProductionDetails() {
     const [taskData, setTaskData] = useState<TaskProductionDetails>();
     const [employees, setEmployees] = useState<EmployeeProduction[]>([]);
     const [availableEmployees, setAvailableEmployees] = useState<EmployeeProduction[]>([]);
+    const [enableQuery, setEnableQuery] = useState<boolean>(true);
     const navigate = useNavigate();
 
     const { mutate, isPending } = useMutation({
@@ -64,25 +64,32 @@ export default function ShowTaskProductionDetails() {
         return columns.map(column => column.id)
     }, [columns]);
 
-    const results = useQueries({
-        queries: [
-            { queryKey: ['getTaskProductionDetails', task_p_id], queryFn: () => getTaskProductionDetails(task_p_id) },
-            { queryKey: ['getComodines'], queryFn: getComodines },
-        ]
+    const { data: taskDetails, isLoading, isError } = useQuery({
+        queryKey: ['getTaskProductionDetails', task_p_id],
+        queryFn: () => getTaskProductionDetails(task_p_id),
+        enabled: enableQuery
+    });
+
+    const { data: comodines } = useQuery({
+        queryKey: ['getComodines'],
+        queryFn: getComodines,
+        enabled: enableQuery
     });
 
     useEffect(() => {
-        if (results[0]?.data || results[1]?.data) {
-            setTaskData(results[0]?.data);
-            const employeesFromTask = results[0]?.data?.employees ?? [];
-            const employeesFromComodines = results[1]?.data ?? [];
+        if (taskDetails && comodines) {
+            setTaskData(taskDetails);
+            const employeesFromTask = taskDetails.in_employees ?? [];
+            const employeesFromComodines = comodines ?? [];
 
             const uniqueEmployees = [...new Map([...employeesFromTask, ...employeesFromComodines].map(emp => [emp.id, emp])).values()];
 
             setEmployees(uniqueEmployees);
             setAvailableEmployees(uniqueEmployees.filter(employee => employee.column_id === '1' && employee.active === 0));
+
+            setEnableQuery(false);
         }
-    }, [results[0]?.data, results[1]?.data]);
+    }, [taskDetails, comodines]);
 
 
 
@@ -156,9 +163,9 @@ export default function ShowTaskProductionDetails() {
         });
     }
 
-    const isLoading = results.some(result => result.isLoading);
-    if (isLoading) return <Spinner />
 
+    if (isLoading) return <Spinner />;
+    if (isError) return <Spinner />;
     if (taskData) return (
         <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>
@@ -166,10 +173,11 @@ export default function ShowTaskProductionDetails() {
                 <div>
                     <div className="font-bold">Línea: <span className="font-normal ml-2">{taskData.line ?? 'N/A'}</span></div>
                     <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskData.operation_date ? formatDate(taskData.operation_date) : 'N/A'}</span></div>
-                    <div className="font-bold">Total de tarimas:<span className="font-normal ml-2">{taskData.total_lbs ?? 0}</span></div>
+                    <div className="font-bold">Total de libras:<span className="font-normal ml-2">{taskData.total_lbs ?? 0}</span></div>
                     <div className="font-bold">SKU:<span className="font-normal ml-2">{taskData.sku.code ?? 'N/A'}</span></div>
                     <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData.sku.product_name ?? 'N/A'}</span></div>
-                    <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData.employees.length ?? 0}</span></div>
+                    <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData.assigned_employees}</span></div>
+                    <div className="font-bold">Empleados faltantes:<span className="font-normal ml-2">{taskData.in_employees.length ?? 0}</span></div>
                 </div>
                 <div>
                     {taskData?.flag && (

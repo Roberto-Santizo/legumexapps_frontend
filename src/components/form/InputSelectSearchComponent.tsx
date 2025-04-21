@@ -15,7 +15,7 @@ interface InputSelectSearchComponentProps<T extends Record<string, any>> {
   rules?: object;
   errors?: FieldErrors<T>;
   children?: React.ReactNode;
-  onChange?: (value? : string) => void;
+  onChange?: (value?: string) => void;
 }
 
 const InputSelectSearchComponent = <T extends Record<string, any>>({
@@ -29,15 +29,29 @@ const InputSelectSearchComponent = <T extends Record<string, any>>({
   children,
   onChange,
 }: InputSelectSearchComponentProps<T>) => {
-  const classes =
-    "rounded-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 ease-in-out hover:border-indigo-400";
-  const errorClasses = "border border-red-600 ring-2 ring-red-600 p-3";
+  const hasError = !!errors?.[name];
+
+  const customStyles = {
+    control: (base: any) => ({
+      ...base,
+      borderColor: hasError ? "#dc2626" : base.borderColor,
+      boxShadow: hasError ? "0 0 0 2px rgba(220, 38, 38, 0.5)" : base.boxShadow,
+      "&:hover": {
+        borderColor: hasError ? "#dc2626" : "#6366f1",
+      },
+    }),
+  };
 
   return (
-    <div className={`${classes} ${errors?.[name] ? errorClasses : ""}`}>
-      <label className="text-lg font-bold uppercase text-gray-700" htmlFor={id}>
+    <div className="mb-4">
+      <label
+        className={`text-lg font-bold uppercase block mb-1 ${hasError ? "text-red-600" : "text-gray-700"
+          }`}
+        htmlFor={id}
+      >
         {label}
       </label>
+
       <Controller
         name={name}
         control={control}
@@ -49,15 +63,19 @@ const InputSelectSearchComponent = <T extends Record<string, any>>({
             options={options}
             placeholder="--SELECCIONE UNA OPCIÓN--"
             onChange={(selected) => {
-              field.onChange(selected?.value)
+              field.onChange(selected?.value);
               onChange?.(selected?.value);
             }}
             value={options.find((option) => option.value === field.value)}
+            styles={customStyles}
+            className="react-select-container"
+            classNamePrefix="react-select"
           />
         )}
       />
-      {errors?.[name] && (
-        <span className="text-red-600 text-sm mt-2">{children}</span>
+
+      {hasError && (
+        <span className="text-red-600 text-sm mt-2 block">{children}</span>
       )}
     </div>
   );

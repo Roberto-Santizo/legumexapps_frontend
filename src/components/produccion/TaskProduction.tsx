@@ -1,7 +1,6 @@
-import { AlarmClockPlus, CheckCircle, Eye, NotebookPen, Paperclip } from "lucide-react";
+import { AlarmClockPlus, CheckCircle, Eye, NotebookPen, Paperclip, UserRoundX } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TaskByLine } from "@/api/WeeklyProductionPlanAPI";
-import { Dispatch, SetStateAction } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeTaskTimeOut } from "@/api/TimeOutsAPI";
 import { toast } from "react-toastify";
@@ -9,14 +8,8 @@ import TaskLabel from "@/components/utilities-components/TaskLabel";
 
 type Props = {
   task: TaskByLine;
-  setSelectedTask: Dispatch<SetStateAction<TaskByLine>>;
-  setModalCierre: Dispatch<React.SetStateAction<boolean>>;
-  setModalRendimiento: Dispatch<React.SetStateAction<boolean>>;
-  setModalTimeOut: Dispatch<React.SetStateAction<boolean>>;
-  setModalNotas: Dispatch<React.SetStateAction<boolean>>;
-  modalCierre: boolean;
 };
-export default function TaskProduction({ task, setSelectedTask, setModalCierre, setModalRendimiento, setModalTimeOut, setModalNotas }: Props) {
+export default function TaskProduction({ task }: Props) {
   const params = useParams();
   const plan_id = params.plan_id!!;
   const linea_id = params.linea_id!!;
@@ -85,10 +78,7 @@ export default function TaskProduction({ task, setSelectedTask, setModalCierre, 
             <>
               <CheckCircle
                 className="hover:text-gray-500 cursor-pointer"
-                onClick={() => {
-                  setSelectedTask(task);
-                  setModalCierre(true);
-                }}
+                onClick={() => navigate(`${location.pathname}?modal=1&TaskId=${task.id}`)}
               />
 
               <Link to={`/planes-produccion/informacion/${task.id}`}>
@@ -97,18 +87,17 @@ export default function TaskProduction({ task, setSelectedTask, setModalCierre, 
 
               <NotebookPen
                 className="hover:text-gray-500 cursor-pointer"
-                onClick={() => {
-                  setSelectedTask(task);
-                  setModalRendimiento(true);
-                }}
+                onClick={() => navigate(`${location.pathname}?modal=2&TaskId=${task.id}`)}
               />
 
               <AlarmClockPlus
                 className="hover:text-gray-500 cursor-pointer"
-                onClick={() => {
-                  setSelectedTask(task);
-                  setModalTimeOut(true);
-                }}
+                onClick={() => navigate(`${location.pathname}?modal=3&TaskId=${task.id}`)}
+              />
+
+              <UserRoundX
+                className="hover:text-gray-500 cursor-pointer"
+                onClick={() => navigate(`${location.pathname}?modal=5&TaskId=${task.id}`)}
               />
             </>
           )}
@@ -131,10 +120,7 @@ export default function TaskProduction({ task, setSelectedTask, setModalCierre, 
           {(task.end_date && !task.is_minimum_requrire && !task.is_justified) && (
             <NotebookPen
               className="text-red-500 hover:text-gray-500 cursor-pointer"
-              onClick={() => {
-                setSelectedTask(task);
-                setModalNotas(true);
-              }}
+              onClick={() => navigate(`${location.pathname}?modal=4&TaskId=${task.id}`)}
             />
           )}
         </div>

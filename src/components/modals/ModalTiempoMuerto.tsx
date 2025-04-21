@@ -1,32 +1,33 @@
-import { TaskByLine, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
-import { Dispatch } from "react";
+import { TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { createTaskTimeout, getAllTimeouts } from "@/api/TimeOutsAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
-
-type Props = {
-    task: TaskByLine;
-    modal: boolean;
-    setSelectedTask: Dispatch<React.SetStateAction<TaskByLine>>;
-    setModalTimeout: Dispatch<React.SetStateAction<boolean>>
-}
 
 export type DraftTaskTimeout = {
     timeout_id: string,
     id: TaskProduction['id']
 }
 
-export default function ModalTiempoMuerto({ setModalTimeout, modal, setSelectedTask, task }: Props) {
+export default function ModalTiempoMuerto() {
     const params = useParams();
     const plan_id = params.plan_id!!;
     const linea_id = params.linea_id!!;
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const taskId = queryParams.get('TaskId')!;
+    const modal = queryParams.get('modal')!;
+    const show = (taskId && +modal === 3) ? true : false;
+    const navigate = useNavigate();
+
+
     const queryClient = useQueryClient();
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskTimeout,
@@ -35,9 +36,8 @@ export default function ModalTiempoMuerto({ setModalTimeout, modal, setSelectedT
         },
         onSuccess: () => {
             toast.success('Tiempo muerto agregado correctamente');
-            setSelectedTask({} as TaskByLine);
-            setModalTimeout(false);
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] })
+            navigate(location.pathname,{replace:true});
         }
     });
     const { data: timeouts } = useQuery({
@@ -54,13 +54,13 @@ export default function ModalTiempoMuerto({ setModalTimeout, modal, setSelectedT
     const onSubmit = (FormData: DraftTaskTimeout) => {
         const data = {
             timeout_id: FormData.timeout_id,
-            id: task.id
+            id: taskId
         }
         mutate(data)
     }
 
     if (timeouts) return (
-        <Modal modal={modal} closeModal={() => setModalTimeout(false)} title="Agregar Tiempo Muerto">
+        <Modal modal={show} closeModal={() => navigate(location.pathname,{replace:true})} title="Agregar Tiempo Muerto">
             <form className="p-10 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <InputSelectSearchComponent<DraftTaskTimeout>
                     label="Tiempo Muerto"

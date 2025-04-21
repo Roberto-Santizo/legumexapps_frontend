@@ -1,26 +1,31 @@
-import { createTaskProductionPerformance, TaskByLine, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
-import { Dispatch } from "react";
+import { createTaskProductionPerformance, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
-
-type Props = {
-    task: TaskByLine;
-    modal: boolean;
-    setModal: Dispatch<React.SetStateAction<boolean>>;
-    setSelectedTask: Dispatch<React.SetStateAction<TaskByLine>>;
-}
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export type DraftPerformance = {
     tarimas_produced: number;
     lbs_bascula: number;
 }
 
-export default function ModalTomaRendimientoProduccion({ task, modal, setModal, setSelectedTask }: Props) {
+export default function ModalTomaRendimientoProduccion() {
+    const queryClient = useQueryClient();
+    const params = useParams();
+    const plan_id = params.plan_id!!;
+    const linea_id = params.linea_id!!;
+
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const taskId = queryParams.get('TaskId')!;
+    const modal = queryParams.get('modal')!;
+    const show = (taskId && +modal === 2) ? true : false;
+    const navigate = useNavigate();
 
     const { mutate, isPending } = useMutation({
         mutationFn: ({ id, data }: { id: TaskProduction['id'], data: DraftPerformance }) => createTaskProductionPerformance(id, data),
@@ -29,8 +34,8 @@ export default function ModalTomaRendimientoProduccion({ task, modal, setModal, 
         },
         onSuccess: (data) => {
             toast.success(data);
-            setSelectedTask({} as TaskByLine)
-            setModal(false);
+            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
+            navigate(location.pathname,{replace:true});
         }
     })
 
@@ -41,9 +46,9 @@ export default function ModalTomaRendimientoProduccion({ task, modal, setModal, 
     } = useForm<DraftPerformance>();
 
 
-    const onSubmit = (data: DraftPerformance) => mutate({ id: task.id, data });
+    const onSubmit = (data: DraftPerformance) => mutate({ id: taskId, data });
     return (
-        <Modal modal={modal} closeModal={() => setModal(false)} title="Toma de Rendimiento">
+        <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Toma de Rendimiento">
             <form className="p-6 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <InputComponent<DraftPerformance>
                     label="Tarimas Producidas"

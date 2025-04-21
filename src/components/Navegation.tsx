@@ -1,6 +1,6 @@
 import { HomeIcon, UserCog, User, UserCheck, BookCheck, BookXIcon, ListCheck, Map, Warehouse, FileSpreadsheet, Truck, Users, AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ChartNoAxesCombined, FileUser } from "lucide-react";
-import NavLinkComponent from "./utilities-components/NavLinkComponent";
 import { usePermissions } from "@/hooks/usePermissions";
+import NavLinkComponent from "./utilities-components/NavLinkComponent";
 
 export default function Navegation() {
     const { hasPermission } = usePermissions();

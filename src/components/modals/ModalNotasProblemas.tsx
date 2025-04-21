@@ -1,30 +1,30 @@
-import { Dispatch } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTaskProductionNote, TaskByLine } from "@/api/WeeklyProductionPlanAPI";
+import { createTaskProductionNote } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
-
-type Props = {
-    modalNotas: boolean;
-    setModalNotas: Dispatch<React.SetStateAction<boolean>>;
-    task: TaskByLine;
-    setSelectedTask: Dispatch<React.SetStateAction<TaskByLine>>;
-}
 
 export type DraftNote = {
     reason: string;
     action: string;
 }
 
-export default function ModalNotasProblemas({ modalNotas, setModalNotas, setSelectedTask, task }: Props) {
+export default function ModalNotasProblemas() {
     const queryClient = useQueryClient();
     const params = useParams();
     const plan_id = params.plan_id!!;
     const linea_id = params.linea_id!!;
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const taskId = queryParams.get('TaskId')!;
+    const modal = queryParams.get('modal')!;
+    const show = (taskId && +modal === 4) ? true : false;
+    const navigate = useNavigate();
+
 
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskProductionNote,
@@ -33,9 +33,8 @@ export default function ModalNotasProblemas({ modalNotas, setModalNotas, setSele
         },
         onSuccess: (data) => {
             toast.success(data);
-            setModalNotas(false);
-            setSelectedTask({} as TaskByLine);
-            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] })
+            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
+            navigate(location.pathname,{replace:true});
         }
     });
 
@@ -49,12 +48,12 @@ export default function ModalNotasProblemas({ modalNotas, setModalNotas, setSele
         const data = {
             reason: FormData.reason,
             action: FormData.action,
-            task_p_id: task.id
+            task_p_id: taskId
         }
         mutate(data);
     }
     return (
-        <Modal modal={modalNotas} closeModal={() => setModalNotas(false)} title="Agregar Nota">
+        <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Agregar Nota">
             <form className="p-6 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                     <label htmlFor="reason" className="text-lg font-bold uppercase">Problema</label>
