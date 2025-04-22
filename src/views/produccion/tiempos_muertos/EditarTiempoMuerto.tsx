@@ -20,8 +20,8 @@ export default function EditarTiempoMuerto() {
         onError: (error) => {
             toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Tiempo muerto actualizado correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             navigate('/tiempos-muertos');
         }
     });
@@ -40,14 +40,13 @@ export default function EditarTiempoMuerto() {
     useEffect(() => {
         if (task) {
             setValue('name', task.name);
-            setValue('hours', task.hours.toString());
         }
     }, [task]);
 
     const onSubmit = (formData: DraftTiempoMuerto) => {
         const data = {
             id: id,
-            data: formData
+            FormData: formData
         }
         mutate(data);
     }

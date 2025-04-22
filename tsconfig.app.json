@@ -19,7 +19,8 @@
       "@/helpers": ["helpers/index.ts"],
       "@/lib/*": ["lib/*"],
       "@/views/*": ["views/*"],
-      "@/hooks/*": ["hooks/*"]
+      "@/hooks/*": ["hooks/*"],
+      "@/dashboards/*": ["components/dashboards/*"]
     },
 
     "moduleResolution": "bundler",

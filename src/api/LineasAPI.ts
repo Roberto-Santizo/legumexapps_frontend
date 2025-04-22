@@ -12,7 +12,6 @@ export const PositionSchema = z.object({
 export const LineaSchema = z.object({
     id: z.string(),
     code: z.string(),
-    total_persons: z.number(),
     name: z.string(),
     shift: z.string(),
     positions: z.array(PositionSchema)
@@ -133,12 +132,12 @@ export async function updateLinea(FormData: DraftLinea, id: Linea['id']) {
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
     }
 }
 
-export async function updatePositionsLine({file, id} : {file: File[], id: Linea['id']}) {
+export async function updatePositionsLine({ file, id }: { file: File[], id: Linea['id'] }) {
     try {
         const url = `/api/lines/update-positions/${id}`;
         const formData = new FormData();
@@ -163,7 +162,7 @@ export const PeformanceByDaySchema = z.object({
     max_value: z.number(),
     details: z.array(SkuByLineShema).nullable(),
     summary: z.object({
-        HBiometrico : z.number(),
+        HBiometrico: z.number(),
         HPlan: z.number(),
         HLinea: z.number(),
         HRendimiento: z.number(),
@@ -172,14 +171,14 @@ export const PeformanceByDaySchema = z.object({
 
 export type LinePerformanceByDay = z.infer<typeof PeformanceByDaySchema>;
 
-export async function getLinePerformanceByDay(line_id : Linea['id'], date : string) : Promise<LinePerformanceByDay> {
+export async function getLinePerformanceByDay(line_id: Linea['id'], date: string): Promise<LinePerformanceByDay> {
     try {
         const url = `/api/lines/performances-per-day/${line_id}?date=${date}`;
-        const {  data  } = await clienteAxios(url);
+        const { data } = await clienteAxios(url);
         const result = PeformanceByDaySchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data
-        }else{
+        } else {
             throw new Error("Información no valida");
         }
     } catch (error) {

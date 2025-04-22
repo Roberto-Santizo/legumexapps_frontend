@@ -3,11 +3,13 @@ import { getPlanById } from "@/api/WeeklyPlansAPI";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function ShowPlanSemanal() {
   const params = useParams();
   const id = params.id!!;
   const navigate = useNavigate();
+  const { hasPermission } = usePermissions();
 
   const { data: summaryPlan, isLoading, isError } = useQuery({
     queryKey: ['getPlanById', id],
@@ -37,9 +39,12 @@ export default function ShowPlanSemanal() {
                   <th scope="col" className="thead-th">
                     Personas
                   </th>
-                  <th scope="col" className="thead-th">
-                    Presupuesto
-                  </th>
+                  {hasPermission('see budget') && (
+                    <th scope="col" className="thead-th">
+                      Presupuesto
+                    </th>
+                  )}
+
                   <th scope="col" className="thead-th">
                     Horas
                   </th>
@@ -56,7 +61,9 @@ export default function ShowPlanSemanal() {
                   <tr className="tbody-tr" key={index}>
                     <td className="tbody-td">{task.lote}</td>
                     <td className="tbody-td">{task.total_workers}</td>
-                    <td className="tbody-td text-green-500 font-bold">{`Q${task.total_budget}`}</td>
+                    {hasPermission('see budget') && (
+                      <td className="tbody-td text-green-500 font-bold">{`Q${task.total_budget}`}</td>
+                    )}
                     <td className="tbody-td">{task.total_hours}</td>
                     <td className="tbody-td">{`${task.finished_tasks}/${task.total_tasks}`}</td>
                     <td className="tbody-td w-1/6">

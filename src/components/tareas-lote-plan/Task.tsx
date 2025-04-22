@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import TaskLabel from "../utilities-components/TaskLabel";
 import DronIcon from "../dashboard-agricola/DronIcon";
 import InsumosModal from "../modals/InsumosModal";
+import { usePermissions } from "@/hooks/usePermissions";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
@@ -21,6 +22,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<TaskWeeklyPlan['id']>('');
+  const { hasPermission } = usePermissions();
 
   const { mutate: mutateCloseTask } = useMutation({
     mutationFn: closeTask,
@@ -204,11 +206,15 @@ export default function Task({ task, role, getTasks }: TaskProps) {
         <TaskLabel label={"Semana"} text={task.week.toString()} />
         <TaskLabel label={"Horas Teoricas"} text={`${task.hours.toString()} horas`} />
         <TaskLabel label={"Tarea"} text={task.task} />
-        <TaskLabel
-          label={"Presupuesto"}
-          text={formatearQuetzales(task.budget)}
-          text_classes="text-green-500 font-bold"
-        />
+
+        {hasPermission('see budget') && (
+          <TaskLabel
+            label={"Presupuesto"}
+            text={formatearQuetzales(task.budget)}
+            text_classes="text-green-500 font-bold"
+          />
+        )}
+
         <TaskLabel
           label={"Fecha de Asignación"}
           text={

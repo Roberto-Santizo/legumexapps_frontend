@@ -41,7 +41,6 @@ export default function EditarLinea() {
   useEffect(() => {
     if (data) {
       setValue('code', data.code);
-      setValue('total_persons', data.total_persons);
     }
   }, [data]);
 
@@ -69,19 +68,6 @@ export default function EditarLinea() {
             type={'text'}
           >
             {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
-          </InputComponent>
-
-          <InputComponent<DraftLinea>
-            label="Total de Personas"
-            id="total_persons"
-            name="total_persons"
-            placeholder="Total de personas que conforman la linea"
-            register={register}
-            validation={{ required: 'El total de persona es obligatorio' }}
-            errors={errors}
-            type={'text'}
-          >
-            {errors.total_persons && <Error>{errors.total_persons?.message?.toString()}</Error>}
           </InputComponent>
 
           <button className="button w-full bg-indigo-500 hover:bg-indigo-600">

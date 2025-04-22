@@ -49,7 +49,6 @@ export default function IndexTiemposMuertos() {
         <thead>
           <tr className="thead-tr">
             <th className="thead-th">Nombre</th>
-            <th className="thead-th">Horas</th>
             <th className="thead-th">Acción</th>
           </tr>
         </thead>
@@ -57,7 +56,6 @@ export default function IndexTiemposMuertos() {
           {timeouts.map(timeout => (
             <tr key={timeout.id} className="tbody-tr">
               <td className="tbody-td">{timeout.name}</td>
-              <td className="tbody-td">{timeout.hours}</td>
               <td>
                 <Link to={`/tiempos-muertos/editar/${timeout.id}`}>
                   <Edit />

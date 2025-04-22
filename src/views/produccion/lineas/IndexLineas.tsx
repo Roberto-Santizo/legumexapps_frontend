@@ -50,11 +50,10 @@ export default function IndexLineas() {
         <table className="table">
           <thead>
             <tr className="thead-tr">
-              <th scope="col" className="thead-th">codigo</th>
-              <th scope="col" className="thead-th">linea</th>
-              <th scope="col" className="thead-th">turno</th>
-              <th scope="col" className="thead-th">total de personas</th>
-              <th scope="col" className="thead-th">Acciones</th>
+              <th scope="col" className="thead-th">CODIGO</th>
+              <th scope="col" className="thead-th">LINEA</th>
+              <th scope="col" className="thead-th">TURNO</th>
+              <th scope="col" className="thead-th">ACCIONES</th>
             </tr>
           </thead>
           <tbody>
@@ -63,14 +62,13 @@ export default function IndexLineas() {
                 <td className="tbody-td">{linea.code}</td>
                 <td className="tbody-td">{linea.name}</td>
                 <td className="tbody-td">{linea.shift}</td>
-                <td className="tbody-td">{linea.total_persons}</td>
                 <td className="tbody-td flex gap-5">
                   <Link to={`/lineas/editar/${linea.id}`}>
-                    <Edit2 className="hover:text-gray-500"/>
+                    <Edit2 className="hover:text-gray-500" />
                   </Link>
 
                   <Link to={`/lineas/posiciones/${linea.id}`}>
-                    <Users className="hover:text-gray-500"/>
+                    <Users className="hover:text-gray-500" />
                   </Link>
                 </td>
               </tr>

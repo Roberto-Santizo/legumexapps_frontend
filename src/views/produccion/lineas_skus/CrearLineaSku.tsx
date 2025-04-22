@@ -85,7 +85,7 @@ export default function CrearLineaSku() {
                     name="lbs_performance"
                     placeholder="Rendimiento de lbs por hora"
                     register={register}
-                    validation={{}}
+                    validation={{min:{ value: 0, message: 'El valor debe de ser mayor a 0'}}}
                     errors={errors}
                     type={'number'}
                 >
