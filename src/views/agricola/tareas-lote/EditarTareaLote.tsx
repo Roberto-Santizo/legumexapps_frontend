@@ -8,9 +8,9 @@ import { getAllPlans } from "@/api/WeeklyPlansAPI";
 import { editTask, EditTaskWeeklyPlan, getEditTask } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import InputComponent from "@/components/form/InputComponent";
-import InputSelectComponent from "@/components/form/InputSelectComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 export type DraftTaskWeeklyPlan = {
   hours: number,
@@ -70,6 +70,7 @@ export default function EditarTareaLote() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     setValue,
   } = useForm<DraftTaskWeeklyPlan>();
@@ -138,17 +139,18 @@ export default function EditarTareaLote() {
           {errors.slots && <Error>{errors.slots?.message?.toString()}</Error>}
         </InputComponent>
 
-        <InputSelectComponent<DraftTaskWeeklyPlan>
+        <InputSelectSearchComponent<DraftTaskWeeklyPlan>
           label="Plan Semanal"
           id="weekly_plan_id"
           name="weekly_plan_id"
           options={plansOptions}
-          register={register}
-          validation={{ required: 'El plan semanal es obligatorio' }}
+          control={control}
+          rules={{ required: 'El plan semanal es obligatorio' }}
           errors={errors}
         >
           {errors.weekly_plan_id && <Error>{errors.weekly_plan_id?.message?.toString()}</Error>}
-        </InputSelectComponent>
+        </InputSelectSearchComponent>
+
 
         {((role === "admin" || role === 'adminagricola') && task.end_date && task.start_date) && (
           <fieldset>

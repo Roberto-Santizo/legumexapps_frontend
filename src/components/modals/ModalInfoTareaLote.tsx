@@ -1,6 +1,8 @@
 import { SetStateAction } from 'react'
 import { TaskForCalendar } from '@/api/TasksWeeklyPlanAPI'
 import Modal from '../Modal'
+import { Link } from 'react-router-dom';
+import { Edit } from 'lucide-react';
 
 type Props = {
     show: boolean,
@@ -35,6 +37,13 @@ export default function ModalInfoTareaLote({ show, setModal, task, setSelectedTa
                     <div>
                         <p className="text-gray-500">CDP</p>
                         <p className="text-base font-semibold text-gray-800">{task.cdp}</p>
+                    </div>
+
+                    <div>
+                        <p className="text-gray-500">Editar</p>
+                        <Link to={`/planes-semanales/tareas-lote/editar/${task.id}}`} target='_blank'>
+                            <Edit className='hover:text-gray-500'/>
+                        </Link>
                     </div>
                 </div>
             </div>

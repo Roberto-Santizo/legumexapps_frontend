@@ -18,7 +18,7 @@ export default function IndexTareasLote() {
   const results = useQueries({
     queries: [
       { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken },
-      { queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id], queryFn: () => getTasks(lote_plantation_control_id, weekly_plan_id) },
+      { queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id], queryFn: () => getTasks({ cdp: lote_plantation_control_id, weekly_plan_id }) },
     ]
   });
 

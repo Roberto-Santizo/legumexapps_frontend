@@ -1,4 +1,5 @@
 import { TaskWeeklyPlanForCalendar } from "@/api/TasksWeeklyPlanAPI"
+import { PlusIcon, XIcon } from "lucide-react";
 import { SetStateAction } from "react";
 
 type Props = {
@@ -17,12 +18,19 @@ export default function TaskCalendarFincaComponent({ task, setIds, ids }: Props)
     }
     return (
         <div
-            className={`${ids.includes(task.id) ? 'bg-indigo-200' : ''} ${task.bg_color} cursor-pointer  border-l-4 border-indigo-500 shadow-sm p-3 mb-3 rounded-md hover:shadow-md transition-shadow`}
-            onClick={() => handleAddId(task.id)}
+            className={`${ids.includes(task.id) ? 'bg-indigo-100' : ''} ${task.bg_color} cursor-pointer  transition-all  border-l-4 border-indigo-500 shadow-sm p-3 mb-3 rounded-md flex justify-between hover:shadow-md`}
         >
-            <p className="text-indigo-700 font-semibold text-sm">{task.task}</p>
-            <p className="text-gray-600 text-xs">{task.finca}</p>
-            <p className="text-gray-600 text-xs">{task.lote}</p>
+            <div>
+                <p className="text-indigo-700 font-semibold text-sm">{task.task}</p>
+                <p className="text-gray-600 text-xs">{task.finca}</p>
+                <p className="text-gray-600 text-xs">{task.lote}</p>
+            </div>
+            {ids.includes(task.id) ? (
+                <XIcon className="w-5 h-5 cursor-pointer hover:text-red-500" onClick={() => handleAddId(task.id)} />
+            ) : (
+                <PlusIcon className="w-5 h-5 cursor-pointer hover:text-gray-500" onClick={() => handleAddId(task.id)} />
+            )}
+
         </div>
 
     )
