@@ -16,6 +16,7 @@ import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
+import { getCurrentDate } from "@/helpers";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;
@@ -31,7 +32,8 @@ export type DraftNewTaskWeeklyPlan = {
   budget: string;
   hours: string;
   extraordinary: string;
-  insumos: DraftSelectedInsumo[]
+  insumos: DraftSelectedInsumo[],
+  operation_date: string;
 }
 
 export default function CreateTareaLote() {
@@ -103,10 +105,10 @@ export default function CreateTareaLote() {
   };
   return (
     <>
-      <div className="my-10 w-1/2 mx-auto">
+      <div className="my-10 w-2/3 mx-auto">
         <form
           onSubmit={handleSubmit(CreateTareaLote)}
-          className="space-y-5"
+          className="space-y-5 shadow-xl p-5"
           noValidate
         >
           <InputComponent<DraftNewTaskWeeklyPlan>
@@ -212,6 +214,20 @@ export default function CreateTareaLote() {
           >
             {errors.extraordinary && <Error>{errors.extraordinary?.message?.toString()}</Error>}
           </InputSelectComponent>
+
+          <InputComponent<DraftNewTaskWeeklyPlan>
+            label="Fecha de Operación"
+            id="operation_date"
+            name="operation_date"
+            placeholder=""
+            register={register}
+            validation={{ required: 'La fecha de operación es obligatoria' }}
+            errors={errors}
+            type={'date'}
+            min={getCurrentDate()}
+          >
+            {errors.operation_date && <Error>{errors.operation_date?.message?.toString()}</Error>}
+          </InputComponent>
 
           <fieldset className="border p-5">
             <legend className="font-bold text-3xl">Insumos</legend>

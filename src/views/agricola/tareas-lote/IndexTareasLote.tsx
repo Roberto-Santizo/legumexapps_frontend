@@ -37,9 +37,14 @@ export default function IndexTareasLote() {
         Plan Semanal Semana {tasks.week} - FINCA {tasks.finca} - LOTE{" "}
         {tasks.lote}
       </h2>
-      <div className="flex flex-col gap-10 mt-10">
-        {tasks.data.map((task) => <Task key={task.id} task={task} role={role} getTasks={() => results[1].refetch()} />)}
-      </div>
+      {tasks.data.length === 0 ? (
+        <p className="text-center text-xl">No hay tareas pendientes</p>
+      ) : (
+        <div className="flex flex-col gap-10 mt-10">
+          {tasks.data.map((task) => <Task key={task.id} task={task} role={role} getTasks={() => results[1].refetch()} />)}
+        </div >
+      )
+      }
     </>
   );
 }

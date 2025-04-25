@@ -1,4 +1,4 @@
-import { HomeIcon, UserCog, User, UserCheck, BookCheck, BookXIcon, ListCheck, Map, Warehouse, FileSpreadsheet, Truck, Users, AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ChartNoAxesCombined, FileUser } from "lucide-react";
+import { HomeIcon, UserCog, User, UserCheck, BookCheck, BookXIcon, ListCheck, Map, Warehouse, FileSpreadsheet, Truck, Users, AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ChartNoAxesCombined, FileUser, CalendarDays } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
 
@@ -29,6 +29,12 @@ export default function Navegation() {
             {hasPermission('see plan semanal finca') && (
                 <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
                     <BookCheck />
+                </NavLinkComponent>
+            )}
+
+            {hasPermission('fincas planification') && (
+                <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
+                    <CalendarDays />
                 </NavLinkComponent>
             )}
 
