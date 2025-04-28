@@ -3,18 +3,35 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getPaginatedCDPS, Plantation } from "@/api/PlantationControlAPI";
 import { useQuery } from "@tanstack/react-query";
+import { Bars3Icon } from "@heroicons/react/16/solid";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import FiltersCDP from "@/components/filters/FiltersCDP";
+
+export type FiltersCDPType = {
+  cdp: string;
+  start_date: string;
+  end_date: string;
+}
+
+const initialValues = {
+  cdp: "",
+  start_date: "",
+  end_date: ""
+}
 
 export default function IndexCdps() {
   const [cdps, setCdps] = useState<Plantation[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filters, setFilters] = useState<FiltersCDPType>(initialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersCDPType>(initialValues);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ['getPaginatedCDPS', currentPage],
-    queryFn: () => getPaginatedCDPS(currentPage)
+    queryKey: ['getPaginatedCDPS', currentPage,filters],
+    queryFn: () => getPaginatedCDPS(currentPage,filters)
   });
 
   useEffect(() => {
@@ -50,6 +67,11 @@ export default function IndexCdps() {
         >
           <p>Carga Masiva</p>
         </Link>
+
+        <Bars3Icon
+          className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+          onClick={() => setIsOpen(true)}
+        />
       </div>
 
       <table className="table mt-10">
@@ -141,6 +163,10 @@ export default function IndexCdps() {
           handlePageChange={handlePageChange}
         />
       </div>
+
+      {isOpen && (
+        <FiltersCDP isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} setTempFilters={setTempFilters} tempFilters={tempFilters}/>
+      )}
     </>
   );
 }

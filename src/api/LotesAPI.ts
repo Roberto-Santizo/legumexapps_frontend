@@ -6,6 +6,7 @@ import { DraftLote } from "@/views/agricola/lotes/CreateLote";
 import { isAxiosError } from "axios";
 import { Finca } from "./FincasAPI";
 import clienteAxios from "@/config/axios";
+import { FiltersLotesType } from "@/views/agricola/lotes/IndexLotes";
 
 export async function createLote(draftlote: DraftLote) {
     try {
@@ -39,9 +40,9 @@ export const LotesPaginateSchema = z.object({
 export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
 
 
-export async function getPaginatedLotes(page: number): Promise<PaginatedLotes> {
+export async function getPaginatedLotes(page: number, filters: FiltersLotesType): Promise<PaginatedLotes> {
     try {
-        const url = `/api/lotes?page=${page}`;
+        const url = `/api/lotes?page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
         const { data } = await clienteAxios(url)
         const result = LotesPaginateSchema.safeParse(data);
         if (result.success) {

@@ -1,5 +1,6 @@
 import clienteAxios from "@/config/axios";
 import { DraftCDP } from "@/views/agricola/cdps/CreateCdp";
+import { FiltersCDPType } from "@/views/agricola/cdps/IndexCdps";
 import { isAxiosError } from "axios";
 import { z } from "zod";
 
@@ -57,9 +58,9 @@ export const PlantationsPaginateSchema = z.object({
 export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>
 
 
-export async function getPaginatedCDPS(page: number): Promise<PlantationsPaginate> {
+export async function getPaginatedCDPS(page: number, filters : FiltersCDPType): Promise<PlantationsPaginate> {
     try {
-        const url = `/api/cdps?page=${page}`;
+        const url = `/api/cdps?page=${page}&cdp=${filters.cdp}&start_date=${filters.start_date}&end_date=${filters.end_date}`;
         const { data } = await clienteAxios(url);
         const result = PlantationsPaginateSchema.safeParse(data);
         if (result.success) {

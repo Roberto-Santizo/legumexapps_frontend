@@ -3,6 +3,7 @@ import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansPaginate } from "@/types";
 import { ReportSchema } from "@/utils/reports-schema";
 import { SummaryWeeklyPlanSchema, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from "@/utils/weekly_plans-schema";
 import { downloadBase64File } from "@/helpers";
+import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
 
 export async function createPlan(file: File[]): Promise<void | string[]> {
     try {
@@ -16,9 +17,9 @@ export async function createPlan(file: File[]): Promise<void | string[]> {
     }
 }
 
-export async function getPaginatedPlans(page: number): Promise<WeeklyPlansPaginate> {
+export async function getPaginatedPlans(page: number,filters : FiltersPlanSemanalType): Promise<WeeklyPlansPaginate> {
     try {
-        const url = `/api/plans?page=${page}`;
+        const url = `/api/plans?page=${page}&finca_id=${filters.finca_id}&week=${filters.week}&year=${filters.year}`;
         const { data } = await clienteAxios(url)
         const result = WeeklyPlansPaginateSchema.safeParse(data);
         if (result.success) {

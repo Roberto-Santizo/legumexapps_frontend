@@ -1,6 +1,7 @@
 import { isAxiosError } from "axios";
 import { z } from "zod";
 import clienteAxios from "@/config/axios";
+import { FiltersInsumosType } from "@/views/agricola/insumos/IndexInsumos";
 
 
 export const InsumoSchema = z.object({
@@ -70,9 +71,10 @@ export const InsumosSchema = z.object({
 
 export type Insumos = z.infer<typeof InsumosSchema>;
 
-export async function getPaginatedInsumos(page: number) {
+export async function getPaginatedInsumos(currentPage: number, filters:FiltersInsumosType): Promise<Insumos> {
     try {
-        const url = `/api/insumos?page=${page}`;
+        const url = `/api/insumos?page=${currentPage}&code=${filters.code}&name=${filters.name}`;
+        console.log(url);
         const { data } = await clienteAxios(url);
         const result = InsumosSchema.safeParse(data);
         if (result.success) {

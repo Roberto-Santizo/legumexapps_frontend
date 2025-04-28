@@ -14,6 +14,20 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InsumosColumns from "@/components/planes-semanales-finca/InsumosColumns";
 import ActionsColumns from "@/components/planes-semanales-finca/ActionsColumns";
 import BudgetColumns from "@/components/planes-semanales-finca/BudgetColumns";
+import { Bars3Icon } from "@heroicons/react/16/solid";
+import FiltersPlanSemanalFinca from "@/components/filters/FiltersPlanSemanalFinca";
+
+export type FiltersPlanSemanalType = {
+  finca_id: string;
+  week: string;
+  year: string;
+}
+
+const initialValues = {
+  finca_id: "",
+  week: "",
+  year: ""
+}
 
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
@@ -21,6 +35,9 @@ export default function IndexPlanSemanal() {
   const [weeklyPlans, setWeeklyPlans] = useState<WeeklyPlan[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [filters, setFilters] = useState<FiltersPlanSemanalType>(initialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersPlanSemanalType>(initialValues);
   const { hasPermission } = usePermissions();
 
   const { mutate: handleDowloadReportMutation, isPending: handleDowloadReportMutationPending } = useMutation({
@@ -35,8 +52,8 @@ export default function IndexPlanSemanal() {
   });
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['getPaginatedPlans', currentPage],
-    queryFn: () => getPaginatedPlans(currentPage)
+    queryKey: ['getPaginatedPlans', currentPage, filters],
+    queryFn: () => getPaginatedPlans(currentPage, filters)
   });
 
   useEffect(() => {
@@ -92,6 +109,13 @@ export default function IndexPlanSemanal() {
             <PlusIcon className="w-8" />
             <p>Crear Actividad</p>
           </Link>
+
+          {hasPermission('filter plan semanal') && (
+            <Bars3Icon
+              className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+              onClick={() => setIsOpen(true)}
+            />
+          )}
         </div>
       )}
 
@@ -207,6 +231,10 @@ export default function IndexPlanSemanal() {
           handlePageChange={handlePageChange}
         />
       </div>
+
+      {isOpen && (
+        <FiltersPlanSemanalFinca isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFilters} />
+      )}
     </>
   );
 }

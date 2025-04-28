@@ -7,10 +7,11 @@ import { DraftNewTaskWeeklyPlan } from "views/agricola/planes-semanales/CreateTa
 import { DraftTaskWeeklyPlan } from "views/agricola/tareas-lote/EditarTareaLote";
 import { z } from "zod";
 import { Lote } from "./LotesAPI";
+import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
 
-export async function getTasks({ cdp, weekly_plan_id }: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'] }) {
+export async function getTasks({ cdp, weekly_plan_id, filters}: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {
-        const url = `/api/tasks-lotes?cdp=${cdp}&weekly_plan=${weekly_plan_id}`;
+        const url = `/api/tasks-lotes?cdp=${cdp}&weekly_plan=${weekly_plan_id}&name=${filters.name}&code=${filters.code}&task_type=${filters.task_type}`;
         const { data } = await clienteAxios(url);
         const result = TasksWeeklyPlanSchema.safeParse(data);
         if (result.success) {

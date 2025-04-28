@@ -2,6 +2,7 @@ import clienteAxios from "@/config/axios";
 import { Tarea, TareasPaginate } from "@/types";
 import { TareaSchema, TareasPaginateSchema, TareasSchema } from "@/utils/tareas-schema";
 import { DraftTarea } from "@/views/agricola/tareas/CreateTarea";
+import { FiltersTareasType } from "@/views/agricola/tareas/IndexTareas";
 import { isAxiosError } from "axios";
 
 export async function createTarea(FormData: DraftTarea) {
@@ -30,9 +31,9 @@ export async function uploadTareas(file: File[]) {
     }
 }
 
-export async function getPaginatedTasks(page: number): Promise<TareasPaginate> {
+export async function getPaginatedTasks(page: number, filetrs: FiltersTareasType): Promise<TareasPaginate> {
     try {
-        const url = `/api/tareas?page=${page}`;
+        const url = `/api/tareas?page=${page}&name=${filetrs.name}&code=${filetrs.code}`;
         const { data } = await clienteAxios(url);
         const result = TareasPaginateSchema.safeParse(data);
 

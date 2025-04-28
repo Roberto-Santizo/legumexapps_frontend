@@ -9,8 +9,7 @@ import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncomp
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
 import { LoteCDPDetailsSchema } from '@/utils/loteCDPDetails-schema'
 import { VarietiesPaginateSchema, VarietySchema } from '@/utils/calidadVariedades-schema'
-import { DefectsPaginateSchema} from '@/utils/defectos-schema'
-import { FiletrsBoletaRMPSchema } from '@/utils/filters-schema'
+import { DefectsPaginateSchema } from '@/utils/defectos-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
 
 export type AuthUser = z.infer<typeof AuthUserSchema>
@@ -55,5 +54,4 @@ export type DraftVariety = Omit<Variety, 'id'>
 
 export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
 export type Defect = z.infer<typeof DefectSchema>
-export type FiletrsBoletaRMP = z.infer<typeof FiletrsBoletaRMPSchema>
 
