@@ -323,7 +323,7 @@ export async function changeOperationDate({ date, ids }: { date: string, ids: st
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            throw new Error(error.response?.data.msg);
         }
     }
 }

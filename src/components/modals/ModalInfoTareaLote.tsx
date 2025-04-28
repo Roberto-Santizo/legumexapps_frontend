@@ -1,8 +1,9 @@
 import { SetStateAction } from 'react'
 import { TaskForCalendar } from '@/api/TasksWeeklyPlanAPI'
-import Modal from '../Modal'
 import { Link } from 'react-router-dom';
 import { Edit } from 'lucide-react';
+import { usePermissions } from '@/hooks/usePermissions';
+import Modal from '../Modal'
 
 type Props = {
     show: boolean,
@@ -12,6 +13,7 @@ type Props = {
 }
 
 export default function ModalInfoTareaLote({ show, setModal, task, setSelectedTask }: Props) {
+    const { hasPermission } = usePermissions();
 
     const handleClose = () => {
         setModal(false);
@@ -40,10 +42,15 @@ export default function ModalInfoTareaLote({ show, setModal, task, setSelectedTa
                     </div>
 
                     <div>
-                        <p className="text-gray-500">Editar</p>
-                        <Link to={`/planes-semanales/tareas-lote/editar/${task.id}}`} target='_blank'>
-                            <Edit className='hover:text-gray-500'/>
-                        </Link>
+                        {hasPermission('edit task weekly plan') && (
+                            <>
+                                <p className="text-gray-500">Editar</p>
+                                <Link to={`/planes-semanales/tareas-lote/editar/${task.id}}`} target='_blank'>
+                                    <Edit className='hover:text-gray-500' />
+                                </Link>
+                            </>
+                        )}
+
                     </div>
                 </div>
             </div>
