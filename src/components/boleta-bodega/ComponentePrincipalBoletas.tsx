@@ -3,8 +3,6 @@ import jsPDF from "jspdf";
 import SalidaBodegaEmpaque from "@/components/boleta-bodega/SalidaBodegaEmpaque";
 import DevolucionBodega from "@/components/boleta-bodega/DevolucionBodega";
 
-
-
 export default function ComponentePrincipalBoletas() {
   const salidaBodega = () => {
     const input = document.getElementById("pdfBoletaSalida");
