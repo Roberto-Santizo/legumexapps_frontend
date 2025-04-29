@@ -27,7 +27,6 @@ export default function PosicionesLinea() {
             <div className="mt-5 p-5 shadow grid grid-cols-2">
                 <div>
                     <h3 className="font-bold text-2xl">Información de linea</h3>
-                    <p className="text-xl"><span className="font-bold">Total posiciones:</span> {line.total_persons}</p>
                     <p className="text-xl"><span className="font-bold">Codigo de linea:</span> {line.code}</p>
                     <p className="text-xl"><span className="font-bold">Turno:</span> {line.shift}</p>
                 </div>
@@ -49,7 +48,7 @@ export default function PosicionesLinea() {
                     </thead>
                     <tbody>
                         {line.positions.map(position => (
-                            <tr className="tbody-tr">
+                            <tr className="tbody-tr" key={position.id}>
                                 <td className="tbody-td">{position.id}</td>
                                 <td className="tbody-td">{position.name}</td>
                             </tr>

@@ -1,7 +1,7 @@
 export default function LogisticsDashboard() {
   return (
     <div>
-        <h2 className="font-bold text-4xl">Dashboard</h2>
+      <h1 className="text-5xl font-bold mb-10">Dashboard Logistics</h1>
     </div>
   )
 }

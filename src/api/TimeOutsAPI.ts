@@ -7,7 +7,6 @@ import { TaskProduction } from "./WeeklyProductionPlanAPI";
 export const TimeoutSchema = z.object({
     id: z.string(),
     name: z.string(),
-    hours: z.number()
 });
 
 export const PaginatedTimeoutsSchema = z.object({
@@ -39,7 +38,7 @@ export async function getPaginatedTimeouts(page: number): Promise<PaginatedTimeo
 }
 
 export const TimeoutSelectSchema = z.object({
-    value : z.string(),
+    value: z.string(),
     label: z.string()
 })
 
@@ -49,14 +48,14 @@ export const TimeoutsSelectSchema = z.object({
 
 export type TimeoutSelect = z.infer<typeof TimeoutSelectSchema>
 
-export async function getAllTimeouts() : Promise<TimeoutSelect[]> {
+export async function getAllTimeouts(): Promise<TimeoutSelect[]> {
     try {
         const url = `/api/timeouts-all`;
         const { data } = await clienteAxios(url);
         const result = TimeoutsSelectSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data.data
-        }else{
+        } else {
             throw new Error("Informació no valida");
         }
     } catch (error) {
@@ -81,48 +80,50 @@ export async function getTimeoutById(id: Timeout['id']): Promise<Timeout> {
     }
 }
 
-export async function createTimeOut(data: DraftTiempoMuerto) {
+export async function createTimeOut(FormData: DraftTiempoMuerto) {
     try {
         const url = '/api/timeouts';
-        await clienteAxios.post(url, data);
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg)
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
     }
 }
 
-export async function updateTimeOut({id, data} : {id: Timeout['id'], data: DraftTiempoMuerto}) {
+export async function updateTimeOut({ id, FormData }: { id: Timeout['id'], FormData: DraftTiempoMuerto }) {
     try {
         const url = `/api/timeouts/${id}`;
-        await clienteAxios.put(url, data);
+        const { data } = await clienteAxios.put<string>(url, FormData);
+        return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg)
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
     }
 }
 
-export async function createTaskTimeout({id,timeout_id} : {id : TaskProduction['id'], timeout_id:Timeout['id']}) {
+export async function createTaskTimeout({ id, timeout_id }: { id: TaskProduction['id'], timeout_id: Timeout['id'] }) {
     try {
         const url = `/api/tasks_production_plan/${id}/add-timeout/open`;
-        await clienteAxios.post(url,{
+        await clienteAxios.post(url, {
             timeout_id: timeout_id
         })
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg)
         }
     }
 }
 
-export async function closeTaskTimeOut(id : TaskProduction['id']) {
+export async function closeTaskTimeOut(id: TaskProduction['id']) {
     try {
         const url = `/api/tasks_production_plan/${id}/add-timeout/close`;
         const { data } = await clienteAxios.post<string>(url);
         return data;
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg)
         }
     }

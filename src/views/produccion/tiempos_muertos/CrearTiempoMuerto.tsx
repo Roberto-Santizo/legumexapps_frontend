@@ -19,8 +19,8 @@ export default function CrearTiempoMuerto() {
     onError: (error) => {
       toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Tiempo muerto creado correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/tiempos-muertos');
     }
   });

@@ -2,11 +2,11 @@ import { createTaskProductionPerformance, TaskProduction } from "@/api/WeeklyPro
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export type DraftPerformance = {
     tarimas_produced: number;
@@ -35,7 +35,7 @@ export default function ModalTomaRendimientoProduccion() {
         onSuccess: (data) => {
             toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
-            navigate(location.pathname,{replace:true});
+            navigate(location.pathname, { replace: true });
         }
     })
 
@@ -56,7 +56,7 @@ export default function ModalTomaRendimientoProduccion() {
                     name="tarimas_produced"
                     placeholder="Total Tarimas Producidas"
                     register={register}
-                    validation={{}}
+                    validation={{ min: { value: 0, message: 'Las tarimas producidas deben ser mayores a 0' } }}
                     errors={errors}
                     type={'number'}
                 >
@@ -69,7 +69,7 @@ export default function ModalTomaRendimientoProduccion() {
                     name="lbs_bascula"
                     placeholder="Total Libras Basculadas"
                     register={register}
-                    validation={{ required: 'Las libras basculadas son obligatorias' }}
+                    validation={{ required: 'Las libras basculadas son obligatorias', min: { value: 0, message: 'Las libras basculadas deben ser mayores a 0' } }}
                     errors={errors}
                     type={'number'}
                 >

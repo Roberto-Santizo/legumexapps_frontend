@@ -53,7 +53,13 @@ export default function CreateSKU() {
             name="code"
             placeholder="Codificación de Linea"
             register={register}
-            validation={{ required: 'El codigo de la linea es requerida' }}
+            validation={{
+              required: 'El código de la línea es requerido',
+              pattern: {
+                value: /[a-zA-Z]/,
+                message: 'El código debe contener al menos una letra',
+              },
+            }}
             errors={errors}
             type={'text'}
           >
@@ -72,20 +78,6 @@ export default function CreateSKU() {
             type={'text'}
           >
             {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-          </InputComponent>
-
-
-          <InputComponent<DraftLinea>
-            label="Total de Personas"
-            id="total_persons"
-            name="total_persons"
-            placeholder="Total de personas que conforman la linea"
-            register={register}
-            validation={{ required: 'El total de persona es obligatorio' }}
-            errors={errors}
-            type={'text'}
-          >
-            {errors.total_persons && <Error>{errors.total_persons?.message?.toString()}</Error>}
           </InputComponent>
 
           <InputSelectComponent<DraftLinea>
