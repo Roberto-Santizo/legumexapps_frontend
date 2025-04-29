@@ -122,6 +122,12 @@ export default function Navegation() {
                 </NavLinkComponent>
             )}
 
+
+            {/* {hasPermission('permission employee') && ( */}
+                <NavLinkComponent url="/boleta/bodega/salida" text="Boleta salida bodega">
+                    <FileUser />
+                </NavLinkComponent>
+            {/* )} */}
         </div>
     )
 }
