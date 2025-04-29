@@ -9,7 +9,7 @@ const routes = [
   { path: "/planes-semanales/crear", component: lazy(() => import("@/views/agricola/planes-semanales/CreatePlanSemanal")), roles: ['admin','adminagricola'] },
   { path: "/planes-semanales/:finca/:id", component: lazy(() => import("@/views/agricola/planes-semanales/ShowPlanSemanal")), roles: ['admin','adminagricola','alameda','linda','tehuya'] },
   
-  { path: "/planificacion-finca", component: lazy(() => import("@/views/agricola/planes-semanales/PlanificacionPlanSemanal")), roles: ['admin','adminagricola'] },
+  { path: "/planificacion-finca", component: lazy(() => import("@/views/agricola/planes-semanales/PlanificacionPlanSemanal")), roles: ['admin','adminagricola','alameda','linda','tehuya'] },
   
   { path: "/tareas", component: lazy(() => import("@/views/agricola/tareas/IndexTareas")), roles: ['admin','adminagricola'] },
   { path: "/tareas/crear", component: lazy(() => import("@/views/agricola/tareas/CreateTarea")), roles: ['admin','adminagricola'] },

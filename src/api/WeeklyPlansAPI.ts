@@ -4,6 +4,8 @@ import { ReportSchema } from "@/utils/reports-schema";
 import { SummaryWeeklyPlanSchema, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from "@/utils/weekly_plans-schema";
 import { downloadBase64File } from "@/helpers";
 import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
+import { z } from "zod";
+import { TaskInsumoSchema } from "@/utils/taskWeeklyPlan-schema";
 
 export async function createPlan(file: File[]): Promise<void | string[]> {
     try {
@@ -17,7 +19,7 @@ export async function createPlan(file: File[]): Promise<void | string[]> {
     }
 }
 
-export async function getPaginatedPlans(page: number,filters : FiltersPlanSemanalType): Promise<WeeklyPlansPaginate> {
+export async function getPaginatedPlans(page: number, filters: FiltersPlanSemanalType): Promise<WeeklyPlansPaginate> {
     try {
         const url = `/api/plans?page=${page}&finca_id=${filters.finca_id}&week=${filters.week}&year=${filters.year}`;
         const { data } = await clienteAxios(url)
@@ -59,6 +61,37 @@ export async function getPlanById(id: WeeklyPlan['id']): Promise<SummaryWeeklyPl
             throw new Error('Los datos no son validos');
         }
     } catch (error) {
+        throw error;
+    }
+}
+
+export const TaskWeeklyPlanByDateSchema = z.object({
+    id: z.string(),
+    lote: z.string(),
+    task: z.string(),
+    operation_date:z.string(),
+    status: z.boolean(),
+    insumos: z.array(TaskInsumoSchema)
+});
+
+export const TasksWeeklyPlanByDateSchema = z.object({
+    data: z.array(TaskWeeklyPlanByDateSchema)
+});
+
+export type TaskWeeklyPlanByDate = z.infer<typeof TaskWeeklyPlanByDateSchema>;
+
+export async function getTasksByDate({ id, date, loteId, taskId }: { id: WeeklyPlan['id'], date: string, loteId: string, taskId: string }) : Promise<TaskWeeklyPlanByDate[]> {
+    try {
+        const url = `/api/plans/tasks-planned-by-date/finca?weekly_plan=${id}&date=${date}&lote=${loteId}&task=${taskId}`;
+        const { data } = await clienteAxios.get(url);
+        const result = TasksWeeklyPlanByDateSchema.safeParse(data);
+        if (result.success) {
+            return result.data.data;
+        } else {
+            throw new Error("Información no válida");
+        }
+    } catch (error) {
+        console.log(error);
         throw error;
     }
 }

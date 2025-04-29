@@ -8,6 +8,8 @@ import { getAllPlans } from '@/api/WeeklyPlansAPI';
 import { getAllLotes, Lote } from '@/api/LotesAPI';
 import { Tarea } from '@/types';
 import { getAllTasks } from '@/api/TasksAPI';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useNavigate } from 'react-router-dom';
 import Select from "react-select";
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -17,6 +19,7 @@ import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
 import ModalChangeOperationDateAgricola from '@/components/modals/ModalChangeOperationDateAgricola';
 import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
+import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 
 type EventReceiveInfo = {
     event: {
@@ -27,13 +30,15 @@ type EventReceiveInfo = {
 
 const CalendarComponent = () => {
     const queryClient = useQueryClient();
-    const [id, setId] = useState('');
+    const [id, setId] = useState<string>('');
     const [events, setEvents] = useState<TaskForCalendar[]>([]);
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
     const [modal, setModal] = useState(false);
     const [modalInfoTarea, setModalInfoTarea] = useState(false);
     const [selectedTask, setSelectedTask] = useState<TaskForCalendar>({} as TaskForCalendar);
+    const { hasPermission } = usePermissions();
+    const navigate = useNavigate();
     const calendarRef = useRef<FullCalendar | null>(null);
 
     const [loteId, setLoteId] = useState<string>('');
@@ -68,12 +73,10 @@ const CalendarComponent = () => {
     const { data: tasks, isLoading } = useQuery({
         queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId],
         queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId }),
-        enabled: !!id,
     });
     const { data: tasksForCalendar } = useQuery({
         queryKey: ['getTasksForCalendar', id],
         queryFn: () => getTasksForCalendar(id),
-        enabled: !!id,
     });
 
     const { mutate } = useMutation({
@@ -103,27 +106,38 @@ const CalendarComponent = () => {
         mutate({ date: info.event.startStr, ids: [info.event.id] });
     };
 
+    interface DateClickInfo {
+        dateStr: string;
+    }
+
+    const handleOpenDate = (info: DateClickInfo) => {
+        navigate(`${location.pathname}?date=${info.dateStr}`);
+    };
+
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-col w-full">
                 <h1 className="font-bold text-4xl">Planificación Fincas</h1>
-                <div className="flex justify-end items-center gap-5 mb-4">
-                    <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
-                    <div className="mb-4">
-                        <label htmlFor="selector" className="block text-sm font-medium text-gray-600 mb-1">Plan Semanal</label>
-                        <select
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            onChange={(e) => setId(e.target.value)}
-                        >
-                            <option value="">Seleccione una opción</option>
-                            {plans?.map((plan) => (
-                                <option key={plan.id} value={plan.id}>
-                                    {plan.finca} - {plan.week}/{plan.year}
-                                </option>
-                            ))}
-                        </select>
+                {hasPermission('edit fincas planification') && (
+                    <div className="flex justify-end items-center gap-5 mb-4">
+                        <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
+                        <div className="mb-4">
+                            <label htmlFor="selector" className="block text-sm font-medium text-gray-600 mb-1">Plan Semanal</label>
+                            <select
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                onChange={(e) => setId(e.target.value)}
+                            >
+                                <option value="">Seleccione una opción</option>
+                                {plans?.map((plan) => (
+                                    <option key={plan.id} value={plan.id}>
+                                        {plan.finca} - {plan.week}/{plan.year}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                </div>
+                )}
+
             </div>
 
             <div className="flex gap-4">
@@ -137,6 +151,7 @@ const CalendarComponent = () => {
                         droppable={true}
                         events={events}
                         initialDate={tasksForCalendar?.initial_date}
+                        dateClick={handleOpenDate}
                         eventDrop={handleEventDrop}
                         eventClick={(info) => {
                             const task = tasksForCalendar?.data.find((task) => task.id === info.event.id);
@@ -189,8 +204,6 @@ const CalendarComponent = () => {
                                     })}
                                     placeholder="--SELECCIONE UNA TAREA--"
                                 />
-
-
                             </div>
                         </div>
 
@@ -232,6 +245,7 @@ const CalendarComponent = () => {
 
             <ModalChangeOperationDateAgricola show={modal} setModal={setModal} ids={ids} id={id} setIds={setIds} />
             <ModalInfoTareaLote show={modalInfoTarea} setModal={setModalInfoTarea} task={selectedTask} setSelectedTask={setSelectedTask} />
+            <ModalInsumosPrepared id={id}/>
         </div>
     );
 };

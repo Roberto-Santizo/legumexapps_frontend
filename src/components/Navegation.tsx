@@ -32,7 +32,7 @@ export default function Navegation() {
                 </NavLinkComponent>
             )}
 
-            {hasPermission('fincas planification') && (
+            {hasPermission('see fincas planification') && (
                 <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
                     <CalendarDays />
                 </NavLinkComponent>
