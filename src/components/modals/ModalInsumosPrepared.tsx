@@ -102,9 +102,16 @@ export default function ModalInsumosPrepared({ id }: Props) {
                 <div className="max-h-96 overflow-y-auto scrollbar-hide space-y-5">
                     {isLoading && <Spinner />}
                     {isError && <ShowErrorAPI />}
-                    {tasks?.map(task => (
-                        <TaskByDate key={task.id} task={task} refetch={refetch} />
-                    ))}
+                    {tasks?.length === 0 ? (
+                        <p className="text-center">No existen tareas planificadas para este día</p>
+                    ) : (
+                       <>
+                            {tasks?.map(task => (
+                                <TaskByDate key={task.id} task={task} refetch={refetch} />
+                            ))}
+    
+                       </>
+                    )}
                 </div>
             </div>
         </Modal>

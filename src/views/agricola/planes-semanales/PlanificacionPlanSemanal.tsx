@@ -20,6 +20,7 @@ import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/Task
 import ModalChangeOperationDateAgricola from '@/components/modals/ModalChangeOperationDateAgricola';
 import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
+import { getAllFincas } from '@/api/FincasAPI';
 
 type EventReceiveInfo = {
     event: {
@@ -43,6 +44,7 @@ const CalendarComponent = () => {
 
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
+    const [fincaId, setFincaId] = useState<string>('');
 
     const [lotes, setLotes] = useState<Lote[]>([]);
     const [tareas, setTareas] = useState<Tarea[]>([]);
@@ -51,13 +53,23 @@ const CalendarComponent = () => {
         queries: [
             { queryKey: ['getAllLotes'], queryFn: getAllLotes },
             { queryKey: ['getAllTasks'], queryFn: getAllTasks },
+            { queryKey: ['getAllFincas'], queryFn: getAllFincas },
         ]
     })
+
 
     useEffect(() => {
         if (results[0].data) setLotes(results[0].data)
         if (results[1].data) setTareas(results[1].data)
     }, [results])
+
+    const fincasFilter = results[2].data?.filter((finca) => +finca.id < 7);
+
+
+    const fincasOptions = fincasFilter?.map((finca) => ({
+        value: finca.id,
+        label: finca.name
+    }));
 
     const lotesOptions = lotes.map((lote) => ({
         value: lote.id,
@@ -71,8 +83,8 @@ const CalendarComponent = () => {
 
     const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: getAllPlans });
     const { data: tasks, isLoading } = useQuery({
-        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId],
-        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId }),
+        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId,fincaId],
+        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId,fincaId }),
     });
     const { data: tasksForCalendar } = useQuery({
         queryKey: ['getTasksForCalendar', id],
@@ -127,7 +139,7 @@ const CalendarComponent = () => {
                                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 onChange={(e) => setId(e.target.value)}
                             >
-                                <option value="">Seleccione una opción</option>
+                                <option value="">TODOS</option>
                                 {plans?.map((plan) => (
                                     <option key={plan.id} value={plan.id}>
                                         {plan.finca} - {plan.week}/{plan.year}
@@ -204,6 +216,18 @@ const CalendarComponent = () => {
                                     })}
                                     placeholder="--SELECCIONE UNA TAREA--"
                                 />
+
+                                <Select
+                                    options={fincasOptions}
+                                    className="react-select-container flex-1"
+                                    classNamePrefix="react-select"
+                                    onChange={(selected => {
+                                        if (selected?.value) {
+                                            setFincaId(selected?.value)
+                                        }
+                                    })}
+                                    placeholder="--SELECCIONE UNA FINCA--"
+                                />
                             </div>
                         </div>
 
@@ -245,7 +269,7 @@ const CalendarComponent = () => {
 
             <ModalChangeOperationDateAgricola show={modal} setModal={setModal} ids={ids} id={id} setIds={setIds} />
             <ModalInfoTareaLote show={modalInfoTarea} setModal={setModalInfoTarea} task={selectedTask} setSelectedTask={setSelectedTask} />
-            <ModalInsumosPrepared id={id}/>
+            <ModalInsumosPrepared id={id} />
         </div>
     );
 };
