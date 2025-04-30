@@ -5,8 +5,6 @@ import DevolucionBodega from "@/components/boleta-bodega/DevolucionBodega";
 import IngresoInsumos from "./IngresoInsumos";
 import IngresoMaterialEmpaque from "./IngresoMaterialEmpaque";
 
-
-
 export default function ComponentePrincipalBoletas() {
   const salidaBodega = () => {
     const input = document.getElementById("pdfBoletaSalida");
