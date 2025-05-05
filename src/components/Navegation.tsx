@@ -1,4 +1,4 @@
-import { HomeIcon, UserCog, User, UserCheck, BookCheck, BookXIcon,Box, ListCheck, Map, Warehouse, FileSpreadsheet, Truck, Users, AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ChartNoAxesCombined, FileUser } from "lucide-react";
+import { HomeIcon, UserCog, User, UserCheck, BookCheck, BookXIcon, Box, ListCheck, Map, Warehouse, FileSpreadsheet, Truck, Users, AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ChartNoAxesCombined, FileUser } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
 
@@ -124,15 +124,15 @@ export default function Navegation() {
 
 
             {/* {hasPermission('permission employee') && ( */}
-                <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
-                    <FileUser />
-                </NavLinkComponent>
+            <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
+                <FileUser />
+            </NavLinkComponent>
 
             {/* )} */}
-                        {/* {hasPermission('permission employee') && ( */}
-                        <NavLinkComponent url="/material-empaque" text="Registro de material de empaque">
-                    <Box />
-                </NavLinkComponent>
+            {/* {hasPermission('permission employee') && ( */}
+            <NavLinkComponent url="/material-empaque" text="Material Empaque">
+                <Box />
+            </NavLinkComponent>
             {/* )} */}
         </div>
     )

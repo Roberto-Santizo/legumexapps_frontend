@@ -22,7 +22,7 @@ export default function ComponentePrincipalBoletas() {
     });
   };
 
-  const boletaDeDevolucion =()=>{
+  const boletaDeDevolucion = () => {
     const input = document.getElementById("pdfBoletaDevolucion");
     if (!input) {
       console.error('Element with id "pdfBoletaDevolucion" not found.');
@@ -70,7 +70,7 @@ export default function ComponentePrincipalBoletas() {
     });
   }
 
-  
+
 
   return (
     <>
@@ -85,7 +85,7 @@ export default function ComponentePrincipalBoletas() {
           <div
             id="pdfBoletaSalida"
           >
-            <SalidaBodegaEmpaque/>
+            <SalidaBodegaEmpaque />
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function ComponentePrincipalBoletas() {
           <div
             id="pdfBoletaDevolucion"
           >
-            <DevolucionBodega/>
+            <DevolucionBodega />
           </div>
         </div>
       </div>
@@ -117,7 +117,7 @@ export default function ComponentePrincipalBoletas() {
           <div
             id="pdfIngresoInsumos"
           >
-            <IngresoInsumos/>
+            <IngresoInsumos />
           </div>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function ComponentePrincipalBoletas() {
           <div
             id="pdfIngresoMaterialEmpaque"
           >
-            <IngresoMaterialEmpaque/>
+            <IngresoMaterialEmpaque />
           </div>
         </div>
       </div>

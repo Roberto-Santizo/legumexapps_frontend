@@ -161,7 +161,6 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
                     </div>
                 </div>
 
-                {/* Botones en la parte inferior */}
                 <div className="border-t pt-3 space-y-2">
                     <button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded"
                         onClick={handleFilterData} disabled={isLoading}>
