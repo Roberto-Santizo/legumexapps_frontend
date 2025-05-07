@@ -1,26 +1,26 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { getTareaById, updateTarea } from "@/api/TasksAPI";
-import { DraftTarea } from "./CreateTarea";
+import {getProveedorById, updateProveedor} from "@/api/BodegaProveedoresAPI"
+import { DraftSuppliers } from "../formularios/CrearProveedor";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
-import TareasForm from "./TareasForm";
+import FormProveedor from "../formularios/FormProveedor";
 
-export default function EditTarea() {
+export default function EditarProveedores() {
   const params = useParams();
   const id = params.id!!;
   const navigate = useNavigate();
 
-  const { data: editingTarea, isLoading, isError } = useQuery({
-    queryKey: ['getTareaById', id],
-    queryFn: () => getTareaById(id)
+  const { data: editingProveedor, isLoading, isError } = useQuery({
+    queryKey: ['getProveedorById', id],
+    queryFn: () => getProveedorById(id)
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: updateTarea,
+    mutationFn: updateProveedor,
     onError: (error) => {
       toast.error(error.message);
     },
@@ -35,30 +35,30 @@ export default function EditTarea() {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<DraftTarea>();
+  } = useForm<DraftSuppliers>();
 
   useEffect(() => {
-    if (editingTarea) {
-      setValue("name", editingTarea.name || "");
-      setValue("code", editingTarea.code || "");
-      setValue("description", editingTarea.description || "");
+    if (editingProveedor) {
+      setValue("code", editingProveedor.code || "");
+      setValue("name", editingProveedor.name || "");
+      
     }
-  }, [editingTarea, setValue]);
+  }, [editingProveedor, setValue]);
 
 
-  const onSubmit = (data: DraftTarea) => mutate({ id, FormData: data })
+  const onSubmit = (data: DraftSuppliers) => mutate({ id, FormData: data })
 
   if (isLoading) return <Spinner />;
   if (isError) return <ShowErrorAPI />;
-  if (editingTarea) return (
+  if (editingProveedor) return (
     <>
-      <h2 className="text-4xl font-bold">Editar Tarea {editingTarea.name}</h2>
+      <h2 className="text-4xl font-bold">Editar Proveedor {editingProveedor.name}</h2>
       <div>
         <form
           className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <TareasForm register={register} errors={errors} />
+          <FormProveedor register={register} errors={errors} />
 
           <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
             {isPending ? <Spinner /> : <p>Guardar Cambios</p>}

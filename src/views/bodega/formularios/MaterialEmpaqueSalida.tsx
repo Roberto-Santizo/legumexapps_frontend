@@ -1,5 +1,4 @@
 import { useForm, Controller } from "react-hook-form";
-// import { toast } from "react-toastify";
 import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
@@ -28,7 +27,7 @@ export default function WarehouseOutput() {
 
   return (
     <div>
-      <h1 className="font-bold text-3xl uppercase">Salida de bodega empaque</h1>
+      <h1 className="font-bold text-3xl uppercase">Entrega de material de empaque</h1>
       <form className="w-3/4 mb-10 shadow-xl p-10 mx-auto mt-10 space-y-10" onSubmit={handleSubmit(onSubmit)}>
         <InputComponent<DraftWarehouseOutput>
           label="Cantidad"
@@ -166,7 +165,7 @@ export default function WarehouseOutput() {
 
         <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
           {/* <Spinner />  */}
-          <p>Registrar salida de bodega empaque</p>
+          <p>Registrar entrega de material</p>
         </button>
       </form>
     </div>

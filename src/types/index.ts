@@ -13,6 +13,12 @@ import { DefectsPaginateSchema} from '@/utils/defectos-schema'
 import { FiletrsBoletaRMPSchema } from '@/utils/filters-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
 
+// codigo agregado por Luis
+import { WareHouseSupplierSchema, warehousePaginateSchema } from '@/utils/bodega-schema'
+import {warehouseInputSchema, WarehouseSupplyPaginateSchema} from '@/utils/bodegaInsumos-schema'
+import { MaterialReceptionSchema, MaterialReceptionPaginateSchema } from '@/utils/bodega-recepcionMaterial-schema'
+import { MaterialRegisterSchema, MaterialRegisterPaginateSchema } from '@/utils/bodega-registroMaterial-schema'
+
 export type AuthUser = z.infer<typeof AuthUserSchema>
 
 export type LoginUser = {
@@ -56,4 +62,22 @@ export type DraftVariety = Omit<Variety, 'id'>
 export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
 export type Defect = z.infer<typeof DefectSchema>
 export type FiletrsBoletaRMP = z.infer<typeof FiletrsBoletaRMPSchema>
+
+// Este codigo yo lo agregue Luis
+export type Supplier = z.infer<typeof WareHouseSupplierSchema>
+export type SupplierPaginate = z.infer<typeof warehousePaginateSchema> 
+
+//recepcion de insumos
+export type Inputs = z.infer<typeof warehouseInputSchema>
+export type InputsPaginate = z.infer<typeof WarehouseSupplyPaginateSchema>
+
+//recepcion de insumos
+export type MaterialReception = z.infer<typeof MaterialReceptionSchema>
+export type MaterialReceptionPaginate = z.infer<typeof MaterialReceptionPaginateSchema>
+
+//registro de material de empaque
+export type MaterialRegister = z.infer<typeof MaterialRegisterSchema>
+export type MaterialRegisterPaginate = z.infer<typeof MaterialRegisterPaginateSchema>
+
+
 

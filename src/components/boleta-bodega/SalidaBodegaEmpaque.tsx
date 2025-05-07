@@ -1,32 +1,26 @@
 import LogoLegumex from "../logos/LogoLegumex";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
+// import jsPDF from "jspdf";
 
 export default function SalidaBodegaEmpaque() {
-  const salidaBodega = () => {
-    const input = document.getElementById("pdfBoletaSalida");
-    if (!input) {
-      console.error('Element with id "pdfBoletaSalida" not found.');
-      return;
-    }
-    html2canvas(input, { logging: true, useCORS: true }).then((canvas) => {
-      const imgWidth = 208;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save("boleta-salida.pdf");
-    });
-  };
+  // const salidaBodega = () => {
+  //   const input = document.getElementById("pdfBoletaSalida");
+  //   if (!input) {
+  //     console.error('Element with id "pdfBoletaSalida" not found.');
+  //     return;
+  //   }
+  //   html2canvas(input, { logging: true, useCORS: true }).then((canvas) => {
+  //     const imgWidth = 208;
+  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //     const imgData = canvas.toDataURL("image/png");
+  //     const pdf = new jsPDF("p", "mm", "a4");
+  //     pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  //     pdf.save("boleta-salida.pdf");
+  //   });
+  // };
 
   return (
     <div>
-      <button
-        className="button bg-indigo-500 hover:bg-indigo-600"
-        onClick={salidaBodega}
-      >
-        Descargar PDF
-      </button>
       <div className="shadow-xl p-10 bg-white rounded-lg w-full h-full" id="pdfBoletaSalida">
         <div className="flex">
           <div className="flex items-start space-x-4">

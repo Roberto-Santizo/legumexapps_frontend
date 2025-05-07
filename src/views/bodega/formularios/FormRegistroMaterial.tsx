@@ -1,31 +1,18 @@
-import { useForm } from "react-hook-form";
-// import { toast } from "react-toastify";
-import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
+import InputComponent from "@/components/form/InputComponent";
+import { DraftMaterialRegister } from "./CrearRegistroMaterial";
 
-export type MaterialReceipt = {
-  name: string;
-  description: string;
-  code: string;
-  blocked: boolean;
+type Props = {
+  errors: FieldErrors<DraftMaterialRegister>;
+  register: UseFormRegister<DraftMaterialRegister>;
 };
 
-export default function MaterialEmpaque() {
-  const {
-    handleSubmit,
-    register,
-    // control,
-    formState: { errors },
-  } = useForm<MaterialReceipt>();
+export default function FormRegistroMaterial({ errors, register }: Props) {
 
-  const onSubmit = () => {}
   return (
-    <div>
-      <h1 className="font-bold text-3xl uppercase">
-        Ingreso a bodega material de empaque
-      </h1>
-      <form className="w-3/4 mb-10 shadow-xl p-10 mx-auto mt-10 space-y-10" onSubmit={handleSubmit(onSubmit)}>
-        <InputComponent<MaterialReceipt>
+    <>
+        <InputComponent<DraftMaterialRegister>
           label="Nombre"
           id="name"
           name="name"
@@ -38,7 +25,7 @@ export default function MaterialEmpaque() {
           {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
         </InputComponent>
 
-        <InputComponent<MaterialReceipt>
+        <InputComponent<DraftMaterialRegister>
           label="Descripcion"
           id="description"
           name="description"
@@ -53,7 +40,7 @@ export default function MaterialEmpaque() {
           )}
         </InputComponent>
 
-        <InputComponent<MaterialReceipt>
+        <InputComponent<DraftMaterialRegister>
           label="Código"
           id="code"
           name="code"
@@ -66,11 +53,11 @@ export default function MaterialEmpaque() {
           {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
         </InputComponent>
 
-        <div className="flex flex-col gap-2"> {/* Mejorar esta parte para que el select trabaje con un componente  */}
+        <div className="flex flex-col gap-2">
+          {" "}
           <label htmlFor="blocked" className="font-semibold">
             Bloqueado
           </label>
-
           <select
             id="blocked"
             {...register("blocked", { required: "El bloqueo es obligatorio" })}
@@ -80,19 +67,13 @@ export default function MaterialEmpaque() {
             <option value="true">Sí</option>
             <option value="false">No</option>
           </select>
-
           {errors.blocked && (
             <span className="text-red-500 text-sm">
               {errors.blocked.message?.toString()}
             </span>
           )}
         </div>
-
-        <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-          {/* <Spinner />  */}
-          <p>Registrar ingreso a bodega</p>
-        </button>
-      </form>
-    </div>
+      
+    </>
   );
 }
