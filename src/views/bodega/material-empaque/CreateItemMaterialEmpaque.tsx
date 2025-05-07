@@ -1,5 +1,5 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { DraftMaterialRegister } from "./CrearRegistroMaterial";
+import { DraftMaterialRegister } from "../formularios/CrearRegistroMaterial";
 
 type Props = {
   errors: FieldErrors<DraftMaterialRegister>;
@@ -9,9 +9,6 @@ type Props = {
 export default function FormRegistroMaterial({ errors, register }: Props) {
   return (
     <div>
-      <h1 className="font-bold text-4xl">
-        Crear Item Material Empaque
-      </h1>
         <div className="flex flex-col gap-2">
           {" "}
           <label htmlFor="blocked" className="font-semibold">
@@ -32,6 +29,7 @@ export default function FormRegistroMaterial({ errors, register }: Props) {
             </span>
           )}
         </div>
+      
     </div>
   );
 }

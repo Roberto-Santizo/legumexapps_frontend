@@ -5,7 +5,7 @@ import {
   UserCheck,
   BookCheck,
   BookXIcon,
-  Box,
+   Box,
   ListCheck,
   Map,
   Warehouse,
@@ -148,10 +148,10 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-      {/* {hasPermission('permission employee') && ( */}
-      <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
-        <FileUser />
-      </NavLinkComponent>
+            {/* {hasPermission('permission employee') && ( */}
+            <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
+                <FileUser />
+            </NavLinkComponent>
 
 
       <NavLinkComponent
