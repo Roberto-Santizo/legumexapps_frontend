@@ -24,7 +24,7 @@ const initialValues: FiltersReceptionsPackingMaterial = {
   received_by: '',
   contains: '',
   receipt_date: '',
-  invoice_date: ''
+  invoice_date: '',
 }
 
 export default function IndexRecepcionMaterial() {

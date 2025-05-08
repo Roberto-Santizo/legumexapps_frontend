@@ -2,6 +2,8 @@ import type { FiltersReceptionsPackingMaterial } from "@/views/bodega/recepcion-
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getPackingMaterials } from "@/api/MaterialEmpaqueAPI";
 
 type Props = {
     isOpen: boolean;
@@ -17,10 +19,15 @@ const initialValues: FiltersReceptionsPackingMaterial = {
     received_by: '',
     contains: '',
     receipt_date: '',
-    invoice_date: ''
+    invoice_date: '',
 }
 
 export default function FiltersReceptionsPackingMaterial({ isOpen, setIsOpen, setTempFilters, setFilters, tempFilters, filters }: Props) {
+
+    const { data } = useQuery({
+        queryKey: ['getPackingMaterials'],
+        queryFn: getPackingMaterials
+    });
 
     const handleFilterTempChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -86,6 +93,17 @@ export default function FiltersReceptionsPackingMaterial({ isOpen, setIsOpen, se
                         <input type="date" name="invoice_date" className="w-full border p-2 rounded"
                             onChange={handleFilterTempChange} value={tempFilters.invoice_date || ""} autoComplete="off"
                         />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium">Item</label>
+                        <select className="w-full border p-2 rounded" name="contains"
+                            onChange={handleFilterTempChange} value={tempFilters.contains || ""}>
+                            <option value="">Todos</option>
+                            {data?.map(item => (
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
