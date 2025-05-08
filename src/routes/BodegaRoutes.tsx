@@ -14,6 +14,7 @@ const routes = [
 
   { path: "/recepciones-mp", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/IndexRecepcionMaterial")), roles: ['admin'] },
   { path: "/recepciones-mp/crear", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial")), roles: ['admin'] },
+  { path: "/recepciones-mp/:id", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/ShowReceptionPackingMaterial")), roles: ['admin'] },
 
   { path: "/form/insumos", component: lazy(() => import("@/views/bodega/index/IndexInsumos")), roles: ['admin'] },
   { path: "/form/insumos/crear", component: lazy(() => import("@/views/bodega/formularios/CrearInsumo")), roles: ['admin'] },

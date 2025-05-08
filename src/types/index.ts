@@ -9,13 +9,11 @@ import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncomp
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
 import { LoteCDPDetailsSchema } from '@/utils/loteCDPDetails-schema'
 import { VarietiesPaginateSchema, VarietySchema } from '@/utils/calidadVariedades-schema'
-import { DefectsPaginateSchema} from '@/utils/defectos-schema'
+import { DefectsPaginateSchema } from '@/utils/defectos-schema'
 import { FiletrsBoletaRMPSchema } from '@/utils/filters-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
 
-import {warehouseInputSchema, WarehouseSupplyPaginateSchema} from '@/utils/bodegaInsumos-schema'
-import { MaterialReceptionSchema, MaterialReceptionPaginateSchema } from '@/utils/bodega-recepcionMaterial-schema'
-import { MaterialRegisterSchema, MaterialRegisterPaginateSchema } from '@/utils/bodega-registroMaterial-schema'
+import { warehouseInputSchema, WarehouseSupplyPaginateSchema } from '@/utils/bodegaInsumos-schema'
 
 export type AuthUser = z.infer<typeof AuthUserSchema>
 
@@ -27,7 +25,7 @@ export type LoginUser = {
 export type Tarea = z.infer<typeof TareaSchema>
 export type TareasPaginate = z.infer<typeof TareasPaginateSchema>
 
-export type TaskCrop = z.infer<typeof TaskCropSchema >
+export type TaskCrop = z.infer<typeof TaskCropSchema>
 
 export type CDP = z.infer<typeof CDPSchema>
 
@@ -66,12 +64,9 @@ export type Inputs = z.infer<typeof warehouseInputSchema>
 export type InputsPaginate = z.infer<typeof WarehouseSupplyPaginateSchema>
 
 //recepcion de insumos
-export type MaterialReception = z.infer<typeof MaterialReceptionSchema>
-export type MaterialReceptionPaginate = z.infer<typeof MaterialReceptionPaginateSchema>
+// export type MaterialReception = z.infer<typeof MaterialReceptionSchema>
+// export type MaterialReceptionPaginate = z.infer<typeof MaterialReceptionPaginateSchema>
 
 //registro de material de empaque
-export type MaterialRegister = z.infer<typeof MaterialRegisterSchema>
-export type MaterialRegisterPaginate = z.infer<typeof MaterialRegisterPaginateSchema>
-
 
 

@@ -40,13 +40,24 @@ export async function getPaginatedPackingMaterials({ currentPage, filters }: { c
     }
 }
 
-export async function getPackingMaterials() {
+
+export const PackingMaterialsSchema = z.object({
+    data: z.array(PackingMaterialSchema)
+});
+
+export async function getPackingMaterials(): Promise<PackingMaterial[]> {
     try {
         const url = '/api/packing-materials-all';
         const { data } = await clienteAxios(url);
-        console.log(data);
+        const result = PackingMaterialsSchema.safeParse(data);
+        if (result.success) {
+            return result.data.data;
+        } else {
+            throw new Error("Informació no valida");
+        }
     } catch (error) {
-        
+        console.log(error);
+        throw error;
     }
 }
 

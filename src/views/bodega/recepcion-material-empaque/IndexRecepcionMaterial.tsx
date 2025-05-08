@@ -1,37 +1,59 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-// import { useState, useEffect } from "react";
-// import Pagination from "@/components/utilities-components/Pagination";
-// import { useQuery } from "@tanstack/react-query";
-// import Spinner from "@/components/utilities-components/Spinner";
-// import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-// import { getPaginatedMaterial } from "@/api/BodegaMaterialAPI";
-// import { MaterialReception } from "@/types";
+import { useState, useEffect } from "react";
+import { getPaginatedReceptionsPackingMaterial, ReceptionPackigMaterial } from "@/api/ReceptionPackingMaterialsAPI";
+import { useQuery } from "@tanstack/react-query";
+import { Bars3Icon } from "@heroicons/react/16/solid";
+import Pagination from "@/components/utilities-components/Pagination";
+import Spinner from "@/components/utilities-components/Spinner";
+import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import FiltersReceptionsPackingMaterial from "@/components/filters/FiltersReceptionsPackingMaterial";
+import HoverCardReceptionPM from "@/components/ui/HoverCardReceptionPMt";
+
+
+export type FiltersReceptionsPackingMaterial = {
+  supervisor_name: string;
+  received_by: string;
+  contains: string;
+  receipt_date: string;
+  invoice_date: string;
+}
+
+const initialValues: FiltersReceptionsPackingMaterial = {
+  supervisor_name: '',
+  received_by: '',
+  contains: '',
+  receipt_date: '',
+  invoice_date: ''
+}
 
 export default function IndexRecepcionMaterial() {
-  // const [materiales, setMateriales] = useState<MaterialReception[]>([]);
-  // const [pageCount, setPageCount] = useState<number>(0);
-  // const [currentPage, setCurrentPage] = useState<number>(1);
+  const [documents, setDocuments] = useState<ReceptionPackigMaterial[]>([]);
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [modal, setModal] = useState<boolean>(false);
+  const [filters, setFilters] = useState<FiltersReceptionsPackingMaterial>(initialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersReceptionsPackingMaterial>(initialValues);
 
-  // const { data, isLoading, isError } = useQuery({
-  //   queryKey: ["getPaginatedProveedor", currentPage],
-  //   queryFn: () => getPaginatedMaterial(currentPage),
-  // });
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["getPaginatedProveedor", currentPage, filters],
+    queryFn: () => getPaginatedReceptionsPackingMaterial(currentPage, filters),
+  });
 
-  // const handlePageChange = (selectedItem: { selected: number }) => {
-  //   setCurrentPage(selectedItem.selected + 1);
-  // };
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected + 1);
+  };
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setMateriales(data.data);
-  //     setPageCount(data.meta.last_page);
-  //     setCurrentPage(data.meta.current_page);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data) {
+      setDocuments(data.data);
+      setPageCount(data.meta.last_page);
+      setCurrentPage(data.meta.current_page);
+    }
+  }, [data]);
 
-  // if (isLoading) return <Spinner />;
-  // if (isError) return <ShowErrorAPI />;
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
 
   return (
     <>
@@ -45,39 +67,45 @@ export default function IndexRecepcionMaterial() {
         >
           <PlusIcon className="w-6 md:w-8" />
           <p className="text-sm md:text-base">
-            Registrar recepcion de material
+            Crear
           </p>
         </Link>
+
+
+        <Bars3Icon
+          className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+          onClick={() => setModal(true)}
+        />
       </div>
 
       <table className="table mt-10">
         <thead>
           <tr className="thead-tr">
-            <th className="thead-th">Lote</th>
-            <th className="thead-th">Cantidad</th>
-            <th className="thead-th">Fecha de recepcion</th>
-            <th className="thead-th">Fecha de factura</th>
+            <th className="thead-th">Fecha de Recepción</th>
+            <th className="thead-th">Fecha de Factura</th>
+            <th className="thead-th">Recibo Por</th>
+            <th className="thead-th">Supervisado Por</th>
+            <th className="thead-th">Acción</th>
           </tr>
         </thead>
         <tbody>
-          {/* {materiales.map((material) => (
-            <tr className="tbody-tr">
-              <td className="tbody-td">{material.lote}</td>
-              <td className="tbody-td">{material.quantity}</td>
-              <td className="tbody-td">{material.receipt_date}</td>
-              <td className="tbody-td">{material.invoice_date}</td>
-            </tr>
-          ))} */}
+          {documents.map((document) => (
+            <HoverCardReceptionPM key={document.id} document={document} />
+          ))}
         </tbody>
       </table>
 
-      {/* <div className="mt-5 mb-10 flex justify-center md:justify-end">
+      <div className="mt-5 mb-10 flex justify-center md:justify-end">
         <Pagination
           currentPage={currentPage}
           pageCount={pageCount}
           handlePageChange={handlePageChange}
         />
-      </div> */}
+      </div>
+
+      {modal && (
+        <FiltersReceptionsPackingMaterial setIsOpen={setModal} isOpen={modal} filters={filters} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFilters} />
+      )}
     </>
   );
 }

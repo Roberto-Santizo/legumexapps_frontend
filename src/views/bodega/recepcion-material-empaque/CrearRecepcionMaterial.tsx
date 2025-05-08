@@ -1,4 +1,4 @@
-import { createReceptionMaterial } from "@/api/BodegaMaterialAPI";
+import { createReceptionMaterial } from "@/api/ReceptionPackingMaterialsAPI";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,18 +7,13 @@ import Spinner from "@/components/utilities-components/Spinner";
 import FormRecepcionMaterial from "../formularios/FormRecepcionMaterial";
 
 export type DraftMaterialReception = {
-    lote: string;
-    quantity: string;
-    invoice_date: string;
+  lote: string;
+  quantity: string;
+  invoice_date: string;
 };
 
 export default function CrearRerecpcionMaterial() {
   const navigate = useNavigate();
-
-  // const { data } = useQuery({
-  //   queryKey:['getPackingMaterials'],
-  //   queryFn: getPackingMaterials
-  // });
 
   const { mutate, isPending } = useMutation({
     mutationFn: createReceptionMaterial,
@@ -37,23 +32,23 @@ export default function CrearRerecpcionMaterial() {
     formState: { errors },
   } = useForm<DraftMaterialReception>();
 
-  const onSubmit = (data: DraftMaterialReception) => { mutate(data) }; 
+  const onSubmit = (data: DraftMaterialReception) => { mutate(data) };
 
-    return(
-      <>
-        <h2 className="text-4xl font-bold">Crear Recepcion Material Empaque</h2>
-        <form
-          className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-  
-          <FormRecepcionMaterial register={register} errors={errors} />
-  
-          <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-            {isPending ? <Spinner /> : <p>Crear</p>}
-          </button>
-        </form>
-      </>
-    );
+  return (
+    <>
+      <h2 className="text-4xl font-bold">Crear Recepcion Material Empaque</h2>
+      <form
+        className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+
+        <FormRecepcionMaterial register={register} errors={errors} />
+
+        <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear</p>}
+        </button>
+      </form>
+    </>
+  );
 }
 
