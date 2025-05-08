@@ -1,30 +1,33 @@
-
+import { createReceptionMaterial } from "@/api/BodegaMaterialAPI";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
-import { RegistroMaterial } from "@/api/BodegaRegistroMaterialAPI";
-import FormRegistroMaterial from "./FormRegistroMaterial";
+import FormRecepcionMaterial from "../formularios/FormRecepcionMaterial";
 
-export type DraftMaterialRegister = {
-    name: string;
-    description: string;
-    code: string;
-    blocked: boolean;
-  };
+export type DraftMaterialReception = {
+    lote: string;
+    quantity: string;
+    invoice_date: string;
+};
 
-export default function CrearRegistroMaterial() {
+export default function CrearRerecpcionMaterial() {
   const navigate = useNavigate();
 
+  // const { data } = useQuery({
+  //   queryKey:['getPackingMaterials'],
+  //   queryFn: getPackingMaterials
+  // });
+
   const { mutate, isPending } = useMutation({
-    mutationFn: RegistroMaterial,
+    mutationFn: createReceptionMaterial,
     onError: (error) => {
       toast.error(error.message);
     },
     onSuccess: (data) => {
       toast.success(data);
-      navigate('/material-empaque/registro');
+      navigate('/proveedor');
     }
   });
 
@@ -32,22 +35,22 @@ export default function CrearRegistroMaterial() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<DraftMaterialRegister>();
+  } = useForm<DraftMaterialReception>();
 
-  const onSubmit = (data: DraftMaterialRegister) => { mutate(data) };
+  const onSubmit = (data: DraftMaterialReception) => { mutate(data) }; 
 
     return(
       <>
-        <h2 className="text-4xl font-bold">Material de empaque</h2>
+        <h2 className="text-4xl font-bold">Crear Recepcion Material Empaque</h2>
         <form
           className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
         >
   
-          <FormRegistroMaterial register={register} errors={errors} />
+          <FormRecepcionMaterial register={register} errors={errors} />
   
           <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-            {isPending ? <Spinner /> : <p>Registrar material</p>}
+            {isPending ? <Spinner /> : <p>Crear</p>}
           </button>
         </form>
       </>

@@ -1,5 +1,5 @@
 import clienteAxios from "@/config/axios";
-import { DraftMaterialRegister } from "@/views/bodega/formularios/CrearRegistroMaterial";
+import { DraftMaterialEmpaque } from "@/views/bodega/material-empaque/CrearRegistroMaterial";
 import { FiltersPackingMaterials } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
 import { isAxiosError } from "axios";
 import { z } from "zod";
@@ -9,7 +9,8 @@ export const PackingMaterialSchema = z.object({
     name: z.string(),
     code: z.string(),
     description: z.string(),
-    blocked: z.boolean()
+    blocked: z.boolean(),
+    supplier: z.string()
 });
 
 export const PaginatedPackingMaterialsSchema = z.object({
@@ -25,7 +26,7 @@ export type PaginatedPackingMaterials = z.infer<typeof PaginatedPackingMaterials
 
 export async function getPaginatedPackingMaterials({ currentPage, filters }: { currentPage: number, filters: FiltersPackingMaterials }): Promise<PaginatedPackingMaterials> {
     try {
-        const url = `/api/packing-materials?page=${currentPage}&name=${filters.name}&code=${filters.code}&status=${filters.status}`;
+        const url = `/api/packing-materials?page=${currentPage}&name=${filters.name}&code=${filters.code}&status=${filters.status}&supplier=${filters.supplier}`;
         const { data } = await clienteAxios(url);
         const result = PaginatedPackingMaterialsSchema.safeParse(data);
         if (result.success) {
@@ -39,7 +40,17 @@ export async function getPaginatedPackingMaterials({ currentPage, filters }: { c
     }
 }
 
-export async function createItemPackingMaterial(FormData: DraftMaterialRegister) {
+export async function getPackingMaterials() {
+    try {
+        const url = '/api/packing-materials-all';
+        const { data } = await clienteAxios(url);
+        console.log(data);
+    } catch (error) {
+        
+    }
+}
+
+export async function createItemPackingMaterial(FormData: DraftMaterialEmpaque) {
     try {
         const url = '/api/packing-materials';
         const { data } = await clienteAxios.post<string>(url, FormData);

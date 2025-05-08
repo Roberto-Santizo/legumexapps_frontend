@@ -1,7 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import {MaterialReceptionPaginate } from "@/types";
-import{DraftMaterialReception} from "@/views/bodega/formularios/CrearRecepcionMaterial";
+import{DraftMaterialReception} from "@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial";
 import { MaterialReceptionPaginateSchema } from "@/utils/bodega-recepcionMaterial-schema";
 
 export async function createReceptionMaterial(FormData: DraftMaterialReception) {

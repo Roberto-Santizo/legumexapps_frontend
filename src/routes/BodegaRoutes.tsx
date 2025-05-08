@@ -8,20 +8,18 @@ const routes = [
   { path: "/boleta-empaque/salida", component: lazy(() => import("@/components/boleta-bodega/ComponentePrincipalBoletas")), roles: ['admin'] },
 
   { path: "/form/entrega-material", component: lazy(() => import("@/views/bodega/formularios/MaterialEmpaqueSalida")), roles: ['admin'] },//Este es el formulario para registrar las entregas de material de empaque
-  
-  { path: "/material-empaque", component: lazy(() => import("@/views/bodega/index/IndexRegistro-MaterialEmpaque")), roles: ['admin'] },
-  { path: "/material-empaque/registro", component: lazy(() => import("@/views/bodega/formularios/CrearRegistroMaterial")), roles: ['admin'] },
 
-  { path: "/form/material-empaque", component: lazy(() => import("@/views/bodega/index/IndexRecepcionMaterial")), roles: ['admin'] },
-  
-  // { path: "/form/material-empaque/crear", component: lazy(() => import("@/views/bodega/material-empaque/CreateItemCrearRecepcionMaterial")), roles: ['admin'] },
+  { path: "/material-empaque", component: lazy(() => import("@/views/bodega/material-empaque/IndexMaterialEmpaque")), roles: ['admin'] },
+  { path: "/material-empaque/crear", component: lazy(() => import("@/views/bodega/material-empaque/CrearRegistroMaterial")), roles: ['admin'] },
+
+  { path: "/recepciones-mp", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/IndexRecepcionMaterial")), roles: ['admin'] },
+  { path: "/recepciones-mp/crear", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial")), roles: ['admin'] },
 
   { path: "/form/insumos", component: lazy(() => import("@/views/bodega/index/IndexInsumos")), roles: ['admin'] },
   { path: "/form/insumos/crear", component: lazy(() => import("@/views/bodega/formularios/CrearInsumo")), roles: ['admin'] },
 
-  // { path: "/proveedor", component: lazy(() => import("@/views/bodega/material-empaque/IndexProveedores")), roles: ['admin'] },
-  { path: "/proveedor/ingreso", component: lazy(() => import("@/views/bodega/formularios/CrearProveedor")), roles: ['admin'] },
-  { path: "/proveedor/editar/:id", component: lazy(() => import("@/views/bodega/editar/EditarProveedores")), roles: ['admin'] },
+  { path: "/proveedores", component: lazy(() => import("@/views/bodega/proveedores/IndexProveedores")), roles: ['admin'] },
+  { path: "/proveedores/crear", component: lazy(() => import("@/views/bodega/proveedores/CrearProveedor")), roles: ['admin'] },
 
 ];
 

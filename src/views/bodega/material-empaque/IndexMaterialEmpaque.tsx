@@ -14,12 +14,14 @@ export type FiltersPackingMaterials = {
   name: string;
   code: string;
   status: string;
+  supplier: string;
 }
 
 const initialValues = {
   name: '',
   code: '',
-  status: ''
+  status: '',
+  supplier: ''
 };
 
 export default function IndexMaterialEmpaque() {
@@ -89,6 +91,7 @@ export default function IndexMaterialEmpaque() {
             <th className="thead-th">Descripcion</th>
             <th className="thead-th">código</th>
             <th className="thead-th">Bloqueo</th>
+            <th className="thead-th">Proveedor</th>
           </tr>
         </thead>
         <tbody>
@@ -98,8 +101,9 @@ export default function IndexMaterialEmpaque() {
               <td className="tbody-td">{item.description}</td>
               <td className="tbody-td">{item.code}</td>
               <td className='tbody-td' onClick={() => handleChangeStatus(item.id)}>
-                <span className={`${item.blocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'} button`}>{item.blocked ? 'ACTIVO' : 'DESACTIVADO'}</span>
+                <span className={`${item.blocked ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} button`}>{item.blocked ? 'DESACTIVADO' : 'ACTIVADO'}</span>
               </td>
+              <td className="tbody-td">{item.supplier}</td>
             </tr>
           ))}
 
@@ -115,7 +119,7 @@ export default function IndexMaterialEmpaque() {
       </div>
 
       {isOpen && (
-        <FiltersMaterialEmpaque isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} setTempFilters={setTempFitlers} tempFilters={tempFilters} filters={filters}/>
+        <FiltersMaterialEmpaque isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} setTempFilters={setTempFitlers} tempFilters={tempFilters} filters={filters} />
       )}
     </>
   )

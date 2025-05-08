@@ -15,7 +15,8 @@ type Props = {
 const initialValues = {
     name: '',
     code: '',
-    status: ''
+    status: '',
+    supplier: ''
 };
 
 
@@ -70,6 +71,13 @@ export default function FiltersMaterialEmpaque({ isOpen, setIsOpen, setTempFilte
                         <label className="block text-sm font-medium">Código</label>
                         <input type="text" name="code" className="w-full border p-2 rounded" placeholder="Nombre del item"
                             onChange={handleFilterTempChange} value={tempFilters.code || ""} autoComplete="off"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium">Proveedor</label>
+                        <input type="text" name="supplier" className="w-full border p-2 rounded" placeholder="Nombre del proveedor"
+                            onChange={handleFilterTempChange} value={tempFilters.supplier || ""} autoComplete="off"
                         />
                     </div>
                 </div>

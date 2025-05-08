@@ -45,8 +45,7 @@ const InputSelectSearchComponent = <T extends Record<string, any>>({
   return (
     <div className="mb-4">
       <label
-        className={`text-lg font-bold uppercase block mb-1 ${hasError ? "text-red-600" : "text-gray-700"
-          }`}
+        className='text-lg font-bold uppercase block mb-1 text-gray-700'
         htmlFor={id}
       >
         {label}

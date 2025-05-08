@@ -1,5 +1,5 @@
 import Error from "@/components/utilities-components/Error";
-import {DraftMaterialReception} from "./CrearRecepcionMaterial";
+import {DraftMaterialReception} from "../recepcion-material-empaque/CrearRecepcionMaterial";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import InputComponent from "@/components/form/InputComponent";
 
@@ -38,27 +38,14 @@ export default function FormRecepcionMaterial ({ errors, register }: Props){
       </InputComponent>
 
       <InputComponent<DraftMaterialReception>
-        label="Fecha de recepcion"
-        id="receipt_date"
-        name="receipt_date"
-        placeholder="Ingrese la fecha de recepcion"
-        register={register}
-        validation={{ required: "La fecha de recepción es obligatoria" }}
-        errors={errors}
-        type={"text"}
-      >
-        {errors.receipt_date && <Error> {errors.receipt_date?.message?.toString()} </Error>}
-      </InputComponent>
-
-      <InputComponent<DraftMaterialReception>
         label="Fecha de factura"
         id="invoice_date"
         name="invoice_date"
         placeholder="Ingrese la fecha de recepcion"
         register={register}
-        validation={{ required: "La fecha de recepción es obligatoria" }}
+        validation={{ required: "La fecha de factura es obligatoria" }}
         errors={errors}
-        type={"text"}
+        type={"date"}
       >
         {errors.invoice_date && <Error> {errors.invoice_date?.message?.toString()} </Error>}
       </InputComponent>

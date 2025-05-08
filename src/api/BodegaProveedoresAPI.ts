@@ -1,13 +1,32 @@
-import clienteAxios from "@/config/axios";
-import { Supplier, SupplierPaginate } from "@/types";
-
-import {WareHouseSupplierSchema, warehousePaginateSchema,warehousesPaginateSchema} from "@/utils/bodega-schema";
-import { DraftSuppliers } from "@/views/bodega/formularios/CrearProveedor";
+import { z } from "zod";
+import { DraftSuppliers } from "@/views/bodega/proveedores/CrearProveedor";
 import { isAxiosError } from "axios";
+import clienteAxios from "@/config/axios";
+
+export const WareHouseSupplierSchema = z.object({
+    id: z.string(),
+    code: z.string(),
+    name: z.string(),
+});
+
+export const WarehousePaginateSchema = z.object({
+    data: z.array(WareHouseSupplierSchema),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    })
+})
+
+export const WarehousesPaginateSchema = z.object({
+    data: z.array(WareHouseSupplierSchema)
+});
+
+export type Supplier = z.infer<typeof WareHouseSupplierSchema>
+export type SupplierPaginate = z.infer<typeof WarehousePaginateSchema>
 
 export async function createProveedor(FormData: DraftSuppliers) {
     try {
-        const url = '/api/tareas';//Agregar aca la url correcta de proveedores 
+        const url = '/api/suppliers-packing-material';
         const { data } = await clienteAxios.post<string>(url, FormData)
         return data;
     } catch (error) {
@@ -17,25 +36,11 @@ export async function createProveedor(FormData: DraftSuppliers) {
     }
 }
 
-export async function uploadProveedor(file: File[]) {
-    try {
-        const url = '/api/tareas/upload';
-        const formData = new FormData();
-        formData.append("file", file[0]);
-        const { data } = await clienteAxios.post<string>(url, formData);
-        return data;
-    } catch (error: any) {
-        if (isAxiosError(error)) {
-            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
-        }
-    }
-}
-
 export async function getPaginatedProveedor(page: number): Promise<SupplierPaginate> {
     try {
-        const url = `/api/tareas?page=${page}`;
+        const url = `/api/suppliers-packing-material?page=${page}`;
         const { data } = await clienteAxios(url);
-        const result = warehousePaginateSchema.safeParse(data);
+        const result = WarehousePaginateSchema.safeParse(data);
 
         if (result.success) {
             return result.data;
@@ -50,9 +55,9 @@ export async function getPaginatedProveedor(page: number): Promise<SupplierPagin
 
 export async function getAllProveedores(): Promise<Supplier[]> {
     try {
-        const url = '/api/tareas-all';
+        const url = '/api/suppliers-packing-material-all';
         const { data } = await clienteAxios(url);
-        const result = warehousesPaginateSchema.safeParse(data);
+        const result = WarehousesPaginateSchema.safeParse(data);
         if (result.success) {
             return result.data.data
         } else {
@@ -61,34 +66,5 @@ export async function getAllProveedores(): Promise<Supplier[]> {
     } catch (error) {
         console.log(error);
         throw error;
-    }
-}
-
-export async function getProveedorById(id: Supplier['id']): Promise<Supplier> {
-    try {
-        const url = `/api/tareas/${id}`
-        const { data } = await clienteAxios(url, {
-        });
-        const result = WareHouseSupplierSchema.safeParse(data.data);
-        if (result.success) {
-            return result.data
-        } else {
-            throw new Error('Datos no válidos');
-        }
-    } catch (error: any) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export async function updateProveedor({ id, FormData }: { id: Supplier['id'], FormData: DraftSuppliers }) {
-    try {
-        const url = `/api/tareas/${id}`
-        const { data } = await clienteAxios.put<string>(url, FormData);
-        return data;
-    } catch (error: any) {
-        if (isAxiosError(error)) {
-            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
-        }
     }
 }

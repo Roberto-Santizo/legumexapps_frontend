@@ -9,7 +9,7 @@ type Props = {
     register: UseFormRegister<DraftSuppliers>;
 }
 
-export default function FormProveedor({ errors, register }: Props) {
+export default function FormularioProveedor({ errors, register }: Props) {
     return (
         <>
         <InputComponent<DraftSuppliers>

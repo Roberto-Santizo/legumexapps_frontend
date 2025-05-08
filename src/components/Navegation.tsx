@@ -5,7 +5,7 @@ import {
   UserCheck,
   BookCheck,
   BookXIcon,
-   Box,
+  Box,
   ListCheck,
   Map,
   Warehouse,
@@ -19,7 +19,7 @@ import {
   ChartNoAxesCombined,
   FileUser,
   UserRound,
-  PackageOpen 
+  PackageOpen
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
@@ -148,41 +148,27 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-            {/* {hasPermission('permission employee') && ( */}
-            <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
-                <FileUser />
-            </NavLinkComponent>
 
-
-      <NavLinkComponent
-        url="/material-empaque"
-        text="Registrar material de empaque"
-      >
-        <Box />
-      </NavLinkComponent>
-
-      <NavLinkComponent
-        url="/proveedor"
-        text="Proveedores"
-      >
+      <NavLinkComponent url="/proveedores" text="Proveedores">
         <UserRound />
       </NavLinkComponent>
 
-      <NavLinkComponent
-        url="/form/material-empaque"
-        text="Recepcion de material de empaque"
-      >
+      <NavLinkComponent url="/material-empaque" text="Materiales Empaque">
+        <Box />
+      </NavLinkComponent>
+
+
+      <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
         <Warehouse />
       </NavLinkComponent>
 
-      <NavLinkComponent
-        url="/form/insumos"
-        text="Recepcion de insumos"
-      >
-        <PackageOpen  />
+      <NavLinkComponent url="/form/insumos" text="Recepciones Insumos">
+        <PackageOpen />
       </NavLinkComponent>
 
-
+      <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
+        <FileUser />
+      </NavLinkComponent>
     </div>
   );
 }
