@@ -16,8 +16,9 @@ const routes = [
   { path: "/recepciones-mp/crear", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial")), roles: ['admin'] },
   { path: "/recepciones-mp/:id", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/ShowReceptionPackingMaterial")), roles: ['admin'] },
 
-  { path: "/form/insumos", component: lazy(() => import("@/views/bodega/index/IndexInsumos")), roles: ['admin'] },
-  { path: "/form/insumos/crear", component: lazy(() => import("@/views/bodega/formularios/CrearInsumo")), roles: ['admin'] },
+  { path: "/recepciones-insumos", component: lazy(() => import("@/views/bodega/recepcion-insumos/IndexInsumos")), roles: ['admin'] },
+  { path: "/recepciones-insumos/crear", component: lazy(() => import("@/views/bodega/formularios/CrearInsumo")), roles: ['admin'] },
+  { path: "/recepciones-insumos/:id", component: lazy(() => import("@/views/bodega/recepcion-insumos/ShowReceptionInsumosDetails")), roles: ['admin'] },
 
   { path: "/proveedores", component: lazy(() => import("@/views/bodega/proveedores/IndexProveedores")), roles: ['admin'] },
   { path: "/proveedores/crear", component: lazy(() => import("@/views/bodega/proveedores/CrearProveedor")), roles: ['admin'] },

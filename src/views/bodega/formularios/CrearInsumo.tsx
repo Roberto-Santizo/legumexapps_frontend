@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import FormInsumos from "./FormInsumos";
-import {createReceptionInsumos} from "@/api/BodegaInsumosAPI";
+import {createReceptionInsumos} from "@/api/RecepcionInsumosAPI";
 
 export type DraftInputs = {
     units: number;

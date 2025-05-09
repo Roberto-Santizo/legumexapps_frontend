@@ -13,8 +13,6 @@ import { DefectsPaginateSchema } from '@/utils/defectos-schema'
 import { FiletrsBoletaRMPSchema } from '@/utils/filters-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
 
-import { warehouseInputSchema, WarehouseSupplyPaginateSchema } from '@/utils/bodegaInsumos-schema'
-
 export type AuthUser = z.infer<typeof AuthUserSchema>
 
 export type LoginUser = {
@@ -58,15 +56,4 @@ export type DraftVariety = Omit<Variety, 'id'>
 export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
 export type Defect = z.infer<typeof DefectSchema>
 export type FiletrsBoletaRMP = z.infer<typeof FiletrsBoletaRMPSchema>
-
-//recepcion de insumos
-export type Inputs = z.infer<typeof warehouseInputSchema>
-export type InputsPaginate = z.infer<typeof WarehouseSupplyPaginateSchema>
-
-//recepcion de insumos
-// export type MaterialReception = z.infer<typeof MaterialReceptionSchema>
-// export type MaterialReceptionPaginate = z.infer<typeof MaterialReceptionPaginateSchema>
-
-//registro de material de empaque
-
 

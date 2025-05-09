@@ -162,7 +162,7 @@ export default function Navegation() {
         <Warehouse />
       </NavLinkComponent>
 
-      <NavLinkComponent url="/form/insumos" text="Recepciones Insumos">
+      <NavLinkComponent url="/recepciones-insumos" text="Recepciones Insumos">
         <PackageOpen />
       </NavLinkComponent>
 
