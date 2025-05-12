@@ -1,11 +1,11 @@
 import clienteAxios from "@/config/axios";
-import { DraftInputs } from "@/views/bodega/formularios/CrearInsumo";
+import { DraftRecepcionInsumos } from "@/views/bodega/recepcion-insumos/CrearRecepcionInsumos";
 import { isAxiosError } from "axios";
 import { z } from "zod";
 
-export async function createReceptionInsumos(FormData: DraftInputs) {
+export async function createReceptionInsumos(FormData: DraftRecepcionInsumos) {
     try {
-        const url = '/api/tareas';
+        const url = '/api/insumos-reception';
         const { data } = await clienteAxios.post<string>(url, FormData)
         return data;
     } catch (error) {
@@ -69,6 +69,8 @@ export const InsumosReceiptDetailsSchema = z.object({
         invoice: z.string(),
         supplier: z.string(),
         invoice_date: z.string(),
+        supervisor_signature: z.string(),
+        user_signature: z.string(),
         items: z.array(ItemInsumosReceiptSchema)
     })
 });

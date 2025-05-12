@@ -1,6 +1,4 @@
-import html2canvas from "html2canvas";
 import LogoLegumex from "../logos/LogoLegumex";
-import jsPDF from "jspdf";
 import { InsumosReceiptDetails } from "@/api/RecepcionInsumosAPI";
 
 type Props = {
@@ -8,30 +6,8 @@ type Props = {
 }
 
 export default function IngresoInsumos({ receipt }: Props) {
-
-  const ingresoInsumos = () => {
-    const input = document.getElementById("pdfIngresoInsumos");
-    if (!input) {
-      console.error('Element with id "pdfIngresoInsumos" not found.');
-      return;
-    }
-    html2canvas(input, { logging: true, useCORS: true }).then((canvas) => {
-      const imgWidth = 208;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save("ingreso-insumos.pdf");
-    });
-  }
   return (
     <div>
-      <button
-        className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4"
-        onClick={ingresoInsumos}
-      >
-        Descargar PDF
-      </button>
       <div
         id="pdfIngresoInsumos"
       >
@@ -135,6 +111,17 @@ export default function IngresoInsumos({ receipt }: Props) {
 
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-center gap-10 mt-5">
+            <div className="p-2 text-center">
+              <img src={`${import.meta.env.VITE_BASE_URL}/storage/${receipt.data.user_signature}`} alt="Signature" />
+              <p className="text-lgSS">Firma Receptor</p>
+            </div>
+
+            <div className="p-2 text-center">
+              <img src={`${import.meta.env.VITE_BASE_URL}/storage/${receipt.data.supervisor_signature}`} alt="Signature" />
+              <p className="text-lgSS">Firma Supervisor</p>
+            </div>
           </div>
         </div>
       </div>

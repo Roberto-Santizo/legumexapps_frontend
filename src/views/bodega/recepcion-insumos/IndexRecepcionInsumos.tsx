@@ -35,7 +35,7 @@ export default function IndexInsumos() {
 
   if (receipts) return (
     <>
-      <h1 className="font-bold text-3xl uppercase">Recepción de insumos</h1>
+      <h1 className="font-bold text-4xl capitalize">Recepción de insumos</h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
           to="/recepciones-insumos/crear"

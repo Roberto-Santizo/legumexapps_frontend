@@ -13,6 +13,6 @@ export default function ShowReceptionInsumosDetails() {
   });
 
   if (receipt) return (
-    <IngresoInsumos receipt={receipt}/>
+    <IngresoInsumos receipt={receipt} />
   )
 }
