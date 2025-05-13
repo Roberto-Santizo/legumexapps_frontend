@@ -2,36 +2,25 @@ import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { z } from "zod";
 import { FiltersReceptionsPackingMaterial } from "@/views/bodega/recepcion-material-empaque/IndexRecepcionMaterial";
-import {DraftMaterialReception} from "@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial"
+import { DraftMaterialReception } from "@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial"
 import { DraftItem } from "@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial";
 
-// export async function createReceptionMaterial(FormData: DraftMaterialReception) {
-//     try {
-//         const url = '/pendiente de agregar la api aca';
-//         const { data } = await clienteAxios.post<string>(url, FormData)
-//         return data;
-//     } catch (error) {
-//         if (isAxiosError(error)) {
-//             throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
-//         }
-//     }
-// }
 export type ReceptionPayload = DraftMaterialReception & {
-  items: DraftItem[];
+    items: DraftItem[];
 };
 
-export async function registerReception(payload: ReceptionPayload) {
-  try {
-    const url = "/api/packicking-material-reception";
-    const { data } = await clienteAxios.post<string>(url, payload);
-    return data;
-  } catch (error) {
-    if (isAxiosError(error)) {
-      throw new Error(
-        Object.values(error.response?.data?.errors || {}).flat().join("\n")
-      );
+export async function createPackingMaterialReception(payload: ReceptionPayload) {
+    try {
+        const url = "/api/packing-material-reception";
+        const { data } = await clienteAxios.post<string>(url, payload);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(
+                Object.values(error.response?.data?.errors || {}).flat().join("\n")
+            );
+        }
     }
-  }
 }
 
 export const ItemPackingMaterialSchema = z.object({
