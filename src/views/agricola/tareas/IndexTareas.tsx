@@ -4,18 +4,35 @@ import { getPaginatedTasks } from "@/api/TasksAPI";
 import { Edit, PlusIcon } from "lucide-react";
 import { Tarea } from "@/types";
 import { useQuery } from "@tanstack/react-query";
+import { Bars3Icon } from "@heroicons/react/16/solid";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
+import FiltersTareas from "@/components/filters/FiltersTareas";
+
+
+export type FiltersTareasType = {
+  name: string;
+  code: string;
+}
+
+const initialValues = {
+  name: "",
+  code: ""
+}
 
 export default function IndexTareas() {
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [filters, setFilters] = useState<FiltersTareasType>(initialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersTareasType>(initialValues);
+
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['getPaginatedTasks', currentPage],
-    queryFn: () => getPaginatedTasks(currentPage)
+    queryKey: ['getPaginatedTasks', currentPage, filters],
+    queryFn: () => getPaginatedTasks(currentPage, filters)
   });
 
   const handlePageChange = (selectedItem: { selected: number }) => {
@@ -28,7 +45,7 @@ export default function IndexTareas() {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }
-  }, [data])
+  }, [data]);
 
   if (isLoading) return <Spinner />;
   if (isError) return <ShowErrorAPI />
@@ -52,6 +69,11 @@ export default function IndexTareas() {
           <PlusIcon className="w-8" />
           <p>Carga Masiva de Tareas</p>
         </Link>
+
+        <Bars3Icon
+          className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+          onClick={() => setIsOpen(true)}
+        />
       </div>
 
       <div className="mt-10">
@@ -105,6 +127,10 @@ export default function IndexTareas() {
           handlePageChange={handlePageChange}
         />
       </div>
+
+      {isOpen && (
+        <FiltersTareas isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFilters} />
+      )}
     </>
   );
 }

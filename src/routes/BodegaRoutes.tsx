@@ -7,7 +7,7 @@ import ProtectedAgricolaRoutes from "../components/middlewares/ProtectedRoutes";
 const routes = [
   { path: "/boleta-empaque/salida", component: lazy(() => import("@/components/boleta-bodega/ComponentePrincipalBoletas")), roles: ['admin'] },
 
-  { path: "/form/entrega-material", component: lazy(() => import("@/views/bodega/formularios/MaterialEmpaqueSalida")), roles: ['admin'] },//Este es el formulario para registrar las entregas de material de empaque
+  { path: "/form/entrega-material", component: lazy(() => import("@/views/bodega/formularios/MaterialEmpaqueSalida")), roles: ['admin'] },
 
   { path: "/material-empaque", component: lazy(() => import("@/views/bodega/material-empaque/IndexMaterialEmpaque")), roles: ['admin'] },
   { path: "/material-empaque/crear", component: lazy(() => import("@/views/bodega/material-empaque/CrearRegistroMaterial")), roles: ['admin'] },
@@ -19,13 +19,9 @@ const routes = [
 
   { path: "/recepciones-insumos", component: lazy(() => import("@/views/bodega/recepcion-insumos/IndexRecepcionInsumos")), roles: ['admin'] },
   { path: "/recepciones-insumos/crear", component: lazy(() => import("@/views/bodega/recepcion-insumos/CrearRecepcionInsumos")), roles: ['admin'] },
-  // { path: "/recepciones-insumos/:id", component: lazy(() => import("@/views/bodega/recepcion-insumos/ShowReceptionInsumosDetails")), roles: ['admin'] },
 
   { path: "/proveedores", component: lazy(() => import("@/views/bodega/proveedores/IndexProveedores")), roles: ['admin'] },
   { path: "/proveedores/crear", component: lazy(() => import("@/views/bodega/proveedores/CrearProveedor")), roles: ['admin'] },
-
-
-
 ];
 
 export default function BodegaRoutes() {

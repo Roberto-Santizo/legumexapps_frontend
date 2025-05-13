@@ -27,7 +27,9 @@ export default function ShowPlanSemanal() {
           {summaryPlan.data.year}
         </h2>
 
-        {summaryPlan.data.summary_tasks.length > 0 && (
+        {summaryPlan.data.summary_tasks.length === 0 ? (
+          <p className="text-center text-xl">No existen tareas programadas el día de hoy</p>
+        ) : (
           <div>
             <h2 className="text-xl font-bold uppercase">Tareas Generales</h2>
             <table className="table mt-10">

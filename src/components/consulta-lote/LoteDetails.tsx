@@ -1,7 +1,7 @@
-import { EyeIcon } from "lucide-react";
-import { loteCDPDetails } from "@/types";
 import { formatDate } from "@/helpers";
 import TaskLabel from "../utilities-components/TaskLabel";
+import { loteCDPDetails } from "@/api/LotesAPI";
+import HoverCardInsumos from "../ui/HoverCardInsumos";
 
 type Props = {
     data: loteCDPDetails
@@ -55,23 +55,7 @@ export default function LoteDetails({ data }: Props) {
                             </thead>
                             <tbody className="font-bold">
                                 {tasks.map((task) => (
-                                    <tr className="tbody-tr" key={task.id}>
-                                        <td className="tbody-td">{task.task}</td>
-                                        <td className="tbody-td uppercase  text-center font-bold text-white">{task.closed ? <p className="bg-green-500">CERRADA</p> : <p className="bg-red-500">SIN CIERRE</p>}</td>
-                                        <td className="tbody-td">{(task.aplication_week)}</td>
-                                        <td className="tbody-td">{task.hours}</td>
-                                        <td className="tbody-td">{task.real_hours ?? 0}</td>
-                                        <td className="tbody-td">{task.performance ?? 0} %</td>
-                                        <td className="tbody-td">
-                                            {task.closed ? (
-                                                <EyeIcon className="cursor-pointer hover:text-gray-500" onClick={() => {
-                                                    window.open(
-                                                        `/planes-semanales/tareas-lote/informacion/${task.id}`,
-                                                    );
-                                                }} />
-                                            ) : <></>}
-                                        </td>
-                                    </tr>
+                                    <HoverCardInsumos task={task} />
                                 ))}
                             </tbody>
                         </table>

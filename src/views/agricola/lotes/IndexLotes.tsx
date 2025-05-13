@@ -3,17 +3,35 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getPaginatedLotes } from "@/api/LotesAPI";
 import { useQuery } from "@tanstack/react-query";
+import { Bars3Icon } from "@heroicons/react/16/solid";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
+import FiltersLotes from "@/components/filters/FiltersLotes";
+
+export type FiltersLotesType = {
+  name: string;
+  cdp: string;
+  finca_id: string;
+}
+
+const initialValues = {
+  name: "",
+  cdp: "",
+  finca_id: ""
+}
 
 export default function IndexLotes() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [filters, setFilters] = useState<FiltersLotesType>(initialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersLotesType>(initialValues);
+
 
   const { data: lotes, isLoading, isError } = useQuery({
-    queryKey: ['getPaginatedLotes', currentPage],
-    queryFn: () => getPaginatedLotes(currentPage)
+    queryKey: ['getPaginatedLotes', currentPage, filters],
+    queryFn: () => getPaginatedLotes(currentPage, filters)
   });
 
   useEffect(() => {
@@ -55,36 +73,47 @@ export default function IndexLotes() {
         >
           <p>Actualización masiva de lotes</p>
         </Link>
+
+        <Bars3Icon
+          className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+          onClick={() => setIsOpen(true)}
+        />
       </div>
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th scope="col" className="thead-th">
-              ID
-            </th>
-            <th scope="col" className="thead-th">
-              Nombre
-            </th>
-            <th scope="col" className="thead-th">
-              Finca
-            </th>
-            <th scope="col" className="thead-th">
-              CDP Activo
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {lotes?.data.map((lote) => (
-            <tr className="tbody-tr" key={lote.id}>
-              <td className="tbody-td">{lote.id}</td>
-              <td className="tbody-td">{lote.name}</td>
-              <td className="tbody-td">{lote.finca}</td>
-              <td className="tbody-td">{lote.cdp}</td>
+      {lotes.data.length === 0 ? (
+        <p className="text-2xl font-semibold text-gray-400 text-center mt-10">
+          No existen lotes
+        </p>
+      ) : (
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th scope="col" className="thead-th">
+                ID
+              </th>
+              <th scope="col" className="thead-th">
+                Nombre
+              </th>
+              <th scope="col" className="thead-th">
+                Finca
+              </th>
+              <th scope="col" className="thead-th">
+                CDP Activo
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {lotes?.data.map((lote) => (
+              <tr className="tbody-tr" key={lote.id}>
+                <td className="tbody-td">{lote.id}</td>
+                <td className="tbody-td">{lote.name}</td>
+                <td className="tbody-td">{lote.finca}</td>
+                <td className="tbody-td">{lote.cdp}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       <div className="mb-10 flex justify-end">
         <Pagination
@@ -93,6 +122,10 @@ export default function IndexLotes() {
           handlePageChange={handlePageChange}
         />
       </div>
+
+      {isOpen && (
+        <FiltersLotes isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFilters} />
+      )}
     </>
   );
 }

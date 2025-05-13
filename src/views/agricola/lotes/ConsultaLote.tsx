@@ -17,6 +17,8 @@ export default function ConsultaLote() {
     queryFn: getAllFincas,
   });
 
+  const fincasFilter = fincas?.filter((finca) => +finca.id < 7);
+
   const { data: lotes } = useQuery({
     queryKey: ['getAllLotesByFincaId', selectedFincaId],
     queryFn: () => getAllLotesByFincaId(selectedFincaId),
@@ -65,7 +67,7 @@ export default function ConsultaLote() {
               className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md"
             >
               <option value="">--SELECCIONE UNA OPCIÓN--</option>
-              {fincas?.map((finca) => (
+              {fincasFilter?.map((finca) => (
                 <option key={finca.id} value={finca.id}>
                   {finca.name}
                 </option>

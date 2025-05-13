@@ -72,7 +72,7 @@ export default function CreateTareaLoteCosecha() {
 
   return (
     <form
-      className="w-1/2 mx-auto space-y-5"
+      className="w-2/3 mx-auto space-y-5 shadow-xl p-5"
       onSubmit={handleSubmit(CreateTareaLoteCosecha)}
     >
       <InputSelectSearchComponent<DraftTaskCropWeeklyPlan>

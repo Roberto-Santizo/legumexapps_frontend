@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { CDP, loteCDPDetails } from "@/types";
-import { LoteCDPDetailsSchema } from "@/utils/loteCDPDetails-schema";
+import { CDP } from "@/types";
 import { CDPsSchema } from "@/utils/plantation-schema";
 import { DraftLote } from "@/views/agricola/lotes/CreateLote";
 import { isAxiosError } from "axios";
 import { Finca } from "./FincasAPI";
 import clienteAxios from "@/config/axios";
+import { FiltersLotesType } from "@/views/agricola/lotes/IndexLotes";
 
 export async function createLote(draftlote: DraftLote) {
     try {
@@ -39,9 +39,9 @@ export const LotesPaginateSchema = z.object({
 export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
 
 
-export async function getPaginatedLotes(page: number): Promise<PaginatedLotes> {
+export async function getPaginatedLotes(page: number, filters: FiltersLotesType): Promise<PaginatedLotes> {
     try {
-        const url = `/api/lotes?page=${page}`;
+        const url = `/api/lotes?page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
         const { data } = await clienteAxios(url)
         const result = LotesPaginateSchema.safeParse(data);
         if (result.success) {
@@ -111,6 +111,43 @@ export async function getAllCdpsByLoteId(id: Lote['id']): Promise<CDP[]> {
         throw error;
     }
 }
+
+export const InsumoSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    assigned_quantity: z.number(),
+    measure: z.string(),
+    used_quantity: z.number().nullable(),
+});
+
+export const TaskSchema = z.object({
+    id: z.number(),
+    calendar_week: z.number(),
+    task: z.string(),
+    hours: z.number(),
+    real_hours: z.number().nullable(),
+    aplication_week: z.number(),
+    performance: z.number().nullable(),
+    closed: z.boolean(),
+    insumos: z.array(InsumoSchema),
+});
+
+export const DataLoteSchema = z.object({
+    lote: z.string(),
+    cdp: z.string(),
+    start_date_cdp: z.string(),
+    end_date_cdp: z.string().nullable()
+});
+
+export const DataSchema = z.record(z.array(TaskSchema));
+
+export const LoteCDPDetailsSchema = z.object({
+    data_lote: DataLoteSchema,
+    data: DataSchema,
+});
+
+export type loteCDPDetails = z.infer<typeof LoteCDPDetailsSchema>;
+export type TaskCDP = z.infer<typeof TaskSchema>;
 
 export async function getCDPInfoByCDPId(lote_plantation_control_id: CDP['id']): Promise<loteCDPDetails> {
     try {

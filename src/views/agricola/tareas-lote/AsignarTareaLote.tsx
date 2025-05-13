@@ -122,6 +122,10 @@ export default function AsignarTareaLote() {
   };
 
   const handleCloseAssignment = () => {
+    if (assignedEmployees.length === 0) {
+      toast.error("No hay empleados asignados a la tarea");
+      return;
+    }
     if (!necesarySlots) {
       Swal.fire({
         title: "¿Deseas Cerrar la Asignación?",
@@ -159,7 +163,7 @@ export default function AsignarTareaLote() {
       <div className="grid md:grid-cols-6 gap-8">
         <div className="md:col-span-4 space-y-8">
           <div className="bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-indigo-600 mb-4">
+            <h2 className="text-2xl font-bold text-black uppercase mb-4">
               Información de la Tarea
             </h2>
             <p><span className="font-semibold">Cupos Disponibles:</span> {task.slots}</p>
@@ -192,7 +196,7 @@ export default function AsignarTareaLote() {
           </div>
 
           <div className="bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-xl font-bold text-indigo-600 mb-4">Empleados Asignados</h2>
+            <h2 className="text-xl font-bold text-black uppercase mb-4">Empleados Asignados</h2>
             <div className="h-96 overflow-y-auto space-y-2">
               {assignedEmployees.length === 0 ? (
                 <p className="text-gray-500 text-center">No hay empleados asignados</p>
@@ -215,8 +219,8 @@ export default function AsignarTareaLote() {
         </div>
 
         <div className="md:col-span-2">
-          <div className="bg-white shadow-md rounded-lg p-6 overflow-y-auto h-96 flex flex-col">
-            <h2 className="text-2xl font-bold text-indigo-600 text-center mb-4">
+          <div className="bg-white shadow-md rounded-lg p-6 overflow-y-auto h-full flex flex-col scrollbar-hide">
+            <h2 className="text-2xl font-bold text-black text-center mb-4">
               Empleados Disponibles
             </h2>
             <input
@@ -245,15 +249,8 @@ export default function AsignarTareaLote() {
       </div>
 
       <div className="flex justify-center my-5 w-full">
-        <button
-          className={`flex w-full items-center justify-center px-6 py-3 rounded-lg font-semibold text-lg transition duration-300 ${assignedEmployees.length === 0 || isPending
-            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-            : "bg-indigo-600 text-white hover:bg-indigo-700"
-            }`}
-          onClick={handleCloseAssignment}
-          disabled={assignedEmployees.length === 0 || isPending}
-        >
-          {isPending ? <Spinner /> : "Cerrar Asignación"}
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full" onClick={() => handleCloseAssignment()}>
+          {isPending ? <Spinner /> : <p>Cerrar Asignación</p>}
         </button>
       </div>
     </>
