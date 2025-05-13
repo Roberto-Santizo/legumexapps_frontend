@@ -17,6 +17,9 @@ export default function Dashboard() {
   const dashboards = {
     'admin': (<GeneralDashboard />),
     'adminagricola': (<AgricolaDashboard />),
+    'alameda': (<AgricolaDashboard />),
+    'tehuya': (<AgricolaDashboard />),
+    'linda': (<AgricolaDashboard />),
     'auxagricola': (<AgricolaDashboard />),
     'pcalidad': (<PersonalCalidadDashboard />),
     'auxcalidad': (<CalidadDashboard />),

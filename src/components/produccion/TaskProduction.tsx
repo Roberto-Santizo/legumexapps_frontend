@@ -30,8 +30,7 @@ export default function TaskProduction({ task }: Props) {
   });
   return (
     <div
-      className={`grid grid-cols-6 shadow-xl p-10 text-xl ${!task.available && "opacity-35 cursor-not-allowed"
-        }`}
+      className="grid grid-cols-6 shadow-xl p-10 text-xl"
     >
       <div className="col-span-5">
         <TaskLabel label={"ID"} text={task.id} />
@@ -102,7 +101,7 @@ export default function TaskProduction({ task }: Props) {
             </>
           )}
 
-          {!task.start_date && task.available && (
+          {!task.start_date && (
             <button onClick={() => navigate(`/planes-produccion/asignacion/${task.id}`, { state: { url: location.pathname, plan_id: plan_id, linea_id: linea_id } })}>
               <Paperclip className="cursor-pointer hover:text-gray-500" />
             </button>

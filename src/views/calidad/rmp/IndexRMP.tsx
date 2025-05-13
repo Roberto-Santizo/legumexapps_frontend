@@ -4,19 +4,18 @@ import { useEffect, useState } from "react";
 import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
 import { Boleta, getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 import { useAppStore } from "@/stores/useAppStore";
-import { FiletrsBoletaRMP } from "@/types";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
-import FiltersRMP from "@/components/boleta-rmp/FiltersRMP";
+import FiltersRMP, { FiltersBoletaRMP } from "@/components/filters/FiletrsRMP";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalGRN from "@/components/modals/ModalGRN";
 import Swal from "sweetalert2";
 import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
 export default function IndexRMP() {
-    const [filters, setFilters] = useState<FiletrsBoletaRMP>({} as FiletrsBoletaRMP);
+    const [filters, setFilters] = useState<FiltersBoletaRMP>({} as FiltersBoletaRMP);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [boletas, setBoletas] = useState<Boleta[]>([]);
@@ -187,7 +186,10 @@ export default function IndexRMP() {
                     refetch={refetch}
                 />
             )}
-            <FiltersRMP filters={filters} setFilters={setFilters} isOpen={isOpen} setIsOpen={setIsOpen} />
+
+            {isOpen && (
+                <FiltersRMP filters={filters} setFilters={setFilters} isOpen={isOpen} setIsOpen={setIsOpen} />
+            )}
         </div>
     );
 
