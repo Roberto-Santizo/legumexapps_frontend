@@ -6,6 +6,8 @@ import DocumentLayout from "../layouts/DocumentLayout";
 
 const routes = [
   { path: "/recepciones-insumos/:id", component: lazy(() => import("@/views/bodega/recepcion-insumos/ShowReceptionInsumosDetails")), roles: ['admin'] },
+  { path: "/recepciones-material-empaque/:id", component: lazy(() => import("@/views/bodega/recepcion-material-empaque/ShowReceptionPackingMaterial")), roles: ['admin'] },
+
 ];
 
 export default function DocumentRoutes() {

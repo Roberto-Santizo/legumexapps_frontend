@@ -71,7 +71,7 @@ const onSubmit = async (data: DraftMaterialReception) => {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Recepcion de materia prima</h2>
+      <h2 className="text-4xl font-bold">Recepcion de material de empaque</h2>
 
       <form
         className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"

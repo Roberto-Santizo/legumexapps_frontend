@@ -1,5 +1,6 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getPaginatedReceptionsPackingMaterial, ReceptionPackigMaterial } from "@/api/ReceptionPackingMaterialsAPI";
 import { useQuery } from "@tanstack/react-query";
@@ -8,8 +9,6 @@ import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import FiltersReceptionsPackingMaterial from "@/components/filters/FiltersReceptionsPackingMaterial";
-import HoverCardReceptionPM from "@/components/ui/HoverCardReceptionPMt";
-
 
 export type FiltersReceptionsPackingMaterial = {
   supervisor_name: string;
@@ -17,23 +16,27 @@ export type FiltersReceptionsPackingMaterial = {
   contains: string;
   receipt_date: string;
   invoice_date: string;
-}
+};
 
 const initialValues: FiltersReceptionsPackingMaterial = {
-  supervisor_name: '',
-  received_by: '',
-  contains: '',
-  receipt_date: '',
-  invoice_date: '',
-}
+  supervisor_name: "",
+  received_by: "",
+  contains: "",
+  receipt_date: "",
+  invoice_date: "",
+};
 
 export default function IndexRecepcionMaterial() {
-  const [documents, setDocuments] = useState<ReceptionPackigMaterial[]>([]);
+  const [materialReception, setMaterialReception] = useState<
+    ReceptionPackigMaterial[]
+  >([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [modal, setModal] = useState<boolean>(false);
-  const [filters, setFilters] = useState<FiltersReceptionsPackingMaterial>(initialValues);
-  const [tempFilters, setTempFilters] = useState<FiltersReceptionsPackingMaterial>(initialValues);
+  const [filters, setFilters] =
+    useState<FiltersReceptionsPackingMaterial>(initialValues);
+  const [tempFilters, setTempFilters] =
+    useState<FiltersReceptionsPackingMaterial>(initialValues);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["getPaginatedProveedor", currentPage, filters],
@@ -46,7 +49,7 @@ export default function IndexRecepcionMaterial() {
 
   useEffect(() => {
     if (data) {
-      setDocuments(data.data);
+      setMaterialReception(data.data);
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }
@@ -57,20 +60,15 @@ export default function IndexRecepcionMaterial() {
 
   return (
     <>
-      <h1 className="font-bold text-3xl">
-        Recepciones Material de Empaque
-      </h1>
+      <h1 className="font-bold text-3xl">Recepciones Material de Empaque</h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
           to="/recepciones-mp/crear"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-6 md:w-8" />
-          <p className="text-sm md:text-base">
-            Crear
-          </p>
+          <p className="text-sm md:text-base">Crear</p>
         </Link>
-
 
         <Bars3Icon
           className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
@@ -89,8 +87,21 @@ export default function IndexRecepcionMaterial() {
           </tr>
         </thead>
         <tbody>
-          {documents.map((document) => (
-            <HoverCardReceptionPM key={document.id} document={document} />
+          {materialReception.map((material) => (
+            <tr className="tbody-tr">
+              <td className="tbody-td">{material.receipt_date}</td>
+              <td className="tbody-td">{material.invoice_date}</td>
+              <td className="tbody-td">{material.received_by}</td>
+              <td className="tbody-td">{material.supervisor_name}</td>
+              <td className="tbody-td">
+                <Link
+                  to={`/recepciones-insumos/${material.id}`}
+                  target="_blank"
+                >
+                  <Eye className="hover:text-gray-500 cursor-pointer" />
+                </Link>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
@@ -104,7 +115,14 @@ export default function IndexRecepcionMaterial() {
       </div>
 
       {modal && (
-        <FiltersReceptionsPackingMaterial setIsOpen={setModal} isOpen={modal} filters={filters} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFilters} />
+        <FiltersReceptionsPackingMaterial
+          setIsOpen={setModal}
+          isOpen={modal}
+          filters={filters}
+          setFilters={setFilters}
+          tempFilters={tempFilters}
+          setTempFilters={setTempFilters}
+        />
       )}
     </>
   );
