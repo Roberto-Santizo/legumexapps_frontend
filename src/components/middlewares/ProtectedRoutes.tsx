@@ -48,3 +48,4 @@ export default function ProtectedRoutes({ roles, children }: ProtectedRoutesProp
 
   return null;
 }
+

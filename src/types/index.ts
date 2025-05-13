@@ -12,6 +12,7 @@ import { VarietiesPaginateSchema, VarietySchema } from '@/utils/calidadVariedade
 import { DefectsPaginateSchema } from '@/utils/defectos-schema'
 import { FiletrsBoletaRMPSchema } from '@/utils/filters-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
+import {MaterialReceptionSchema,MaterialReceptionPaginateSchema} from '@/utils/bodega-recepcionMaterial-schema'
 
 import { warehouseInputSchema, WarehouseSupplyPaginateSchema } from '@/utils/bodegaInsumos-schema'
 
@@ -64,8 +65,8 @@ export type Inputs = z.infer<typeof warehouseInputSchema>
 export type InputsPaginate = z.infer<typeof WarehouseSupplyPaginateSchema>
 
 //recepcion de insumos
-// export type MaterialReception = z.infer<typeof MaterialReceptionSchema>
-// export type MaterialReceptionPaginate = z.infer<typeof MaterialReceptionPaginateSchema>
+export type MaterialReception = z.infer<typeof MaterialReceptionSchema>
+export type MaterialReceptionPaginate = z.infer<typeof MaterialReceptionPaginateSchema>
 
 //registro de material de empaque
 
