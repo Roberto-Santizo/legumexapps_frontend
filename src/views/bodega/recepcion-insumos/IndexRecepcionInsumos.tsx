@@ -66,10 +66,11 @@ export default function IndexInsumos() {
               <td className="tbody-td">{receipt.received_date}</td>
               <td className="tbody-td">{receipt.invoice_date}</td>
               <td className="tbody-td">
-                <Link 
+                <Link
                   to={`/recepciones-insumos/${receipt.id}`}
+                  target="__blank"
                 >
-                  <Eye className="hover:text-gray-500 cursor-pointer"/>
+                  <Eye className="hover:text-gray-500 cursor-pointer" />
                 </Link>
               </td>
             </tr>

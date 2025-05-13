@@ -25,6 +25,7 @@ export type DraftItemRecepcionInsumos = {
   insumo_id: string;
   name: string;
   units: number;
+  total: number;
 }
 
 
@@ -87,10 +88,10 @@ export default function CrearInsumo() {
             <table className="table mt-5">
               <thead>
                 <tr className="thead-tr">
-                  <th className="thead-tr">Insumo</th>
-                  <th className="thead-tr">Unidades</th>
-                  <th className="thead-tr">Total</th>
-                  <th className="thead-tr">Acción</th>
+                  <th className="thead-th">Insumo</th>
+                  <th className="thead-th">Unidades</th>
+                  <th className="thead-th">Total</th>
+                  <th className="thead-th">Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -98,7 +99,7 @@ export default function CrearInsumo() {
                   <tr key={item.insumo_id} className="tbody-tr">
                     <td className="tbody-td">{item.name}</td>
                     <td className="tbody-td">{item.units}</td>
-                    <td className="tbody-td">100</td>
+                    <td className="tbody-td">{item.total}</td>
                     <td className="tbody-td">
                       <TrashIcon
                         onClick={() => handleDeleteItem(item.insumo_id)}
@@ -121,7 +122,7 @@ export default function CrearInsumo() {
           <SignatureField name="user_signature" control={control} canvasRef={user_signature} errors={errors} label="Firma de Receptor" />
         </fieldset>
 
-        
+
         <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
           {isPending ? <Spinner /> : <p>Crear</p>}
         </button>
