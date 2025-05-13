@@ -8,7 +8,6 @@ export const InsumoSchema = z.object({
     name: z.string(),
     code: z.string(),
     measure: z.string(),
-    unit_value: z.number()
 });
 
 export type Insumo = z.infer<typeof InsumoSchema>;

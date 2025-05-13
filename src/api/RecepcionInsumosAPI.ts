@@ -58,8 +58,6 @@ export const ItemInsumosReceiptSchema = z.object({
     measure: z.string(),
     name: z.string(),
     units: z.number(),
-    unit_value: z.number(),
-    total: z.number()
 });
 
 export const InsumosReceiptDetailsSchema = z.object({

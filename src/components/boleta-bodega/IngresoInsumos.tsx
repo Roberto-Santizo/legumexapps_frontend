@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default function IngresoInsumos({ receipt }: Props) {
-  const headers = ["Código de insumo", "Unidad medida", "Descripción del insumo", "Unidades ingresadas", "Valor unitario", "Valor total"];
+  const headers = ["Código de insumo", "Unidad medida", "Descripción del insumo", "Unidades ingresadas"];
 
   return (
     <div className=" text-sm print:text-[10px] leading-tight print:leading-tight">
@@ -34,7 +34,7 @@ export default function IngresoInsumos({ receipt }: Props) {
           <p>las majadas, el Tejar, Chimaltenango</p>
           <p>PBX: 7824 9300</p>
         </div>
-        
+
         <div className="flex flex-col md:flex-row justify-between mt-6 print:mt-4>">
           <div className="w-full md:w-1/2">
             <p className="font-bold mt-2">
@@ -87,8 +87,6 @@ export default function IngresoInsumos({ receipt }: Props) {
                   <td className="uppercase border border-black p-1">{item.measure}</td>
                   <td className="uppercase border border-black p-1">{item.name}</td>
                   <td className="uppercase border border-black p-1">{item.units}</td>
-                  <td className="uppercase border border-black p-1">{item.unit_value}</td>
-                  <td className="uppercase border border-black p-1">{item.total}</td>
                 </tr>
               ))}
             </tbody>

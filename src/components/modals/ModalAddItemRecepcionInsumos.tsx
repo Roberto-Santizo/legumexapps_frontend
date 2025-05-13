@@ -50,9 +50,6 @@ export default function ModalAddItemRecepcionInsumos({ modal, setModal, setItems
     const onSubmit = (data: DraftItemRecepcionInsumos) => {
         const item = items.some(item => item.insumo_id === data.insumo_id);
         if (item) {
-            const auxitem = insumos.filter(item => item.id === data.insumo_id)[0];
-            data.name = auxitem.name;
-            data.total = auxitem.unit_value * data.units;
             setItems((prev) =>
                 prev.map(item =>
                     item.insumo_id === data.insumo_id
@@ -63,7 +60,6 @@ export default function ModalAddItemRecepcionInsumos({ modal, setModal, setItems
         } else {
             const item = insumos.filter(item => item.id === data.insumo_id)[0];
             data.name = item.name;
-            data.total = item.unit_value * data.units;
             setItems((prev) => [...prev, data]);
         }
         handleClose();

@@ -25,7 +25,6 @@ export type DraftItemRecepcionInsumos = {
   insumo_id: string;
   name: string;
   units: number;
-  total: number;
 }
 
 
@@ -90,7 +89,6 @@ export default function CrearInsumo() {
                 <tr className="thead-tr">
                   <th className="thead-th">Insumo</th>
                   <th className="thead-th">Unidades</th>
-                  <th className="thead-th">Total</th>
                   <th className="thead-th">Acción</th>
                 </tr>
               </thead>
@@ -99,7 +97,6 @@ export default function CrearInsumo() {
                   <tr key={item.insumo_id} className="tbody-tr">
                     <td className="tbody-td">{item.name}</td>
                     <td className="tbody-td">{item.units}</td>
-                    <td className="tbody-td">{item.total}</td>
                     <td className="tbody-td">
                       <TrashIcon
                         onClick={() => handleDeleteItem(item.insumo_id)}
