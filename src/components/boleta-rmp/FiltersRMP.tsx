@@ -84,7 +84,7 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto max-h-screen p-2 space-y-4">
+                <div className="flex-1 overflow-y-auto max-h-screen p-2 space-y-4 scrollbar-hide">
                     <div>
                         <label className="block text-sm font-medium">Fecha</label>
                         <input type="date" name="date" className="w-full border p-2 rounded"

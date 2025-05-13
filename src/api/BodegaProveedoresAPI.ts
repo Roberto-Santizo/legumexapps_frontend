@@ -3,26 +3,26 @@ import { DraftSuppliers } from "@/views/bodega/proveedores/CrearProveedor";
 import { isAxiosError } from "axios";
 import clienteAxios from "@/config/axios";
 
-export const WareHouseSupplierSchema = z.object({
+export const SupplierSchema = z.object({
     id: z.string(),
     code: z.string(),
     name: z.string(),
 });
 
-export const WarehousePaginateSchema = z.object({
-    data: z.array(WareHouseSupplierSchema),
+export const SuppliersPaginatedSchema = z.object({
+    data: z.array(SupplierSchema),
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
     })
 })
 
-export const WarehousesPaginateSchema = z.object({
-    data: z.array(WareHouseSupplierSchema)
+export const SuppliersScema = z.object({
+    data: z.array(SupplierSchema)
 });
 
-export type Supplier = z.infer<typeof WareHouseSupplierSchema>
-export type SupplierPaginate = z.infer<typeof WarehousePaginateSchema>
+export type Supplier = z.infer<typeof SupplierSchema>
+export type PaginatedSuppliers = z.infer<typeof SuppliersPaginatedSchema>
 
 export async function createProveedor(FormData: DraftSuppliers) {
     try {
@@ -36,11 +36,11 @@ export async function createProveedor(FormData: DraftSuppliers) {
     }
 }
 
-export async function getPaginatedProveedor(page: number): Promise<SupplierPaginate> {
+export async function getPaginatedProveedor(page: number): Promise<PaginatedSuppliers> {
     try {
         const url = `/api/suppliers-packing-material?page=${page}`;
         const { data } = await clienteAxios(url);
-        const result = WarehousePaginateSchema.safeParse(data);
+        const result = SuppliersPaginatedSchema.safeParse(data);
 
         if (result.success) {
             return result.data;
@@ -57,7 +57,7 @@ export async function getAllProveedores(): Promise<Supplier[]> {
     try {
         const url = '/api/suppliers-packing-material-all';
         const { data } = await clienteAxios(url);
-        const result = WarehousesPaginateSchema.safeParse(data);
+        const result = SuppliersScema.safeParse(data);
         if (result.success) {
             return result.data.data
         } else {
