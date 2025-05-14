@@ -13,7 +13,7 @@ export default function IngresoInsumos({ receipt }: Props) {
       <div className="p-6 print:p-0 bg-white rounded-lg w-full h-full print:rounded-none">
         <div className="w-full flex flex-col md:flex-row justify-between items-start print:items-start">
           <div className="flex items-start space-x-2 print:space-x-1">
-            <div className="w-16 h-12 print:w-14 print:h-10 flex items-center justify-center">
+            <div className="w-20 h-16 print:w-14 print:h-10 flex items-center justify-center">
               <LogoLegumex />
             </div>
           </div>
@@ -93,14 +93,14 @@ export default function IngresoInsumos({ receipt }: Props) {
           </table>
         </div>
 
-        <div className="flex justify-center gap-10 mt-5 print:mt-3">
+        <div className="flex justify-center gap-x-36 mt-10 print:mt-3">
           <div className="text-center">
             <img
               className="h-16 print:h-12"
               src={`${import.meta.env.VITE_BASE_URL}/storage/${receipt.data.user_signature}`}
               alt="Firma Receptor"
             />
-            <p className="text-sm">Firma Receptor</p>
+            <p className="text-sm font-bold border-t border-black uppercase">Firma Receptor</p>
           </div>
           <div className="text-center">
             <img
@@ -108,7 +108,7 @@ export default function IngresoInsumos({ receipt }: Props) {
               src={`${import.meta.env.VITE_BASE_URL}/storage/${receipt.data.supervisor_signature}`}
               alt="Firma Supervisor"
             />
-            <p className="text-sm">Firma Supervisor</p>
+            <p className="text-sm font-bold uppercase border-t border-black">Firma Supervisor</p>
           </div>
         </div>
       </div>

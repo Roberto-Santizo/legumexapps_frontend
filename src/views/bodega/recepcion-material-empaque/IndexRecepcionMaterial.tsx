@@ -89,13 +89,13 @@ export default function IndexRecepcionMaterial() {
         <tbody>
           {materialReception.map((material) => (
             <tr className="tbody-tr">
-              <td className="tbody-td">{material.receipt_date}</td>
-              <td className="tbody-td">{material.invoice_date}</td>
-              <td className="tbody-td">{material.received_by}</td>
-              <td className="tbody-td">{material.supervisor_name}</td>
-              <td className="tbody-td">
+              <td className="tbody-td uppercase">{material.receipt_date}</td>
+              <td className="tbody-td uppercase">{material.invoice_date}</td>
+              <td className="tbody-td uppercase">{material.received_by}</td>
+              <td className="tbody-td uppercase">{material.supervisor_name}</td>
+              <td className="tbody-td uppercase">
                 <Link
-                  to={`/recepciones-insumos/${material.id}`}
+                  to={`/recepciones-material-empaque/${material.id}`}
                   target="_blank"
                 >
                   <Eye className="hover:text-gray-500 cursor-pointer" />
