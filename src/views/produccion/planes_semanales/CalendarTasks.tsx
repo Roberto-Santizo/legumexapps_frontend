@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getAllWeeklyProductionPlans, getTasksNoOperationDate, getTasksOperationDate } from '@/api/WeeklyProductionPlanAPI';
+import { useLocation, useNavigate } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from "@fullcalendar/core/locales/es";
@@ -15,9 +16,16 @@ type DateClickInfo = {
 }
 
 export default function CalendarTasks() {
-  const [selectedDate, setSelectedDate] = useState<string>('');
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const date = queryParams.get('date')!;
+  const show = (date) ? true : false;
+
+  const [selectedDate, setSelectedDate] = useState<string>(date);
   const [selectedId, setSelectedId] = useState<string>('');
   const [id, setId] = useState<string>('');
+
+  const navigate = useNavigate();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getTasksNoOperationDate', id],
@@ -26,9 +34,9 @@ export default function CalendarTasks() {
   });
 
   const { data: programedTasks, isLoading: programedTasksLoading } = useQuery({
-    queryKey: ['getTasksOperationDate', selectedDate],
-    queryFn: () => getTasksOperationDate(selectedDate),
-    enabled: !!selectedDate
+    queryKey: ['getTasksOperationDate', date],
+    queryFn: () => getTasksOperationDate(date),
+    enabled: show
   });
 
   const { data: weeklyPlans } = useQuery({
@@ -37,12 +45,10 @@ export default function CalendarTasks() {
   });
 
   const handleClickDate = (info: DateClickInfo) => {
-    if (info.dateStr === selectedDate) {
-      setSelectedDate('');
-      return;
-    }
+    navigate(`${location.pathname}?date=${info.dateStr}`);
     setSelectedDate(info.dateStr);
   }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col w-full">
@@ -83,11 +89,11 @@ export default function CalendarTasks() {
           />
 
           <div className="border-t pt-4">
-            <h2 className="text-2xl font-bold">Tareas programadas: {selectedDate || '—'}</h2>
+            <h2 className="text-2xl font-bold">Tareas programadas: {date || '—'}</h2>
             <div className='mt-5 overflow-y-auto scrollbar-hide max-h-96 space-y-6'>
               {programedTasksLoading && <Spinner />}
               {programedTasks?.map(pTask => (
-                <TaskScheduled key={pTask.id} task={pTask} selectedDate={selectedDate} selectedId={selectedId} setSelectedId={setSelectedId} />
+                <TaskScheduled key={pTask.id} task={pTask} selectedId={selectedId} setSelectedId={setSelectedId} />
               ))}
             </div>
           </div>
@@ -98,7 +104,7 @@ export default function CalendarTasks() {
           {isError && <ShowErrorAPI />}
           {isLoading && <Spinner />}
           {data?.map(task => (
-            <TaskUnscheduled key={task.id} selectedDate={selectedDate} task={task} id={id} />
+            <TaskUnscheduled key={task.id} task={task} id={id} />
           ))}
         </div>
       </div>

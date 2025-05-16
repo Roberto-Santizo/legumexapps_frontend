@@ -683,7 +683,7 @@ const TaskProductionNoOperationDateSchema = z.object({
     id: z.string(),
     line: z.string(),
     sku: z.string(),
-    destination:z.string(),
+    destination: z.string(),
     total_lbs: z.number()
 });
 
@@ -716,7 +716,18 @@ export const TaskOperationDateSchema = z.object({
     working: z.boolean(),
     finished: z.boolean(),
     total_lbs: z.number(),
-    destination: z.string()
+    destination: z.string(),
+    status: z.string(),
+    status_id: z.string(),
+    color: z.string(),
+    box: z.string(),
+    bag: z.string(),
+    bag_inner: z.string().nullable(),
+    recipe: z.object({
+        config_boxes: z.number(),
+        config_bag: z.number(),
+        config_inner_bag: z.number()
+    })
 });
 
 export const TasksOperationDateSchema = z.object({

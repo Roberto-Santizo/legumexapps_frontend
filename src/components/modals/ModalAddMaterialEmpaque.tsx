@@ -1,4 +1,4 @@
- import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { DraftItem } from "@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -13,14 +13,10 @@ type Props = {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
   setItems: Dispatch<SetStateAction<DraftItem[]>>;
 };
-export default function ModalAddMaterialEmpaque({
-  modal,
-  setModal,
-  setItems,
-}: Props) {
+export default function ModalAddMaterialEmpaque({ modal, setModal, setItems }: Props) {
   const { data } = useQuery({
     queryKey: ["getPackingMaterials"],
-    queryFn: getPackingMaterials,
+    queryFn: () => getPackingMaterials({ name: '' }),
   });
 
   const materialOptions = data?.map((material) => ({
@@ -36,30 +32,30 @@ export default function ModalAddMaterialEmpaque({
     formState: { errors },
   } = useForm<DraftItem>();
 
-const onSubmit = (formData: DraftItem) => {
-  const name = data?.find((item) => item.id === formData.p_material_id)?.name;
-  formData.name = name ? name : "";
-  formData.quantity = Number(formData.quantity); // Asegurar que sea un número
+  const onSubmit = (formData: DraftItem) => {
+    const name = data?.find((item) => item.id === formData.p_material_id)?.name;
+    formData.name = name ? name : "";
+    formData.quantity = Number(formData.quantity); // Asegurar que sea un número
 
-  setItems((prev) => {
-    const existingIndex = prev.findIndex(
-      (item) =>
-        item.p_material_id === formData.p_material_id &&
-        item.lote === formData.lote
-    );
+    setItems((prev) => {
+      const existingIndex = prev.findIndex(
+        (item) =>
+          item.p_material_id === formData.p_material_id &&
+          item.lote === formData.lote
+      );
 
-    if (existingIndex !== -1) {
-      const updatedItems = [...prev];
-      updatedItems[existingIndex].quantity += formData.quantity;
-      return updatedItems;
-    }
+      if (existingIndex !== -1) {
+        const updatedItems = [...prev];
+        updatedItems[existingIndex].quantity += formData.quantity;
+        return updatedItems;
+      }
 
-    return [...prev, formData];
-  });
+      return [...prev, formData];
+    });
 
-  setModal(false);
-  reset();
-};
+    setModal(false);
+    reset();
+  };
 
 
 

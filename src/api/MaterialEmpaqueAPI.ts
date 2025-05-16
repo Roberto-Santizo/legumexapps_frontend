@@ -45,9 +45,9 @@ export const PackingMaterialsSchema = z.object({
     data: z.array(PackingMaterialSchema)
 });
 
-export async function getPackingMaterials(): Promise<PackingMaterial[]> {
+export async function getPackingMaterials({name = ''} : {name : string}): Promise<PackingMaterial[]> {
     try {
-        const url = '/api/packing-materials-all';
+        const url = `/api/packing-materials-all?name=${name}`;
         const { data } = await clienteAxios(url);
         const result = PackingMaterialsSchema.safeParse(data);
         if (result.success) {

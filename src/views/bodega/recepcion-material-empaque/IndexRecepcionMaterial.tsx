@@ -27,9 +27,7 @@ const initialValues: FiltersReceptionsPackingMaterial = {
 };
 
 export default function IndexRecepcionMaterial() {
-  const [materialReception, setMaterialReception] = useState<
-    ReceptionPackigMaterial[]
-  >([]);
+  const [materialReception, setMaterialReception] = useState<ReceptionPackigMaterial[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [modal, setModal] = useState<boolean>(false);
