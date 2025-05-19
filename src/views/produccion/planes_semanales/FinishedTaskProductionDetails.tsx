@@ -135,7 +135,7 @@ export default function TareaProduccionDetails() {
       </div>
 
       <ModalHistoryChangeOperation modal={modal} setModal={setModal} changes={task_details.history_operation_date} />
-      <ModalBodegaEmpaqueFormats open={modalFormatsBodega} setOpen={setModalFormatsBodega} />
+      <ModalBodegaEmpaqueFormats open={modalFormatsBodega} setOpen={setModalFormatsBodega} task={task_details}/>
     </div>
   );
 }

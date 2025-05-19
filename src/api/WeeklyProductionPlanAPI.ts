@@ -256,7 +256,8 @@ export async function changePosition(data: DraftChangePosition) {
 export async function startTaskProduction(id: TaskProduction['id']) {
     try {
         const url = `/api/tasks_production_plan/${id}/start`;
-        await clienteAxios.patch(url);
+        const { data } = await clienteAxios.patch<string>(url);
+        return data;
     } catch (error) {
         console.log(error);
         throw error;
@@ -625,6 +626,25 @@ export const HistoryOperationDateSchema = z.object({
     created_at: z.string()
 });
 
+export const DispatchTaskProductionSchema = z.object({
+    id: z.string(),
+    dispatch_date: z.string(),
+    items: z.array(z.object({
+        id: z.string(),
+        code: z.string(),
+        description: z.string(),
+        lote: z.string(),
+        quantity: z.number()
+    })),
+    observations: z.string().nullable(),
+    delivered_by: z.string(),
+    delivered_by_signature: z.string(),
+    responsable_boxes: z.string(),
+    signature_responsable_boxes: z.string(),
+    responsable_bags: z.string(),
+    signature_responsable_bags: z.string()
+});
+
 export const FinishedTaskProductionDetailsSchema = z.object({
     id: z.string(),
     line: z.string(),
@@ -644,6 +664,7 @@ export const FinishedTaskProductionDetailsSchema = z.object({
     timeouts: z.array(TimeoutTaskProductionSchema),
     employees: z.array(TaskProductionEmployeeSchema),
     history_operation_date: z.array(HistoryOperationDateSchema),
+    dispatch: DispatchTaskProductionSchema
 });
 
 export type FinishedTaskProductionDetails = z.infer<typeof FinishedTaskProductionDetailsSchema>;
@@ -723,11 +744,11 @@ export const TaskOperationDateSchema = z.object({
     box: z.string(),
     bag: z.string(),
     bag_inner: z.string().nullable(),
-    recipe: z.object({
-        config_boxes: z.number(),
-        config_bag: z.number(),
-        config_inner_bag: z.number()
-    })
+    recipe: z.array(z.object({
+        packing_material_id: z.string(),
+        quantity: z.number(),
+        lote: z.string(),
+    }))
 });
 
 export const TasksOperationDateSchema = z.object({

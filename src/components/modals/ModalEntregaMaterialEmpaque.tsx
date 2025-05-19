@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { TaskOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { Package, Layers, Box } from "lucide-react";
 import { toast } from "react-toastify";
@@ -13,18 +13,22 @@ import Error from "../utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
 
+export type DraftItemDispatchPackingMaterial = {
+    packing_material_id: string,
+    quantity: number,
+    lote: string;
+}
+
 export type DraftDispatchPackingMaterial = {
+    task_production_plan_id: string;
     reference: string;
-    observations: string;
-    received_by_boxes: string;
-    received_by_signature_boxes: string;
-    received_by_bags: string;
-    received_by_signature_bags: string;
+    responsable_bags: string;
+    responsable_boxes: string;
+    signature_responsable_boxes: string;
+    signature_responsable_bags: string;
     user_signature: string;
-    quantity_boxes: number;
-    quantity_bags: number;
-    quantity_inner_bags: number;
-    task_production_plan_id: TaskOperationDate['id'];
+    observations: string;
+    items: DraftItemDispatchPackingMaterial[];
 }
 
 type Props = {
@@ -39,9 +43,11 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
     const queryParams = new URLSearchParams(location.search);
     const date = queryParams.get('date')!;
     const queryClient = useQueryClient();
-    const receivedByBoxesRef = useRef({} as SignatureCanvas);
-    const receivedByBagsRef = useRef({} as SignatureCanvas);
+    const responsableBoxesRef = useRef({} as SignatureCanvas);
+    const responsableBagsRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
+    const [items, setItems] = useState<DraftItemDispatchPackingMaterial[]>(task.recipe);
+    const [error, setError] = useState<boolean>(false);
 
     const { mutate, isPending } = useMutation({
         mutationFn: createPackingMaterialDispatch,
@@ -49,6 +55,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
         onSuccess: (data) => {
             setModal(false);
             toast.success(data);
+            reset();
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
         }
     });
@@ -61,104 +68,138 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
         reset,
     } = useForm<DraftDispatchPackingMaterial>();
 
+    const handleChangeLote = (e: ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        const updatedItems = items.map(item => {
+            if (item.packing_material_id === id) {
+                return { ...item, lote: value };
+            }
+            return item;
+        });
+        setItems(updatedItems);
+    }
 
     const handleCloseModal = () => {
+        reset();
         setModal(false);
     };
 
     const onSubmit = (data: DraftDispatchPackingMaterial) => {
-        data.task_production_plan_id = task.id;
-        data.quantity_boxes = task.recipe.config_boxes;
-        data.quantity_bags = task.recipe.config_bag;
-        data.quantity_inner_bags = task.recipe.config_inner_bag;
+        if (items.some(item => item.lote === '')) {
+            toast.error('Todos los lotes son requeridos');
+            setError(true)
+            return;
+        } else {
+            setError(false);
+        }
 
-        reset();
+        data.items = items;
+        data.task_production_plan_id = task.id;
         mutate(data);
     }
 
     return (
-        <Modal modal={modal} closeModal={handleCloseModal} title="Entrega Material de Empaque">
-            <div className="p-6 space-y-6">
-                <h2 className="text-xl font-bold uppercase">Configuración Empaque</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div className="flex flex-col items-center justify-center bg-white border rounded-2xl p-6 transition-all duration-300 shadow-sm cursor-pointer">
-                        <Box className="w-6 h-6 text-indigo-500 mb-2" />
-                        <p className="text-sm text-gray-500 mb-1">
-                            {task.box}
-                        </p>
-                        <p className="text-xl font-semibold text-gray-800">{task.recipe.config_boxes}</p>
-                    </div>
-                    <div className="flex flex-col items-center justify-center bg-white border rounded-2xl p-6 transition-all duration-300 shadow-sm cursor-pointer">
-                        <Package className="w-6 h-6 text-green-500 mb-2" />
-                        <p className="text-sm text-gray-500 mb-1">
-                            {task.bag}
-                        </p>
-                        <p className="text-xl font-semibold text-gray-800">{task.recipe.config_bag}</p>
-                    </div>
+        <Modal modal={modal} closeModal={handleCloseModal} title="Entrega Material de Empaque" width="w-2/3">
+            <div className="p-8 space-y-8">
+                <h2 className="text-2xl font-bold uppercase text-center text-gray-800">Configuración Empaque</h2>
 
-                    <div className="flex flex-col items-center justify-center bg-white border rounded-2xl p-6 transition-all duration-300 shadow-sm cursor-pointer">
-                        <Layers className="w-6 h-6 text-purple-500 mb-2" />
-                        <p className="text-sm text-gray-500 mb-1">
-                            {task.bag_inner}
-                        </p>
-                        <p className="text-xl font-semibold text-gray-800">{task.recipe.config_inner_bag}</p>
-                    </div>
+                <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 ${error ? 'border-2 border-red-500 rounded-xl p-4' : ''}`}>
+                    {[task.box, task.bag, task.bag_inner].map((label, i) => {
+                        const icons = [<Box className="text-indigo-500" />, <Package className="text-green-500" />, <Layers className="text-purple-500" />];
+                        const ringColors = ['focus:ring-indigo-400', 'focus:ring-green-400', 'focus:ring-purple-400'];
+
+                        return (
+                            <div key={i} className="flex flex-col items-center bg-white border rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+                                <div className="w-8 h-8 mb-3">{icons[i]}</div>
+                                <p className="text-sm text-gray-500 mb-1">{label}</p>
+                                <p className="text-2xl font-semibold text-gray-800">{task.recipe[i].quantity}</p>
+                                <input
+                                    type="text"
+                                    autoComplete="off"
+                                    className={`mt-4 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 ${ringColors[i]}`}
+                                    placeholder="Digitar lote"
+                                    id={task.recipe[i].packing_material_id}
+                                    onChange={handleChangeLote}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                    <InputComponent<DraftDispatchPackingMaterial>
-                        label="Referencia"
-                        id="reference"
-                        name="reference"
-                        placeholder="Referencia de Transferencia"
-                        register={register}
-                        validation={{ required: 'El referencia de transferencia es requerida' }}
-                        errors={errors}
-                        type={'text'}
-                    >
-                        {errors.reference && <Error>{errors.reference?.message?.toString()}</Error>}
-                    </InputComponent>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
+                        <InputComponent
+                            label="Referencia"
+                            id="reference"
+                            name="reference"
+                            placeholder="Referencia de Transferencia"
+                            register={register}
+                            validation={{ required: 'El referencia de transferencia es requerida' }}
+                            errors={errors}
+                            type="text"
+                        >
+                            {errors.reference && <Error>{errors.reference.message?.toString()}</Error>}
+                        </InputComponent>
 
-                    <InputComponent<DraftDispatchPackingMaterial>
-                        label="Receptor Cajas"
-                        id="received_by_boxes"
-                        name="received_by_boxes"
-                        placeholder="Nombre de quien recibe cajas"
-                        register={register}
-                        validation={{ required: 'El nombre requerido' }}
-                        errors={errors}
-                        type={'text'}
-                    >
-                        {errors.received_by_boxes && <Error>{errors.received_by_boxes?.message?.toString()}</Error>}
-                    </InputComponent>
+                        <InputComponent
+                            label="Receptor Cajas"
+                            id="responsable_boxes"
+                            name="responsable_boxes"
+                            placeholder="Nombre de quien recibe cajas"
+                            register={register}
+                            validation={{ required: 'El nombre es requerido' }}
+                            errors={errors}
+                            type="text"
+                        >
+                            {errors.responsable_boxes && <Error>{errors.responsable_boxes.message?.toString()}</Error>}
+                        </InputComponent>
 
-                    <InputComponent<DraftDispatchPackingMaterial>
-                        label="Receptor Bolsas"
-                        id="received_by_bags"
-                        name="received_by_bags"
-                        placeholder="Nombre de quien recibe bolsas"
-                        register={register}
-                        validation={{ required: 'El nombre requerido' }}
-                        errors={errors}
-                        type={'text'}
-                    >
-                        {errors.received_by_bags && <Error>{errors.received_by_bags?.message?.toString()}</Error>}
-                    </InputComponent>
+                        <InputComponent
+                            label="Receptor Bolsas"
+                            id="responsable_bags"
+                            name="responsable_bags"
+                            placeholder="Nombre de quien recibe bolsas"
+                            register={register}
+                            validation={{ required: 'El nombre es requerido' }}
+                            errors={errors}
+                            type="text"
+                        >
+                            {errors.responsable_bags && <Error>{errors.responsable_bags.message?.toString()}</Error>}
+                        </InputComponent>
+                    </div>
 
-                    <fieldset className="mt-5 border p-5 grid grid-cols-2 gap-2">
-                        <legend className="font-bold text-xl">Firmas</legend>
-
-                        <SignatureField label="Firma Receptor Cajas" name="received_by_signature_boxes" control={control} errors={errors} canvasRef={receivedByBoxesRef} />
-                        <SignatureField label="Firma Receptor Bolsas" name="received_by_signature_bags" control={control} errors={errors} canvasRef={receivedByBagsRef} />
-                        <SignatureField label="Firma De Entrega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
+                    <fieldset className="border rounded-xl p-6 shadow-sm space-y-4">
+                        <legend className="text-lg font-semibold text-gray-700 px-2">Firmas</legend>
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <SignatureField label="Firma Receptor Cajas" name="signature_responsable_boxes" control={control} errors={errors} canvasRef={responsableBoxesRef} />
+                            <SignatureField label="Firma Receptor Bolsas" name="signature_responsable_bags" control={control} errors={errors} canvasRef={responsableBagsRef} />
+                            <SignatureField label="Firma De Entrega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
+                        </div>
                     </fieldset>
 
-                    <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-5">
-                        {isPending ? <Spinner /> : <p>Crear</p>}
+                    <InputComponent
+                        label="Observaciones"
+                        id="observations"
+                        name="observations"
+                        placeholder="Observaciones Generales"
+                        register={register}
+                        validation={{}}
+                        errors={errors}
+                        type="text"
+                    >
+                        {errors.observations && <Error>{errors.observations.message?.toString()}</Error>}
+                    </InputComponent>
+
+                    <button
+                        disabled={isPending}
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-md transition duration-300 uppercase"
+                    >
+                        {isPending ? <Spinner /> : 'CREAR'}
                     </button>
                 </form>
             </div>
         </Modal>
+
     );
 }
 

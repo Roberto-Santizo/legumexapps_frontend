@@ -1,24 +1,10 @@
+import { FinishedTaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
 import LogoLegumex from "../logos/LogoLegumex";
-// import html2canvas from "html2canvas";
-// import jsPDF from "jspdf";
 
-export default function SalidaBodegaEmpaque() {
-  // const salidaBodega = () => {
-  //   const input = document.getElementById("pdfBoletaSalida");
-  //   if (!input) {
-  //     console.error('Element with id "pdfBoletaSalida" not found.');
-  //     return;
-  //   }
-  //   html2canvas(input, { logging: true, useCORS: true }).then((canvas) => {
-  //     const imgWidth = 208;
-  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  //     const imgData = canvas.toDataURL("image/png");
-  //     const pdf = new jsPDF("p", "mm", "a4");
-  //     pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-  //     pdf.save("boleta-salida.pdf");
-  //   });
-  // };
-
+type Props = {
+  task: FinishedTaskProductionDetails;
+}
+export default function SalidaBodegaEmpaque({ task }: Props) {
   return (
     <div>
       <div className="shadow-xl p-10 bg-white rounded-lg w-full h-full" id="pdfBoletaSalida">
@@ -33,7 +19,7 @@ export default function SalidaBodegaEmpaque() {
               Salida de bodega empaque
             </h1>
             <p className="font-bold text-2xl text-center text-red-500">
-              No.040461
+              No.{task.dispatch.id}
             </p>
           </div>
         </div>
@@ -51,34 +37,7 @@ export default function SalidaBodegaEmpaque() {
             </div>
             <div>
               <p className="uppercase text-center font-bold p-3">R.pro.bod.06</p>
-              <table className="border-collapse border border-black  w-full table-auto space-between">
-                <thead className="bg-gray-300">
-                  <tr>
-                    <th className="uppercase font-bold border border-black p-2">
-                      Dia
-                    </th>
-                    <th className="uppercase font-bold border border-black p-2">
-                      Mes
-                    </th>
-                    <th className="uppercase font-bold border border-black p-2">
-                      Año
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="uppercase border border-black p-2">
-                      Inserta dato aca
-                    </td>
-                    <td className="uppercase border border-black p-2">
-                      Inserta dato aca
-                    </td>
-                    <td className="uppercase border border-black p-2">
-                      Inserta dato aca
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              {task.dispatch.dispatch_date}
             </div>
           </div>
         </div>
@@ -105,13 +64,16 @@ export default function SalidaBodegaEmpaque() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border border-black p-2">Insertar dato acá</td>
-                <td className="border border-black p-2">Insertar dato acá</td>
-                <td className="border border-black p-2">Insertar dato acá</td>
-                <td className="border border-black p-2">Insertar dato acá</td>
-                <td className="border border-black p-2">Insertar dato acá</td>
-              </tr>
+              {task.dispatch.items.map(item => (
+                <tr key={item.code}>
+                  <td className="border border-black p-2">{item.code}</td>
+                  <td className="border border-black p-2">{item.description}</td>
+                  <td className="border border-black p-2">{task.line}</td>
+                  <td className="border border-black p-2">{item.lote}</td>
+                  <td className="border border-black p-2">{item.quantity}</td>
+                </tr>
+              ))}
+
             </tbody>
           </table>
         </div>
@@ -119,10 +81,7 @@ export default function SalidaBodegaEmpaque() {
           <div className="font-bold uppercase mb-12">
             <p>Observaciones:</p>
             <p className="p-2 border-b border-black min-h-[6rem] font-normal">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam
-              perferendis veniam nobis quo libero eveniet asperiores voluptatem
-              aperiam pariatur quisquam modi quas quasi, porro quae laudantium!
-              Corrupti modi asperiores deserunt!
+              {task.dispatch.observations}
             </p>
           </div>
         </div>
@@ -131,14 +90,15 @@ export default function SalidaBodegaEmpaque() {
             <p className="uppercase font-bold">
               Entregado por:
               <span className="font-normal capitalize ml-2">
-                Insertar dato acá
+                {task.dispatch.delivered_by}
               </span>
             </p>
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
                 <img
-                  alt="Firma ******* confirmar la firma"
-                  className="max-h-25 md:max-h-25 object-contain"
+                  className="h-16 print:h-12"
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.delivered_by_signature}`}
+                  alt="Firma Entregado Por"
                 />
               </div>
               <p className="mt-2 font-bold">FIRMA</p>
@@ -146,22 +106,42 @@ export default function SalidaBodegaEmpaque() {
           </div>
           <div>
             <p className="uppercase font-bold">
-              Recibido por:
+              Cajas recibidas por:
               <span className="capitalize font-normal ml-2">
-                Insertar dato aca
+                {task.dispatch.responsable_boxes}
               </span>
             </p>
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
                 <img
-                  alt="Firma ******* confirmar la firma"
-                  className="max-h-25 md:max-h-25 object-contain"
+                  className="h-16 print:h-12"
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.signature_responsable_boxes}`}
+                  alt="Firma Receptor Cajas"
+                />
+              </div>
+              <p className="mt-2 font-bold">FIRMA</p>
+            </div>
+          </div>
+          <div>
+            <p className="uppercase font-bold">
+              Bolsas recibidas por:
+              <span className="capitalize font-normal ml-2">
+                {task.dispatch.responsable_bags}
+              </span>
+            </p>
+            <div className="text-center">
+              <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
+                <img
+                  className="h-16 print:h-12"
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.signature_responsable_bags}`}
+                  alt="Firma Receptor Bolsas"
                 />
               </div>
               <p className="mt-2 font-bold">FIRMA</p>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

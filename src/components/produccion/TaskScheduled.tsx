@@ -1,6 +1,5 @@
 import { TaskOperationDate } from "@/api/WeeklyProductionPlanAPI";
-import { CheckBadgeIcon } from "@heroicons/react/16/solid";
-import { BoxIcon, Calendar, Clock } from "lucide-react";
+import { BoxIcon, Calendar } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque from "../modals/ModalEntregaMaterialEmpaque";
@@ -34,22 +33,6 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
             </div>
 
             <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-2">
-                <div className="flex items-center gap-3">
-                    {task.finished && (
-                        <div className="flex items-center gap-1 text-green-600 text-sm">
-                            <CheckBadgeIcon className="w-5 h-5" />
-                            <span>Finalizada</span>
-                        </div>
-                    )}
-
-                    {task.working && (
-                        <div className="flex items-center gap-1 text-orange-500 text-sm">
-                            <Clock className="w-5 h-5" />
-                            <span>En progreso</span>
-                        </div>
-                    )}
-                </div>
-
                 {!task.finished && !task.working && task.status_id === '0' && (
                     <button
                         onClick={() => {
@@ -74,7 +57,6 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                         Entregar Material de Empaque
                     </button>
                 )}
-
             </div>
 
             <ModalChangeOperationDate
