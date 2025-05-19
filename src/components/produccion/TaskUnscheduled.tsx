@@ -3,17 +3,20 @@ import { Calendar } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 type Props = {
   task: TaskProductionNoOperationDate;
-  id: string;
 }
 
-export default function TaskCard({ task, id }: Props) {
+export default function TaskUnscheduled({ task }: Props) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date')!;
+
+  const params = useParams();
+  const plan_id = params.plan_id!!;
+
 
   const queryClient = useQueryClient();
 
@@ -24,7 +27,7 @@ export default function TaskCard({ task, id }: Props) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', id] });
+      queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id] });
       queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
     }
   });

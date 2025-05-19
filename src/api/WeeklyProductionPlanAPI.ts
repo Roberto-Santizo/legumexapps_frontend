@@ -708,19 +708,28 @@ const TaskProductionNoOperationDateSchema = z.object({
     total_lbs: z.number()
 });
 
-const TasksProductionNoOperationDateSchema = z.object({
-    data: z.array(TaskProductionNoOperationDateSchema)
+const TaskProductionEventSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    start: z.string()
 });
 
-export type TaskProductionNoOperationDate = z.infer<typeof TaskProductionNoOperationDateSchema>;
+const WeeklyProductionPlanTasksSchema = z.object({
+    tasks: z.array(TaskProductionNoOperationDateSchema),
+    events: z.array(TaskProductionEventSchema)
+});
 
-export async function getTasksNoOperationDate(id: WeeklyPlanProductionPlan['id']): Promise<TaskProductionNoOperationDate[]> {
+export type TaskProductionEvents = z.infer<typeof TaskProductionEventSchema>;
+export type TaskProductionNoOperationDate = z.infer<typeof TaskProductionNoOperationDateSchema>;
+export type WeeklyProductionPlanTasks = z.infer<typeof WeeklyProductionPlanTasksSchema>;
+
+export async function getAllTasksWeeklyProductionPlan(id: WeeklyPlanProductionPlan['id']): Promise<WeeklyProductionPlanTasks> {
     try {
-        const url = `/api/weekly_production_plan/tasks-no-operation-date/${id}`;
+        const url = `/api/weekly_production_plan/all-tasks/${id}`;
         const { data } = await clienteAxios(url);
-        const result = TasksProductionNoOperationDateSchema.safeParse(data);
+        const result = WeeklyProductionPlanTasksSchema.safeParse(data);
         if (result.success) {
-            return result.data.data
+            return result.data
         } else {
             throw new Error("Información no valida");
         }
