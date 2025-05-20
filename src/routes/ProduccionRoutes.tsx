@@ -9,7 +9,7 @@ const routes = [
   { path: "/planes-produccion", component: lazy(() => import("@/views/produccion/planes_semanales/IndexPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics'] },
 
   { path: "/planes-produccion/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics'] },
-  { path: "/planes-produccion/calendario/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/CalendarTasks")), roles: ['admin', 'audiproceso', 'logistics'] },
+  { path: "/planes-produccion/calendario/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/PlanificacionTareasProduccion")), roles: ['admin', 'audiproceso', 'logistics'] },
   { path: "/planes-produccion/:plan_id/:linea_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowLineaDetalles")), roles: ['admin', 'audiproceso', 'logistics'] },
   { path: "/planes-produccion/asignacion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/AsignarEmpleadosTareaProduccion")), roles: ['admin', 'audiproceso'] },
   { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/TaskProductionPlanDetails")), roles: ['admin', 'audiproceso', 'logistics'] },

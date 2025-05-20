@@ -26,7 +26,7 @@ export default function FiltersReceptionsPackingMaterial({ isOpen, setIsOpen, se
 
     const { data } = useQuery({
         queryKey: ['getPackingMaterials'],
-        queryFn: getPackingMaterials
+        queryFn: () => getPackingMaterials({name: ''})
     });
 
     const handleFilterTempChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {

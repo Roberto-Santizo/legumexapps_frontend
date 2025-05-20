@@ -49,11 +49,11 @@ export default function ShowTaskProductionDetails() {
 
     const { mutate, isPending } = useMutation({
         mutationFn: startTaskProduction,
-        onError: () => {
-            toast.error('Error al cerrar la asignación');
+        onError: (error) => {
+            toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Tarea Iniciada Correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             navigate(url, { replace: true });
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
 
