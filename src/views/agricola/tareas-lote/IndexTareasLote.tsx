@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { getTasks } from "@/api/TasksWeeklyPlanAPI";
 import { TasksWeeklyPlan } from "@/types";
+import { getUserRole } from "@/api/UserAPI";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import Task from "@/components/tareas-lote-plan/Task";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -30,11 +30,10 @@ export default function IndexTareasLote() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState<FiltersTareasLoteType>(initialValues);
   const [tempFilters, setTempFilters] = useState<FiltersTareasLoteType>(initialValues);
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
   const results = useQueries({
     queries: [
-      { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken },
+      { queryKey: ['getUserRoleByToken'], queryFn: getUserRole },
       { queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id,filters], queryFn: () => getTasks({ cdp: lote_plantation_control_id, weekly_plan_id, filters}) },
     ]
   });

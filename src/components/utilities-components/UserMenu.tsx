@@ -1,8 +1,12 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
-import { Dispatch, SetStateAction, useState } from "react";
-import { toast } from "react-toastify";
+import { Dispatch, SetStateAction } from "react";
 import { User2Icon } from "lucide-react";
 import { useAppStore } from "@/stores/useAppStore";
+import { logout } from "@/api/AuthAPI";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { motion } from 'framer-motion';
 import Spinner from "./Spinner";
 
 type UserMobileProps = {
@@ -10,58 +14,70 @@ type UserMobileProps = {
 };
 
 export default function UserMenu({ setOpen }: UserMobileProps) {
-
-  const [loading,setLoading] = useState<boolean>(false);
-  const logout = useAppStore((state) => state.logOut);
   const user = useAppStore((state) => state.AuthUser);
+  const navigate = useNavigate();
 
-  const handleClick = async () => {
-    setLoading(true);
-    try {
-      await logout();
-      toast.success("Sesión cerrada correctamente")
-    } catch (error) {
-      toast.error("Hubo un error al cerrar sesión, intentelo de nuevo más tarde");
-    } finally{
-      setLoading(false);
-    }
-  };
+  const { mutate, isPending } = useMutation({
+    mutationFn: logout,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      localStorage.removeItem('AUTH_TOKEN');
+      localStorage.removeItem('AUTH_USER');
+      toast.success(data);
+      navigate("/login");
+      window.location.reload;
+    },
+  });
 
   return (
-    <div className="bg-opacity-70 fixed top-0 right-0 m-4 flex justify-center items-center z-50">
-      <div className="bg-white w-full max-w-md h-auto flex flex-col justify-between text-white rounded-lg shadow-lg p-10">
-        <div className="flex justify-end text-black">
+    <div className="fixed inset-0 z-50 flex justify-end p-4 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)}>
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 100 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 flex flex-col gap-6"
+      >
+        <div className="flex justify-end">
           <XCircleIcon
-            className="w-5 hover:text-red-500 cursor-pointer"
+            className="w-6 h-6 text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
             onClick={() => setOpen(false)}
           />
         </div>
 
-        <div className="flex flex-col gap-2 text-black">
-          <div className="flex items-center gap-3 p-2">
-            <User2Icon width={64} height={64}/>
-            <div>
-              <p className="text-lg text-black font-bold">{user.name}</p>
-            </div>
+        <div className="flex items-center gap-4">
+          <div className="bg-indigo-100 p-3 rounded-full">
+            <User2Icon className="w-10 h-10 text-indigo-600" />
           </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
+            <p className="text-sm text-gray-500">{user.username}</p>
+          </div>
+        </div>
 
-          <p className="text-lg">
-            <span className="font-bold">Nombre de Usuario</span>:{" "}
-            {user.username}
+        <div className="space-y-2 text-gray-700 text-base">
+          <p>
+            <span className="font-semibold">Nombre de Usuario:</span> {user.username}
           </p>
-          <p className="text-lg">
-            <span className="font-bold">Correo: </span>
-            {user.email ==='' ? 'SIN CORREO ASOCIADO' : user.email}
+          <p>
+            <span className="font-semibold">Correo:</span>{' '}
+            {user.email === '' ? 'SIN CORREO ASOCIADO' : user.email}
           </p>
         </div>
 
         <button
-          className="bg-blue-500 hover:bg-blue-600 button mt-10"
-          onClick={() => handleClick()}
+          disabled={isPending}
+          onClick={() => mutate()}
+          className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition uppercase ${isPending
+            ? 'bg-indigo-300 cursor-not-allowed'
+            : 'bg-indigo-600 hover:bg-indigo-700'
+            }`}
         >
-          {loading ? <Spinner /> : "Cerrar Sesión"}
+          {isPending ? <Spinner /> : 'Cerrar Sesión'}
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 }

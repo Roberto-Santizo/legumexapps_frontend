@@ -13,11 +13,6 @@ import { DefectSchema } from '@/api/ProductsAPI'
 
 export type AuthUser = z.infer<typeof AuthUserSchema>
 
-export type LoginUser = {
-    username: string,
-    password: string,
-}
-
 export type Tarea = z.infer<typeof TareaSchema>
 export type TareasPaginate = z.infer<typeof TareasPaginateSchema>
 

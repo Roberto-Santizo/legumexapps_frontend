@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
 import { Boleta, getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
-import { useAppStore } from "@/stores/useAppStore";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { toast } from "react-toastify";
+import { getUserRole } from "@/api/UserAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersRMP, { FiletrsBoletaRMP } from "@/components/filters/FiletrsRMP";
@@ -24,7 +24,6 @@ export default function IndexRMP() {
     const [boletaSelected, setBoletaSelected] = useState<Boleta>();
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
     const { data, isError, isLoading, refetch } = useQuery({
         queryKey: ['getPaginatedBoletasRMP', currentPage, filters],
@@ -44,7 +43,7 @@ export default function IndexRMP() {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken }
+            { queryKey: ['getUserRoleByToken'], queryFn: getUserRole }
         ]
     })
 

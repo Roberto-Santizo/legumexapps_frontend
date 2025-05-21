@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useAppStore } from "../../stores/useAppStore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { getUserRole } from "@/api/UserAPI";
 import Spinner from "../utilities-components/Spinner";
 
 interface ProtectedRoutesProps {
@@ -11,20 +11,18 @@ interface ProtectedRoutesProps {
 }
 
 export default function ProtectedRoutes({ roles, children }: ProtectedRoutesProps) {
-  const logedIn = useAppStore((state) => state.logedIn);
   const navigate = useNavigate();
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
 
   const { data: role, isLoading, isError } = useQuery({
     queryKey: ['getUserRoleByToken'],
-    queryFn: getUserRoleByToken
+    queryFn: getUserRole
   });
 
   useEffect(() => {
-    if (!logedIn) {
+    if (!role) {
       navigate("/login");
     }
-  }, [logedIn, navigate]);
+  }, [role]);
 
   useEffect(() => {
     if (role && roles.length > 0 && !roles.includes(role)) {

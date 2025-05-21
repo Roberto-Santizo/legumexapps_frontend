@@ -1,5 +1,4 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useAppStore } from "@/stores/useAppStore";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { WeeklyPlan } from "@/types";
@@ -7,6 +6,7 @@ import { toast } from "react-toastify";
 import { getAllPlans } from "@/api/WeeklyPlansAPI";
 import { editTask, EditTaskWeeklyPlan, getEditTask } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
+import { getUserRole } from "@/api/UserAPI";
 import InputComponent from "@/components/form/InputComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
@@ -33,12 +33,11 @@ export default function EditarTareaLote() {
   const [role, setRole] = useState<string>('');
 
   const navigate = useNavigate();
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken)
 
   const results = useQueries({
     queries: [
       { queryKey: ['getTask', id], queryFn: () => getEditTask(id) },
-      { queryKey: ['getUserRoleByToken'], queryFn: getUserRoleByToken },
+      { queryKey: ['getUserRoleByToken'], queryFn: getUserRole },
       { queryKey: ['getAllPlans'], queryFn: getAllPlans },
     ]
   });

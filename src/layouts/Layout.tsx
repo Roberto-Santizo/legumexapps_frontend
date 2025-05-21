@@ -18,8 +18,8 @@ export default function Layout() {
     retry: false
   });
 
-  if(isError){
-    toast.error(error.message,{toastId: 'loginError'});
+  if (isError) {
+    toast.error(error.message, { toastId: 'loginError' });
     return <Navigate to={'/'} />
   }
 
