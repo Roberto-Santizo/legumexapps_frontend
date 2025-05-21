@@ -32,7 +32,7 @@ export default function IndexTareas() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedTasks', currentPage, filters],
-    queryFn: () => getTasks({ page: currentPage, filters, paginated: '' }),
+    queryFn: () => getTasks({ page: currentPage, filters, paginated: 'true' }),
   });
 
   const handlePageChange = (selectedItem: { selected: number }) => {
