@@ -46,12 +46,12 @@ export const InsumosSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional(),
 });
 
 export type Insumos = z.infer<typeof InsumosSchema>;
 
-export async function getInsumos({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersInsumosType, paginated: boolean }): Promise<Insumos> {
+export async function getInsumos({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersInsumosType, paginated: string }): Promise<Insumos> {
     try {
         const url = `/api/insumos?paginated=${paginated}&page=${currentPage}&code=${filters.code}&name=${filters.name}`;
         const { data } = await clienteAxios(url);

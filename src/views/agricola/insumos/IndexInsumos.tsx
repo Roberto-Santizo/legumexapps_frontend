@@ -28,11 +28,11 @@ export default function IndexInsumos() {
 
   const { data: insumos, isLoading, isError } = useQuery({
     queryKey: ['getInsumos', currentPage, filters],
-    queryFn: () => getInsumos({ currentPage, filters, paginated: true }),
+    queryFn: () => getInsumos({ currentPage, filters, paginated: 'true' }),
   });
 
   useEffect(() => {
-    if (insumos) {
+    if (insumos && insumos.meta) {
       setPageCount(insumos.meta.last_page);
       setCurrentPage(insumos.meta.current_page);
     }

@@ -20,7 +20,7 @@ export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Pr
 
     const { data } = useQuery({
         queryKey: ["getInsumos"],
-        queryFn: () => getInsumos({ currentPage: 1, filters: FiltersInsumosInitialValues, paginated: false }),
+        queryFn: () => getInsumos({ currentPage: 1, filters: FiltersInsumosInitialValues, paginated: '' }),
     });
 
     const insumosOptions = insumos.map((insumo) => ({
