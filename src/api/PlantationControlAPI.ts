@@ -52,40 +52,19 @@ export const PlantationsPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional(),
 });
 
 export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>
 
 
-export async function getPaginatedCDPS(page: number, filters : FiltersCDPType): Promise<PlantationsPaginate> {
+export async function getCDPS({ page, filters, paginated }: { page: number, filters: FiltersCDPType, paginated: string }): Promise<PlantationsPaginate> {
     try {
-        const url = `/api/cdps?page=${page}&cdp=${filters.cdp}&start_date=${filters.start_date}&end_date=${filters.end_date}`;
+        const url = `/api/cdps?paginated=${paginated}&page=${page}&cdp=${filters.cdp}&start_date=${filters.start_date}&end_date=${filters.end_date}`;
         const { data } = await clienteAxios(url);
         const result = PlantationsPaginateSchema.safeParse(data);
         if (result.success) {
             return result.data
-        } else {
-            throw new Error("Error al traer los cdps");
-        }
-    } catch (error: any) {
-        console.log(error);
-        throw error;
-    }
-}
-
-
-export const PlantationsSchema = z.object({
-    data: z.array(Plantation),
-});
-
-export async function getCDPS(): Promise<Plantation[]> {
-    try {
-        const url = `/api/cdps-list/all`;
-        const { data } = await clienteAxios(url);
-        const result = PlantationsSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
         } else {
             throw new Error("Error al traer los cdps");
         }
