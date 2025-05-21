@@ -1,13 +1,13 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getPaginatedLotes } from "@/api/LotesAPI";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersLotes from "@/components/filters/FiltersLotes";
+import { getLotes } from "@/api/LotesAPI";
 
 export type FiltersLotesType = {
   name: string;
@@ -15,7 +15,7 @@ export type FiltersLotesType = {
   finca_id: string;
 }
 
-const initialValues = {
+export const FiltersLoteInitialValues : FiltersLotesType = {
   name: "",
   cdp: "",
   finca_id: ""
@@ -25,13 +25,13 @@ export default function IndexLotes() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<FiltersLotesType>(initialValues);
-  const [tempFilters, setTempFilters] = useState<FiltersLotesType>(initialValues);
+  const [filters, setFilters] = useState<FiltersLotesType>(FiltersLoteInitialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersLotesType>(FiltersLoteInitialValues);
 
 
   const { data: lotes, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedLotes', currentPage, filters],
-    queryFn: () => getPaginatedLotes(currentPage, filters)
+    queryFn: () => getLotes({ page: currentPage, filters: filters, paginated: true }),
   });
 
   useEffect(() => {

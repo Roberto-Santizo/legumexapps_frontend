@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { getPaginatedPlans } from "@/api/WeeklyPlansAPI";
 import { Link } from "react-router-dom";
 import { CheckCircle, Download, PlusIcon, XIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import { downloadWeeklyPlanReport } from "@/api/WeeklyPlansAPI";
+import { downloadWeeklyPlanReport, getWeeklyPlans } from "@/api/WeeklyPlansAPI";
 import { WeeklyPlan } from "@/types";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { usePermissions } from "@/hooks/usePermissions";
+import { Bars3Icon } from "@heroicons/react/16/solid";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InsumosColumns from "@/components/planes-semanales-finca/InsumosColumns";
 import ActionsColumns from "@/components/planes-semanales-finca/ActionsColumns";
 import BudgetColumns from "@/components/planes-semanales-finca/BudgetColumns";
-import { Bars3Icon } from "@heroicons/react/16/solid";
 import FiltersPlanSemanalFinca from "@/components/filters/FiltersPlanSemanalFinca";
 
 export type FiltersPlanSemanalType = {
@@ -23,11 +22,13 @@ export type FiltersPlanSemanalType = {
   year: string;
 }
 
-const initialValues = {
+export const FiltersPlanSemanalInitialValues: FiltersPlanSemanalType = {
   finca_id: "",
   week: "",
   year: ""
 }
+
+const paginated = true;
 
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
@@ -36,8 +37,8 @@ export default function IndexPlanSemanal() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<FiltersPlanSemanalType>(initialValues);
-  const [tempFilters, setTempFilters] = useState<FiltersPlanSemanalType>(initialValues);
+  const [filters, setFilters] = useState<FiltersPlanSemanalType>(FiltersPlanSemanalInitialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersPlanSemanalType>(FiltersPlanSemanalInitialValues);
   const { hasPermission } = usePermissions();
 
   const { mutate: handleDowloadReportMutation, isPending: handleDowloadReportMutationPending } = useMutation({
@@ -53,7 +54,7 @@ export default function IndexPlanSemanal() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedPlans', currentPage, filters],
-    queryFn: () => getPaginatedPlans(currentPage, filters)
+    queryFn: () => getWeeklyPlans({ page: currentPage, filters: filters, paginated }),
   });
 
   useEffect(() => {

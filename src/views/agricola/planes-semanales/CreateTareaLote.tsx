@@ -1,22 +1,21 @@
-import { useEffect, useState } from "react";
-import { Tarea, WeeklyPlan } from "@/types";
+import { useState } from "react";
+import { WeeklyPlan } from "@/types";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { getAllPlans } from "@/api/WeeklyPlansAPI";
-import { getAllLotes, Lote } from "@/api/LotesAPI";
-import { getAllTasks } from "@/api/TasksAPI";
-import { useQueries } from "@tanstack/react-query";
+import { Lote } from "@/api/LotesAPI";
+import { getTasks } from "@/api/TasksAPI";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Delete, PlusIcon } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
+import { getCurrentDate } from "@/helpers";
+import { FiltersTasksInitialValues } from "../tareas/IndexTareas";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
-import { getCurrentDate } from "@/helpers";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;
@@ -36,10 +35,12 @@ export type DraftNewTaskWeeklyPlan = {
   operation_date: string;
 }
 
-export default function CreateTareaLote() {
-  const [lotes, setLotes] = useState<Lote[]>([]);
-  const [tareas, setTareas] = useState<Tarea[]>([]);
-  const [plans, setPlans] = useState<WeeklyPlan[]>([]);
+type Props = {
+  plans: WeeklyPlan[];
+  lotes: Lote[];
+}
+
+export default function CreateTareaLote({ plans, lotes }: Props) {
   const [selectedInsumos, setSelectedInsumos] = useState<DraftSelectedInsumo[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -54,26 +55,17 @@ export default function CreateTareaLote() {
       navigate('/planes-semanales');
     }
   });
-  const results = useQueries({
-    queries: [
-      { queryKey: ['getAllLotes'], queryFn: getAllLotes },
-      { queryKey: ['getAllTasks'], queryFn: getAllTasks },
-      { queryKey: ['getAllPlans'], queryFn: getAllPlans }
-    ]
-  })
-
-  useEffect(() => {
-    if (results[0].data) setLotes(results[0].data)
-    if (results[1].data) setTareas(results[1].data)
-    if (results[2].data) setPlans(results[2].data)
-  }, [results])
+  const { data: tasks } = useQuery({
+    queryKey: ['getAllTasks'],
+    queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: false }),
+  });
 
   const lotesOptions = lotes.map((lote) => ({
     value: lote.id,
     label: lote.name,
   }));
 
-  const tareasOptions = tareas.map((lote) => ({
+  const tareasOptions = tasks?.data.map((lote) => ({
     value: lote.id,
     label: `${lote.code} ${lote.name}`,
   }));
@@ -183,7 +175,7 @@ export default function CreateTareaLote() {
             label="Tarea"
             id="tarea_id"
             name="tarea_id"
-            options={tareasOptions}
+            options={tareasOptions ? tareasOptions : []}
             control={control}
             rules={{ required: "La tarea a realizar es obligatoria" }}
             errors={errors}

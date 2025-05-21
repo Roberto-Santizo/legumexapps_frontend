@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getPaginatedTasks } from "@/api/TasksAPI";
 import { Edit, PlusIcon } from "lucide-react";
 import { Tarea } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersTareas from "@/components/filters/FiltersTareas";
+import { getTasks } from "@/api/TasksAPI";
 
 
 export type FiltersTareasType = {
@@ -16,7 +16,7 @@ export type FiltersTareasType = {
   code: string;
 }
 
-const initialValues = {
+export const FiltersTasksInitialValues: FiltersTareasType = {
   name: "",
   code: ""
 }
@@ -26,13 +26,13 @@ export default function IndexTareas() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<FiltersTareasType>(initialValues);
-  const [tempFilters, setTempFilters] = useState<FiltersTareasType>(initialValues);
+  const [filters, setFilters] = useState<FiltersTareasType>(FiltersTasksInitialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersTareasType>(FiltersTasksInitialValues);
 
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedTasks', currentPage, filters],
-    queryFn: () => getPaginatedTasks(currentPage, filters)
+    queryFn: () => getTasks({ page: currentPage, filters, paginated: true }),
   });
 
   const handlePageChange = (selectedItem: { selected: number }) => {

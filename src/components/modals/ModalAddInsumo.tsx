@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getAllInsumos, Insumo } from "@/api/InsumosAPI";
+import { getInsumos, Insumo } from "@/api/InsumosAPI";
 import { useForm } from "react-hook-form";
 import { DraftSelectedInsumo } from "views/agricola/planes-semanales/CreateTareaLote";
+import { useQuery } from "@tanstack/react-query";
+import { FiltersInsumosInitialValues } from "@/views/agricola/insumos/IndexInsumos";
 import Error from "../utilities-components/Error";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
@@ -16,21 +17,22 @@ type Props = {
 
 export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Props) {
     const [insumos, setInsumos] = useState<Insumo[]>([]);
-    const { data } = useQuery({
-        queryKey: ["getAllInsumos"],
-        queryFn: getAllInsumos,
-    });
 
-    useEffect(() => {
-        if (data) {
-            setInsumos(data);
-        }
-    }, [data]);
+    const { data } = useQuery({
+        queryKey: ["getInsumos"],
+        queryFn: () => getInsumos({ currentPage: 1, filters: FiltersInsumosInitialValues, paginated: false }),
+    });
 
     const insumosOptions = insumos.map((insumo) => ({
         value: insumo.id,
         label: `${insumo.code} | ${insumo.name} | ${insumo.measure}`,
     }));
+
+    useEffect(() => {
+        if (data) {
+            setInsumos(data.data);
+        }
+    }, [data]);
 
     const {
         handleSubmit,
@@ -69,17 +71,17 @@ export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Pr
             <div className="p-6 space-y-6">
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                     <InputSelectSearchComponent<DraftSelectedInsumo>
-                      label="Insumo"
-                      id="insumo_id"
-                      name="insumo_id"
-                      options={insumosOptions}
-                      control={control}
-                      rules={{required: 'Seleccione un insumo'}}
-                      errors={errors}
+                        label="Insumo"
+                        id="insumo_id"
+                        name="insumo_id"
+                        options={insumosOptions}
+                        control={control}
+                        rules={{ required: 'Seleccione un insumo' }}
+                        errors={errors}
                     >
                         {errors.insumo_id && <Error>{errors.insumo_id?.message?.toString()}</Error>}
                     </InputSelectSearchComponent>
-                   
+
 
                     <InputComponent<DraftSelectedInsumo>
                         label="Cantidad"
@@ -87,7 +89,7 @@ export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Pr
                         name="quantity"
                         placeholder="Cantidad a asignar"
                         register={register}
-                        validation={{required:"La cantidad del insumo es obligatoria"}}
+                        validation={{ required: "La cantidad del insumo es obligatoria" }}
                         errors={errors}
                         type={'number'}
                     >

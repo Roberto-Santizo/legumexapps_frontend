@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { WeeklyPlan } from "@/types";
 import { toast } from "react-toastify";
-import { getAllPlans } from "@/api/WeeklyPlansAPI";
 import { editTask, EditTaskWeeklyPlan, getEditTask } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { getUserRole } from "@/api/UserAPI";
@@ -11,6 +10,8 @@ import InputComponent from "@/components/form/InputComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
+import { FiltersPlanSemanalInitialValues } from "../planes-semanales/IndexPlanSemanal";
 
 export type DraftTaskWeeklyPlan = {
   hours: number,
@@ -38,14 +39,14 @@ export default function EditarTareaLote() {
     queries: [
       { queryKey: ['getTask', id], queryFn: () => getEditTask(id) },
       { queryKey: ['getUserRoleByToken'], queryFn: getUserRole },
-      { queryKey: ['getAllPlans'], queryFn: getAllPlans },
+      { queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: false }) },
     ]
   });
 
   useEffect(() => {
     if (results[0].data) setTask(results[0].data);
     if (results[1].data) setRole(results[1].data);
-    if (results[2].data) setPlans(results[2].data);
+    if (results[2].data) setPlans(results[2].data.data);
   }, [results]);
 
   const plansOptions = plans.map((plan) => ({

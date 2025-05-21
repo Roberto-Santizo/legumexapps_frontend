@@ -40,26 +40,6 @@ export async function uploadInsumos(file: File[]) {
     }
 }
 
-export const AllInsumosSchema = z.object({
-    data: z.array(InsumoSchema)
-});
-
-
-export async function getAllInsumos(): Promise<Insumo[]> {
-    try {
-        const url = '/api/insumos-all';
-        const { data } = await clienteAxios(url);
-        const result = AllInsumosSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no valida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export const InsumosSchema = z.object({
     data: z.array(InsumoSchema),
@@ -71,10 +51,9 @@ export const InsumosSchema = z.object({
 
 export type Insumos = z.infer<typeof InsumosSchema>;
 
-export async function getPaginatedInsumos(currentPage: number, filters:FiltersInsumosType): Promise<Insumos> {
+export async function getInsumos({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersInsumosType, paginated: boolean }): Promise<Insumos> {
     try {
-        const url = `/api/insumos?page=${currentPage}&code=${filters.code}&name=${filters.name}`;
-        console.log(url);
+        const url = `/api/insumos?paginated=${paginated}&page=${currentPage}&code=${filters.code}&name=${filters.name}`;
         const { data } = await clienteAxios(url);
         const result = InsumosSchema.safeParse(data);
         if (result.success) {

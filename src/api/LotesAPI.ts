@@ -39,9 +39,9 @@ export const LotesPaginateSchema = z.object({
 export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
 
 
-export async function getPaginatedLotes(page: number, filters: FiltersLotesType): Promise<PaginatedLotes> {
+export async function getLotes({ page, filters, paginated }: { page: number, filters: FiltersLotesType, paginated: boolean }): Promise<PaginatedLotes> {
     try {
-        const url = `/api/lotes?page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
+        const url = `/api/lotes?paginated=${paginated}&page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
         const { data } = await clienteAxios(url)
         const result = LotesPaginateSchema.safeParse(data);
         if (result.success) {
@@ -50,27 +50,6 @@ export async function getPaginatedLotes(page: number, filters: FiltersLotesType)
             throw new Error('Información no válida');
         }
     } catch (error: any) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export const LotesSchema = z.object({
-    data: z.array(LoteSchema)
-});
-
-
-export async function getAllLotes(): Promise<Lote[]> {
-    try {
-        const url = '/api/lotes-all';
-        const { data } = await clienteAxios(url);
-        const result = LotesSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
         console.log(error);
         throw error;
     }

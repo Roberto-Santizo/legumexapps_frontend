@@ -1,6 +1,6 @@
 import clienteAxios from "@/config/axios";
 import { Tarea, TareasPaginate } from "@/types";
-import { TareaSchema, TareasPaginateSchema, TareasSchema } from "@/utils/tareas-schema";
+import { TareaSchema, TareasPaginateSchema } from "@/utils/tareas-schema";
 import { DraftTarea } from "@/views/agricola/tareas/CreateTarea";
 import { FiltersTareasType } from "@/views/agricola/tareas/IndexTareas";
 import { isAxiosError } from "axios";
@@ -31,9 +31,9 @@ export async function uploadTareas(file: File[]) {
     }
 }
 
-export async function getPaginatedTasks(page: number, filetrs: FiltersTareasType): Promise<TareasPaginate> {
+export async function getTasks({ page, filters, paginated }: { page: number, filters: FiltersTareasType, paginated: boolean }): Promise<TareasPaginate> {
     try {
-        const url = `/api/tareas?page=${page}&name=${filetrs.name}&code=${filetrs.code}`;
+        const url = `/api/tareas?paginated=${paginated}&page=${page}&name=${filters.name}&code=${filters.code}`;
         const { data } = await clienteAxios(url);
         const result = TareasPaginateSchema.safeParse(data);
 
@@ -48,21 +48,6 @@ export async function getPaginatedTasks(page: number, filetrs: FiltersTareasType
     }
 }
 
-export async function getAllTasks(): Promise<Tarea[]> {
-    try {
-        const url = '/api/tareas-all';
-        const { data } = await clienteAxios(url);
-        const result = TareasSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export async function getTareaById(id: Tarea['id']): Promise<Tarea> {
     try {
