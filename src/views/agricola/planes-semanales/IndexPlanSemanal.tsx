@@ -58,6 +58,9 @@ export default function IndexPlanSemanal() {
   useEffect(() => {
     if (data) {
       setWeeklyPlans(data.data);
+    }
+
+    if (data && data.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }

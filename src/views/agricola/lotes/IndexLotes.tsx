@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
+import { getLotes } from "@/api/LotesAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersLotes from "@/components/filters/FiltersLotes";
-import { getLotes } from "@/api/LotesAPI";
 
 export type FiltersLotesType = {
   name: string;
@@ -15,7 +15,7 @@ export type FiltersLotesType = {
   finca_id: string;
 }
 
-export const FiltersLoteInitialValues : FiltersLotesType = {
+export const FiltersLoteInitialValues: FiltersLotesType = {
   name: "",
   cdp: "",
   finca_id: ""
@@ -35,7 +35,7 @@ export default function IndexLotes() {
   });
 
   useEffect(() => {
-    if (lotes) {
+    if (lotes?.meta) {
       setPageCount(lotes.meta.last_page);
       setPageCount(lotes.meta.current_page);
     }

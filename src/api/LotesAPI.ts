@@ -4,8 +4,8 @@ import { CDPsSchema } from "@/utils/plantation-schema";
 import { DraftLote } from "@/views/agricola/lotes/CreateLote";
 import { isAxiosError } from "axios";
 import { Finca } from "./FincasAPI";
-import clienteAxios from "@/config/axios";
 import { FiltersLotesType } from "@/views/agricola/lotes/IndexLotes";
+import clienteAxios from "@/config/axios";
 
 export async function createLote(draftlote: DraftLote) {
     try {
@@ -33,7 +33,7 @@ export const LotesPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional(),
 });
 
 export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>

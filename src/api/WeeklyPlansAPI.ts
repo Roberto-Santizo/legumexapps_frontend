@@ -20,7 +20,7 @@ export async function createPlan(file: File[]): Promise<void | string[]> {
 export async function getWeeklyPlans({ page, filters, paginated }: { page: number, filters: FiltersPlanSemanalType, paginated: string }): Promise<WeeklyPlansPaginate> {
     try {
         const url = `/api/plans?paginated=${paginated}&page=${page}&finca_id=${filters.finca_id}&week=${filters.week}&year=${filters.year}`;
-        const { data } = await clienteAxios(url)
+        const { data } = await clienteAxios(url);
         const result = WeeklyPlansPaginateSchema.safeParse(data);
         if (result.success) {
             return result.data
@@ -28,6 +28,7 @@ export async function getWeeklyPlans({ page, filters, paginated }: { page: numbe
             throw new Error('Error datos no válidos');
         }
     } catch (error: any) {
+        console.log(error);
         throw error;
     }
 }
