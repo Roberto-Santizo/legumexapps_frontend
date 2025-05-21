@@ -17,7 +17,7 @@ export async function createPlan(file: File[]): Promise<void | string[]> {
     }
 }
 
-export async function getWeeklyPlans({ page, filters, paginated }: { page: number, filters: FiltersPlanSemanalType, paginated: boolean }): Promise<WeeklyPlansPaginate> {
+export async function getWeeklyPlans({ page, filters, paginated }: { page: number, filters: FiltersPlanSemanalType, paginated: string }): Promise<WeeklyPlansPaginate> {
     try {
         const url = `/api/plans?paginated=${paginated}&page=${page}&finca_id=${filters.finca_id}&week=${filters.week}&year=${filters.year}`;
         const { data } = await clienteAxios(url)

@@ -4,11 +4,11 @@ import { Edit, PlusIcon } from "lucide-react";
 import { Tarea } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
+import { getTasks } from "@/api/TasksAPI";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersTareas from "@/components/filters/FiltersTareas";
-import { getTasks } from "@/api/TasksAPI";
 
 
 export type FiltersTareasType = {
@@ -32,7 +32,7 @@ export default function IndexTareas() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedTasks', currentPage, filters],
-    queryFn: () => getTasks({ page: currentPage, filters, paginated: true }),
+    queryFn: () => getTasks({ page: currentPage, filters, paginated: '' }),
   });
 
   const handlePageChange = (selectedItem: { selected: number }) => {
@@ -42,6 +42,9 @@ export default function IndexTareas() {
   useEffect(() => {
     if (data) {
       setTareas(data.data);
+    }
+
+    if (data && data.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }

@@ -39,7 +39,7 @@ export default function EditarTareaLote() {
     queries: [
       { queryKey: ['getTask', id], queryFn: () => getEditTask(id) },
       { queryKey: ['getUserRoleByToken'], queryFn: getUserRole },
-      { queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: false }) },
+      { queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: '' }) },
     ]
   });
 

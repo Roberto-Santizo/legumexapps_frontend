@@ -31,7 +31,7 @@ export default function IndexLotes() {
 
   const { data: lotes, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedLotes', currentPage, filters],
-    queryFn: () => getLotes({ page: currentPage, filters: filters, paginated: true }),
+    queryFn: () => getLotes({ page: currentPage, filters: filters, paginated: '' }),
   });
 
   useEffect(() => {

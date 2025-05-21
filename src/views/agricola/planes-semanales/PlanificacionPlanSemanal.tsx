@@ -48,8 +48,8 @@ const CalendarComponent = () => {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getAllLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: false }) },
-            { queryKey: ['getAllTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: false }) },
+            { queryKey: ['getAllLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' }) },
+            { queryKey: ['getAllTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
         ]
     })
 
@@ -68,7 +68,7 @@ const CalendarComponent = () => {
         label: `${lote.code} ${lote.name}`,
     }));
 
-    const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: false }) });
+    const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: '' }) });
     const { data: tasks, isLoading } = useQuery({
         queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId],
         queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId }),

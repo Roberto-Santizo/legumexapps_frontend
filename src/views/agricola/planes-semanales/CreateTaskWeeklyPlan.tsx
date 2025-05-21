@@ -8,19 +8,17 @@ import { FiltersLoteInitialValues } from "../lotes/IndexLotes";
 import CreateTareaLote from "./CreateTareaLote";
 import CreateTareaLoteCosecha from "./CreateTareaLoteCosecha";
 
-const paginated = false;
-
 export default function CreateTaskWeeklyPlan() {
   const [activeForm, setActiveForm] = useState<string>("A");
 
   const { data: plans } = useQuery({
     queryKey: ['getWeeklyPlans'],
-    queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated })
+    queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: '' })
   });
 
   const { data: lotes } = useQuery({
     queryKey: ['getLotes'],
-    queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated })
+    queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' })
   });
 
   if (plans && lotes) return (

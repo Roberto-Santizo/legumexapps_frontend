@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { AuthUserSchema } from '@/utils/users-schema'
-import { TareaSchema, TareasPaginateSchema } from '@/utils/tareas-schema'
+import { TareaSchema } from '@/utils/tareas-schema'
 import { CDPSchema } from '@/utils/plantation-schema'
 import { SummaryWeeklyPlanSchema, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '@/utils/weekly_plans-schema'
 import { TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '@/utils/taskWeeklyPlan-schema'
@@ -14,7 +14,6 @@ import { DefectSchema } from '@/api/ProductsAPI'
 export type AuthUser = z.infer<typeof AuthUserSchema>
 
 export type Tarea = z.infer<typeof TareaSchema>
-export type TareasPaginate = z.infer<typeof TareasPaginateSchema>
 
 export type TaskCrop = z.infer<typeof TaskCropSchema >
 

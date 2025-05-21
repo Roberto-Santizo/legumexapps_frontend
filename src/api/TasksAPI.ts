@@ -1,9 +1,10 @@
 import clienteAxios from "@/config/axios";
-import { Tarea, TareasPaginate } from "@/types";
-import { TareaSchema, TareasPaginateSchema } from "@/utils/tareas-schema";
+import { Tarea } from "@/types";
+import { TareaSchema } from "@/utils/tareas-schema";
 import { DraftTarea } from "@/views/agricola/tareas/CreateTarea";
 import { FiltersTareasType } from "@/views/agricola/tareas/IndexTareas";
 import { isAxiosError } from "axios";
+import { z } from "zod";
 
 export async function createTarea(FormData: DraftTarea) {
     try {
@@ -30,8 +31,17 @@ export async function uploadTareas(file: File[]) {
         }
     }
 }
+export const TareasPaginateSchema = z.object({
+    data: z.array(TareaSchema),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    }).optional(),
+})
 
-export async function getTasks({ page, filters, paginated }: { page: number, filters: FiltersTareasType, paginated: boolean }): Promise<TareasPaginate> {
+export type TareasPaginate = z.infer<typeof TareasPaginateSchema>
+
+export async function getTasks({ page, filters, paginated }: { page: number, filters: FiltersTareasType, paginated: string }): Promise<TareasPaginate> {
     try {
         const url = `/api/tareas?paginated=${paginated}&page=${page}&name=${filters.name}&code=${filters.code}`;
         const { data } = await clienteAxios(url);

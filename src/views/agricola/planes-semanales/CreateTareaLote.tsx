@@ -57,7 +57,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
   });
   const { data: tasks } = useQuery({
     queryKey: ['getAllTasks'],
-    queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: false }),
+    queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }),
   });
 
   const lotesOptions = lotes.map((lote) => ({

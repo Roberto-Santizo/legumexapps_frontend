@@ -28,8 +28,6 @@ export const FiltersPlanSemanalInitialValues: FiltersPlanSemanalType = {
   year: ""
 }
 
-const paginated = true;
-
 export default function IndexPlanSemanal() {
   const [selectingReport, setSelectingReport] = useState<boolean>(false);
   const [plansId, setPlansId] = useState<WeeklyPlan["id"][]>([]);
@@ -54,7 +52,7 @@ export default function IndexPlanSemanal() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedPlans', currentPage, filters],
-    queryFn: () => getWeeklyPlans({ page: currentPage, filters: filters, paginated }),
+    queryFn: () => getWeeklyPlans({ page: currentPage, filters: filters, paginated: '' }),
   });
 
   useEffect(() => {

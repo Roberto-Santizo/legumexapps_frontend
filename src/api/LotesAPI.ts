@@ -39,7 +39,7 @@ export const LotesPaginateSchema = z.object({
 export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
 
 
-export async function getLotes({ page, filters, paginated }: { page: number, filters: FiltersLotesType, paginated: boolean }): Promise<PaginatedLotes> {
+export async function getLotes({ page, filters, paginated }: { page: number, filters: FiltersLotesType, paginated: string }): Promise<PaginatedLotes> {
     try {
         const url = `/api/lotes?paginated=${paginated}&page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
         const { data } = await clienteAxios(url)
