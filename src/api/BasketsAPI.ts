@@ -13,9 +13,9 @@ export const BasketsSchema = z.object({
 
 export type Basket = z.infer<typeof BasketSchema>;
 
-export async function getAllBaskets(): Promise<Basket[]> {
+export async function getBaskets(): Promise<Basket[]> {
     try {
-        const url = '/api/baskets-all';
+        const url = '/api/baskets';
         const { data } = await clienteAxios(url);
         const result = BasketsSchema.safeParse(data);
         if (result.success) {

@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react";
-import { getPaginatedTransporteCondiciones } from "@/api/BoletaTransporteAPI";
+import { Link } from "react-router-dom";
+import { PlusIcon } from "lucide-react";
+import { getCondicionesTransporte } from "@/api/BoletaTransporteAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import { Link } from "react-router-dom";
-import { PlusIcon } from "lucide-react";
 
 type Condition = {
   id: string;
@@ -19,14 +19,16 @@ export default function IndexTransporteCondiciones() {
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getPaginatedTransporteCondiciones', currentPage],
-    queryFn: () => getPaginatedTransporteCondiciones(currentPage)
+    queryFn: () => getCondicionesTransporte({ page: currentPage, paginated: '' }),
   });
 
   useEffect(() => {
     if (data) {
       setConditions(data.data);
+    }
+    if (data && data.meta) {
       setPageCount(data.meta.last_page);
-      setPageCount(data.meta.current_page);
+      setCurrentPage(data.meta.current_page);
     }
   }, [data]);
 

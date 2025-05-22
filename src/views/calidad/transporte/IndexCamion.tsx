@@ -20,6 +20,9 @@ export default function IndexCamion() {
     useEffect(() => {
         if (data) {
             setDocs(data.data);
+        }
+
+        if (data?.meta) {
             setCurrentPage(data.meta.current_page);
             setPageCount(data.meta.last_page);
         }

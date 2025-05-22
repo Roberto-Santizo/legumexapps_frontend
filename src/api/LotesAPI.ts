@@ -3,9 +3,8 @@ import { CDP } from "@/types";
 import { CDPsSchema } from "@/utils/plantation-schema";
 import { DraftLote } from "@/views/agricola/lotes/CreateLote";
 import { isAxiosError } from "axios";
-import { Finca } from "./FincasAPI";
-import clienteAxios from "@/config/axios";
 import { FiltersLotesType } from "@/views/agricola/lotes/IndexLotes";
+import clienteAxios from "@/config/axios";
 
 export async function createLote(draftlote: DraftLote) {
     try {
@@ -33,15 +32,15 @@ export const LotesPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional(),
 });
 
 export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
 
 
-export async function getPaginatedLotes(page: number, filters: FiltersLotesType): Promise<PaginatedLotes> {
+export async function getLotes({ page, filters, paginated }: { page: number, filters: FiltersLotesType, paginated: string }): Promise<PaginatedLotes> {
     try {
-        const url = `/api/lotes?page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
+        const url = `/api/lotes?paginated=${paginated}&page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
         const { data } = await clienteAxios(url)
         const result = LotesPaginateSchema.safeParse(data);
         if (result.success) {
@@ -55,50 +54,10 @@ export async function getPaginatedLotes(page: number, filters: FiltersLotesType)
     }
 }
 
-export const LotesSchema = z.object({
-    data: z.array(LoteSchema)
-});
-
-
-export async function getAllLotes(): Promise<Lote[]> {
-    try {
-        const url = '/api/lotes-all';
-        const { data } = await clienteAxios(url);
-        const result = LotesSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export const LotesSchemaSelect = z.object({
-    data: z.array(LoteSchema)
-});
-
-export async function getAllLotesByFincaId(id: Finca['id']): Promise<Lote[]> {
-    try {
-        const url = `/api/lotes/finca/${id}`;
-        const { data } = await clienteAxios(url);
-        const result = LotesSchemaSelect.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export async function getAllCdpsByLoteId(id: Lote['id']): Promise<CDP[]> {
     try {
-        const url = `/api/cdps/lote/${id}`;
+        const url = `/api/lotes/${id}`;
         const { data } = await clienteAxios(url);
         const result = CDPsSchema.safeParse(data);
         if (result.success) {
@@ -141,31 +100,7 @@ export const DataLoteSchema = z.object({
 
 export const DataSchema = z.record(z.array(TaskSchema));
 
-export const LoteCDPDetailsSchema = z.object({
-    data_lote: DataLoteSchema,
-    data: DataSchema,
-});
-
-export type loteCDPDetails = z.infer<typeof LoteCDPDetailsSchema>;
 export type TaskCDP = z.infer<typeof TaskSchema>;
-
-export async function getCDPInfoByCDPId(lote_plantation_control_id: CDP['id']): Promise<loteCDPDetails> {
-    try {
-        const url = '/api/cdp/info';
-        const { data } = await clienteAxios(url, {
-            params: { lote_plantation_control_id }
-        })
-        const result = LoteCDPDetailsSchema.safeParse(data);
-        if (result.success) {
-            return result.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export async function updateLotes(file: File[]) {
     try {

@@ -4,10 +4,13 @@ import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Trash } from 'lucide-react';
 import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate, TaskForCalendar } from '@/api/TasksWeeklyPlanAPI';
-import { getAllPlans } from '@/api/WeeklyPlansAPI';
-import { getAllLotes, Lote } from '@/api/LotesAPI';
+import { getLotes, Lote } from '@/api/LotesAPI';
 import { Tarea } from '@/types';
-import { getAllTasks } from '@/api/TasksAPI';
+import { getWeeklyPlans } from '@/api/WeeklyPlansAPI';
+import { FiltersPlanSemanalInitialValues } from './IndexPlanSemanal';
+import { getTasks } from '@/api/TasksAPI';
+import { FiltersLoteInitialValues } from '../lotes/IndexLotes';
+import { FiltersTasksInitialValues } from '../tareas/IndexTareas';
 import Select from "react-select";
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -17,6 +20,7 @@ import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
 import ModalChangeOperationDateAgricola from '@/components/modals/ModalChangeOperationDateAgricola';
 import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
+
 
 type EventReceiveInfo = {
     event: {
@@ -44,14 +48,14 @@ const CalendarComponent = () => {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getAllLotes'], queryFn: getAllLotes },
-            { queryKey: ['getAllTasks'], queryFn: getAllTasks },
+            { queryKey: ['getAllLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' }) },
+            { queryKey: ['getAllTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
         ]
     })
 
     useEffect(() => {
-        if (results[0].data) setLotes(results[0].data)
-        if (results[1].data) setTareas(results[1].data)
+        if (results[0].data) setLotes(results[0].data.data)
+        if (results[1].data) setTareas(results[1].data.data)
     }, [results])
 
     const lotesOptions = lotes.map((lote) => ({
@@ -64,7 +68,7 @@ const CalendarComponent = () => {
         label: `${lote.code} ${lote.name}`,
     }));
 
-    const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: getAllPlans });
+    const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: '' }) });
     const { data: tasks, isLoading } = useQuery({
         queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId],
         queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId }),
@@ -116,7 +120,7 @@ const CalendarComponent = () => {
                             onChange={(e) => setId(e.target.value)}
                         >
                             <option value="">Seleccione una opción</option>
-                            {plans?.map((plan) => (
+                            {plans?.data?.map((plan) => (
                                 <option key={plan.id} value={plan.id}>
                                     {plan.finca} - {plan.week}/{plan.year}
                                 </option>

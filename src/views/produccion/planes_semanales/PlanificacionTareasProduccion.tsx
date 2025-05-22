@@ -30,23 +30,23 @@ export default function CalendarTasks() {
 
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data: allTasks, isLoading, isError } = useQuery({
     queryKey: ['getTasksNoOperationDate', plan_id],
     queryFn: () => getAllTasksWeeklyProductionPlan(plan_id),
   });
+
+  useEffect(()=>{
+    if(allTasks){
+      setEvents(allTasks.events);
+      setTaskNoOperationDate(allTasks.tasks);
+    }
+  },[allTasks])
 
   const { data: programedTasks, isLoading: programedTasksLoading } = useQuery({
     queryKey: ['getTasksOperationDate', date],
     queryFn: () => getTasksOperationDate(date),
     enabled: show
   });
-
-  useEffect(() => {
-    if (data) {
-      setEvents(data.events);
-      setTaskNoOperationDate(data.tasks);
-    }
-  }, [data]);
 
   const handleClickDate = (info: DateClickInfo) => {
     navigate(`${location.pathname}?date=${info.dateStr}`);
@@ -55,7 +55,9 @@ export default function CalendarTasks() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-bold text-4xl mb-4">Planificación Producción</h1>
+      <div className="flex flex-col w-full">
+        <h1 className="font-bold text-4xl mb-4">Planificación Producción</h1>
+      </div>
 
       <div className="flex gap-5 p-5">
         <div className="flex-1 border p-5 rounded-lg bg-white shadow max-h-screen overflow-y-auto scrollbar-hide space-y-6">

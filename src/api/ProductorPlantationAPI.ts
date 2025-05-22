@@ -16,7 +16,7 @@ export type ProductorCDP = z.infer<typeof ProductorCDPSchema>
 
 export async function getAllProductorCDPS() : Promise<ProductorCDP[]> {
     try {
-        const url = '/api/productor-cdp-all';
+        const url = '/api/productor-cdp';
         const { data } = await clienteAxios(url);
         const result = ProductorCDPSSchema.safeParse(data);
         if(result.success){

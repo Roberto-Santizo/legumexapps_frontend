@@ -1,15 +1,15 @@
 import { TaskCropWeeklyPlan, TasksCropWeeklyPlan } from "../../types";
 import { useNavigate } from "react-router-dom";
-import TaskLabel from "../utilities-components/TaskLabel";
 import { BadgeCheck, FileText, Grid2X2Plus, ListPlus, SquarePlusIcon } from "lucide-react";
-import { useAppStore } from "../../stores/useAppStore";
 import { toast } from "react-toastify";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
-import Spinner from "../utilities-components/Spinner";
 import { closeWeekAssignment } from "@/api/TaskCropWeeklyPlanAPI";
 import { useQuery } from "@tanstack/react-query";
-import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
+import { getUserRole } from "@/api/UserAPI";
 import { Dispatch } from "react";
+import TaskLabel from "../utilities-components/TaskLabel";
+import Spinner from "../utilities-components/Spinner";
+import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 
 type TaskCropProps = {
   task: TaskCropWeeklyPlan;
@@ -19,12 +19,11 @@ type TaskCropProps = {
 };
 
 export default function TaskCrop({ task, refetch, setId, setIsOpen }: TaskCropProps) {
-  const getUserRoleByToken = useAppStore((state) => state.getUserRoleByToken);
   const navigate = useNavigate();
 
   const { data: role, isLoading, isError } = useQuery({
     queryKey: ['getUserRoleByToken'],
-    queryFn: getUserRoleByToken
+    queryFn: getUserRole
   });
 
   const { mutate, isPending } = useMutation({

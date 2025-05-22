@@ -1,6 +1,6 @@
 import { formatDate } from "@/helpers";
+import { loteCDPDetails } from "@/api/PlantationControlAPI";
 import TaskLabel from "../utilities-components/TaskLabel";
-import { loteCDPDetails } from "@/api/LotesAPI";
 import HoverCardInsumos from "../ui/HoverCardInsumos";
 
 type Props = {
@@ -55,7 +55,7 @@ export default function LoteDetails({ data }: Props) {
                             </thead>
                             <tbody className="font-bold">
                                 {tasks.map((task) => (
-                                    <HoverCardInsumos task={task} />
+                                    <HoverCardInsumos task={task} key={task.id} />
                                 ))}
                             </tbody>
                         </table>

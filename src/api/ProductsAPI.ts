@@ -30,40 +30,20 @@ export const ProductsPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
 
 export type PaginateProducts = z.infer<typeof ProductsPaginateSchema>
 
 
-export async function getPaginatedProducts(page: number): Promise<PaginateProducts> {
+export async function getProducts({page,paginated} : {page: number, paginated: string}): Promise<PaginateProducts> {
     try {
-        const url = `/api/products?page=${page}`;
+        const url = `/api/products?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = ProductsPaginateSchema.safeParse(data);
 
         if (result.success) {
             return result.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export const ProductsSchema = z.object({
-    data:z.array(ProductSchema)
-});
-
-export async function getProducts(): Promise<Product[]> {
-    try {
-        const url = '/api/products-all';
-        const { data } = await clienteAxios(url);
-        const result = ProductsSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
         } else {
             throw new Error("Información no válida");
         }

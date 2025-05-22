@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getAllInsumos, Insumo } from "@/api/InsumosAPI";
+import { getInsumos, Insumo } from "@/api/InsumosAPI";
 import { useQuery } from "@tanstack/react-query";
 import { DraftItemRecepcionInsumos } from "@/views/bodega/recepcion-insumos/CrearRecepcionInsumos";
+import { FiltersInsumosInitialValues } from "@/views/agricola/insumos/IndexInsumos";
 import { useForm } from "react-hook-form";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
@@ -19,13 +20,13 @@ type Props = {
 export default function ModalAddItemRecepcionInsumos({ modal, setModal, setItems, items }: Props) {
     const [insumos, setInsumos] = useState<Insumo[]>([]);
     const { data, isPending } = useQuery({
-        queryKey: ["getAllInsumos"],
-        queryFn: getAllInsumos,
+        queryKey: ["getInsumos"],
+        queryFn: () => getInsumos({currentPage: 1, filters: FiltersInsumosInitialValues ,paginated:''}),
     });
 
     useEffect(() => {
         if (data) {
-            setInsumos(data);
+            setInsumos(data.data);
         }
     }, [data]);
 

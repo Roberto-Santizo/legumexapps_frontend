@@ -2,7 +2,7 @@ import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getSkusPaginated, SKU } from "@/api/SkusAPI";
+import { getSkus, SKU } from "@/api/SkusAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
@@ -16,12 +16,15 @@ export default function IndexSKU() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getSkusPaginated', currentPage],
-    queryFn: () => getSkusPaginated(currentPage)
+    queryFn: () => getSkus({ page: currentPage, paginated: 'true' }),
   });
 
   useEffect(() => {
     if (data) {
       setSkus(data.data);
+    }
+
+    if (data && data.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }

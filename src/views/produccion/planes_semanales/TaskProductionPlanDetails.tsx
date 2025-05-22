@@ -110,7 +110,7 @@ export default function TaskProductionPlanDetails() {
             </thead>
             <tbody>
               {task.data.employees.map((employee) => (
-                <tr key={employee.code} className="tbody-tr">
+                <tr key={employee.id} className="tbody-tr">
                   <td className="tbody-td">{employee.code}</td>
                   <td className="tbody-td">{employee.name}</td>
                   <td className="tbody-td">{employee.position}</td>

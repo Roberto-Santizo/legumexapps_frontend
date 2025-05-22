@@ -1,8 +1,8 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { useQuery } from '@tanstack/react-query';
-import { getAllFincas } from '@/api/FincasAPI';
 import { FiltersLotesType } from '@/views/agricola/lotes/IndexLotes';
 import Filters from '../Filters';
+import { getFincas } from '@/api/FincasAPI';
 
 type Props = {
     isOpen: boolean;
@@ -23,7 +23,7 @@ export default function FiltersLotes({ isOpen, setIsOpen, setFilters, setTempFil
 
     const { data: fincas } = useQuery({
         queryKey: ['getAllFincas'],
-        queryFn: getAllFincas,
+        queryFn: getFincas,
     });
 
     const filterFincas = fincas?.filter(finca => +finca.id < 7);
