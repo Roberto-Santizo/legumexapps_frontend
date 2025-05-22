@@ -49,12 +49,19 @@ export async function getUsers(): Promise<User[]> {
 }
 
 export async function changeActiveUser(id: User['id']) {
-    const url = `/api/users/${id}/status`;
+    const url = `/api/user/${id}`;
     try {
-        await clienteAxios.patch(url, { status: 1 });
-    } catch (error: any) {
-        console.log(error);
-        throw error;
+        const { data } = await clienteAxios.patch<string>(url);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else {
+                throw new Error(error.response?.data.msg);
+
+            }
+        }
     }
 }
 
@@ -88,7 +95,7 @@ export const UserDetailsSchema = z.object({
 export type UserDetail = z.infer<typeof UserDetailsSchema>
 
 export async function getUserById(id: User['id']): Promise<UserDetail> {
-    const url = `/api/users-info/${id}/info`;
+    const url = `/api/user/${id}`;
     try {
         const { data } = await clienteAxios(url);
         const result = UserDetailsSchema.safeParse(data.data);

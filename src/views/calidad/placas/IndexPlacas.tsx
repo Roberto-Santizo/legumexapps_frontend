@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import { getPlacasPaginated, Placa } from "@/api/PlacasAPI";
+import { getPlacas, Placa } from "@/api/PlacasAPI";
 
 export default function IndexPlacas() {
   const [pageCount, setPageCount] = useState<number>(0);
@@ -15,7 +15,7 @@ export default function IndexPlacas() {
 
   const { data, isLoading, isError } = useQuery({
       queryKey: ['getPlacasPaginated',currentPage],
-      queryFn: () => getPlacasPaginated(currentPage)
+      queryFn: () => getPlacas({page: currentPage, paginated: 'true'}),
   });
 
   useEffect(() => {

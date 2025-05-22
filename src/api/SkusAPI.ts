@@ -16,46 +16,19 @@ export const SkusPaginatedSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
 
 export type SKU = z.infer<typeof SKUSchema>;
 export type SkusPaginated = z.infer<typeof SkusPaginatedSchema>
 
-export async function getSkusPaginated(page: number): Promise<SkusPaginated> {
+export async function getSkus({ page, paginated }: { page: number, paginated: string }) {
     try {
-        const url = `/api/sku?page=${page}`;
+        const url = `/api/skus?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = SkusPaginatedSchema.safeParse(data);
         if (result.success) {
             return result.data
-        } else {
-            throw new Error("Información no valida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export const SKUSelectSchema = z.object({
-    value: z.string(),
-    label: z.string(),
-});
-
-export const SKUSSelectSchema = z.object({
-    data: z.array(SKUSelectSchema)
-});
-
-export type SKUSelect = z.infer<typeof SKUSelectSchema>
-
-export async function getAllSkus(): Promise<SKUSelect[]> {
-    try {
-        const url = '/api/sku-all';
-        const { data } = await clienteAxios(url);
-        const result = SKUSSelectSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
         } else {
             throw new Error("Información valida");
         }
@@ -68,11 +41,11 @@ export async function getAllSkus(): Promise<SKUSelect[]> {
 
 export async function createSKU(FormData: DraftSku) {
     try {
-        const url = '/api/sku';
+        const url = '/api/skus';
         const { data } = await clienteAxios.post<string>(url, FormData);
         return data;
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
         }
     }

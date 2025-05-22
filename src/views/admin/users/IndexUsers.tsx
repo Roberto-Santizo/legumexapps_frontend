@@ -14,11 +14,11 @@ export default function IndexUsers() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (id: User['id']) => changeActiveUser(id),
-    onError: () => {
-      toast.error('Hubo un error al actualizar el estado del empleado')
+    onError: (error) => {
+      toast.error(error.message)
     },
-    onSuccess: () => {
-      toast.success('Usuario Actualizado Correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       refetch();
     }
   });

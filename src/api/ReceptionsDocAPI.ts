@@ -1,3 +1,4 @@
+import { FiltersBoletaRMP } from "@/components/filters/FiletrsRMP";
 import clienteAxios from "@/config/axios";
 import { DraftFormProd } from "@/views/calidad/rmp/Boleta_form2";
 import { DraftBoletaControlCalidad } from "@/views/calidad/rmp/Boleta_form3";
@@ -63,16 +64,16 @@ export const BoletasPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional(),
 });
 
 export type BoletasPaginate = z.infer<typeof BoletasPaginateSchema>
 
 
-export async function getPaginatedBoletasRMP(page: number, filters: Record<string, any> = {}): Promise<BoletasPaginate> {
+export async function getBoletasRMP({ page, filters, paginated, transport_doc_create }: { page: number, filters: FiltersBoletaRMP, paginated: string, transport_doc_create: string }): Promise<BoletasPaginate> {
     try {
-        const params = new URLSearchParams({ page: page.toString(), ...filters });
-        const url = `/api/boleta-rmp?${params.toString()}`;
+        const params = new URLSearchParams({ ...filters });
+        const url = `/api/boleta-rmp?paginated=${paginated}&page=${page}&${params.toString()}&transport_doc_create=${transport_doc_create}`;
         const { data } = await clienteAxios(url);
         const result = BoletasPaginateSchema.safeParse(data);
         if (result.success) {
@@ -86,25 +87,6 @@ export async function getPaginatedBoletasRMP(page: number, filters: Record<strin
     }
 }
 
-export const BoletasSchema = z.object({
-    data: z.array(BoletaSchema)
-});
-
-export async function getAllBoletasRMP(): Promise<Boleta[]> {
-    try {
-        const url = `/api/boleta-rmp-all`;
-        const { data } = await clienteAxios(url);
-        const result = BoletasSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export const BoletaRMPDetailSchema = z.object({
     id: z.string(),

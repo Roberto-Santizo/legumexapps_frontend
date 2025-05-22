@@ -1,10 +1,14 @@
 import clienteAxios from "@/config/axios";
 import { z } from "zod";
+import { PilotoSchema } from "./PilotosAPI";
+import { PlacaSchema } from "./PlacasAPI";
 
 export const TransportistaSchema = z.object({
     id: z.string(),
     name: z.string(),
-    code: z.string()
+    code: z.string(),
+    drivers: z.array(PilotoSchema),
+    plates: z.array(PlacaSchema),
 })
 
 export const TransportistasPaginatedSchema = z.object({
@@ -12,39 +16,19 @@ export const TransportistasPaginatedSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 })
 
-export const TransportistasSchema = z.object({
-    data: z.array(TransportistaSchema)
-})
+export type Transportista = z.infer<typeof TransportistaSchema>;
 
-export type Transportista = z.infer<typeof TransportistaSchema>
-
-export async function getTransportistasPaginated(page: number) {
+export async function getTransportistas({ page, paginated }: { page: number, paginated: string }) {
     try {
-        const url = `/api/carriers?page=${page}`;
+        const url = `/api/carriers?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = TransportistasPaginatedSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data
-        }else{
-            throw new Error('Información no valida');
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    };
-}
-
-export async function getAllTransportistas() : Promise<Transportista[]>{
-    try {
-        const url = `/api/carriers-all`;
-        const { data } = await clienteAxios(url);
-        const result = TransportistasSchema.safeParse(data);
-        if(result.success){
-            return result.data.data
-        }else{
+        } else {
             throw new Error('Información no valida');
         }
     } catch (error) {
@@ -66,4 +50,20 @@ export async function createTransportista(data: DraftTransportista) {
         console.log(error);
         throw error;
     };
+}
+
+export async function getTransportistaInfoById(id: Transportista['id']): Promise<Transportista> {
+    try {
+        const url = `/api/carriers/${id}`;
+        const { data } = await clienteAxios(url);
+        const result = TransportistaSchema.safeParse(data.data);
+        if (result.success) {
+            return result.data
+        } else {
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }

@@ -1,8 +1,8 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getAllFincas } from "@/api/FincasAPI";
 import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
 import Filters from "../Filters";
+import { getFincas } from "@/api/FincasAPI";
 
 type Props = {
     isOpen: boolean;
@@ -21,7 +21,7 @@ const initialValues = {
 export default function FiltersPlanSemanalFinca({ isOpen, setIsOpen, setFilters, setTempFilters, tempFilters }: Props) {
     const { data: fincas } = useQuery({
         queryKey: ['getAllFincas'],
-        queryFn: getAllFincas,
+        queryFn: getFincas,
     });
 
     const filterFincas = fincas?.filter(finca => +finca.id < 7);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getPaginatedProducers, Producer } from "@/api/ProducersAPI";
+import { getProducers, Producer } from "@/api/ProducersAPI";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -15,15 +15,19 @@ export default function IndexProducers() {
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getPaginatedProducers', currentPage],
-    queryFn: () => getPaginatedProducers(currentPage)
+    queryFn: () => getProducers({ page: currentPage, paginated: '' }),
   });
 
   useEffect(() => {
     if (data) {
       setProducers(data.data);
+    }
+
+    if (data && data.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }
+
   }, [data]);
 
   const handlePageChange = (selectedItem: { selected: number }) => {

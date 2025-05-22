@@ -5,6 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Modal from "../Modal";
+import Spinner from "../utilities-components/Spinner";
 
 type Props = {
     isOpen: boolean;
@@ -83,8 +84,8 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
                         )}
                     </div>
 
-                    <button type="submit" className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-                        Cargar Asignaciones
+                    <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                        {isPending ? <Spinner /> : <p>Cargar Asignaciones</p>}
                     </button>
                 </form>
             </div>

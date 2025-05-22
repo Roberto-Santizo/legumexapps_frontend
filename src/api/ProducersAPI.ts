@@ -28,39 +28,19 @@ export const ProducersPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
 
 export type ProducersPaginate = z.infer<typeof ProducersPaginateSchema>
 
 
-export async function getPaginatedProducers(page: number): Promise<ProducersPaginate> {
+export async function getProducers({ page, paginated }: { page: number, paginated: string }): Promise<ProducersPaginate> {
     try {
-        const url = `/api/producers?page=${page}`;
+        const url = `/api/producers?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = ProducersPaginateSchema.safeParse(data);
         if (result.success) {
             return result.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export const ProducersSchema = z.object({
-    data: z.array(ProducerSchema)
-});
-
-export async function getAllProducers(): Promise<Producer[]> {
-    try {
-        const url = '/api/producers-all';
-        const { data } = await clienteAxios(url);
-        const result = ProducersSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
         } else {
             throw new Error("Información no válida");
         }

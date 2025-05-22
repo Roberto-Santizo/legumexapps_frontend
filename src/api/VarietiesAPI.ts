@@ -1,41 +1,54 @@
 import clienteAxios from "@/config/axios";
-import { DraftVariety, VarietiesPaginate } from "@/types";
-import { VarietiesPaginateSchema, VarietiesSchema } from "@/utils/calidadVariedades-schema";
+import { isAxiosError } from "axios";
+import { z } from "zod";
 
-export async function createVariety(data : DraftVariety) : Promise<void>{
+
+export const VarietySchema = z.object({
+    id: z.string(),
+    name: z.string(),
+});
+
+export const VarietiesSchema = z.object({
+    data: z.array(VarietySchema)
+});
+
+export const VarietiesPaginateSchema = z.object({
+    data: z.array(VarietySchema),
+    meta: z.object({
+        last_page: z.number(),
+        current_page: z.number()
+    }).optional(),
+});
+
+export type VarietiesPaginate = z.infer<typeof VarietiesPaginateSchema>
+export type Variety = z.infer<typeof VarietySchema>
+export type DraftVariety = Omit<Variety, 'id'>
+
+
+export async function createVariety(FormData: DraftVariety) {
     try {
         const url = '/api/variety-products';
-        await clienteAxios.post(url,data);
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export async function getPaginatedVarieties(page:number) : Promise<VarietiesPaginate> {
-    try {
-        const url = `/api/variety-products?page=${page}`;
-        const {data} = await clienteAxios(url);
-        const result = VarietiesPaginateSchema.safeParse(data);
-        if(result.success){
-            return result.data
-        }else{
-            throw new Error("Información no válida");
+        if (isAxiosError(error)) {
+            if (error.response?.data.msg) {
+                throw new Error(error.response.data.msg);
+            } else if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }
         }
-    } catch (error) {
-        console.log(error);
-        throw error;
     }
 }
 
-export async function getAllVarieties() {
+export async function getVariedades({ page, paginated }: { page: number, paginated: string }): Promise<VarietiesPaginate> {
     try {
-        const url = '/api/variety-products-all';
-        const {data} = await clienteAxios(url);
-        const result = VarietiesSchema.safeParse(data);
-        if(result.success){
-            return result.data.data
-        }else{
+        const url = `/api/variety-products?paginated=${paginated}page=${page}`;
+        const { data } = await clienteAxios(url);
+        const result = VarietiesPaginateSchema.safeParse(data);
+        if (result.success) {
+            return result.data
+        } else {
             throw new Error("Información no válida");
         }
     } catch (error) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { getCDPS, Plantation } from "@/api/PlantationControlAPI";
-import { Finca, getAllFincas } from "@/api/FincasAPI";
+import { Finca, getFincas } from "@/api/FincasAPI";
 import { createLote } from "@/api/LotesAPI";
 import { toast } from "react-toastify";
 import { useQueries, useMutation } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { FiltersCdpInitialValues } from "../cdps/IndexCdps";
 
 export type DraftLote = {
   name: string;
@@ -24,8 +25,8 @@ export default function CreateLote() {
 
   const results = useQueries({
     queries: [
-      { queryKey: ['getAllFincas'], queryFn: getAllFincas },
-      { queryKey: ['handleGetCDPS'], queryFn: getCDPS }
+      { queryKey: ['getAllFincas'], queryFn: getFincas },
+      { queryKey: ['handleGetCDPS'], queryFn: () => getCDPS({page:1,filters : FiltersCdpInitialValues, paginated : ''}) }
     ]
   });
 
@@ -43,7 +44,7 @@ export default function CreateLote() {
   useEffect(() => {
     if (results) {
       if (results[0].data) setFincas(results[0].data);
-      if (results[1].data) setCdps(results[1].data);
+      if (results[1].data) setCdps(results[1].data.data);
     }
   }, [results]);
 

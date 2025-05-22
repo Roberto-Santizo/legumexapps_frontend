@@ -157,32 +157,31 @@ export default function CreateSKU() {
           </InputComponent>
 
           <InputComponent<DraftSku>
-              label="Horas Por Contenedor"
-              id="hours_container"
-              name="hours_container"
-              placeholder="Horas Por Contenedor"
-              register={register}
-              validation={{min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' }}}
-              errors={errors}
-              type={'number'}
+            label="Horas Por Contenedor"
+            id="hours_container"
+            name="hours_container"
+            placeholder="Horas Por Contenedor"
+            register={register}
+            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
+            errors={errors}
+            type={'number'}
           >
-              {errors.hours_container && <Error>{errors.hours_container?.message?.toString()}</Error>}
+            {errors.hours_container && <Error>{errors.hours_container?.message?.toString()}</Error>}
           </InputComponent>
-        
 
           <InputComponent<DraftSku>
-              label="Nombre del Cliente"
-              id="client_name"
-              name="client_name"
-              placeholder="Nombre del Cliente"
-              register={register}
-              validation={{required: 'El nombre del cliente es obligatorio'}}
-              errors={errors}
-              type={'text'}
+            label="Nombre del Cliente"
+            id="client_name"
+            name="client_name"
+            placeholder="Nombre del Cliente"
+            register={register}
+            validation={{ required: 'El nombre del cliente es obligatorio' }}
+            errors={errors}
+            type={'text'}
           >
-              {errors.client_name && <Error>{errors.client_name?.message?.toString()}</Error>}
+            {errors.client_name && <Error>{errors.client_name?.message?.toString()}</Error>}
           </InputComponent>
-       
+
           <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
             {isPending ? <Spinner /> : <p>Crear SKU</p>}
           </button>

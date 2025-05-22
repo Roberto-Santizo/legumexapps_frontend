@@ -1,7 +1,7 @@
 import { TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import { createTaskTimeout, getAllTimeouts } from "@/api/TimeOutsAPI";
+import { createTaskTimeout, getTimeOuts } from "@/api/TimeOutsAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -37,13 +37,18 @@ export default function ModalTiempoMuerto() {
         onSuccess: () => {
             toast.success('Tiempo muerto agregado correctamente');
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] })
-            navigate(location.pathname,{replace:true});
+            navigate(location.pathname, { replace: true });
         }
     });
     const { data: timeouts } = useQuery({
         queryKey: ['getAllTimeouts'],
-        queryFn: getAllTimeouts
+        queryFn: () => getTimeOuts({ page: 1, paginated: '' })
     });
+
+    const timeoutsOptions = timeouts?.data.map((timeout) => ({
+        value: timeout.id,
+        label: `${timeout.name}`,
+    }));
 
     const {
         handleSubmit,
@@ -60,13 +65,13 @@ export default function ModalTiempoMuerto() {
     }
 
     if (timeouts) return (
-        <Modal modal={show} closeModal={() => navigate(location.pathname,{replace:true})} title="Agregar Tiempo Muerto">
+        <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Agregar Tiempo Muerto">
             <form className="p-10 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <InputSelectSearchComponent<DraftTaskTimeout>
                     label="Tiempo Muerto"
                     id="timeout_id"
                     name="timeout_id"
-                    options={timeouts}
+                    options={timeoutsOptions ?? []}
                     control={control}
                     rules={{ required: 'Seleccione un tiempo muerto' }}
                     errors={errors}
