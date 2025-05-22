@@ -1,4 +1,28 @@
-import { HomeIcon, UserCog, User, UserCheck, BookCheck, BookXIcon, ListCheck, Map, Warehouse, FileSpreadsheet, Truck, Users, AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ChartNoAxesCombined, FileUser, CalendarDays, UserRound, Box, PackageOpen } from "lucide-react";
+import {
+  HomeIcon,
+  UserCog,
+  User,
+  UserCheck,
+  BookCheck,
+  BookXIcon,
+  ListCheck,
+  Map,
+  Warehouse,
+  FileSpreadsheet,
+  Truck,
+  Users,
+  AlarmClockPlus,
+  BookOpenCheck,
+  ChartBarIncreasing,
+  ChartLine,
+  ChartNoAxesCombined,
+  FileUser,
+  CalendarDays,
+  UserRound,
+  Box,
+  PackageOpen,
+  ClipboardPaste 
+} from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
 
@@ -26,17 +50,20 @@ export default function Navegation() {
         </>
       )}
 
-            {hasPermission('see plan semanal finca') && (
-                <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
-                    <BookCheck />
-                </NavLinkComponent>
-            )}
+      {hasPermission("see plan semanal finca") && (
+        <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
+          <BookCheck />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('fincas planification') && (
-                <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
-                    <CalendarDays />
-                </NavLinkComponent>
-            )}
+      {hasPermission("fincas planification") && (
+        <NavLinkComponent
+          url="/planificacion-finca"
+          text="Planificación Tareas Finca"
+        >
+          <CalendarDays />
+        </NavLinkComponent>
+      )}
 
       {hasPermission("administrate fincas") && (
         <>
@@ -132,7 +159,6 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-
       <NavLinkComponent url="/proveedores" text="Proveedores">
         <UserRound />
       </NavLinkComponent>
@@ -140,7 +166,6 @@ export default function Navegation() {
       <NavLinkComponent url="/material-empaque" text="Materiales Empaque">
         <Box />
       </NavLinkComponent>
-
 
       <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
         <Warehouse />
@@ -152,6 +177,9 @@ export default function Navegation() {
 
       <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
         <FileUser />
+      </NavLinkComponent>
+      <NavLinkComponent url="/materialSalida" text="Salida Material Bodega">
+        <ClipboardPaste  />
       </NavLinkComponent>
     </div>
   );

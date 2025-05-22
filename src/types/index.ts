@@ -52,3 +52,6 @@ export type DraftVariety = Omit<Variety, 'id'>
 export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
 export type Defect = z.infer<typeof DefectSchema>
 
+export type  MaterialOutput= z.infer<typeof DefectSchema>
+
+

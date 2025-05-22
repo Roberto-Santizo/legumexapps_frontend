@@ -25,7 +25,7 @@ export default function FiltersReceptionsInsumos({ isOpen, setIsOpen, setTempFil
 
     const { data } = useQuery({
         queryKey: ['getPackingMaterials'],
-        queryFn: getPackingMaterials
+        queryFn: () => getPackingMaterials({ name: '' })
     });
 
     const handleFilterTempChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
