@@ -1,6 +1,6 @@
-import clienteAxios from "@/config/axios"
+import clienteAxios from "@/config/axios";
+import { isAxiosError } from "axios";
 import { z } from "zod";
-import { Transportista } from "./TransportistasAPI";
 
 export type DraftPiloto = {
     name: string,
@@ -9,12 +9,18 @@ export type DraftPiloto = {
     carrier_id: string,
 }
 
-export async function createPiloto(data : DraftPiloto) {
+export async function createPiloto(FormData : DraftPiloto) {
     try {
-        await clienteAxios.post('/api/drivers',data);
+        const { data } = await clienteAxios.post<string>('/api/drivers',FormData);
+        return data;
     } catch (error) {
-        console.log(error);
-        throw error;
+        if(isAxiosError(error)){
+            if(error.response?.data.msg){
+                throw new Error(error.response.data.msg);
+            }else if(error.response?.data.errors){
+                 throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }
+        }
     }
 }
 
@@ -23,7 +29,7 @@ export const PilotoSchema = z.object({
     name: z.string(),
     dpi: z.string().nullable(),
     license: z.string().nullable(),
-    carrier: z.string()
+    carrier: z.string(),
 });
 
 export const PilotosPaginatedSchema = z.object({
@@ -31,12 +37,8 @@ export const PilotosPaginatedSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
-
-export const PilotosSchema = z.object({
-    data: z.array(PilotoSchema)
-})
 
 export type Piloto = z.infer<typeof PilotoSchema>
 
@@ -56,18 +58,3 @@ export async function getPilotosPaginated(page : number) {
     }
 }
 
-export async function getPilotosByTransportistaId(id : Transportista['id']) : Promise<Piloto[]> {
-    try {
-        const url = `/api/drivers-by-carrier/${id}`;
-        const { data } = await clienteAxios(url);
-        const result = PilotosSchema.safeParse(data);
-        if(result.success){
-            return result.data.data
-        }else{
-            throw new Error("Información no valida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}

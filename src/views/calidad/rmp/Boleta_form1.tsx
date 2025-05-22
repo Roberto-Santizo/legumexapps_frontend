@@ -2,15 +2,15 @@ import { Controller, useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from 'react';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Basket, getAllBaskets } from "@/api/BasketsAPI";
+import { Basket, getBaskets } from "@/api/BasketsAPI";
 import { createBoletaRMP, DraftBoletaRMP } from "@/api/ReceptionsDocAPI";
-import { getAllProducers, Producer } from "@/api/ProducersAPI";
+import { getProducers, Producer } from "@/api/ProducersAPI";
 import { getProducts, Product } from "@/api/ProductsAPI";
-import { Finca, getAllFincas } from "@/api/FincasAPI";
+import { Finca, getFincas } from "@/api/FincasAPI";
 import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
-import { getPilotosByTransportistaId, Piloto } from "@/api/PilotosAPI";
-import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
-import { getPlacasByCarrierId, Placa } from "@/api/PlacasAPI";
+import { Piloto } from "@/api/PilotosAPI";
+import { getTransportistaInfoById, getTransportistas, Transportista } from "@/api/TransportistasAPI";
+import { Placa } from "@/api/PlacasAPI";
 import { getAllProductorCDPS, ProductorCDP } from "@/api/ProductorPlantationAPI";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -33,48 +33,36 @@ export default function Boleta_form1() {
 
   const results = useQueries({
     queries: [
-      { queryKey: ['getProducts'], queryFn: getProducts },
-      { queryKey: ['getAllProducers'], queryFn: getAllProducers },
-      { queryKey: ['getAllBaskets'], queryFn: getAllBaskets },
-      { queryKey: ['getAllFincas'], queryFn: getAllFincas },
-      { queryKey: ['getAllTransportistas'], queryFn: getAllTransportistas },
+      { queryKey: ['getProducts'], queryFn: () => getProducts({ page: 1, paginated: '' }) },
+      { queryKey: ['getAllProducers'], queryFn: () => getProducers({ page: 1, paginated: '' }) },
+      { queryKey: ['getAllBaskets'], queryFn: getBaskets },
+      { queryKey: ['getAllFincas'], queryFn: getFincas },
+      { queryKey: ['getAllTransportistas'], queryFn: () => getTransportistas({ page: 1, paginated: '' }) },
       { queryKey: ['getAllProductorCDPS'], queryFn: getAllProductorCDPS }
     ]
   });
 
-  const { data: pilotosData } = useQuery({
+  const { data: carrierInfo } = useQuery({
     queryKey: ['getPilotosByTransportistaId', transportistaId],
-    queryFn: () => getPilotosByTransportistaId(transportistaId),
-    enabled: !!transportistaId
-  });
-
-
-  const { data: placasData } = useQuery({
-    queryKey: ['getPlacasByCarrierId', transportistaId],
-    queryFn: () => getPlacasByCarrierId(transportistaId),
+    queryFn: () => getTransportistaInfoById(transportistaId),
     enabled: !!transportistaId
   });
 
   useEffect(() => {
-    if (results[0].data) setProducts(results[0].data);
-    if (results[1].data) setProducers(results[1].data);
+    if (results[0].data) setProducts(results[0].data.data);
+    if (results[1].data) setProducers(results[1].data.data);
     if (results[2].data) setBaskets(results[2].data);
     if (results[3].data) setFincas(results[3].data);
-    if (results[4].data) setTransportistas(results[4].data);
+    if (results[4].data) setTransportistas(results[4].data.data);
     if (results[5].data) setCDPS(results[5].data);
   }, [results]);
 
   useEffect(() => {
-    if (pilotosData) {
-      setPilotos(pilotosData)
+    if (carrierInfo) {
+      setPilotos(carrierInfo.drivers);
+      setPlacas(carrierInfo.plates);
     }
-  }, [pilotosData])
-
-  useEffect(() => {
-    if (placasData) {
-      setPlacas(placasData)
-    }
-  }, [placasData])
+  }, [carrierInfo])
 
   const fincasOptions = fincas.map((finca) => ({
     value: finca.id,
@@ -287,45 +275,45 @@ export default function Boleta_form1() {
           >
             {errors.weight && <Error>{errors.weight?.message?.toString()}</Error>}
           </InputComponent>
-          
+
           <InputSelectSearchComponent<DraftBoletaRMP>
             label="Tipo de Canasta"
             id="basket_id"
             name="basket_id"
             options={basketsOptions}
             control={control}
-            rules={{required: 'El tipo de canasta es obligatorio'}}
+            rules={{ required: 'El tipo de canasta es obligatorio' }}
             errors={errors}
           >
-              {errors.basket_id && <Error>{errors.basket_id?.message?.toString()}</Error>}
+            {errors.basket_id && <Error>{errors.basket_id?.message?.toString()}</Error>}
           </InputSelectSearchComponent>
-         
+
 
           <InputComponent<DraftBoletaRMP>
-              label="Cantidad de Canastas"
-              id="total_baskets"
-              name="total_baskets"
-              placeholder="Cantidad de Canastas"
-              register={register}
-              validation={{required: "La cantidad de canastas es obligatoria", min: { value: 1, message: 'La cantidad minima de canstas es 1' }}}
-              errors={errors}
-              type={'number'}
+            label="Cantidad de Canastas"
+            id="total_baskets"
+            name="total_baskets"
+            placeholder="Cantidad de Canastas"
+            register={register}
+            validation={{ required: "La cantidad de canastas es obligatoria", min: { value: 1, message: 'La cantidad minima de canstas es 1' } }}
+            errors={errors}
+            type={'number'}
           >
-              {errors.total_baskets && <Error>{errors.total_baskets?.message?.toString()}</Error>}
+            {errors.total_baskets && <Error>{errors.total_baskets?.message?.toString()}</Error>}
           </InputComponent>
-       
-          
+
+
           <InputComponent<DraftBoletaRMP>
-              label="Porcentaje de Calidad"
-              id="quality_percentage"
-              name="quality_percentage"
-              placeholder="Porcentaje de Calidad"
-              register={register}
-              validation={{required: "El porcentaje de calidad es obligatorio", min: { value: 1, message: 'La cantidad minima es 1' }}}
-              errors={errors}
-              type={'number'}
+            label="Porcentaje de Calidad"
+            id="quality_percentage"
+            name="quality_percentage"
+            placeholder="Porcentaje de Calidad"
+            register={register}
+            validation={{ required: "El porcentaje de calidad es obligatorio", min: { value: 1, message: 'La cantidad minima es 1' } }}
+            errors={errors}
+            type={'number'}
           >
-              {errors.quality_percentage && <Error>{errors.quality_percentage?.message?.toString()}</Error>}
+            {errors.quality_percentage && <Error>{errors.quality_percentage?.message?.toString()}</Error>}
           </InputComponent>
 
           <div className="space-y-2 text-center">

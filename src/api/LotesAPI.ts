@@ -3,7 +3,6 @@ import { CDP } from "@/types";
 import { CDPsSchema } from "@/utils/plantation-schema";
 import { DraftLote } from "@/views/agricola/lotes/CreateLote";
 import { isAxiosError } from "axios";
-import { Finca } from "./FincasAPI";
 import { FiltersLotesType } from "@/views/agricola/lotes/IndexLotes";
 import clienteAxios from "@/config/axios";
 
@@ -55,29 +54,10 @@ export async function getLotes({ page, filters, paginated }: { page: number, fil
     }
 }
 
-export const LotesSchemaSelect = z.object({
-    data: z.array(LoteSchema)
-});
-
-export async function getAllLotesByFincaId(id: Finca['id']): Promise<Lote[]> {
-    try {
-        const url = `/api/lotes/finca/${id}`;
-        const { data } = await clienteAxios(url);
-        const result = LotesSchemaSelect.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export async function getAllCdpsByLoteId(id: Lote['id']): Promise<CDP[]> {
     try {
-        const url = `/api/cdps/lote/${id}`;
+        const url = `/api/lotes/${id}`;
         const { data } = await clienteAxios(url);
         const result = CDPsSchema.safeParse(data);
         if (result.success) {
@@ -120,31 +100,7 @@ export const DataLoteSchema = z.object({
 
 export const DataSchema = z.record(z.array(TaskSchema));
 
-export const LoteCDPDetailsSchema = z.object({
-    data_lote: DataLoteSchema,
-    data: DataSchema,
-});
-
-export type loteCDPDetails = z.infer<typeof LoteCDPDetailsSchema>;
 export type TaskCDP = z.infer<typeof TaskSchema>;
-
-export async function getCDPInfoByCDPId(lote_plantation_control_id: CDP['id']): Promise<loteCDPDetails> {
-    try {
-        const url = '/api/cdp/info';
-        const { data } = await clienteAxios(url, {
-            params: { lote_plantation_control_id }
-        })
-        const result = LoteCDPDetailsSchema.safeParse(data);
-        if (result.success) {
-            return result.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export async function updateLotes(file: File[]) {
     try {

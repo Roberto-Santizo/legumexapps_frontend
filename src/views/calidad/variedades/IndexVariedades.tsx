@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Variety } from "@/types";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getPaginatedVarieties } from "@/api/VarietiesAPI";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
+import { getVariedades, Variety } from "@/api/VarietiesAPI";
 
 
 export default function IndexVariedades() {
@@ -17,12 +16,15 @@ export default function IndexVariedades() {
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getPaginatedVarieties', currentPage],
-    queryFn: () => getPaginatedVarieties(currentPage)
+    queryFn: () => getVariedades({ page: currentPage, paginated: 'true' }),
   });
 
   useEffect(() => {
     if (data) {
       setVariedades(data.data);
+    }
+
+    if (data && data.meta) {
       setCurrentPage(data.meta.current_page);
       setPageCount(data.meta.last_page);
     }

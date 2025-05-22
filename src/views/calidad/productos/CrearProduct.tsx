@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { Variety } from "@/types";
 import { createProduct } from "@/api/ProductsAPI";
-import { getAllVarieties } from "@/api/VarietiesAPI";
+import { getVariedades, Variety } from "@/api/VarietiesAPI";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
@@ -41,12 +40,12 @@ export default function CrearVariedad() {
   });
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getAllVarieties'],
-    queryFn: getAllVarieties
+    queryFn: () => getVariedades({ page: 1, paginated: 'true' }),
   });
 
   useEffect(() => {
     if (data) {
-      setVarieties(data);
+      setVarieties(data.data);
     }
   }, [data]);
 

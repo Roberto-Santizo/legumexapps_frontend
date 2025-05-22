@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
+import { getTransportistas, Transportista } from "@/api/TransportistasAPI";
 import { useEffect, useState } from "react";
 import { createPiloto, DraftPiloto } from "@/api/PilotosAPI";
 import { useMutation } from "@tanstack/react-query";
@@ -19,12 +19,12 @@ export default function CrearPiloto() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getAllTransportistas'],
-    queryFn: getAllTransportistas
+    queryFn: () => getTransportistas({ page: 1, paginated: '' }),
   });
 
   useEffect(() => {
     if (data) {
-      setTransportistas(data);
+      setTransportistas(data.data);
     }
   }, [data]);
 
@@ -35,11 +35,11 @@ export default function CrearPiloto() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: createPiloto,
-    onError: () => {
-      toast.error('Hubo un error al crear el piloto');
+    onError: (error) => {
+      toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success('Piloto creado correctamente');
+    onSuccess: (data) => {
+      toast.success(data);
       navigate('/transportistas/pilotos');
     }
   });

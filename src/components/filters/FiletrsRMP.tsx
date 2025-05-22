@@ -1,12 +1,9 @@
-
-import { Finca, getAllFincas } from "@/api/FincasAPI";
+import { Finca, getFincas } from "@/api/FincasAPI";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getProducts, Product } from "@/api/ProductsAPI";
-import { getAllProducers, Producer } from "@/api/ProducersAPI";
-import { useQueries } from "@tanstack/react-query";
 import { getQualityStatuses, QualityStatus } from "@/api/ReceptionsDocAPI";
-import Spinner from "../utilities-components/Spinner";
 import Filters from "../Filters";
+import { useQueries } from "@tanstack/react-query";
+import Spinner from "../utilities-components/Spinner";
 
 type Props = {
     filters: FiletrsBoletaRMP;
@@ -17,8 +14,6 @@ type Props = {
 
 export type FiletrsBoletaRMP = {
     finca_id: string,
-    product_id: string,
-    producer_id: string,
     date: string,
     plate: string,
     quality_status_id: string,
@@ -26,18 +21,23 @@ export type FiletrsBoletaRMP = {
     grn: string,
 }
 
+export const FiletrsBoletaRMPInitialValues: FiletrsBoletaRMP = {
+    finca_id: '',
+    date: '',
+    plate: '',
+    quality_status_id: '',
+    ref_doc: '',
+    grn: ''
+}
+
 export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: Props) {
     const [fincas, setFincas] = useState<Finca[]>([]);
-    const [products, setProducts] = useState<Product[]>([]);
-    const [producers, setProducers] = useState<Producer[]>([]);
     const [statuses, setStatuses] = useState<QualityStatus[]>([]);
     const [tempFilters, setTempFilters] = useState<FiletrsBoletaRMP>({} as FiletrsBoletaRMP);
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getAllFincas'], queryFn: getAllFincas },
-            { queryKey: ['getProducts'], queryFn: getProducts },
-            { queryKey: ['getAllProducers'], queryFn: getAllProducers },
+            { queryKey: ['getAllFincas'], queryFn: getFincas },
             { queryKey: ['getQualityStatuses'], queryFn: getQualityStatuses }
         ]
     });
@@ -45,9 +45,7 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
     useEffect(() => {
         if (results.every(result => result.data)) {
             setFincas(results[0].data || []);
-            setProducts(results[1].data || []);
-            setProducers(results[2].data || []);
-            setStatuses(results[3].data || []);
+            setStatuses(results[1].data || []);
         }
     }, [results]);
 
@@ -64,7 +62,7 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
     };
 
     const handleResetFilters = () => {
-        setFilters({} as FiletrsBoletaRMP);
+        setFilters(FiletrsBoletaRMPInitialValues);
         setIsOpen(false);
     };
 
@@ -120,32 +118,6 @@ export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: P
                         <option value="">Todas</option>
                         {statuses.map(status => (
                             <option key={status.id} value={status.id}>{status.name}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium">Producto</label>
-                    <select className="w-full border p-2 rounded" name="product_id"
-                        onChange={handleFilterTempChange} value={tempFilters.product_id || ""}>
-                        <option value="">Todos</option>
-                        {products.map(product => (
-                            <option key={product.id} value={product.id}>
-                                {product.product} - {product.variety}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium">Productores</label>
-                    <select className="w-full border p-2 rounded" name="producer_id"
-                        onChange={handleFilterTempChange} value={tempFilters.producer_id || ""}>
-                        <option value="">Todos</option>
-                        {producers.map(producer => (
-                            <option key={producer.id} value={producer.id}>
-                                {producer.name} - {producer.code}
-                            </option>
                         ))}
                     </select>
                 </div>

@@ -7,7 +7,6 @@ import { TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, T
 import { EmployeeSchema } from '@/utils/employee-schema'
 import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '@/utils/taskCropWeeklyPlan-schema'
 import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/taskCropWeeklyPlan-schema"
-import { VarietiesPaginateSchema, VarietySchema } from '@/utils/calidadVariedades-schema'
 import { DefectsPaginateSchema } from '@/utils/defectos-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
 
@@ -39,9 +38,6 @@ export type Employee = z.infer<typeof EmployeeSchema>
 export type EmployeesCrop = z.infer<typeof EmployeesTaskCropPlanSchema>
 export type EmployeeCrop = z.infer<typeof EmployeeTaskCropPlanSchema>
 
-export type VarietiesPaginate = z.infer<typeof VarietiesPaginateSchema>
-export type Variety = z.infer<typeof VarietySchema>
-export type DraftVariety = Omit<Variety, 'id'>
 
 export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
 export type Defect = z.infer<typeof DefectSchema>

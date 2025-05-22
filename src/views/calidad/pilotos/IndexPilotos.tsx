@@ -24,6 +24,8 @@ export default function IndexPilotos() {
   useEffect(() => {
     if (data) {
       setPilotos(data.data);
+    }
+    if (data && data.meta) {
       setCurrentPage(data.meta.current_page);
       setPageCount(data.meta.last_page);
     }
@@ -55,7 +57,7 @@ export default function IndexPilotos() {
         </thead>
         <tbody>
           {pilotos.map(piloto => (
-            <tr className="tbody-tr">
+            <tr className="tbody-tr" key={piloto.id}>
               <td className="tbody-td">{piloto.name}</td>
               <td className="tbody-td">{piloto.carrier}</td>
               <td className="tbody-td">{piloto.dpi ?? 'SIN DPI'}</td>

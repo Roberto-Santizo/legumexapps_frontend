@@ -2,20 +2,21 @@ import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon, RefreshCcwDot } 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
-import { Boleta, getPaginatedBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
+import { Boleta, getBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { toast } from "react-toastify";
 import { getUserRole } from "@/api/UserAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
-import FiltersRMP, { FiletrsBoletaRMP } from "@/components/filters/FiletrsRMP";
+import FiltersRMP, { FiletrsBoletaRMP, FiletrsBoletaRMPInitialValues } from "@/components/filters/FiletrsRMP";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalGRN from "@/components/modals/ModalGRN";
 import Swal from "sweetalert2";
 import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
+
 export default function IndexRMP() {
-    const [filters, setFilters] = useState<FiletrsBoletaRMP>({} as FiletrsBoletaRMP);
+    const [filters, setFilters] = useState<FiletrsBoletaRMP>(FiletrsBoletaRMPInitialValues);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [boletas, setBoletas] = useState<Boleta[]>([]);
@@ -27,7 +28,7 @@ export default function IndexRMP() {
 
     const { data, isError, isLoading, refetch } = useQuery({
         queryKey: ['getPaginatedBoletasRMP', currentPage, filters],
-        queryFn: () => getPaginatedBoletasRMP(currentPage, filters),
+        queryFn: () => getBoletasRMP({ page: currentPage, filters, paginated: 'true', transport_doc_create: '' }),
     });
 
     const { mutate } = useMutation({
@@ -50,9 +51,13 @@ export default function IndexRMP() {
     useEffect(() => {
         if (data) {
             setBoletas(data.data);
+        }
+
+        if (data && data.meta) {
             setCurrentPage(data.meta.current_page);
             setPageCount(data.meta.last_page);
         }
+
         if (results) {
             setRole(results[0].data);
         }

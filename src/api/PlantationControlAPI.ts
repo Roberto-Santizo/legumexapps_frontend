@@ -3,6 +3,8 @@ import { DraftCDP } from "@/views/agricola/cdps/CreateCdp";
 import { FiltersCDPType } from "@/views/agricola/cdps/IndexCdps";
 import { isAxiosError } from "axios";
 import { z } from "zod";
+import { DataLoteSchema, DataSchema } from "./LotesAPI";
+import { CDP } from "@/types";
 
 export async function createCDP(cdp: DraftCDP) {
     try {
@@ -126,6 +128,30 @@ export async function getRecipes(): Promise<Recipe[]> {
             throw new Error("La información no es válida");
         }
     } catch (error: any) {
+        console.log(error);
+        throw error;
+    }
+}
+
+
+export const LoteCDPDetailsSchema = z.object({
+    data_lote: DataLoteSchema,
+    data: DataSchema,
+});
+
+export type loteCDPDetails = z.infer<typeof LoteCDPDetailsSchema>;
+
+export async function getCDPInfoByCDPId(lote_plantation_control_id: CDP['id']): Promise<loteCDPDetails> {
+    try {
+        const url = `/api/cdps/${lote_plantation_control_id}`;
+        const { data } = await clienteAxios(url)
+        const result = LoteCDPDetailsSchema.safeParse(data);
+        if (result.success) {
+            return result.data
+        } else {
+            throw new Error("Información no válida");
+        }
+    } catch (error) {
         console.log(error);
         throw error;
     }

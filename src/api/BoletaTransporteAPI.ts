@@ -54,14 +54,14 @@ export const TransporteConditionsPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
 
 export type TransporteConditionsPaginate = z.infer<typeof TransporteConditionsPaginateSchema>
 
-export async function getPaginatedTransporteCondiciones(page: number): Promise<TransporteConditionsPaginate> {
+export async function getCondicionesTransporte({ page, paginated }: { page: number, paginated: string }): Promise<TransporteConditionsPaginate> {
     try {
-        const url = `/api/transport-conditions?page=${page}`;
+        const url = `/api/transport-conditions?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = TransporteConditionsPaginateSchema.safeParse(data);
         if (result.success) {
@@ -77,7 +77,7 @@ export async function getPaginatedTransporteCondiciones(page: number): Promise<T
 
 
 export const TransporteInspectionSchema = z.object({
-    id:z.string(),
+    id: z.string(),
     pilot_name: z.string(),
     truck_type: z.string(),
     plate: z.string(),
@@ -93,9 +93,12 @@ export const TransporteInspectionsPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
 
+
+export type TransporteCondition = z.infer<typeof TransporteConditionSchema>
+export type TransporteInspection = z.infer<typeof TransporteInspectionSchema>
 export type TransporteInspectionPaginate = z.infer<typeof TransporteInspectionsPaginateSchema>
 
 export async function getPaginatedTransporteInspections(page: number): Promise<TransporteInspectionPaginate> {
@@ -115,26 +118,3 @@ export async function getPaginatedTransporteInspections(page: number): Promise<T
 }
 
 
-export const TransporteConditionsSchema = z.object({
-    data: z.array(TransporteConditionSchema)
-});
-
-export type TransporteCondition = z.infer<typeof TransporteConditionSchema>
-
-export type TransporteInspection = z.infer<typeof TransporteInspectionSchema>
-
-export async function getTransporteCondiciones(): Promise<TransporteCondition[]> {
-    try {
-        const url = `/api/transport-conditions-all`;
-        const { data } = await clienteAxios(url);
-        const result = TransporteConditionsSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no válida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}

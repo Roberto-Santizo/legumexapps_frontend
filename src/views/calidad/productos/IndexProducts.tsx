@@ -1,11 +1,11 @@
 import { Edit, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getProducts, Product } from "@/api/ProductsAPI";
+import { useQuery } from "@tanstack/react-query";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
-import { getPaginatedProducts, Product } from "@/api/ProductsAPI";
-import { useQuery } from "@tanstack/react-query";
 
 
 export default function IndexVarieties() {
@@ -16,12 +16,14 @@ export default function IndexVarieties() {
 
     const { data, isError, isLoading } = useQuery({
         queryKey: ['getPaginatedProducts', currentPage],
-        queryFn: () => getPaginatedProducts(currentPage)
+        queryFn: () => getProducts({ page: currentPage, paginated: '' }),
     });
 
     useEffect(() => {
         if (data) {
             setProducts(data.data);
+        }
+        if(data && data.meta) {
             setPageCount(data.meta.last_page);
             setCurrentPage(data.meta.current_page);
         }

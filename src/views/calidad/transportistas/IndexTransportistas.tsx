@@ -2,7 +2,7 @@ import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getTransportistasPaginated, Transportista } from "@/api/TransportistasAPI";
+import { getTransportistas, Transportista } from "@/api/TransportistasAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
@@ -18,12 +18,14 @@ export default function IndexTransportistas() {
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['getTransportistasPaginated', currentPage],
-        queryFn: () => getTransportistasPaginated(currentPage)
+        queryFn: () => getTransportistas({ page: currentPage, paginated: '' }),
     })
 
     useEffect(() => {
         if (data) {
             setTransportistas(data.data);
+        }
+        if (data && data.meta) {
             setCurrentPage(data.meta.current_page);
             setPageCount(data.meta.last_page);
         }

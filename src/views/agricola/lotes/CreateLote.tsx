@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { getCDPS, Plantation } from "@/api/PlantationControlAPI";
-import { Finca, getAllFincas } from "@/api/FincasAPI";
+import { Finca, getFincas } from "@/api/FincasAPI";
 import { createLote } from "@/api/LotesAPI";
 import { toast } from "react-toastify";
 import { useQueries, useMutation } from "@tanstack/react-query";
@@ -25,7 +25,7 @@ export default function CreateLote() {
 
   const results = useQueries({
     queries: [
-      { queryKey: ['getAllFincas'], queryFn: getAllFincas },
+      { queryKey: ['getAllFincas'], queryFn: getFincas },
       { queryKey: ['handleGetCDPS'], queryFn: () => getCDPS({page:1,filters : FiltersCdpInitialValues, paginated : ''}) }
     ]
   });

@@ -2,9 +2,9 @@ import { Controller, useForm } from "react-hook-form";
 import { BoletaDetail, createProdData } from "@/api/ReceptionsDocAPI";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllBaskets } from "@/api/BasketsAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { getBaskets } from "@/api/BasketsAPI";
 import SignatureCanvas from "react-signature-canvas";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -29,7 +29,7 @@ export default function Boleta_form2({ boleta }: Props) {
 
   const { data: baskets, isLoading, isError } = useQuery({
     queryKey: ['getAllBaskets'],
-    queryFn: getAllBaskets
+    queryFn: getBaskets
   });
 
   const basketsOptions = baskets?.map((basket) => ({
