@@ -102,7 +102,7 @@ export default function TaskProduction({ task }: Props) {
           )}
 
           {!task.start_date && (
-            <button onClick={() => navigate(`/planes-produccion/asignacion/${task.id}`, { state: { url: location.pathname, plan_id: plan_id, linea_id: linea_id } })}>
+            <button onClick={() => navigate(`/planes-produccion/asignacion/${plan_id}/${linea_id}/${task.id}`, { state: { url: location.pathname } })}>
               <Paperclip className="cursor-pointer hover:text-gray-500" />
             </button>
           )}

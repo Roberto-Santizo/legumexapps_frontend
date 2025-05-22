@@ -47,7 +47,7 @@ export default function PosicionesLinea() {
                         </tr>
                     </thead>
                     <tbody>
-                        {line.positions.map(position => (
+                        {line?.positions?.map(position => (
                             <tr className="tbody-tr" key={position.id}>
                                 <td className="tbody-td">{position.id}</td>
                                 <td className="tbody-td">{position.name}</td>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAllWeeklyProductionPlans, getTasksNoOperationDate, getTasksOperationDate } from '@/api/WeeklyProductionPlanAPI';
+import { getTasksNoOperationDate, getTasksOperationDate, getWeeklyProductionPlans } from '@/api/WeeklyProductionPlanAPI';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from "@fullcalendar/core/locales/es";
@@ -33,7 +33,7 @@ export default function CalendarTasks() {
 
   const { data: weeklyPlans } = useQuery({
     queryKey: ['getAllWeeklyProductionPlans'],
-    queryFn: getAllWeeklyProductionPlans,
+    queryFn: () => getWeeklyProductionPlans({ page: 1, paginated: '' }),
   });
 
   const handleClickDate = (info: DateClickInfo) => {
@@ -57,7 +57,7 @@ export default function CalendarTasks() {
               onChange={(e) => setId(e.target.value)}
             >
               <option value="">Seleccione una opción</option>
-              {weeklyPlans?.map((plan) => (
+              {weeklyPlans?.data.map((plan) => (
                 <option key={plan.id} value={plan.id}>
                   SEMANA {plan.week} - {plan.year}
                 </option>

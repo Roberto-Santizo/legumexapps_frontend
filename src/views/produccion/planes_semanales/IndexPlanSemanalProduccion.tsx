@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPaginatedWeeklyProductionPlans, WeeklyPlanProductionPlan } from "@/api/WeeklyProductionPlanAPI";
+import { getWeeklyProductionPlans, WeeklyPlanProductionPlan } from "@/api/WeeklyProductionPlanAPI";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarRange, Clock, Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
@@ -18,12 +18,14 @@ export default function IndexPlanSemanalProduccion() {
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['getPaginatedWeeklyProductionPlans', currentPage],
-        queryFn: () => getPaginatedWeeklyProductionPlans(currentPage)
+        queryFn: () => getWeeklyProductionPlans({ page: currentPage, paginated: 'true' }),
     });
 
     useEffect(() => {
         if (data) {
             setPlans(data.data);
+        }
+        if (data?.meta) {
             setCurrentPage(data.meta.current_page);
             setPageCount(data.meta.last_page);
         }

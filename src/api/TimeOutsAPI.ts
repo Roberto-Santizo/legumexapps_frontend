@@ -14,16 +14,15 @@ export const PaginatedTimeoutsSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
 
 export type Timeout = z.infer<typeof TimeoutSchema>;
 export type PaginatedTimeouts = z.infer<typeof PaginatedTimeoutsSchema>;
 
-
-export async function getPaginatedTimeouts(page: number): Promise<PaginatedTimeouts> {
+export async function getTimeOuts({page,paginated} : {page: number,paginated:string}): Promise<PaginatedTimeouts> {
     try {
-        const url = `/api/timeouts?page=${page}`;
+        const url = `/api/timeouts?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = PaginatedTimeoutsSchema.safeParse(data);
         if (result.success) {
@@ -41,28 +40,6 @@ export const TimeoutSelectSchema = z.object({
     value: z.string(),
     label: z.string()
 })
-
-export const TimeoutsSelectSchema = z.object({
-    data: z.array(TimeoutSelectSchema)
-});
-
-export type TimeoutSelect = z.infer<typeof TimeoutSelectSchema>
-
-export async function getAllTimeouts(): Promise<TimeoutSelect[]> {
-    try {
-        const url = `/api/timeouts-all`;
-        const { data } = await clienteAxios(url);
-        const result = TimeoutsSelectSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Informació no valida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 export async function getTimeoutById(id: Timeout['id']): Promise<Timeout> {
     try {
@@ -106,7 +83,7 @@ export async function updateTimeOut({ id, FormData }: { id: Timeout['id'], FormD
 
 export async function createTaskTimeout({ id, timeout_id }: { id: TaskProduction['id'], timeout_id: Timeout['id'] }) {
     try {
-        const url = `/api/tasks_production_plan/${id}/add-timeout/open`;
+        const url = `/api/tasks-production/${id}/add-timeout/open`;
         await clienteAxios.post(url, {
             timeout_id: timeout_id
         })
@@ -119,7 +96,7 @@ export async function createTaskTimeout({ id, timeout_id }: { id: TaskProduction
 
 export async function closeTaskTimeOut(id: TaskProduction['id']) {
     try {
-        const url = `/api/tasks_production_plan/${id}/add-timeout/close`;
+        const url = `/api/tasks-production/${id}/add-timeout/close`;
         const { data } = await clienteAxios.post<string>(url);
         return data;
     } catch (error) {

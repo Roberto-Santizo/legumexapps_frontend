@@ -7,6 +7,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
+import Spinner from "../utilities-components/Spinner";
 
 
 export type DraftCloseTask = {
@@ -36,7 +37,7 @@ export default function ModalCierreTareaProduccion() {
         onSuccess: (data) => {
             toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
-            navigate(location.pathname,{replace:true});
+            navigate(location.pathname, { replace: true });
         }
     });
 
@@ -83,7 +84,7 @@ export default function ModalCierreTareaProduccion() {
                     disabled={isPending}
                     className="button bg-indigo-500 hover:bg-indigo-600 w-full"
                 >
-                    {isPending ? "Procesando..." : "Cerrar Tarea"}
+                    {isPending ? <Spinner /> : "Cerrar Tarea"}
                 </button>
             </form>
         </Modal>
