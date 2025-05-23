@@ -35,12 +35,12 @@ export default function CalendarTasks() {
     queryFn: () => getAllTasksWeeklyProductionPlan(plan_id),
   });
 
-  useEffect(()=>{
-    if(allTasks){
+  useEffect(() => {
+    if (allTasks) {
       setEvents(allTasks.events);
       setTaskNoOperationDate(allTasks.tasks);
     }
-  },[allTasks])
+  }, [allTasks])
 
   const { data: programedTasks, isLoading: programedTasksLoading } = useQuery({
     queryKey: ['getTasksOperationDate', date],

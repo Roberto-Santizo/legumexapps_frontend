@@ -1,7 +1,7 @@
-import { PlusIcon, Edit } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getPaginatedProveedor, Supplier } from "@/api/BodegaProveedoresAPI";
+import { getPackingMaterialProveedores, Supplier } from "@/api/BodegaProveedoresAPI";
 import { useQuery } from "@tanstack/react-query";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -14,7 +14,7 @@ export default function IndexProveedores() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["getPaginatedProveedor", currentPage],
-    queryFn: () => getPaginatedProveedor(currentPage),
+    queryFn: () => getPackingMaterialProveedores({ page: currentPage, paginated: 'true' }),
   });
 
   const handlePageChange = (selectedItem: { selected: number }) => {
@@ -24,6 +24,8 @@ export default function IndexProveedores() {
   useEffect(() => {
     if (data) {
       setProveedores(data.data);
+    }
+    if (data?.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }
@@ -50,7 +52,6 @@ export default function IndexProveedores() {
           <tr className="thead-tr">
             <th className="thead-th">código</th>
             <th className="thead-th">Nombre</th>
-            <th className="thead-th">Acción</th>
           </tr>
         </thead>
         <tbody>
@@ -58,14 +59,6 @@ export default function IndexProveedores() {
             <tr className="tbody-tr" key={proveedor.id}>
               <td className="tbody-td">{proveedor.code} </td>
               <td className="tbody-td">{proveedor.name} </td>
-              <td className="tbody-td">
-                <Link
-                  to={`/proveedor/editar/${proveedor.id}`}
-                  className="hover:text-gray-400"
-                >
-                  <Edit />
-                </Link>
-              </td>
             </tr>
           ))}
         </tbody>

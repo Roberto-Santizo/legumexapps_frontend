@@ -14,18 +14,18 @@ import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
 
 export type DraftItemDispatchPackingMaterial = {
-    packing_material_id: string,
-    quantity: number,
+    packing_material_id: string;
+    name: string;
+    quantity: number;
     lote: string;
+    destination: string | null;
 }
 
 export type DraftDispatchPackingMaterial = {
     task_production_plan_id: string;
     reference: string;
-    responsable_bags: string;
-    responsable_boxes: string;
-    signature_responsable_boxes: string;
-    signature_responsable_bags: string;
+    responsable: string;
+    responsable_signature: string;
     user_signature: string;
     observations: string;
     items: DraftItemDispatchPackingMaterial[];
@@ -43,8 +43,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
     const queryParams = new URLSearchParams(location.search);
     const date = queryParams.get('date')!;
     const queryClient = useQueryClient();
-    const responsableBoxesRef = useRef({} as SignatureCanvas);
-    const responsableBagsRef = useRef({} as SignatureCanvas);
+    const responsableSignatureRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
     const [items, setItems] = useState<DraftItemDispatchPackingMaterial[]>(task.recipe);
     const [error, setError] = useState<boolean>(false);
@@ -142,37 +141,23 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
                         </InputComponent>
 
                         <InputComponent
-                            label="Receptor Cajas"
-                            id="responsable_boxes"
-                            name="responsable_boxes"
-                            placeholder="Nombre de quien recibe cajas"
+                            label="Responsable"
+                            id="responsable"
+                            name="responsable"
+                            placeholder="Nombre del Responsable"
                             register={register}
                             validation={{ required: 'El nombre es requerido' }}
                             errors={errors}
                             type="text"
                         >
-                            {errors.responsable_boxes && <Error>{errors.responsable_boxes.message?.toString()}</Error>}
-                        </InputComponent>
-
-                        <InputComponent
-                            label="Receptor Bolsas"
-                            id="responsable_bags"
-                            name="responsable_bags"
-                            placeholder="Nombre de quien recibe bolsas"
-                            register={register}
-                            validation={{ required: 'El nombre es requerido' }}
-                            errors={errors}
-                            type="text"
-                        >
-                            {errors.responsable_bags && <Error>{errors.responsable_bags.message?.toString()}</Error>}
+                            {errors.responsable && <Error>{errors.responsable.message?.toString()}</Error>}
                         </InputComponent>
                     </div>
 
                     <fieldset className="border rounded-xl p-6 shadow-sm space-y-4">
                         <legend className="text-lg font-semibold text-gray-700 px-2">Firmas</legend>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <SignatureField label="Firma Receptor Cajas" name="signature_responsable_boxes" control={control} errors={errors} canvasRef={responsableBoxesRef} />
-                            <SignatureField label="Firma Receptor Bolsas" name="signature_responsable_bags" control={control} errors={errors} canvasRef={responsableBagsRef} />
+                        <div className="grid grid-cols-2">
+                            <SignatureField label="Firma Responsable" name="responsable_signature" control={control} errors={errors} canvasRef={responsableSignatureRef} />
                             <SignatureField label="Firma De Entrega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
                         </div>
                     </fieldset>

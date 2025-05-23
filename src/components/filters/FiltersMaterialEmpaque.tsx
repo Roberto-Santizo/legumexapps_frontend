@@ -1,4 +1,4 @@
-import { FiltersPackingMaterials } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
+import { FiltersPackingMaterialsType } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
@@ -6,10 +6,10 @@ import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
 type Props = {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    setTempFilters: Dispatch<SetStateAction<FiltersPackingMaterials>>;
-    setFilters: Dispatch<SetStateAction<FiltersPackingMaterials>>;
-    tempFilters: FiltersPackingMaterials;
-    filters: FiltersPackingMaterials;
+    setTempFilters: Dispatch<SetStateAction<FiltersPackingMaterialsType>>;
+    setFilters: Dispatch<SetStateAction<FiltersPackingMaterialsType>>;
+    tempFilters: FiltersPackingMaterialsType;
+    filters: FiltersPackingMaterialsType;
 }
 
 const initialValues = {

@@ -21,7 +21,7 @@ import {
   UserRound,
   Box,
   PackageOpen,
-  ClipboardPaste 
+  ClipboardPaste
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
@@ -175,11 +175,11 @@ export default function Navegation() {
         <PackageOpen />
       </NavLinkComponent>
 
-      <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
+      {/* <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
         <FileUser />
-      </NavLinkComponent>
-      <NavLinkComponent url="/materialSalida" text="Salida Material Bodega">
-        <ClipboardPaste  />
+      </NavLinkComponent> */}
+      <NavLinkComponent url="/salidas-mp" text="Salida Material Empaque">
+        <ClipboardPaste />
       </NavLinkComponent>
     </div>
   );

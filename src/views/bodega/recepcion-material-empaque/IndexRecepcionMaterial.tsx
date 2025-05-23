@@ -87,7 +87,7 @@ export default function IndexRecepcionMaterial() {
         </thead>
         <tbody>
           {materialReception.map((material) => (
-            <tr className="tbody-tr">
+            <tr className="tbody-tr" key={material.id}>
               <td className="tbody-td uppercase">{material.receipt_date}</td>
               <td className="tbody-td uppercase">{material.invoice_date}</td>
               <td className="tbody-td uppercase">{material.received_by}</td>

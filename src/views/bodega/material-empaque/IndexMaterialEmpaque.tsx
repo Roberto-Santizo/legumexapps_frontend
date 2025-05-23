@@ -2,22 +2,22 @@ import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getPaginatedPackingMaterials, PackingMaterial, updateMaterialStatus } from "@/api/MaterialEmpaqueAPI";
+import { getPackingMaterials, PackingMaterial, updateMaterialStatus } from "@/api/MaterialEmpaqueAPI";
 import { toast } from "react-toastify";
+import { Bars3Icon } from "@heroicons/react/16/solid";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersMaterialEmpaque from "@/components/filters/FiltersMaterialEmpaque";
-import { Bars3Icon } from "@heroicons/react/16/solid";
 
-export type FiltersPackingMaterials = {
+export type FiltersPackingMaterialsType = {
   name: string;
   code: string;
   status: string;
   supplier: string;
 }
 
-const initialValues = {
+export const FiltersPackingMaterialsInitialValues : FiltersPackingMaterialsType = {
   name: '',
   code: '',
   status: '',
@@ -29,8 +29,8 @@ export default function IndexMaterialEmpaque() {
   const [items, setItems] = useState<PackingMaterial[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [filters, setFilters] = useState<FiltersPackingMaterials>(initialValues);
-  const [tempFilters, setTempFitlers] = useState<FiltersPackingMaterials>(initialValues);
+  const [filters, setFilters] = useState<FiltersPackingMaterialsType>(FiltersPackingMaterialsInitialValues);
+  const [tempFilters, setTempFitlers] = useState<FiltersPackingMaterialsType>(FiltersPackingMaterialsInitialValues);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
@@ -39,7 +39,7 @@ export default function IndexMaterialEmpaque() {
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['getPaginatedPackingMaterials', currentPage, filters],
-    queryFn: () => getPaginatedPackingMaterials({ currentPage, filters })
+    queryFn: () => getPackingMaterials({ currentPage, filters, paginated: 'true' })
   });
 
   const { mutate } = useMutation({
@@ -58,6 +58,8 @@ export default function IndexMaterialEmpaque() {
   useEffect(() => {
     if (data) {
       setItems(data.data);
+    }
+    if (data?.meta) {
       setCurrentPage(data.meta.current_page);
       setPageCount(data.meta.last_page);
     }

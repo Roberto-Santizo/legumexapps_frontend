@@ -1,6 +1,6 @@
 import clienteAxios from "@/config/axios";
 import { DraftMaterialEmpaque } from "@/views/bodega/material-empaque/CrearRegistroMaterial";
-import { FiltersPackingMaterials } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
+import { FiltersPackingMaterialsType } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
 import { isAxiosError } from "axios";
 import { z } from "zod";
 
@@ -18,42 +18,21 @@ export const PaginatedPackingMaterialsSchema = z.object({
     meta: z.object({
         current_page: z.number(),
         last_page: z.number()
-    })
+    }).optional()
 });
 
 export type PackingMaterial = z.infer<typeof PackingMaterialSchema>;
 export type PaginatedPackingMaterials = z.infer<typeof PaginatedPackingMaterialsSchema>;
 
-export async function getPaginatedPackingMaterials({ currentPage, filters }: { currentPage: number, filters: FiltersPackingMaterials }): Promise<PaginatedPackingMaterials> {
+export async function getPackingMaterials({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersPackingMaterialsType, paginated: string }): Promise<PaginatedPackingMaterials> {
     try {
-        const url = `/api/packing-materials?page=${currentPage}&name=${filters.name}&code=${filters.code}&status=${filters.status}&supplier=${filters.supplier}`;
+        const url = `/api/packing-materials?paginated=${paginated}&page=${currentPage}&name=${filters.name}&code=${filters.code}&status=${filters.status}&supplier=${filters.supplier}`;
         const { data } = await clienteAxios(url);
         const result = PaginatedPackingMaterialsSchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
             throw new Error("Información no valida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-
-export const PackingMaterialsSchema = z.object({
-    data: z.array(PackingMaterialSchema)
-});
-
-export async function getPackingMaterials({name = ''} : {name : string}): Promise<PackingMaterial[]> {
-    try {
-        const url = `/api/packing-materials-all?name=${name}`;
-        const { data } = await clienteAxios(url);
-        const result = PackingMaterialsSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data;
-        } else {
-            throw new Error("Informació no valida");
         }
     } catch (error) {
         console.log(error);

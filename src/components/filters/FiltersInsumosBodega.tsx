@@ -3,7 +3,8 @@ import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPackingMaterials } from "@/api/MaterialEmpaqueAPI";
-import type {FiltersReceptionsInsumos} from "@/views/bodega/recepcion-insumos/IndexRecepcionInsumos"
+import type { FiltersReceptionsInsumos } from "@/views/bodega/recepcion-insumos/IndexRecepcionInsumos";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
 
 type Props = {
     isOpen: boolean;
@@ -25,7 +26,7 @@ export default function FiltersReceptionsInsumos({ isOpen, setIsOpen, setTempFil
 
     const { data } = useQuery({
         queryKey: ['getPackingMaterials'],
-        queryFn: () => getPackingMaterials({ name: '' })
+        queryFn: () => getPackingMaterials({ currentPage: 1, paginated: '', filters: FiltersPackingMaterialsInitialValues })
     });
 
     const handleFilterTempChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
@@ -99,7 +100,7 @@ export default function FiltersReceptionsInsumos({ isOpen, setIsOpen, setTempFil
                         <select className="w-full border p-2 rounded" name="received_date"
                             onChange={handleFilterTempChange} value={tempFilters.received_date || ""}>
                             <option value="">Todos</option>
-                            {data?.map(item => (
+                            {data?.data?.map(item => (
                                 <option key={item.id} value={item.id}>{item.name}</option>
                             ))}
                         </select>

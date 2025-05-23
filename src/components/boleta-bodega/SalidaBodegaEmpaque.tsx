@@ -108,40 +108,21 @@ export default function SalidaBodegaEmpaque({ task }: Props) {
             <p className="uppercase font-bold">
               Cajas recibidas por:
               <span className="capitalize font-normal ml-2">
-                {task.dispatch.responsable_boxes}
+                {task.dispatch.responsable}
               </span>
             </p>
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
                 <img
                   className="h-16 print:h-12"
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.signature_responsable_boxes}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.responsable_signature}`}
                   alt="Firma Receptor Cajas"
                 />
               </div>
               <p className="mt-2 font-bold">FIRMA</p>
             </div>
           </div>
-          <div>
-            <p className="uppercase font-bold">
-              Bolsas recibidas por:
-              <span className="capitalize font-normal ml-2">
-                {task.dispatch.responsable_bags}
-              </span>
-            </p>
-            <div className="text-center">
-              <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
-                <img
-                  className="h-16 print:h-12"
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.signature_responsable_bags}`}
-                  alt="Firma Receptor Bolsas"
-                />
-              </div>
-              <p className="mt-2 font-bold">FIRMA</p>
-            </div>
-          </div>
         </div>
-
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import Modal from "../Modal";
 import Error from "../utilities-components/Error";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import InputComponent from "../form/InputComponent";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
 
 type Props = {
   modal: boolean;
@@ -16,10 +17,10 @@ type Props = {
 export default function ModalAddMaterialEmpaque({ modal, setModal, setItems }: Props) {
   const { data } = useQuery({
     queryKey: ["getPackingMaterials"],
-    queryFn: () => getPackingMaterials({ name: '' }),
+    queryFn: () => getPackingMaterials({ currentPage:1,paginated:'',filters: FiltersPackingMaterialsInitialValues}),
   });
 
-  const materialOptions = data?.map((material) => ({
+  const materialOptions = data?.data?.map((material) => ({
     value: material.id,
     label: material.name,
   }));
@@ -33,9 +34,9 @@ export default function ModalAddMaterialEmpaque({ modal, setModal, setItems }: P
   } = useForm<DraftItem>();
 
   const onSubmit = (formData: DraftItem) => {
-    const name = data?.find((item) => item.id === formData.p_material_id)?.name;
+    const name = data?.data?.find((item) => item.id === formData.p_material_id)?.name;
     formData.name = name ? name : "";
-    formData.quantity = Number(formData.quantity); // Asegurar que sea un número
+    formData.quantity = Number(formData.quantity); 
 
     setItems((prev) => {
       const existingIndex = prev.findIndex(

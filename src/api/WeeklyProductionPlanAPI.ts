@@ -620,10 +620,8 @@ export const DispatchTaskProductionSchema = z.object({
     observations: z.string().nullable(),
     delivered_by: z.string(),
     delivered_by_signature: z.string(),
-    responsable_boxes: z.string(),
-    signature_responsable_boxes: z.string(),
-    responsable_bags: z.string(),
-    signature_responsable_bags: z.string()
+    responsable: z.string(),
+    responsable_signature: z.string(),
 });
 
 export const FinishedTaskProductionDetailsSchema = z.object({
@@ -736,8 +734,10 @@ export const TaskOperationDateSchema = z.object({
     bag_inner: z.string().nullable(),
     recipe: z.array(z.object({
         packing_material_id: z.string(),
+        name: z.string(),
         quantity: z.number(),
         lote: z.string(),
+        destination: z.string().nullable()
     }))
 });
 

@@ -36,7 +36,7 @@ export const PaginatedInsumosReceiptsSchema = z.object({
 export type PaginatedInsumosReceipts = z.infer<typeof PaginatedInsumosReceiptsSchema>;
 export type InsumosReceipt = z.infer<typeof InsumosReceiptSchema>;
 
-export async function getPaginatedInsumosReceipts(page: number, filters: FiltersReceptionsInsumos): Promise<PaginatedInsumosReceipts> {
+export async function getInsumosReceipts(page: number, filters: FiltersReceptionsInsumos): Promise<PaginatedInsumosReceipts> {
     try {
         const url = `/api/insumos-reception?page=${page}&invoice=${filters.invoice}&received_by=${filters.received_by}&received_date=${filters.received_date}&invoice_date=${filters.invoice_date}`;
         const { data } = await clienteAxios(url);

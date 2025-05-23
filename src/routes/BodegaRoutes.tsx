@@ -23,8 +23,8 @@ const routes = [
   { path: "/proveedores", component: lazy(() => import("@/views/bodega/proveedores/IndexProveedores")), roles: ['admin'] },
   { path: "/proveedores/crear", component: lazy(() => import("@/views/bodega/proveedores/CrearProveedor")), roles: ['admin'] },
 
-  { path: "/materialSalida", component: lazy(() => import("@/views/bodega/salida-bodega-empaque/IndexSalidaBodega")), roles: ['admin'] },
-  { path: "/materialSalida/crear", component: lazy(() => import("@/views/bodega/salida-bodega-empaque/CreateBodegaSalida-empaque")), roles: ['admin'] }
+  { path: "/salidas-mp", component: lazy(() => import("@/views/bodega/salida-bodega-empaque/IndexPackingMaterialDispatch")), roles: ['admin'] },
+  { path: "/salidas-mp/crear", component: lazy(() => import("@/views/bodega/salida-bodega-empaque/CreatePackingMaterialDispatch")), roles: ['admin'] }
 
 
 ];

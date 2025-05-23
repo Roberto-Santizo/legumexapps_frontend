@@ -1,7 +1,7 @@
 import { DraftRecepcionInsumos } from "./CrearRecepcionInsumos";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProveedores } from "@/api/BodegaProveedoresAPI";
+import { getPackingMaterialProveedores } from "@/api/BodegaProveedoresAPI";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
@@ -17,11 +17,11 @@ type Props = {
 export default function FormRecepcionInsumos({ errors, register, control }: Props) {
 
   const { data: suppliers, isLoading, isError } = useQuery({
-    queryKey: ['getAllProveedores'],
-    queryFn: getAllProveedores
+    queryKey: ['getPackingMaterialProveedores'],
+    queryFn: () => getPackingMaterialProveedores({ page: 1, paginated: '' })
   });
 
-  const options = suppliers?.map((supplier) => ({
+  const options = suppliers?.data?.map((supplier) => ({
     value: supplier.id,
     label: `${supplier.name}`,
   }));

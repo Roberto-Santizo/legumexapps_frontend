@@ -1,10 +1,11 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { DraftMaterialEmpaque } from "./CrearRegistroMaterial";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProveedores } from "@/api/BodegaProveedoresAPI";
+import { getPackingMaterialProveedores } from "@/api/BodegaProveedoresAPI";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import Error from "@/components/utilities-components/Error";
+import Spinner from "@/components/utilities-components/Spinner";
 
 type Props = {
   errors: FieldErrors<DraftMaterialEmpaque>;
@@ -14,16 +15,17 @@ type Props = {
 
 export default function FormRegistroMaterial({ errors, register, control }: Props) {
 
-  const { data } = useQuery({
-    queryKey: ['getAllProveedores'],
-    queryFn: getAllProveedores
+  const { data, isLoading } = useQuery({
+    queryKey: ['getPackingMaterialProveedores'],
+    queryFn: () => getPackingMaterialProveedores({ page: 1, paginated: '' })
   });
 
-  const options = data?.map((supplier) => ({
+  const options = data?.data?.map((supplier) => ({
     value: supplier.id,
     label: `${supplier.name}`,
   }));
 
+  if (isLoading) return <Spinner />
   if (options) return (
     <>
       <InputComponent<DraftMaterialEmpaque>

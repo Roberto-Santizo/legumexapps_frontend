@@ -3,11 +3,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
-
-import {
-  getPaginatedInsumosReceipts,
-  InsumosReceipt,
-} from "@/api/RecepcionInsumosAPI";
+import { getInsumosReceipts, InsumosReceipt } from "@/api/RecepcionInsumosAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
@@ -39,8 +35,8 @@ export default function IndexInsumos() {
     useState<FiltersReceptionsInsumos>(initialValues);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["getPaginatedInsumos", currentPage, filters],
-    queryFn: () => getPaginatedInsumosReceipts(currentPage, filters),
+    queryKey: ["getInsumosReceipts", currentPage, filters],
+    queryFn: () => getInsumosReceipts(currentPage, filters),
   });
 
   useEffect(() => {
