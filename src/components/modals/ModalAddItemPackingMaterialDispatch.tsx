@@ -8,15 +8,15 @@ import Error from "../utilities-components/Error";
 import InputComponent from "../form/InputComponent";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import Spinner from "../utilities-components/Spinner";
-import { DraftItemDispatchPackingMaterial } from "./ModalEntregaMaterialEmpaque";
+import { DraftPackingMaterialTransactionItem } from "./ModalEntregaMaterialEmpaque";
 
 type Props = {
   modal: boolean;
   setModal: (open: boolean) => void;
-  setItems: Dispatch<SetStateAction<DraftItemDispatchPackingMaterial[]>>;
+  setItems: Dispatch<SetStateAction<DraftPackingMaterialTransactionItem[]>>;
   setIndexItem: Dispatch<SetStateAction<number | null>>;
   selectedIndex: number | null;
-  items: DraftItemDispatchPackingMaterial[];
+  items: DraftPackingMaterialTransactionItem[];
 };
 
 export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, setItems, selectedIndex, setIndexItem, items }: Props) {
@@ -37,7 +37,7 @@ export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, s
     reset,
     setValue,
     formState: { errors }
-  } = useForm<DraftItemDispatchPackingMaterial>();
+  } = useForm<DraftPackingMaterialTransactionItem>();
 
   useEffect(() => {
     if (selectedIndex) {
@@ -55,7 +55,7 @@ export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, s
     reset();
   }
 
-  const onSubmit = (data: DraftItemDispatchPackingMaterial) => {
+  const onSubmit = (data: DraftPackingMaterialTransactionItem) => {
     if (selectedIndex) {
       setItems((prev) => {
         return prev.map((item, index) => {
@@ -73,7 +73,6 @@ export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, s
       setItems((prev) => [...prev, data]);
     }
 
-    console.log(items);
     handleCloseModal();
   };
 
@@ -87,7 +86,7 @@ export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, s
         {isLoading && <Spinner />}
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-7 space-y-5">
-          <InputSelectSearchComponent<DraftItemDispatchPackingMaterial>
+          <InputSelectSearchComponent<DraftPackingMaterialTransactionItem>
             label="Item"
             id="packing_material_id"
             name="packing_material_id"
@@ -99,7 +98,7 @@ export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, s
             {errors.packing_material_id && <Error>{errors.packing_material_id?.message?.toString()}</Error>}
           </InputSelectSearchComponent>
 
-          <InputComponent<DraftItemDispatchPackingMaterial>
+          <InputComponent<DraftPackingMaterialTransactionItem>
             label="Cantidad"
             id="quantity"
             name="quantity"
@@ -116,7 +115,7 @@ export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, s
             )}
           </InputComponent>
 
-          <InputComponent<DraftItemDispatchPackingMaterial>
+          <InputComponent<DraftPackingMaterialTransactionItem>
             label="Destino/Uso"
             id="destination"
             name="destination"
@@ -133,7 +132,7 @@ export default function ModalAddItemPackingMaterialDispatch({ modal, setModal, s
             )}
           </InputComponent>
 
-          <InputComponent<DraftItemDispatchPackingMaterial>
+          <InputComponent<DraftPackingMaterialTransactionItem>
             label="Lote"
             id="lote"
             name="lote"

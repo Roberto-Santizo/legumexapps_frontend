@@ -10,7 +10,7 @@ import GraphicsPlanSemanal from "./GraphicsPlanSemanal";
 import HoverCardDemo from "@/components/ui/HoverCardDemo";
 import ModalHistoryChangeOperation from "@/components/modals/ModalHistoryChangeOperation";
 import HoverCardNote from "@/components/ui/HoverCardNote";
-import ModalBodegaEmpaqueFormats from "@/components/modals/ModalBodegaEmpaqueFormats";
+import ModalTaskProductionTransactionsFormats from "@/components/modals/ModalTaskProductionTransactionsFormats";
 
 export default function TareaProduccionDetails() {
   const params = useParams();
@@ -135,7 +135,8 @@ export default function TareaProduccionDetails() {
       </div>
 
       <ModalHistoryChangeOperation modal={modal} setModal={setModal} changes={task_details.history_operation_date} />
-      <ModalBodegaEmpaqueFormats open={modalFormatsBodega} setOpen={setModalFormatsBodega} task={task_details}/>
+
+      <ModalTaskProductionTransactionsFormats open={modalFormatsBodega} setOpen={setModalFormatsBodega} task={task_details} />
     </div>
   );
 }

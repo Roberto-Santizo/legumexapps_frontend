@@ -1,10 +1,10 @@
-import { FinishedTaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
+import { TransactionTaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import LogoLegumex from "../logos/LogoLegumex";
 
 type Props = {
-  task: FinishedTaskProductionDetails;
+  transaction: TransactionTaskProduction;
 }
-export default function SalidaBodegaEmpaque({ task }: Props) {
+export default function SalidaBodegaEmpaque({ transaction }: Props) {
   return (
     <div>
       <div className="shadow-xl p-10 bg-white rounded-lg w-full h-full" id="pdfBoletaSalida">
@@ -18,9 +18,7 @@ export default function SalidaBodegaEmpaque({ task }: Props) {
             <h1 className="uppercase text-center font-bold text-4xl mb-12">
               Salida de bodega empaque
             </h1>
-            <p className="font-bold text-2xl text-center text-red-500">
-              No.{task.dispatch.id}
-            </p>
+
           </div>
         </div>
         <div className="w-full flex flex-col md:flex-row justify-between">
@@ -37,7 +35,7 @@ export default function SalidaBodegaEmpaque({ task }: Props) {
             </div>
             <div>
               <p className="uppercase text-center font-bold p-3">R.pro.bod.06</p>
-              {task.dispatch.dispatch_date}
+              {transaction.transaction_date}
             </div>
           </div>
         </div>
@@ -53,7 +51,7 @@ export default function SalidaBodegaEmpaque({ task }: Props) {
                   Descripcion del producto
                 </th>
                 <th className="border border-black uppercase font-bold p-2">
-                  Línea
+                  Destino
                 </th>
                 <th className="border border-black uppercase font-bold p-2">
                   Lote
@@ -64,11 +62,11 @@ export default function SalidaBodegaEmpaque({ task }: Props) {
               </tr>
             </thead>
             <tbody>
-              {task.dispatch.items.map(item => (
+              {transaction.items.map(item => (
                 <tr key={item.code}>
                   <td className="border border-black p-2">{item.code}</td>
                   <td className="border border-black p-2">{item.description}</td>
-                  <td className="border border-black p-2">{task.line}</td>
+                  <td className="border border-black p-2">{item.destination}</td>
                   <td className="border border-black p-2">{item.lote}</td>
                   <td className="border border-black p-2">{item.quantity}</td>
                 </tr>
@@ -77,27 +75,28 @@ export default function SalidaBodegaEmpaque({ task }: Props) {
             </tbody>
           </table>
         </div>
+
         <div className="mt-12">
           <div className="font-bold uppercase mb-12">
             <p>Observaciones:</p>
             <p className="p-2 border-b border-black min-h-[6rem] font-normal">
-              {task.dispatch.observations}
+              {transaction.observations}
             </p>
           </div>
         </div>
         <div className="w-full flex flex-col md:flex-row  justify-center md:justify-between">
           <div>
             <p className="uppercase font-bold">
-              Entregado por:
+              Encargado Bodega:
               <span className="font-normal capitalize ml-2">
-                {task.dispatch.delivered_by}
+                {transaction.delivered_by}
               </span>
             </p>
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
                 <img
                   className="h-16 print:h-12"
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.delivered_by_signature}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${transaction.delivered_by_signature}`}
                   alt="Firma Entregado Por"
                 />
               </div>
@@ -106,16 +105,16 @@ export default function SalidaBodegaEmpaque({ task }: Props) {
           </div>
           <div>
             <p className="uppercase font-bold">
-              Cajas recibidas por:
+              Responsable:
               <span className="capitalize font-normal ml-2">
-                {task.dispatch.responsable}
+                {transaction.responsable}
               </span>
             </p>
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
                 <img
                   className="h-16 print:h-12"
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${task.dispatch.responsable_signature}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${transaction.responsable_signature}`}
                   alt="Firma Receptor Cajas"
                 />
               </div>

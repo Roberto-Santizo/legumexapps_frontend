@@ -5,8 +5,6 @@ import Spinner from "../components/utilities-components/Spinner";
 import ProtectedAgricolaRoutes from "../components/middlewares/ProtectedRoutes";
 
 const routes = [
-  { path: "/boleta-empaque/salida", component: lazy(() => import("@/components/boleta-bodega/ComponentePrincipalBoletas")), roles: ['admin'] },
-
   { path: "/form/entrega-material", component: lazy(() => import("@/views/bodega/formularios/MaterialEmpaqueSalida")), roles: ['admin'] },
 
   { path: "/material-empaque", component: lazy(() => import("@/views/bodega/material-empaque/IndexMaterialEmpaque")), roles: ['admin'] },
@@ -23,8 +21,8 @@ const routes = [
   { path: "/proveedores", component: lazy(() => import("@/views/bodega/proveedores/IndexProveedores")), roles: ['admin'] },
   { path: "/proveedores/crear", component: lazy(() => import("@/views/bodega/proveedores/CrearProveedor")), roles: ['admin'] },
 
-  { path: "/salidas-mp", component: lazy(() => import("@/views/bodega/salida-bodega-empaque/IndexPackingMaterialDispatch")), roles: ['admin'] },
-  { path: "/salidas-mp/crear", component: lazy(() => import("@/views/bodega/salida-bodega-empaque/CreatePackingMaterialDispatch")), roles: ['admin'] }
+  { path: "/material-empaque-transacciones", component: lazy(() => import("@/views/bodega/transacciones-matrial-empaque/IndexPackingMaterialTransaction")), roles: ['admin'] },
+  { path: "/material-empaque-transacciones/crear", component: lazy(() => import("@/views/bodega/transacciones-matrial-empaque/CreatePackingMaterialTransaction")), roles: ['admin'] }
 
 
 ];

@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getPackingMaterialDispatches, PackingMaterialDispatch } from "@/api/PackingMaterialDispatches";
+import { getPackingMaterialTransactions, PackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
-export default function IndexInsumos() {
+export default function IndexPackingMaterialTransaction() {
 
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [dispatches, setDispatches] = useState<PackingMaterialDispatch[]>([]);
+  const [transactions, setTransactions] = useState<PackingMaterialTransaction[]>([]);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
@@ -20,12 +20,12 @@ export default function IndexInsumos() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPackingMaterialDispatches', currentPage],
-    queryFn: () => getPackingMaterialDispatches({ page: currentPage, paginated: 'true' })
+    queryFn: () => getPackingMaterialTransactions({ page: currentPage, paginated: 'true' })
   });
 
   useEffect(() => {
     if (data) {
-      setDispatches(data.data)
+      setTransactions(data.data)
     }
 
     if (data?.meta) {
@@ -39,11 +39,11 @@ export default function IndexInsumos() {
   if (data) return (
     <>
       <h1 className="font-bold text-4xl capitalize">
-        Salidas Material de Empaque
+        Transacciones de Material de Empaque
       </h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
-          to="/salidas-mp/crear"
+          to="/material-empaque-transacciones/crear"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-6 md:w-8" />
@@ -62,15 +62,17 @@ export default function IndexInsumos() {
             <th className="thead-th">Responsable</th>
             <th className="thead-th">Entregado Por</th>
             <th className="thead-th">Fecha de Entrega</th>
+            <th className="thead-th">Tipo</th>
           </tr>
         </thead>
         <tbody>
-          {dispatches.map(dispatch => (
-            <tr className="tbody-tr" key={dispatch.id}>
-              <td className="tbody-td">{dispatch.reference}</td>
-              <td className="tbody-td">{dispatch.responsable}</td>
-              <td className="tbody-td">{dispatch.user}</td>
-              <td className="tbody-td">{dispatch.dispatch_date}</td>
+          {transactions.map(transaction => (
+            <tr className="tbody-tr" key={transaction.id}>
+              <td className="tbody-td">{transaction.reference}</td>
+              <td className="tbody-td">{transaction.responsable}</td>
+              <td className="tbody-td">{transaction.user}</td>
+              <td className="tbody-td">{transaction.transaction_date}</td>
+              <td className="tbody-td">{transaction.type}</td>
             </tr>
           ))}
 

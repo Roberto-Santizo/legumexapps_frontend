@@ -178,7 +178,7 @@ export default function Navegation() {
       {/* <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
         <FileUser />
       </NavLinkComponent> */}
-      <NavLinkComponent url="/salidas-mp" text="Salida Material Empaque">
+      <NavLinkComponent url="/material-empaque-transacciones" text="Transacciones Material Empaque">
         <ClipboardPaste />
       </NavLinkComponent>
     </div>

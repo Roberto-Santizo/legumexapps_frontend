@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { createPackingMaterialDispatch } from "@/api/PackingMaterialDispatches";
+import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
 import InputComponent from "../form/InputComponent";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
@@ -13,7 +13,7 @@ import Error from "../utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
 
-export type DraftItemDispatchPackingMaterial = {
+export type DraftPackingMaterialTransactionItem = {
     packing_material_id: string;
     name: string;
     quantity: number;
@@ -21,14 +21,15 @@ export type DraftItemDispatchPackingMaterial = {
     destination: string | null;
 }
 
-export type DraftDispatchPackingMaterial = {
+export type DraftTransactionPackingMaterial = {
     task_production_plan_id: string;
     reference: string;
     responsable: string;
     responsable_signature: string;
     user_signature: string;
     observations: string;
-    items: DraftItemDispatchPackingMaterial[];
+    items: DraftPackingMaterialTransactionItem[];
+    type: string;
 }
 
 type Props = {
@@ -45,11 +46,11 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
     const queryClient = useQueryClient();
     const responsableSignatureRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
-    const [items, setItems] = useState<DraftItemDispatchPackingMaterial[]>(task.recipe);
+    const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>(task.recipe);
     const [error, setError] = useState<boolean>(false);
 
     const { mutate, isPending } = useMutation({
-        mutationFn: createPackingMaterialDispatch,
+        mutationFn: createPackingMaterialTransaction,
         onError: (error) => toast.error(error.message),
         onSuccess: (data) => {
             setModal(false);
@@ -65,7 +66,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
         formState: { errors },
         control,
         reset,
-    } = useForm<DraftDispatchPackingMaterial>();
+    } = useForm<DraftTransactionPackingMaterial>();
 
     const handleChangeLote = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -83,7 +84,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
         setModal(false);
     };
 
-    const onSubmit = (data: DraftDispatchPackingMaterial) => {
+    const onSubmit = (data: DraftTransactionPackingMaterial) => {
         if (items.some(item => item.lote === '')) {
             toast.error('Todos los lotes son requeridos');
             setError(true)
@@ -94,6 +95,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
 
         data.items = items;
         data.task_production_plan_id = task.id;
+        data.type = "1";
         mutate(data);
     }
 
@@ -157,8 +159,8 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
                     <fieldset className="border rounded-xl p-6 shadow-sm space-y-4">
                         <legend className="text-lg font-semibold text-gray-700 px-2">Firmas</legend>
                         <div className="grid grid-cols-2">
-                            <SignatureField label="Firma Responsable" name="responsable_signature" control={control} errors={errors} canvasRef={responsableSignatureRef} />
-                            <SignatureField label="Firma De Entrega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
+                            <SignatureField label="Firma" name="responsable_signature" control={control} errors={errors} canvasRef={responsableSignatureRef} />
+                            <SignatureField label="Firma de bodega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
                         </div>
                     </fieldset>
 
