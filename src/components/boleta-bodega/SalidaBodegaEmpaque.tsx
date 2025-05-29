@@ -71,7 +71,6 @@ export default function SalidaBodegaEmpaque({ transaction }: Props) {
                   <td className="border border-black p-2">{item.quantity}</td>
                 </tr>
               ))}
-
             </tbody>
           </table>
         </div>

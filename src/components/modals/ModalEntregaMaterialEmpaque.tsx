@@ -12,6 +12,7 @@ import Spinner from "../utilities-components/Spinner";
 import Error from "../utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
+import { DraftTaskProductionWastage } from "./ModalAddWastage";
 
 export type DraftPackingMaterialTransactionItem = {
     packing_material_id: string;
@@ -29,6 +30,7 @@ export type DraftTransactionPackingMaterial = {
     user_signature: string;
     observations: string;
     items: DraftPackingMaterialTransactionItem[];
+    wastages:DraftTaskProductionWastage[];
     type: string;
 }
 

@@ -9,6 +9,7 @@ import ModalNotasProblemas from "@/components/modals/ModalNotasProblemas";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalUnassignNote from "@/components/modals/ModalUnassignNote";
+import ModalReturnPackingMaterial from "@/components/modals/ModalReturnPackingMaterial";
 
 export default function ShowLineaDetalles() {
     const params = useParams();
@@ -41,6 +42,8 @@ export default function ShowLineaDetalles() {
             <ModalNotasProblemas />
 
             <ModalUnassignNote />
+
+            <ModalReturnPackingMaterial />
         </div>
     )
 }

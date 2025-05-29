@@ -645,7 +645,13 @@ export const FinishedTaskProductionDetailsSchema = z.object({
     timeouts: z.array(TimeoutTaskProductionSchema),
     employees: z.array(TaskProductionEmployeeSchema),
     history_operation_date: z.array(HistoryOperationDateSchema),
-    transactions: z.array(TransactionTaskProductionSchema)
+    transactions: z.array(TransactionTaskProductionSchema),
+    wastages: z.array(z.object({
+        id: z.string(),
+        item: z.string(),
+        quantity: z.number(),
+        lote: z.string()
+    }))
 });
 
 export type FinishedTaskProductionDetails = z.infer<typeof FinishedTaskProductionDetailsSchema>;

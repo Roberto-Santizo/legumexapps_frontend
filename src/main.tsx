@@ -12,6 +12,6 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryCliente}>
       <AppRouter />
     </QueryClientProvider>
-    <ToastContainer pauseOnFocusLoss={false}/>
+    <ToastContainer pauseOnFocusLoss={false} className="z-[11000]" />
   </StrictMode>,
 )

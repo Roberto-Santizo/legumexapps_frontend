@@ -120,6 +120,34 @@ export default function TareaProduccionDetails() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Mermas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full p-2 h-96 overflow-y-scroll scrollbar-hide">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Item</TableHead>
+                  <TableHead>Lote</TableHead>
+                  <TableHead>Cantidad</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {task_details.wastages.map(wastage => (
+                  <TableRow className="hover:bg-gray-100 transition-all">
+                    <TableCell>{wastage.item}</TableCell>
+                    <TableCell>{wastage.lote}</TableCell>
+                    <TableCell>{wastage.quantity}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex justify-between mt-4 gap-5">
         <button className="button bg-indigo-500 hover:bg-indigo-600" onClick={() => setModal(true)}>
           Historial de Cambios
