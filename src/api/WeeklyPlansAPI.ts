@@ -4,16 +4,27 @@ import { ReportSchema } from "@/utils/reports-schema";
 import { SummaryWeeklyPlanSchema, WeeklyPlansPaginateSchema } from "@/utils/weekly_plans-schema";
 import { downloadBase64File } from "@/helpers";
 import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
+import { z } from "zod";
+import { TaskInsumoSchema } from "@/utils/taskWeeklyPlan-schema";
+import { isAxiosError } from "axios";
 
-export async function createPlan(file: File[]): Promise<void | string[]> {
+export async function createPlan(file: File[]) {
     try {
         const url = '/api/plans';
         const formData = new FormData();
         formData.append("file", file[0]);
 
-        await clienteAxios.post(url, formData);
-    } catch (error: any) {
-        return error.response.data.message;
+        const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
+    } catch (error) {
+        if(isAxiosError(error)){
+            if(error.response?.data.errors){
+                 throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }else if(error.response?.data.msg){
+                throw new Error(error.response.data.msg);
+                
+            }
+        }
     }
 }
 
@@ -45,6 +56,37 @@ export async function getPlanById(id: WeeklyPlan['id']): Promise<SummaryWeeklyPl
             throw new Error('Los datos no son validos');
         }
     } catch (error) {
+        throw error;
+    }
+}
+
+export const TaskWeeklyPlanByDateSchema = z.object({
+    id: z.string(),
+    lote: z.string(),
+    task: z.string(),
+    operation_date:z.string(),
+    status: z.boolean(),
+    insumos: z.array(TaskInsumoSchema)
+});
+
+export const TasksWeeklyPlanByDateSchema = z.object({
+    data: z.array(TaskWeeklyPlanByDateSchema)
+});
+
+export type TaskWeeklyPlanByDate = z.infer<typeof TaskWeeklyPlanByDateSchema>;
+
+export async function getTasksByDate({ id, date, loteId, taskId }: { id: WeeklyPlan['id'], date: string, loteId: string, taskId: string }) : Promise<TaskWeeklyPlanByDate[]> {
+    try {
+        const url = `/api/plans/tasks-planned-by-date/finca?weekly_plan=${id}&date=${date}&lote=${loteId}&task=${taskId}`;
+        const { data } = await clienteAxios.get(url);
+        const result = TasksWeeklyPlanByDateSchema.safeParse(data);
+        if (result.success) {
+            return result.data.data;
+        } else {
+            throw new Error("Información no válida");
+        }
+    } catch (error) {
+        console.log(error);
         throw error;
     }
 }

@@ -4,10 +4,12 @@ import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Trash } from 'lucide-react';
 import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate, TaskForCalendar } from '@/api/TasksWeeklyPlanAPI';
-import { getLotes, Lote } from '@/api/LotesAPI';
-import { Tarea } from '@/types';
 import { getWeeklyPlans } from '@/api/WeeklyPlansAPI';
 import { FiltersPlanSemanalInitialValues } from './IndexPlanSemanal';
+import { useNavigate } from 'react-router-dom';
+import { usePermissions } from '@/hooks/usePermissions';
+import { getLotes, Lote } from '@/api/LotesAPI';
+import { Tarea } from '@/types';
 import { getTasks } from '@/api/TasksAPI';
 import { FiltersLoteInitialValues } from '../lotes/IndexLotes';
 import { FiltersTasksInitialValues } from '../tareas/IndexTareas';
@@ -16,10 +18,12 @@ import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import esLocale from '@fullcalendar/core/locales/es';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import Spinner from '@/components/utilities-components/Spinner';
-import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
 import ModalChangeOperationDateAgricola from '@/components/modals/ModalChangeOperationDateAgricola';
 import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
+import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
+import Spinner from '@/components/utilities-components/Spinner';
+import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
+import { getFincas } from '@/api/FincasAPI';
 
 
 type EventReceiveInfo = {
@@ -31,32 +35,43 @@ type EventReceiveInfo = {
 
 const CalendarComponent = () => {
     const queryClient = useQueryClient();
-    const [id, setId] = useState('');
-    const [events, setEvents] = useState<TaskForCalendar[]>([]);
+    const [id, setId] = useState<string>('');
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
     const [modal, setModal] = useState(false);
     const [modalInfoTarea, setModalInfoTarea] = useState(false);
     const [selectedTask, setSelectedTask] = useState<TaskForCalendar>({} as TaskForCalendar);
-    const calendarRef = useRef<FullCalendar | null>(null);
-
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
-
+    const [fincaId, setFincaId] = useState<string>('');
     const [lotes, setLotes] = useState<Lote[]>([]);
     const [tareas, setTareas] = useState<Tarea[]>([]);
+    const { hasPermission } = usePermissions();
+
+    const calendarRef = useRef<FullCalendar | null>(null);
+    const navigate = useNavigate();
+
 
     const results = useQueries({
         queries: [
             { queryKey: ['getAllLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' }) },
             { queryKey: ['getAllTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
+            { queryKey: ['getAllFincas'], queryFn: getFincas },
         ]
     })
+
 
     useEffect(() => {
         if (results[0].data) setLotes(results[0].data.data)
         if (results[1].data) setTareas(results[1].data.data)
     }, [results])
+
+    const fincasFilter = results[2].data?.filter((finca) => +finca.id < 7);
+
+    const fincasOptions = fincasFilter?.map((finca) => ({
+        value: finca.id,
+        label: finca.name
+    }));
 
     const lotesOptions = lotes.map((lote) => ({
         value: lote.id,
@@ -70,14 +85,14 @@ const CalendarComponent = () => {
 
     const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: '' }) });
     const { data: tasks, isLoading } = useQuery({
-        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId],
-        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId }),
-        enabled: !!id,
+        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId, fincaId],
+        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId, fincaId }),
+        retry: false
     });
+
     const { data: tasksForCalendar } = useQuery({
         queryKey: ['getTasksForCalendar', id],
         queryFn: () => getTasksForCalendar(id),
-        enabled: !!id,
     });
 
     const { mutate } = useMutation({
@@ -88,13 +103,13 @@ const CalendarComponent = () => {
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
         },
-        onError: (error) => toast.error(error.message),
+        onError: (error) => {
+            toast.error(error.message)
+        },
     });
 
     useEffect(() => {
         if (tasksForCalendar) {
-            setEvents(tasksForCalendar.data);
-
             const calendarApi = calendarRef.current?.getApi();
             if (calendarApi && tasksForCalendar.initial_date) {
                 calendarApi.gotoDate(tasksForCalendar.initial_date);
@@ -107,27 +122,38 @@ const CalendarComponent = () => {
         mutate({ date: info.event.startStr, ids: [info.event.id] });
     };
 
+    interface DateClickInfo {
+        dateStr: string;
+    }
+
+    const handleOpenDate = (info: DateClickInfo) => {
+        navigate(`${location.pathname}?date=${info.dateStr}`);
+    };
+
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-col w-full">
                 <h1 className="font-bold text-4xl">Planificación Fincas</h1>
-                <div className="flex justify-end items-center gap-5 mb-4">
-                    <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
-                    <div className="mb-4">
-                        <label htmlFor="selector" className="block text-sm font-medium text-gray-600 mb-1">Plan Semanal</label>
-                        <select
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            onChange={(e) => setId(e.target.value)}
-                        >
-                            <option value="">Seleccione una opción</option>
-                            {plans?.data?.map((plan) => (
-                                <option key={plan.id} value={plan.id}>
-                                    {plan.finca} - {plan.week}/{plan.year}
-                                </option>
-                            ))}
-                        </select>
+                {hasPermission('administrate plans production') && (
+                    <div className="flex justify-end items-center gap-5 mb-4">
+                        <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
+                        <div className="mb-4">
+                            <label htmlFor="selector" className="block text-sm font-medium text-gray-600 mb-1">Plan Semanal</label>
+                            <select
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                onChange={(e) => setId(e.target.value)}
+                            >
+                                <option value="">Seleccione una opción</option>
+                                {plans?.data?.map((plan) => (
+                                    <option key={plan.id} value={plan.id}>
+                                        {plan.finca} - {plan.week}/{plan.year}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                </div>
+                )}
+
             </div>
 
             <div className="flex gap-4">
@@ -139,8 +165,9 @@ const CalendarComponent = () => {
                         locale={esLocale}
                         editable={true}
                         droppable={true}
-                        events={events}
+                        events={tasksForCalendar?.data}
                         initialDate={tasksForCalendar?.initial_date}
+                        dateClick={handleOpenDate}
                         eventDrop={handleEventDrop}
                         eventClick={(info) => {
                             const task = tasksForCalendar?.data.find((task) => task.id === info.event.id);
@@ -194,7 +221,17 @@ const CalendarComponent = () => {
                                     placeholder="--SELECCIONE UNA TAREA--"
                                 />
 
-
+                                <Select
+                                    options={fincasOptions}
+                                    className="react-select-container flex-1"
+                                    classNamePrefix="react-select"
+                                    onChange={(selected => {
+                                        if (selected?.value) {
+                                            setFincaId(selected?.value)
+                                        }
+                                    })}
+                                    placeholder="--SELECCIONE UNA FINCA--"
+                                />
                             </div>
                         </div>
 
@@ -205,16 +242,7 @@ const CalendarComponent = () => {
                             ) : (
                                 <>
                                     {tasks?.map((task) => (
-                                        <div
-                                            key={task.id}
-                                            className="fc-task-draggable space-y-5"
-                                            data-id={task.id}
-                                            data-title={task.task}
-                                            draggable="true"
-
-                                        >
-                                            <TaskCalendarFincaComponent ids={ids} setIds={setIds} task={task} />
-                                        </div>
+                                        <TaskCalendarFincaComponent key={task.id} ids={ids} setIds={setIds} task={task} />
                                     ))}
                                 </>
                             )}
@@ -229,13 +257,13 @@ const CalendarComponent = () => {
                             <p><span className="font-medium text-gray-800">Tareas sin fecha de operación:</span> {tasksForCalendar?.tasks_without_operation_date}</p>
                         </div>
                     </div>
-
                 </div>
-
             </div>
+
 
             <ModalChangeOperationDateAgricola show={modal} setModal={setModal} ids={ids} id={id} setIds={setIds} />
             <ModalInfoTareaLote show={modalInfoTarea} setModal={setModalInfoTarea} task={selectedTask} setSelectedTask={setSelectedTask} />
+            <ModalInsumosPrepared id={id} />
         </div>
     );
 };

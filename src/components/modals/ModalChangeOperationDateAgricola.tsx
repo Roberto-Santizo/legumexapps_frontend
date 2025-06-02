@@ -22,7 +22,6 @@ export default function ModalChangeOperationDateAgricola({ show, setModal, ids, 
         mutationFn: changeOperationDate,
         onError: (error) => {
             toast.error(error.message);
-            setModal(false);
         },
         onSuccess: (data) => {
             toast.success(data);
