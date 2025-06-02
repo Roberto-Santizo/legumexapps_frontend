@@ -155,82 +155,88 @@ export default function IndexPlanSemanal() {
         </motion.div>
       )}
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            {selectingReport && <th scope="col" className="thead-th"></th>}
+      {weeklyPlans.length === 0 ? <p className="text-center text-xl">No existen planes semanales</p> : (
+        <>
+          <table className="table mt-10">
+            <thead>
+              <tr className="thead-tr">
+                {selectingReport && <th scope="col" className="thead-th"></th>}
 
-            <th scope="col" className="thead-th">
-              Finca
-            </th>
-            <th scope="col" className="thead-th">
-              Semana
-            </th>
-            <th scope="col" className="thead-th">
-              Año
-            </th>
-            <th scope="col" className="thead-th">
-              Control de Presupuesto
-            </th>
-            <th scope="col" className="thead-th">
-              Monto Extraordinario
-            </th>
-            <th scope="col" className="thead-th">
-              Control de Tareas
-            </th>
-            <th scope="col" className="thead-th">
-              Control de tareas Cosecha
-            </th>
-            <th scope="col" className="thead-th">
-              Acciones
-            </th>
-            <th scope="col" className="thead-th">
-              Reporte de Insumos
-            </th>
-          </tr>
-        </thead>
-        <tbody className="text-sm">
-          {weeklyPlans.map((plan) => (
-            <tr
-              className="tbody-tr"
-              key={plan.id}
-              onDoubleClick={() => handleDobleClick(plan.id)}
-            >
-              {selectingReport && (
-                <td className="p-5">
-                  {plansId.some((p) => p === plan.id) && (
-                    <CheckCircle
-                      className="text-green-600 cursor-pointer hover:text-green-800"
-                      onClick={() => handleDobleClick(plan.id)}
-                    />
+                <th scope="col" className="thead-th">
+                  Finca
+                </th>
+                <th scope="col" className="thead-th">
+                  Semana
+                </th>
+                <th scope="col" className="thead-th">
+                  Año
+                </th>
+                <th scope="col" className="thead-th">
+                  Control de Presupuesto
+                </th>
+                <th scope="col" className="thead-th">
+                  Monto Extraordinario
+                </th>
+                <th scope="col" className="thead-th">
+                  Control de Tareas
+                </th>
+                <th scope="col" className="thead-th">
+                  Control de tareas Cosecha
+                </th>
+                <th scope="col" className="thead-th">
+                  Acciones
+                </th>
+                <th scope="col" className="thead-th">
+                  Reporte de Insumos
+                </th>
+              </tr>
+            </thead>
+            <tbody className="text-sm">
+              {weeklyPlans.map((plan) => (
+                <tr
+                  className="tbody-tr"
+                  key={plan.id}
+                  onDoubleClick={() => handleDobleClick(plan.id)}
+                >
+                  {selectingReport && (
+                    <td className="p-5">
+                      {plansId.some((p) => p === plan.id) && (
+                        <CheckCircle
+                          className="text-green-600 cursor-pointer hover:text-green-800"
+                          onClick={() => handleDobleClick(plan.id)}
+                        />
+                      )}
+                    </td>
                   )}
-                </td>
-              )}
-              <td className="tbody-td">{plan.finca}</td>
-              <td className="tbody-td">{plan.week}</td>
-              <td className="tbody-td">{plan.year}</td>
+                  <td className="tbody-td">{plan.finca}</td>
+                  <td className="tbody-td">{plan.week}</td>
+                  <td className="tbody-td">{plan.year}</td>
 
-              <BudgetColumns plan={plan} />
+                  <BudgetColumns plan={plan} />
 
-              <td className="tbody-td">
-                {`${plan.finished_total_tasks}/${plan.total_tasks}`}
-              </td>
-              <td className="tbody-td">{`${plan.finished_total_tasks_crops}/${plan.total_tasks_crop}`}</td>
+                  <td className="tbody-td">
+                    {`${plan.finished_total_tasks}/${plan.total_tasks}`}
+                  </td>
+                  <td className="tbody-td">{`${plan.finished_total_tasks_crops}/${plan.total_tasks_crop}`}</td>
 
-              <ActionsColumns plan={plan} />
+                  <ActionsColumns plan={plan} />
 
-              <InsumosColumns planId={plan.id} />
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="mb-10 flex justify-end">
-        <Pagination
-          currentPage={currentPage}
-          pageCount={pageCount}
-          handlePageChange={handlePageChange}
-        />
-      </div>
+                  <InsumosColumns planId={plan.id} />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mb-10 flex justify-end">
+            <Pagination
+              currentPage={currentPage}
+              pageCount={pageCount}
+              handlePageChange={handlePageChange}
+            />
+          </div>
+
+        </>
+      )}
+
 
       {isOpen && (
         <FiltersPlanSemanalFinca isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFilters} />

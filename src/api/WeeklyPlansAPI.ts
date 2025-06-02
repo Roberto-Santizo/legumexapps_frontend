@@ -6,16 +6,25 @@ import { downloadBase64File } from "@/helpers";
 import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
 import { z } from "zod";
 import { TaskInsumoSchema } from "@/utils/taskWeeklyPlan-schema";
+import { isAxiosError } from "axios";
 
-export async function createPlan(file: File[]): Promise<void | string[]> {
+export async function createPlan(file: File[]) {
     try {
         const url = '/api/plans';
         const formData = new FormData();
         formData.append("file", file[0]);
 
-        await clienteAxios.post(url, formData);
-    } catch (error: any) {
-        return error.response.data.message;
+        const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
+    } catch (error) {
+        if(isAxiosError(error)){
+            if(error.response?.data.errors){
+                 throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }else if(error.response?.data.msg){
+                throw new Error(error.response.data.msg);
+                
+            }
+        }
     }
 }
 

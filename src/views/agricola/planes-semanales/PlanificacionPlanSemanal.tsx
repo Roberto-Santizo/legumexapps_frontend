@@ -10,6 +10,7 @@ import { Tarea } from '@/types';
 import { getAllTasks } from '@/api/TasksAPI';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useNavigate } from 'react-router-dom';
+import { getAllFincas } from '@/api/FincasAPI';
 import Select from "react-select";
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -20,7 +21,6 @@ import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/Task
 import ModalChangeOperationDateAgricola from '@/components/modals/ModalChangeOperationDateAgricola';
 import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
-import { getAllFincas } from '@/api/FincasAPI';
 
 type EventReceiveInfo = {
     event: {
@@ -32,7 +32,6 @@ type EventReceiveInfo = {
 const CalendarComponent = () => {
     const queryClient = useQueryClient();
     const [id, setId] = useState<string>('');
-    const [events, setEvents] = useState<TaskForCalendar[]>([]);
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
     const [modal, setModal] = useState(false);
@@ -83,10 +82,11 @@ const CalendarComponent = () => {
 
     const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: getAllPlans });
     const { data: tasks, isLoading } = useQuery({
-        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId,fincaId],
-        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId,fincaId }),
+        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId, fincaId],
+        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId, fincaId }),
     });
-    const { data: tasksForCalendar } = useQuery({
+
+    const { data: tasksForCalendar, isError, error } = useQuery({
         queryKey: ['getTasksForCalendar', id],
         queryFn: () => getTasksForCalendar(id),
     });
@@ -99,13 +99,13 @@ const CalendarComponent = () => {
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
         },
-        onError: (error) => toast.error(error.message),
+        onError: (error) => {
+            toast.error(error.message)
+        },
     });
 
     useEffect(() => {
         if (tasksForCalendar) {
-            setEvents(tasksForCalendar.data);
-
             const calendarApi = calendarRef.current?.getApi();
             if (calendarApi && tasksForCalendar.initial_date) {
                 calendarApi.gotoDate(tasksForCalendar.initial_date);
@@ -130,6 +130,7 @@ const CalendarComponent = () => {
         <div className="flex flex-col gap-4">
             <div className="flex flex-col w-full">
                 <h1 className="font-bold text-4xl">Planificación Fincas</h1>
+                {isError && <p className="bg-red-100 text-red-800 border border-red-400 px-4 py-2 rounded-md my-5">{error.message}</p>}
                 {hasPermission('edit fincas planification') && (
                     <div className="flex justify-end items-center gap-5 mb-4">
                         <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
@@ -161,7 +162,7 @@ const CalendarComponent = () => {
                         locale={esLocale}
                         editable={true}
                         droppable={true}
-                        events={events}
+                        events={tasksForCalendar?.data}
                         initialDate={tasksForCalendar?.initial_date}
                         dateClick={handleOpenDate}
                         eventDrop={handleEventDrop}

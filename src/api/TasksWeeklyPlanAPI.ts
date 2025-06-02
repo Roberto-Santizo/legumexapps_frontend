@@ -11,7 +11,7 @@ import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasL
 import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
 import { Finca } from "./FincasAPI";
 
-export async function getTasks({ cdp, weekly_plan_id, filters}: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
+export async function getTasks({ cdp, weekly_plan_id, filters }: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {
         const url = `/api/tasks-lotes?cdp=${cdp}&weekly_plan=${weekly_plan_id}&name=${filters.name}&code=${filters.code}&task_type=${filters.task_type}`;
         const { data } = await clienteAxios(url);
@@ -259,7 +259,7 @@ export const TasksWeeklyPlanForCalendarSchema = z.object({
 
 export type TaskWeeklyPlanForCalendar = z.infer<typeof TaskWeeklyPlanForCalendarSchema>;
 
-export async function getTasksNoPlanificationDate({ id, loteId, taskId, fincaId }: { id: WeeklyPlan['id'], loteId: Lote['id'], taskId: Tarea['id'], fincaId : Finca['id'] }): Promise<TaskWeeklyPlanForCalendar[]> {
+export async function getTasksNoPlanificationDate({ id, loteId, taskId, fincaId }: { id: WeeklyPlan['id'], loteId: Lote['id'], taskId: Tarea['id'], fincaId: Finca['id'] }): Promise<TaskWeeklyPlanForCalendar[]> {
     try {
         const url = `/api/plans/tasks-no-planification-date/finca?lote=${loteId}&task=${taskId}&weekly_plan=${id}&finca=${fincaId}`;
         const { data } = await clienteAxios(url);
@@ -299,7 +299,7 @@ export type TaskForCalendarInfo = z.infer<typeof TasksForCalendarSchema>;
 export type TaskForCalendar = z.infer<typeof TaskForCalendarSchema>;
 
 
-export async function getTasksForCalendar(id: WeeklyPlan['id']): Promise<TaskForCalendarInfo> {
+export async function getTasksForCalendar(id: WeeklyPlan['id']) {
     try {
         const url = `/api/plans/tasks-for-calendar/finca?weekly_plan=${id}`;
         const { data } = await clienteAxios(url);
@@ -310,18 +310,19 @@ export async function getTasksForCalendar(id: WeeklyPlan['id']): Promise<TaskFor
             throw new Error("Información no válida");
         }
     } catch (error) {
-        console.log(error);
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }
 
-export async function changePreparedInsumosState(id : TaskWeeklyPlanByDate['id']) {
+export async function changePreparedInsumosState(id: TaskWeeklyPlanByDate['id']) {
     try {
         const url = `/api/tasks-lotes/prepared-insumos/${id}`;
         const { data } = await clienteAxios.patch<string>(url);
         return data;
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
         }
     }
@@ -337,7 +338,11 @@ export async function changeOperationDate({ date, ids }: { date: string, ids: st
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            }
         }
     }
 }
