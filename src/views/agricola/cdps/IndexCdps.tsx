@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getPaginatedCDPS, Plantation } from "@/api/PlantationControlAPI";
+import { getCDPS, Plantation } from "@/api/PlantationControlAPI";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import Pagination from "@/components/utilities-components/Pagination";
@@ -15,7 +15,7 @@ export type FiltersCDPType = {
   end_date: string;
 }
 
-const initialValues = {
+export const FiltersCdpInitialValues: FiltersCDPType = {
   cdp: "",
   start_date: "",
   end_date: ""
@@ -25,18 +25,21 @@ export default function IndexCdps() {
   const [cdps, setCdps] = useState<Plantation[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [filters, setFilters] = useState<FiltersCDPType>(initialValues);
-  const [tempFilters, setTempFilters] = useState<FiltersCDPType>(initialValues);
+  const [filters, setFilters] = useState<FiltersCDPType>(FiltersCdpInitialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersCDPType>(FiltersCdpInitialValues);
   const [isOpen, setIsOpen] = useState(false);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ['getPaginatedCDPS', currentPage,filters],
-    queryFn: () => getPaginatedCDPS(currentPage,filters)
+    queryKey: ['getPaginatedCDPS', currentPage, filters],
+    queryFn: () => getCDPS({ page: currentPage, filters, paginated: 'true' }),
   });
 
   useEffect(() => {
     if (data) {
       setCdps(data.data);
+    }
+
+    if (data && data.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }
@@ -165,7 +168,7 @@ export default function IndexCdps() {
       </div>
 
       {isOpen && (
-        <FiltersCDP isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} setTempFilters={setTempFilters} tempFilters={tempFilters}/>
+        <FiltersCDP isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} setTempFilters={setTempFilters} tempFilters={tempFilters} />
       )}
     </>
   );

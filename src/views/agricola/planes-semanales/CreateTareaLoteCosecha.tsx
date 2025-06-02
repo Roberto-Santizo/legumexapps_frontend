@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { TaskCrop, WeeklyPlan } from "@/types";
+import { WeeklyPlan } from "@/types";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { getAllPlans } from "@/api/WeeklyPlansAPI";
-import { getAllLotes, Lote } from "@/api/LotesAPI";
-import { getAllTasksCrop } from "@/api/TasksCropAPI";
-import { useQueries, useMutation } from "@tanstack/react-query";
+import { Lote } from "@/api/LotesAPI";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { createTaskCropWeeklyPlan } from "@/api/TaskCropWeeklyPlanAPI";
+import { getAllTasksCrops } from "@/api/TasksCropAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
@@ -17,10 +15,14 @@ export type DraftTaskCropWeeklyPlan = {
   lote_id: string;
   task_crop_id: string;
 }
-export default function CreateTareaLoteCosecha() {
-  const [lotes, setLotes] = useState<Lote[]>([]);
-  const [plans, setPlans] = useState<WeeklyPlan[]>([]);
-  const [tasksCrop, setTasksCrop] = useState<TaskCrop[]>([]);
+
+type Props = {
+  plans: WeeklyPlan[];
+  lotes: Lote[];
+}
+
+
+export default function CreateTareaLoteCosecha({ plans, lotes }: Props) {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
@@ -33,19 +35,11 @@ export default function CreateTareaLoteCosecha() {
       navigate("/planes-semanales");
     }
   });
-  const results = useQueries({
-    queries: [
-      { queryKey: ['getAllTasksCrop'], queryFn: getAllTasksCrop },
-      { queryKey: ['getAllPlans'], queryFn: getAllPlans },
-      { queryKey: ['getAllLotes'], queryFn: getAllLotes }
-    ]
-  });
 
-  useEffect(() => {
-    if (results[0].data) setTasksCrop(results[0].data);
-    if (results[1].data) setPlans(results[1].data);
-    if (results[2].data) setLotes(results[2].data);
-  }, [results]);
+  const { data: tasksCrops } = useQuery({
+    queryKey: ['getAllTasksCrops'],
+    queryFn: getAllTasksCrops
+  });
 
   const plansOptions = plans.map((plan) => ({
     value: plan.id,
@@ -57,7 +51,7 @@ export default function CreateTareaLoteCosecha() {
     label: lote.name,
   }));
 
-  const tasksCropOptions = tasksCrop.map((task) => ({
+  const tasksCropOptions = tasksCrops?.map((task) => ({
     value: task.id,
     label: `${task.code} - ${task.name}`,
   }));
@@ -103,7 +97,7 @@ export default function CreateTareaLoteCosecha() {
         label="Tarea de Cosecha"
         id="task_crop_id"
         name="task_crop_id"
-        options={tasksCropOptions}
+        options={tasksCropOptions ? tasksCropOptions : []}
         control={control}
         rules={{ required: 'Seleccione una tarea de cosecha' }}
         errors={errors}

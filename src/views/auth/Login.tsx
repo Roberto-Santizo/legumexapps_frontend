@@ -1,122 +1,82 @@
-import { useForm, Controller } from "react-hook-form";
-import { TextField, Button, Box } from "@mui/material";
-import { useAppStore } from "../../stores/useAppStore";
-import { LoginUser } from "../../types";
+import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/api/AuthAPI";
 import { useNavigate } from "react-router-dom";
-import Error from "../../components/utilities-components/Error";
-import Spinner from "../../components/utilities-components/Spinner";
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
+import InputComponent from "@/components/form/InputComponent";
+import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
+
+export type LoginType = {
+  username: string,
+  password: string,
+}
 
 function Login() {
-  const { handleSubmit, control } = useForm<LoginUser>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const login = useAppStore((state) => state.login);
-  const logedIn = useAppStore((state) => state.logedIn);
-  const errors = useAppStore((state) => state.Autherrors);
   const navigate = useNavigate();
+  const logedIn = localStorage.getItem('AUTH_TOKEN') ? true : false;
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors }
+  } = useForm<LoginType>();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: login,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      navigate("/dashboard");
+      window.location.reload();
+    }
+  });
 
   useEffect(() => {
     if (logedIn) {
-      navigate('/dashboard');
-    }
-  }, [])
-  const handleLogin = async (data: LoginUser) => {
-    setLoading(true);
-    try {
-      await login(data);
       navigate("/dashboard");
-      window.location.reload();
-    } catch (error) {
-      toast.error('Hubo un error con el inicio de sesión, vuelva a intentarlo más tarde');
-    }finally {
-      setLoading(false);
     }
-  };
+  }, [logedIn]);
+
+  const OnSubmit = (data: LoginType) => mutate(data);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 400,
-        backgroundColor: "white",
-        padding: 4,
-        borderRadius: 3,
-        boxShadow: 4,
-      }}
-    >
-      <h2 className="text-center text-3xl font-semibold text-gray-800 mb-5">
-        Iniciar Sesión
-      </h2>
-
-      <form onSubmit={handleSubmit(handleLogin)}>
-        {errors &&
-          errors.map((error, index) => <Error key={index}>{error}</Error>)}
-
-        {/* Nombre de Usuario */}
-        <Controller
+    <div className="shadow-xl p-10 border">
+      <form onSubmit={handleSubmit(OnSubmit)} className="space-y-4">
+        <InputComponent<LoginType>
+          label="Nombre de usuario"
+          id="username"
           name="username"
-          control={control}
-          defaultValue=""
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              {...field}
-              label="Nombre de usuario"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              error={!!error}
-              helperText={error ? error.message : ""}
-              autoComplete="off"
-            />
-          )}
-          rules={{
-            required: "El nombre de usuario es obligatorio",
-            pattern: {
-              value:
-                /^(?!.*\.\.)(?!.*\.$)(?!.*\._)(?!^_)(?!^\.)(?!.*_$)[a-zA-Z0-9._]{3,16}$/,
-              message: "Introduce un nombre de usuario válido",
-            },
-          }}
-        />
-
-        {/* Contraseña */}
-        <Controller
-          name="password"
-          control={control}
-          defaultValue=""
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              {...field}
-              label="Contraseña"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              type="password"
-              error={!!error}
-              helperText={error ? error.message : ""}
-            />
-          )}
-          rules={{ required: "La contraseña es obligatoria" }}
-        />
-
-        {/* Botón de Inicio de Sesión */}
-        <Button
-          disabled={loading}
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{
-            marginTop: 2,
-            backgroundColor: "#1976D2",
-            color: "white",
-            "&:hover": { backgroundColor: "#1565C0" },
-          }}
+          placeholder="Nombre de usuario"
+          register={register}
+          validation={{ required: 'El nombre de usuario es requerido' }}
+          errors={errors}
+          type={"text"}
         >
-          {loading ? <Spinner /> : "Iniciar Sesión"}
-        </Button>
+          {errors.username && <Error>{errors.username?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <InputComponent<LoginType>
+          label="Contraseña"
+          id="password"
+          name="password"
+          placeholder="Contraseña"
+          register={register}
+          validation={{ required: 'La contraseña es requerida' }}
+          errors={errors}
+          type={"password"}
+        >
+          {errors.password && <Error>{errors.password?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Iniciar Sesión</p>}
+        </button>
       </form>
-    </Box>
+    </div>
   );
 }
 

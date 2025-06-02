@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getPaginatedTimeouts, Timeout } from "@/api/TimeOutsAPI";
+import { getTimeOuts, Timeout } from "@/api/TimeOutsAPI";
 import { Edit, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -15,12 +15,14 @@ export default function IndexTiemposMuertos() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedTimeouts', currentPage],
-    queryFn: () => getPaginatedTimeouts(currentPage)
+    queryFn: () => getTimeOuts({ page: currentPage, paginated: 'true' }),
   });
 
   useEffect(() => {
     if (data) {
       setTimeouts(data.data);
+    }
+    if (data?.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }

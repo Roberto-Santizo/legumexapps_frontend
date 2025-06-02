@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Search } from "lucide-react";
-import { getAllFincas } from "@/api/FincasAPI";
-import { getAllCdpsByLoteId, getAllLotesByFincaId, getCDPInfoByCDPId } from "@/api/LotesAPI";
+import { getFincas, getLotesByFincaId } from "@/api/FincasAPI";
+import { getAllCdpsByLoteId } from "@/api/LotesAPI";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import LoteDetails from "@/components/consulta-lote/LoteDetails";
+import { getCDPInfoByCDPId } from "@/api/PlantationControlAPI";
 
 export default function ConsultaLote() {
   const [selectedFincaId, setSelectedFincaId] = useState<string>("");
@@ -14,14 +15,14 @@ export default function ConsultaLote() {
 
   const { data: fincas } = useQuery({
     queryKey: ['getAllFincas'],
-    queryFn: getAllFincas,
+    queryFn: getFincas,
   });
 
   const fincasFilter = fincas?.filter((finca) => +finca.id < 7);
 
   const { data: lotes } = useQuery({
     queryKey: ['getAllLotesByFincaId', selectedFincaId],
-    queryFn: () => getAllLotesByFincaId(selectedFincaId),
+    queryFn: () => getLotesByFincaId(selectedFincaId),
     enabled: !!selectedFincaId,
   });
 

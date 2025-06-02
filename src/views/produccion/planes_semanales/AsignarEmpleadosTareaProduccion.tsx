@@ -29,12 +29,13 @@ const initialValues = [
 export default function ShowTaskProductionDetails() {
     const params = useParams();
     const task_p_id = params.task_p_id!!;
+    const plan_id = params.plan_id!!;
+    const linea_id = params.linea_id!!;
 
     const queryClient = useQueryClient();
     const location = useLocation();
-    const url = location.state.url ?? '/planes-produccion';
-    const plan_id = location.state.plan_id!!;
-    const linea_id = location.state.linea_id!!;
+    const url = location.state?.url ?? '/planes-produccion';
+
 
     const [columns] = useState<Column[]>(initialValues);
     const [modal, setModal] = useState<boolean>(false);
@@ -75,7 +76,6 @@ export default function ShowTaskProductionDetails() {
         queryFn: getComodines,
         enabled: enableQuery
     });
-
     useEffect(() => {
         if (taskDetails && comodines) {
             setTaskData(taskDetails);
@@ -88,6 +88,10 @@ export default function ShowTaskProductionDetails() {
             setAvailableEmployees(uniqueEmployees.filter(employee => employee.column_id === '1' && employee.active === 0));
 
             setEnableQuery(false);
+        }
+
+        if (taskDetails?.start_date) {
+            navigate('/planes-produccion');
         }
     }, [taskDetails, comodines]);
 

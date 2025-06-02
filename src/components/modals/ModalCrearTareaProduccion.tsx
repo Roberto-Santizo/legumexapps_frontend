@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQueries, useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { getLinesBySkuId } from "@/api/LineasAPI";
-import { getAllSkus, SKUSelect } from "@/api/SkusAPI";
 import { createNewTaskProduction, getTotalHoursByDate } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -46,7 +45,6 @@ export default function ModalCrearTareaProduccion() {
 
     const queryClient = useQueryClient();
 
-    const [skus, setSkus] = useState<SKUSelect[]>([]);
     const navigate = useNavigate();
 
     const {
@@ -69,17 +67,6 @@ export default function ModalCrearTareaProduccion() {
             reset();
         }
     });
-
-    const results = useQueries({
-        queries: [
-            { queryKey: ['getAllSkus'], queryFn: getAllSkus }
-        ]
-    });
-
-    useEffect(() => {
-        if (results[0].data) setSkus(results[0].data);
-    }, [results])
-
 
     const onSubmit = (data: DraftNewTaskProduction) => {
         if (hoursByDates) {
@@ -119,7 +106,7 @@ export default function ModalCrearTareaProduccion() {
                     label="SKU"
                     id="sku_id"
                     name="sku_id"
-                    options={skus}
+                    options={[]}
                     control={control}
                     rules={{ required: 'Seleccione un SKU' }}
                     errors={errors}

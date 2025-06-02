@@ -2,9 +2,9 @@ import clienteAxios from "@/config/axios";
 import { TaskCrop } from "@/types";
 import { TasksCropSchema } from "@/utils/taskCropWeeklyPlan-schema";
 
-export async function getAllTasksCrop() : Promise<TaskCrop[]> {
+export async function getAllTasksCrops() : Promise<TaskCrop[]> {
     try {
-        const url = '/api/tasks-crop-all';
+        const url = '/api/tasks-crop?&paginated=false';
         const { data } = await clienteAxios(url);
         const result = TasksCropSchema.safeParse(data);
         if(result.success){

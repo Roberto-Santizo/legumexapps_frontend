@@ -47,7 +47,7 @@ export const WeeklyPlansPaginateSchema = z.object({
     meta: z.object({
         last_page: z.number(),
         current_page: z.number()
-    })
+    }).optional()
 });
 
 export const WeeklyPlansSchema = z.object({

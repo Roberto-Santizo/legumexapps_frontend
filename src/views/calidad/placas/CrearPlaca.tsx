@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAllTransportistas, Transportista } from "@/api/TransportistasAPI";
+import { getTransportistas, Transportista } from "@/api/TransportistasAPI";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPlaca, DraftPlaca } from "@/api/PlacasAPI";
@@ -17,12 +17,12 @@ export default function CrearPlaca() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getAllTransportistas'],
-    queryFn: getAllTransportistas
+    queryFn: () => getTransportistas({page:1,paginated: ''}),
   });
 
   useEffect(() => {
     if (data) {
-      setTransportistas(data);
+      setTransportistas(data.data);
     }
   }, [data]);
 

@@ -1,8 +1,7 @@
 import { useForm } from "react-hook-form";
-import { DraftVariety } from "@/types";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { createVariety } from "@/api/VarietiesAPI";
+import { createVariety, DraftVariety } from "@/api/VarietiesAPI";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
@@ -13,11 +12,11 @@ export default function CrearVariedad() {
 
     const { mutate, isPending } = useMutation({
         mutationFn: createVariety,
-        onError: () => {
-            toast.error('Hubo un error al crear la variedad');
+        onError: (error) => {
+            toast.error(error.message);
         },
-        onSuccess: () => {
-            toast.success('Variedad creada correctamente');
+        onSuccess: (data) => {
+            toast.success(data);
             navigate('/productos/variedades');
         }
     });

@@ -1,7 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { SummaryWeeklyPlan, WeeklyPlan, WeeklyPlansPaginate } from "@/types";
 import { ReportSchema } from "@/utils/reports-schema";
-import { SummaryWeeklyPlanSchema, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from "@/utils/weekly_plans-schema";
+import { SummaryWeeklyPlanSchema, WeeklyPlansPaginateSchema } from "@/utils/weekly_plans-schema";
 import { downloadBase64File } from "@/helpers";
 import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
 import { z } from "zod";
@@ -28,10 +28,10 @@ export async function createPlan(file: File[]) {
     }
 }
 
-export async function getPaginatedPlans(page: number, filters: FiltersPlanSemanalType): Promise<WeeklyPlansPaginate> {
+export async function getWeeklyPlans({ page, filters, paginated }: { page: number, filters: FiltersPlanSemanalType, paginated: string }): Promise<WeeklyPlansPaginate> {
     try {
-        const url = `/api/plans?page=${page}&finca_id=${filters.finca_id}&week=${filters.week}&year=${filters.year}`;
-        const { data } = await clienteAxios(url)
+        const url = `/api/plans?paginated=${paginated}&page=${page}&finca_id=${filters.finca_id}&week=${filters.week}&year=${filters.year}`;
+        const { data } = await clienteAxios(url);
         const result = WeeklyPlansPaginateSchema.safeParse(data);
         if (result.success) {
             return result.data
@@ -39,21 +39,7 @@ export async function getPaginatedPlans(page: number, filters: FiltersPlanSemana
             throw new Error('Error datos no válidos');
         }
     } catch (error: any) {
-        throw error;
-    }
-}
-
-export async function getAllPlans(): Promise<WeeklyPlan[]> {
-    try {
-        const url = `/api/plans-list/all`;
-        const { data } = await clienteAxios(url);
-        const result = WeeklyPlansSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error('Error datos no válidos');
-        }
-    } catch (error: any) {
+        console.log(error);
         throw error;
     }
 }

@@ -4,13 +4,11 @@ import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import { Edit, PlusIcon } from "lucide-react";
 import { getProductById, Product, ProductDetail } from "@/api/ProductsAPI";
-import { Variety } from "@/types";
 import { editProduct } from "@/api/ProductsAPI";
-import { getAllVarieties } from "@/api/VarietiesAPI";
 import { useQueries } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
 import { DraftProduct } from "./CrearProduct";
+import { getVariedades, Variety } from "@/api/VarietiesAPI";
 import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
 import CreateDefectoModal, { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
@@ -40,28 +38,23 @@ export default function EditProduct() {
   });
   const results = useQueries({
     queries: [
-      { queryKey: ['getAllVarieties'], queryFn: getAllVarieties },
+      { queryKey: ['getAllVarieties'], queryFn: () => getVariedades({ page: 1, paginated: '' }) },
       { queryKey: ['getProductById'], queryFn: () => getProductById(product_id) },
-      { queryKey: ['getDefectsByQualityProduct'], queryFn: () => getDefectsByQualityProduct(product_id) }
     ]
   })
 
   const isLoading = results.some(result => result.isFetching);
 
   useEffect(() => {
-    if (results[0].data) setVarieties(results[0].data);
+    if (results[0].data) setVarieties(results[0].data.data);
   }, [results[0].data]);
 
   useEffect(() => {
-    if (results[1].data) setProduct(results[1].data);
+    if (results[1].data) {
+      setProduct(results[1].data)
+      setDefects(results[1].data.defects.map((defect: DraftDefecto) => ({ ...defect, id: Number(defect.id) })));
+    };
   }, [results[1].data]);
-
-  useEffect(() => {
-    if (results[2].data) {
-      setDefects(results[2].data.map((defect: DraftDefecto) => ({ ...defect, id: Number(defect.id) })));
-    }
-  }, [results[2].data]);
-
 
   const varietiesOptions = varieties.map((variety) => ({
     value: variety.id,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-import { getPaginatedInsumos } from "@/api/InsumosAPI";
+import { getInsumos } from "@/api/InsumosAPI";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import Pagination from "@/components/utilities-components/Pagination";
@@ -14,7 +14,7 @@ export type FiltersInsumosType = {
   name: string;
 }
 
-const initialValues = {
+export const FiltersInsumosInitialValues = {
   code: "",
   name: ""
 }
@@ -23,16 +23,16 @@ export default function IndexInsumos() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<FiltersInsumosType>(initialValues);
-  const [tempFilters, setTempFilters] = useState<FiltersInsumosType>(initialValues);
+  const [filters, setFilters] = useState<FiltersInsumosType>(FiltersInsumosInitialValues);
+  const [tempFilters, setTempFilters] = useState<FiltersInsumosType>(FiltersInsumosInitialValues);
 
   const { data: insumos, isLoading, isError } = useQuery({
-    queryKey: ['getPaginatedInsumos', currentPage, filters],
-    queryFn: () => getPaginatedInsumos(currentPage, filters)
+    queryKey: ['getInsumos', currentPage, filters],
+    queryFn: () => getInsumos({ currentPage, filters, paginated: 'true' }),
   });
 
   useEffect(() => {
-    if (insumos) {
+    if (insumos && insumos.meta) {
       setPageCount(insumos.meta.last_page);
       setCurrentPage(insumos.meta.current_page);
     }

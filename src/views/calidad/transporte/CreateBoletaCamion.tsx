@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { getAllPlantas, Planta } from '@/api/PlantasAPI';
 import { useQueries } from '@tanstack/react-query';
-import { Boleta, getAllBoletasRMP } from '@/api/ReceptionsDocAPI';
+import { Boleta, getBoletasRMP } from '@/api/ReceptionsDocAPI';
 import { getProducts, Product } from '@/api/ProductsAPI';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { createBoletaTransporte, DraftBoletaTransporte, getTransporteCondiciones, TransporteCondition } from '@/api/BoletaTransporteAPI';
+import { createBoletaTransporte, DraftBoletaTransporte, getCondicionesTransporte, TransporteCondition } from '@/api/BoletaTransporteAPI';
+import { FiletrsBoletaRMPInitialValues } from '@/components/filters/FiletrsRMP';
 import SignatureCanvas from "react-signature-canvas";
 import Swal from 'sweetalert2';
 import Error from '@/components/utilities-components/Error';
@@ -37,9 +38,9 @@ const BoletaCamion = () => {
   const results = useQueries({
     queries: [
       { queryKey: ['getAllPlantas'], queryFn: getAllPlantas },
-      { queryKey: ['getAllBoletasRMP'], queryFn: getAllBoletasRMP },
-      { queryKey: ['getProducts'], queryFn: getProducts },
-      { queryKey: ['getTransporteCondiciones'], queryFn: getTransporteCondiciones }
+      { queryKey: ['getAllBoletasRMP'], queryFn: () => getBoletasRMP({ page: 1, filters: FiletrsBoletaRMPInitialValues, paginated: '', transport_doc_create:'true'}) },
+      { queryKey: ['getProducts'], queryFn: () => getProducts({ page: 1, paginated: '' }) },
+      { queryKey: ['getTransporteCondiciones'], queryFn: () => getCondicionesTransporte({ page: 1, paginated: '' }) }
     ]
   });
 
@@ -58,9 +59,9 @@ const BoletaCamion = () => {
   useEffect(() => {
     if (results.every(result => result.data)) {
       if (results[0].data) setPlantas(results[0].data);
-      if (results[1].data) setBoletas(results[1].data);
-      if (results[2].data) setProducts(results[2].data);
-      if (results[3].data) setConditions(results[3].data);
+      if (results[1].data) setBoletas(results[1].data.data);
+      if (results[2].data) setProducts(results[2].data.data);
+      if (results[3].data) setConditions(results[3].data.data);
     }
   }, [results]);
 

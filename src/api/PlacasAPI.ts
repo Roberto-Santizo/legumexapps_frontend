@@ -1,6 +1,5 @@
 import clienteAxios from "@/config/axios";
 import { z } from "zod";
-import { Transportista } from "./TransportistasAPI";
 import { isAxiosError } from "axios";
 
 export const PlacaSchema = z.object({
@@ -23,29 +22,13 @@ export const PlacasSchema = z.object({
 
 export type Placa = z.infer<typeof PlacaSchema>
 
-export async function getPlacasPaginated(page: number) {
+export async function getPlacas({page,paginated} : {page: number,paginated:string}) {
     try {
-        const url = `/api/plates?page=${page}`;
+        const url = `/api/plates?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = PlacasPaginatedSchema.safeParse(data);
         if (result.success) {
             return result.data
-        } else {
-            throw new Error("Información no valida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
-export async function getPlacasByCarrierId(id: Transportista['id']): Promise<Placa[]> {
-    try {
-        const url = `/api/plates-by-carrier/${id}`;
-        const { data } = await clienteAxios(url);
-        const result = PlacasSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
         } else {
             throw new Error("Información no valida");
         }

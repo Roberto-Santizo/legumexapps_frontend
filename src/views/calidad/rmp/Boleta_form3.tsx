@@ -1,13 +1,13 @@
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
-import { getDefectsByQualityProduct } from "@/api/DefectosAPI";
 import { Defect } from "@/types";
 import { BoletaDetail, createQualityDoc, ResultBoletaCalidad } from "@/api/ReceptionsDocAPI";
 import { useNavigate } from "react-router-dom";
 import { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { getProductById } from "@/api/ProductsAPI";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
@@ -57,7 +57,7 @@ export default function Boleta_form3({ boleta }: Props) {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getDefectsByQualityProduct', boleta.product_id],
-    queryFn: () => getDefectsByQualityProduct(boleta.product_id)
+    queryFn: () => getProductById(boleta.product_id)
   });
 
   const { mutate, isPending } = useMutation({
@@ -94,13 +94,13 @@ export default function Boleta_form3({ boleta }: Props) {
 
   useEffect(() => {
     if (data) {
-      const initialResults = data.map((defect) => ({
+      const initialResults = data.defects.map((defect) => ({
         input: 0,
         id: defect.id.toString(),
         result: 0,
         tolerance_percentage: defect.tolerance_percentage
       }));
-      setDefects(data.filter(defect => defect.status));
+      setDefects(data.defects.filter(defect => defect.status));
       setResults(initialResults);
     }
   }, [data]);
@@ -287,70 +287,70 @@ export default function Boleta_form3({ boleta }: Props) {
           <fieldset className="grid grid-cols-4 gap-5 border p-5">
             <legend className="font-bold text-3xl">Información Calculada</legend>
             <InputComponent<DraftBoletaControlCalidad>
-                label="Libras Pagables"
-                id="valid_pounds"
-                name="valid_pounds"
-                placeholder="Libras Pagables"
-                register={register}
-                validation={{required: 'Las libras pagables son obligatorias'}}
-                errors={errors}
-                type={'number'}
+              label="Libras Pagables"
+              id="valid_pounds"
+              name="valid_pounds"
+              placeholder="Libras Pagables"
+              register={register}
+              validation={{ required: 'Las libras pagables son obligatorias' }}
+              errors={errors}
+              type={'number'}
             >
-                {errors.valid_pounds && <Error>{errors.valid_pounds?.message?.toString()}</Error>}
-            </InputComponent>
-           
-            <InputComponent<DraftBoletaControlCalidad>
-                label="% A Pagar"
-                id="percentage"
-                name="percentage"
-                placeholder="Porcentaje a pagar"
-                register={register}
-                validation={{requried: 'El porcentaje a pagar es obligatorio'}}
-                errors={errors}
-                type={'number'}
-            >
-                {errors.percentage && <Error>{errors.percentage?.message?.toString()}</Error>}
+              {errors.valid_pounds && <Error>{errors.valid_pounds?.message?.toString()}</Error>}
             </InputComponent>
 
             <InputComponent<DraftBoletaControlCalidad>
-                label="PH"
-                id="ph"
-                name="ph"
-                placeholder="PH"
-                register={register}
-                validation={{}}
-                errors={errors}
-                type={'number'}
+              label="% A Pagar"
+              id="percentage"
+              name="percentage"
+              placeholder="Porcentaje a pagar"
+              register={register}
+              validation={{ requried: 'El porcentaje a pagar es obligatorio' }}
+              errors={errors}
+              type={'number'}
             >
-                {errors.ph && <Error>{errors.ph?.message?.toString()}</Error>}
+              {errors.percentage && <Error>{errors.percentage?.message?.toString()}</Error>}
             </InputComponent>
-          
+
             <InputComponent<DraftBoletaControlCalidad>
-                label="Brix"
-                id="brix"
-                name="brix"
-                placeholder="Datos del brix"
-                register={register}
-                validation={{}}
-                errors={errors}
-                type={'number'}
+              label="PH"
+              id="ph"
+              name="ph"
+              placeholder="PH"
+              register={register}
+              validation={{}}
+              errors={errors}
+              type={'number'}
             >
-                {errors.brix && <Error>{errors.brix?.message?.toString()}</Error>}
+              {errors.ph && <Error>{errors.ph?.message?.toString()}</Error>}
+            </InputComponent>
+
+            <InputComponent<DraftBoletaControlCalidad>
+              label="Brix"
+              id="brix"
+              name="brix"
+              placeholder="Datos del brix"
+              register={register}
+              validation={{}}
+              errors={errors}
+              type={'number'}
+            >
+              {errors.brix && <Error>{errors.brix?.message?.toString()}</Error>}
             </InputComponent>
           </fieldset>
 
-            <InputComponent<DraftBoletaControlCalidad>
-                label="Observaciones"
-                id="observations"
-                name="observations"
-                placeholder="Observaciones Generales"
-                register={register}
-                validation={{}}
-                errors={errors}
-                type={'text'}
-            >
-                {errors.observations && <Error>{errors.observations?.message?.toString()}</Error>}
-            </InputComponent>
+          <InputComponent<DraftBoletaControlCalidad>
+            label="Observaciones"
+            id="observations"
+            name="observations"
+            placeholder="Observaciones Generales"
+            register={register}
+            validation={{}}
+            errors={errors}
+            type={'text'}
+          >
+            {errors.observations && <Error>{errors.observations?.message?.toString()}</Error>}
+          </InputComponent>
 
           <div className="space-y-2 text-center w-1/2 mx-auto">
             <Controller

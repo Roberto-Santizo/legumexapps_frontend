@@ -1,8 +1,8 @@
-import { PlusIcon, Edit2, Users } from "lucide-react";
+import { PlusIcon, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getLineasPaginated, Linea } from "@/api/LineasAPI";
+import { getLineas, Linea } from "@/api/LineasAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
@@ -14,12 +14,14 @@ export default function IndexLineas() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getLineasPaginated', currentPage],
-    queryFn: () => getLineasPaginated(currentPage)
+    queryFn: () => getLineas({ page: currentPage, paginated: 'true' }),
   });
 
   useEffect(() => {
     if (data) {
       setLineas(data.data);
+    }
+    if (data?.meta) {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }
@@ -63,10 +65,6 @@ export default function IndexLineas() {
                 <td className="tbody-td">{linea.name}</td>
                 <td className="tbody-td">{linea.shift}</td>
                 <td className="tbody-td flex gap-5">
-                  <Link to={`/lineas/editar/${linea.id}`}>
-                    <Edit2 className="hover:text-gray-500" />
-                  </Link>
-
                   <Link to={`/lineas/posiciones/${linea.id}`}>
                     <Users className="hover:text-gray-500" />
                   </Link>

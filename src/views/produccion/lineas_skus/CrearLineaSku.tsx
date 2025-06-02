@@ -1,10 +1,10 @@
-import { getAllSkus } from "@/api/SkusAPI";
+import { getSkus } from "@/api/SkusAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { createLineaSku } from "@/api/LineasSkuAPI";
 import { useNavigate } from "react-router-dom";
-import { getAllLines } from "@/api/LineasAPI";
+import { getLineas } from "@/api/LineasAPI";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputComponent from "@/components/form/InputComponent";
@@ -42,12 +42,25 @@ export default function CrearLineaSku() {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getAllSkus'], queryFn: getAllSkus },
-            { queryKey: ['getAllLines'], queryFn: getAllLines },
+            { queryKey: ['getAllSkus'], queryFn: () => getSkus({ page: 1, paginated: '' }) },
+            { queryKey: ['getAllLines'], queryFn: () => getLineas({ page: 1, paginated: '' }) },
         ]
     });
 
+    const skuOptions = results[0].data?.data.map((sku) => ({
+        value: sku.id,
+        label: `${sku.code}`,
+    }));
+
+    const lineasOptions = results[1].data?.data?.map((line) => ({
+        value: line.id,
+        label: `${line.code}`,
+    }));
+
+
+
     const onSubmit = (data: DraftLineaSku) => mutate(data);
+
     if (results) return (
         <div>
             <h2 className="font-bold text-4xl">Relacionar Linea a SKU</h2>
@@ -58,7 +71,7 @@ export default function CrearLineaSku() {
                     label="SKU"
                     id="sku_id"
                     name="sku_id"
-                    options={results[0].data || []}
+                    options={skuOptions || []}
                     control={control}
                     rules={{ required: 'El sku es requerido' }}
                     errors={errors}
@@ -70,7 +83,7 @@ export default function CrearLineaSku() {
                     label="Linea"
                     id="line_id"
                     name="line_id"
-                    options={results[1].data || []}
+                    options={lineasOptions || []}
                     control={control}
                     rules={{ required: 'La linea es obligatoria' }}
                     errors={errors}
@@ -85,7 +98,7 @@ export default function CrearLineaSku() {
                     name="lbs_performance"
                     placeholder="Rendimiento de lbs por hora"
                     register={register}
-                    validation={{min:{ value: 0, message: 'El valor debe de ser mayor a 0'}}}
+                    validation={{ min: { value: 0, message: 'El valor debe de ser mayor a 0' } }}
                     errors={errors}
                     type={'number'}
                 >

@@ -1,26 +1,26 @@
-import { Link } from "react-router-dom";
-import { useAppStore } from "@/stores/useAppStore";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { logout } from "@/api/AuthAPI";
+import { useMutation } from "@tanstack/react-query";
 import Logo from "../logos/Logo";
 import Spinner from "../utilities-components/Spinner";
 
 export default function PublicHeader() {
-  const logedIn = useAppStore((state) => state.logedIn);
-  const [loading,setLoading] = useState<boolean>(false)
-  const logOut = useAppStore((state) => state.logOut);
+  const navigate = useNavigate();
+  const logedIn = localStorage.getItem('AUTH_TOKEN') ? true : false;
 
-  const handleLogOut = async () => {
-    setLoading(true);
-    try {
-      await logOut();
-    } catch (error) {
-      toast.error('Hubo un error');
-    }finally{
-      setLoading(false);
-    }
-  }
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: logout,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      localStorage.removeItem('AUTH_TOKEN');
+      localStorage.removeItem('AUTH_USER');
+      navigate("/login");
+      toast.success(data);
+    },
+  });
   return (
     <header className="p-5 border-b bg-white shadow">
       <div className="container mx-auto flex justify-between">
@@ -36,10 +36,11 @@ export default function PublicHeader() {
                 Adminsistración
               </Link>
               <button
-                onClick={() => handleLogOut()}
+                onClick={() => mutate()}
+                disabled={isPending}
                 className="text-gray-500 font-bold uppercase"
               >
-                {loading ? <Spinner /> : "Cerrar Sesión"}
+                {isPending ? <Spinner /> : "Cerrar Sesión"}
               </button>
             </div>
           ) : (
