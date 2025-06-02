@@ -45,7 +45,7 @@ export default function ModalInfoTareaLote({ show, setModal, task, setSelectedTa
                         {hasPermission('edit task weekly plan') && (
                             <>
                                 <p className="text-gray-500">Editar</p>
-                                <Link to={`/planes-semanales/tareas-lote/editar/${task.id}}`} target='_blank'>
+                                <Link to={`/planes-semanales/tareas-lote/editar/${task.id}`} target='_blank'>
                                     <Edit className='hover:text-gray-500' />
                                 </Link>
                             </>

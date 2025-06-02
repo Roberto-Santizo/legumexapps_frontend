@@ -49,6 +49,8 @@ export default function EditarTareaLote() {
     if (results[2].data) setPlans(results[2].data);
   }, [results]);
 
+  console.log(task);
+  
   const plansOptions = plans.map((plan) => ({
     value: plan.id,
     label: `${plan.finca} - ${plan.week}`,
