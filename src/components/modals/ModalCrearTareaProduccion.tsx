@@ -2,16 +2,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { getLinesBySkuId } from "@/api/LineasAPI";
-import { createNewTaskProduction, getTotalHoursByDate } from "@/api/WeeklyProductionPlanAPI";
+import { createNewTaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { formatDate, getCurrentDate } from "@/helpers";
+import { getCurrentDate } from "@/helpers";
+import { getSkus } from "@/api/SkusAPI";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
-import Swal from "sweetalert2";
 import Modal from "../Modal";
-import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import InputComponent from "../form/InputComponent";
+import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 
 export type DraftNewTaskProduction = {
     sku_id: string,
@@ -26,16 +26,11 @@ export default function ModalCrearTareaProduccion() {
     const queryParams = new URLSearchParams(location.search);
     const newTask = queryParams.get('newTask')!;
     const show = newTask ? true : false;
-
     const params = useParams();
     const plan_id = params.plan_id!!;
-
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const [skuId, setSkuId] = useState<string>('');
-
-    const { data: hoursByDates } = useQuery({
-        queryKey: ['getTotalHoursByDate', plan_id],
-        queryFn: () => getTotalHoursByDate(plan_id),
-    });
 
     const { data: lineas } = useQuery({
         queryKey: ['getLinesBySkuId', skuId],
@@ -43,9 +38,15 @@ export default function ModalCrearTareaProduccion() {
         enabled: !!skuId
     });
 
-    const queryClient = useQueryClient();
+    const { data: skus } = useQuery({
+        queryKey: ['getSkus'],
+        queryFn: () => getSkus({ page: 1, paginated: '' })
+    });
 
-    const navigate = useNavigate();
+    const skuOptions = skus?.data?.map((sku) => ({
+        value: sku.id,
+        label: `${sku.code} - ${sku.product_name}`,
+    }));
 
     const {
         handleSubmit,
@@ -62,51 +63,24 @@ export default function ModalCrearTareaProduccion() {
         },
         onSuccess: (data) => {
             toast.success(data);
-            queryClient.invalidateQueries({ queryKey: ['getAllTasksForCalendar', plan_id] });
+            queryClient.invalidateQueries({ queryKey: ['getAllTasksWeeklyProductionPlan', plan_id] });
             navigate(location.pathname);
             reset();
         }
     });
 
     const onSubmit = (data: DraftNewTaskProduction) => {
-        if (hoursByDates) {
-            const total_hours = hoursByDates.find(item => item.date === data.operation_date && item.line_id === data.line_id)?.total_hours || 0;
-            const performance = lineas?.find(item => item.value === data.line_id);
-            if (performance?.performance) {
-                const newHours = Math.round((data.total_lbs / performance.performance) + total_hours);
-                if (newHours > 12) {
-                    Swal.fire({
-                        title: '¿Desea crear la tarea?',
-                        text: `La linea ${performance.label} contará con ${newHours} horas en fecha ${formatDate(data.operation_date)}`,
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Si, crear",
-                        cancelButtonText: "Cancelar"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            mutate(data);
-                        }
-                    });
-                } else {
-                    mutate(data);
-                }
-            } else {
-                mutate(data);
-            }
-
-        }
+        mutate(data);
     };
 
-    if (hoursByDates) return (
+    return (
         <Modal modal={show} closeModal={() => navigate(location.pathname)} title="Creación de Tarea Produccion Extraordinaria">
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <InputSelectSearchComponent<DraftNewTaskProduction>
                     label="SKU"
                     id="sku_id"
                     name="sku_id"
-                    options={[]}
+                    options={skuOptions ?? []}
                     control={control}
                     rules={{ required: 'Seleccione un SKU' }}
                     errors={errors}
@@ -114,6 +88,7 @@ export default function ModalCrearTareaProduccion() {
                 >
                     {errors.sku_id && <Error>{errors.sku_id?.message?.toString()}</Error>}
                 </InputSelectSearchComponent>
+
 
                 <InputSelectSearchComponent<DraftNewTaskProduction>
                     label="Linea"

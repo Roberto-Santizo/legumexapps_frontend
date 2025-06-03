@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getAllTasksWeeklyProductionPlan, getTasksOperationDate, TaskProductionEvents, TaskProductionNoOperationDate } from '@/api/WeeklyProductionPlanAPI';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { PlusIcon } from 'lucide-react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from "@fullcalendar/core/locales/es";
@@ -10,6 +11,7 @@ import Spinner from '@/components/utilities-components/Spinner';
 import TaskScheduled from '@/components/produccion/TaskScheduled';
 import ShowErrorAPI from '@/components/utilities-components/ShowErrorAPI';
 import TaskUnscheduled from '@/components/produccion/TaskUnscheduled';
+import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduccion';
 
 type DateClickInfo = {
   dateStr: string;
@@ -31,7 +33,7 @@ export default function CalendarTasks() {
   const navigate = useNavigate();
 
   const { data: allTasks, isLoading, isError } = useQuery({
-    queryKey: ['getTasksNoOperationDate', plan_id],
+    queryKey: ['getAllTasksWeeklyProductionPlan', plan_id],
     queryFn: () => getAllTasksWeeklyProductionPlan(plan_id),
   });
 
@@ -55,8 +57,15 @@ export default function CalendarTasks() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col w-full">
+      <div className="flex justify-between w-full">
         <h1 className="font-bold text-4xl mb-4">Planificación Producción</h1>
+      </div>
+
+      <div className='flex justify-end'>
+        <button className='button bg-indigo-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
+          <PlusIcon />
+          Crear Tarea Producción
+        </button>
       </div>
 
       <div className="flex gap-5 p-5">
@@ -86,7 +95,7 @@ export default function CalendarTasks() {
         </div>
 
         <div className="w-96 p-5 border rounded-lg bg-white shadow overflow-y-auto scrollbar-hide space-y-5 max-h-screen">
-          <h2 className='font-bold text-2xl'>Tareas Sin Programación</h2>
+          <h2 className='font-bold text-lg uppercase'>Tareas sin programación</h2>
           {isError && <ShowErrorAPI />}
           {isLoading && <Spinner />}
           {tasksNoOperationDate?.map(task => (
@@ -94,6 +103,8 @@ export default function CalendarTasks() {
           ))}
         </div>
       </div>
+
+      <ModalCrearTareaProduccion />
     </div>
   )
 }

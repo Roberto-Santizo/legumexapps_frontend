@@ -531,34 +531,6 @@ export async function createTaskProductionNote(FormData: DraftNote) {
 }
 
 
-export const HoursByDateSchema = z.object({
-    date: z.string(),
-    total_hours: z.number(),
-    line_id: z.string()
-});
-
-export const HoursByDatesSchema = z.object({
-    data: z.array(HoursByDateSchema)
-})
-
-export type HoursByDate = z.infer<typeof HoursByDateSchema>;
-
-export async function getTotalHoursByDate(plan_id: WeeklyPlanProductionPlan['id']): Promise<HoursByDate[]> {
-    try {
-        const url = `/api/weekly_production_plan/hours-by-date/${plan_id}`;
-        const { data } = await clienteAxios(url);
-        const result = HoursByDatesSchema.safeParse(data);
-        if (result.success) {
-            return result.data.data
-        } else {
-            throw new Error("Información no valida");
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
-
 export async function createTaskProductionEmployee({ id, FormData }: { id: TaskProductionByLine['id'], FormData: DraftTaskProductionEmployee }) {
     try {
         const url = `/api/tasks-production/create-assignee/${id}`;
