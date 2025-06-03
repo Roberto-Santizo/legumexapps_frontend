@@ -1,4 +1,4 @@
-import { FiletrsBoletaRMP } from "@/components/filters/FiletrsRMP";
+import { FiltersBoletaRMP } from "@/components/filters/FiletrsRMP";
 import clienteAxios from "@/config/axios";
 import { DraftFormProd } from "@/views/calidad/rmp/Boleta_form2";
 import { DraftBoletaControlCalidad } from "@/views/calidad/rmp/Boleta_form3";
@@ -185,7 +185,7 @@ export const BoletasPaginateSchema = z.object({
 export type BoletasPaginate = z.infer<typeof BoletasPaginateSchema>
 
 
-export async function getBoletasRMP({ page, filters, paginated, transport_doc_create }: { page: number, filters: FiletrsBoletaRMP, paginated: string, transport_doc_create: string }): Promise<BoletasPaginate> {
+export async function getBoletasRMP({ page, filters, paginated, transport_doc_create }: { page: number, filters: FiltersBoletaRMP, paginated: string, transport_doc_create: string }): Promise<BoletasPaginate> {
     try {
         const params = new URLSearchParams({ ...filters });
         const url = `/api/boleta-rmp?paginated=${paginated}&page=${page}&${params.toString()}&transport_doc_create=${transport_doc_create}`;

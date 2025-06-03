@@ -3,14 +3,21 @@ import { Calendar } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { useLocation, useParams } from "react-router-dom";
 
 type Props = {
-  selectedDate: string;
   task: TaskProductionNoOperationDate;
-  id: string;
 }
 
-export default function TaskCard({ selectedDate, task, id }: Props) {
+export default function TaskUnscheduled({ task }: Props) {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const date = queryParams.get('date')!;
+
+  const params = useParams();
+  const plan_id = params.plan_id!!;
+
+
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
@@ -20,8 +27,8 @@ export default function TaskCard({ selectedDate, task, id }: Props) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', id] });
-      queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', selectedDate] });
+      queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id] });
+      queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
     }
   });
   return (
@@ -35,14 +42,14 @@ export default function TaskCard({ selectedDate, task, id }: Props) {
 
       <div className="bg-gray-50 px-6 py-4 flex justify-end">
         <button
-          disabled={!selectedDate || isPending}
-          onClick={() => mutate({ id: task.id, date: selectedDate })}
+          disabled={!date || isPending}
+          onClick={() => mutate({ id: task.id, date: date })}
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium transition-all 
-            ${selectedDate ? 'bg-white hover:border-gray-400 hover:shadow-md text-gray-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+            ${date ? 'bg-white hover:border-gray-400 hover:shadow-md text-gray-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
         >
           <Calendar className="w-4 h-4" />
           <span>Asignar a fecha:</span>
-          <span className="font-semibold">{selectedDate || 'Ninguna'}</span>
+          <span className="font-semibold">{date || 'Ninguna'}</span>
         </button>
       </div>
     </div>

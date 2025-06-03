@@ -26,7 +26,7 @@ export default function EditTarea() {
     },
     onSuccess: (data) => {
       toast.success(data);
-      navigate('/tareas');
+      navigate('/proveedor');
     }
   });
 

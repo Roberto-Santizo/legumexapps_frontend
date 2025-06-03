@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { getUserRole } from "@/api/UserAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
-import FiltersRMP, { FiletrsBoletaRMP, FiletrsBoletaRMPInitialValues } from "@/components/filters/FiletrsRMP";
+import FiltersRMP, { FiletrsBoletaRMPInitialValues, FiltersBoletaRMP } from "@/components/filters/FiletrsRMP";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalGRN from "@/components/modals/ModalGRN";
 import Swal from "sweetalert2";
@@ -16,7 +16,7 @@ import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
 
 export default function IndexRMP() {
-    const [filters, setFilters] = useState<FiletrsBoletaRMP>(FiletrsBoletaRMPInitialValues);
+    const [filters, setFilters] = useState<FiltersBoletaRMP>(FiletrsBoletaRMPInitialValues);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [boletas, setBoletas] = useState<Boleta[]>([]);

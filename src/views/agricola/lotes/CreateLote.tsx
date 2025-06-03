@@ -20,7 +20,7 @@ export type DraftLote = {
 
 export default function CreateLote() {
   const [fincas, setFincas] = useState<Finca[]>([]);
-  const [cdps, setCdps] = useState<Plantation[]>([]);
+  const [cdps, setCdps] = useState<Plantation[]>([]); 
   const navigate = useNavigate();
 
   const results = useQueries({

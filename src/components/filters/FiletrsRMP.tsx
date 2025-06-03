@@ -6,13 +6,13 @@ import { useQueries } from "@tanstack/react-query";
 import Spinner from "../utilities-components/Spinner";
 
 type Props = {
-    filters: FiletrsBoletaRMP;
+    filters: FiltersBoletaRMP;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    setFilters: Dispatch<SetStateAction<FiletrsBoletaRMP>>;
+    setFilters: Dispatch<SetStateAction<FiltersBoletaRMP>>;
     isOpen: boolean;
 };
 
-export type FiletrsBoletaRMP = {
+export type FiltersBoletaRMP = {
     finca_id: string,
     date: string,
     plate: string,
@@ -21,7 +21,7 @@ export type FiletrsBoletaRMP = {
     grn: string,
 }
 
-export const FiletrsBoletaRMPInitialValues: FiletrsBoletaRMP = {
+export const FiletrsBoletaRMPInitialValues: FiltersBoletaRMP = {
     finca_id: '',
     date: '',
     plate: '',
@@ -33,7 +33,7 @@ export const FiletrsBoletaRMPInitialValues: FiletrsBoletaRMP = {
 export default function FiltersRMP({ isOpen, setIsOpen, filters, setFilters }: Props) {
     const [fincas, setFincas] = useState<Finca[]>([]);
     const [statuses, setStatuses] = useState<QualityStatus[]>([]);
-    const [tempFilters, setTempFilters] = useState<FiletrsBoletaRMP>({} as FiletrsBoletaRMP);
+    const [tempFilters, setTempFilters] = useState<FiltersBoletaRMP>({} as FiltersBoletaRMP);
 
     const results = useQueries({
         queries: [

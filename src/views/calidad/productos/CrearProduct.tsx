@@ -35,7 +35,7 @@ export default function CrearVariedad() {
     },
     onSuccess: (data) => {
       toast.success(data);
-      navigate('/productos');
+      navigate('/recepciones-mp');
     }
   });
   const { data, isError, isLoading } = useQuery({

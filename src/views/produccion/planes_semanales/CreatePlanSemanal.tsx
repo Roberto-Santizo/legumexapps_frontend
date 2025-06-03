@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { createProductionPlan } from "@/api/WeeklyProductionPlanAPI";
-import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -19,8 +18,8 @@ export default function CreatePlanSemanal() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const {mutate,isPending} = useMutation({
-    mutationFn: (file : File[]) => createProductionPlan(file),
+  const { mutate, isPending } = useMutation({
+    mutationFn: (file: File[]) => createProductionPlan(file),
     onError: (error) => {
       toast.error(error.message);
     },
@@ -31,8 +30,10 @@ export default function CreatePlanSemanal() {
   });
 
   const handleCreatePlan = async () => {
-    if(file){
+    if (file) {
       mutate(file)
+    } else {
+      toast.error('Debe cargar un archivo')
     }
   }
 
@@ -42,51 +43,46 @@ export default function CreatePlanSemanal() {
   };
 
   return (
-    <>
-      <h2 className="text-4xl font-bold">Crear Plan Semanal de Producción</h2>
-      <form className="w-1/2 mx-auto" onSubmit={handleSubmit}>
-        <div
-          className="mt-5"
-          {...getRootProps()}
-          style={{
-            border: "2px dashed #cccccc",
-            borderRadius: "10px",
-            padding: "20px",
-            textAlign: "center",
-            backgroundColor: isDragActive ? "#e3f2fd" : "#f9f9f9",
-          }}
-        >
-          <input {...getInputProps()} disabled={isPending || !!file} />
-          {file ? (
-            <p className="text-green-600 font-medium">
-              Archivo: {file[0].name}
-            </p>
-          ) : isDragActive ? (
-            <p className="uppercase font-medium text-blue-500">
-              Suelta el archivo aquí
-            </p>
-          ) : (
-            <p className="uppercase font-medium text-blue-500">
-              Arrastra el archivo acá
-            </p>
-          )}
-        </div>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-xl bg-white shadow-xl rounded-2xl p-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Crear Plan Semanal de Producción
+        </h2>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-          disabled={!file || isPending}
-        >
-          {isPending ? (
-            <Spinner />
-          ) : (
-            <p className="font-bold text-lg">Crear Plan</p>
-          )}
-        </Button>
-      </form>
-    </>
+        <form onSubmit={handleSubmit}>
+          <div
+            {...getRootProps()}
+            className={`transition-all duration-200 border-2 border-dashed rounded-xl p-6 text-center cursor-pointer 
+              ${isDragActive ? 'bg-blue-50 border-blue-400' : 'bg-gray-100 border-gray-300 hover:border-blue-400'}
+              ${file ? 'border-green-400 bg-green-50' : ''}`}
+          >
+            <input {...getInputProps()} disabled={isPending || !!file} />
+            {file ? (
+              <p className="text-green-600 font-medium">
+                Archivo: {file[0].name}
+              </p>
+            ) : isDragActive ? (
+              <p className="text-blue-600 font-medium uppercase">
+                Suelta el archivo aquí
+              </p>
+            ) : (
+              <p className="text-gray-600 font-medium uppercase">
+                Arrastra o haz clic para subir el archivo
+              </p>
+            )}
+          </div>
+
+          <div className="flex justify-center items-center gap-2 mt-5">
+            <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+              {isPending ? <Spinner /> : <p>Crear</p>}
+            </button>
+
+            <button className="button bg-red-500 hover:bg-red-600 w-full" onClick={() => setFile(null)} type="button">
+              Limpiar Archivo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

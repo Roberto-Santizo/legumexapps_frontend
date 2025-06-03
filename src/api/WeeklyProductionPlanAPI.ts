@@ -80,7 +80,7 @@ export async function getWeeklyPlanDetails(id: WeeklyPlanProductionPlan['id']): 
     }
 }
 
-export const TaskProductionSchema = z.object({
+export const TaskProductionByLineSchema = z.object({
     id: z.string(),
     line: z.string(),
     sku: z.string(),
@@ -98,18 +98,18 @@ export const TaskProductionSchema = z.object({
     paused: z.boolean()
 });
 
-export const TasksProductionSchema = z.object({
-    data: z.array(TaskProductionSchema)
+export const TasksProductionByLineSchema = z.object({
+    data: z.array(TaskProductionByLineSchema)
 });
 
-export type TaskProduction = z.infer<typeof TaskProductionSchema>
+export type TaskProductionByLine = z.infer<typeof TaskProductionByLineSchema>
 
-export async function getWeeklyPlanLineDetails(line_id: Linea['id'], weekly_production_plan_id: WeeklyPlanProductionPlan['id'], date: string): Promise<TaskProduction[]> {
+export async function getWeeklyPlanLineDetails(line_id: Linea['id'], weekly_production_plan_id: WeeklyPlanProductionPlan['id'], date: string): Promise<TaskProductionByLine[]> {
     try {
         const url = `/api/weekly-production-plans/details/${weekly_production_plan_id}/${line_id}?date=${date}`;
         const { data } = await clienteAxios(url);
         console.log(date);
-        const result = TasksProductionSchema.safeParse(data);
+        const result = TasksProductionByLineSchema.safeParse(data);
         if (result.success) {
             return result.data.data
         } else {
@@ -147,7 +147,7 @@ export const TaskProductionDetailSchema = z.object({
 export type EmployeeProduction = z.infer<typeof EmployeeTaskProductionSchema>
 export type TaskProductionDetails = z.infer<typeof TaskProductionDetailSchema>
 
-export async function getTaskProductionDetails(id: TaskProduction['id']): Promise<TaskProductionDetails> {
+export async function getTaskProductionDetails(id: TaskProductionByLine['id']): Promise<TaskProductionDetails> {
     try {
         const url = `/api/tasks-production/${id}`;
         const { data } = await clienteAxios(url);
@@ -234,10 +234,11 @@ export async function changePosition(data: DraftChangePosition) {
     }
 }
 
-export async function startTaskProduction(id: TaskProduction['id']) {
+export async function startTaskProduction(id: TaskProductionByLine['id']) {
     try {
         const url = `/api/tasks-production/${id}/start`;
-        await clienteAxios.patch(url);
+        const { data } = await clienteAxios.patch<string>(url);
+        return data;
     } catch (error) {
         console.log(error);
         throw error;
@@ -287,7 +288,7 @@ export const TaskProductionInProgressSchema = z.object({
 export type TaskProductionInProgress = z.infer<typeof TaskProductionInProgressSchema>
 
 
-export async function getTaskProductionInProgressDetail(id: TaskProduction['id']): Promise<TaskProductionInProgress> {
+export async function getTaskProductionInProgressDetail(id: TaskProductionByLine['id']): Promise<TaskProductionInProgress> {
     try {
         const url = `/api/tasks-production/details/${id}`;
         const { data } = await clienteAxios(url);
@@ -304,7 +305,7 @@ export async function getTaskProductionInProgressDetail(id: TaskProduction['id']
 }
 
 
-export async function createTaskProductionPerformance(id: TaskProduction['id'], FormData: DraftPerformance) {
+export async function createTaskProductionPerformance(id: TaskProductionByLine['id'], FormData: DraftPerformance) {
     try {
         const url = `/api/tasks-production/${id}/performance`;
         const { data } = await clienteAxios.post<string>(url, FormData);
@@ -316,7 +317,7 @@ export async function createTaskProductionPerformance(id: TaskProduction['id'], 
     }
 }
 
-export async function closeTaskProduction(id: TaskProduction['id'], FormData: DraftCloseTask) {
+export async function closeTaskProduction(id: TaskProductionByLine['id'], FormData: DraftCloseTask) {
     try {
         const url = `/api/tasks-production/${id}/end`;
         const { data } = await clienteAxios.patch<string>(url, FormData);
@@ -389,7 +390,7 @@ export async function getAllTasksForCalendar(id: WeeklyPlanProductionPlan['id'])
     }
 }
 
-export async function updateTaskProductionOperationDate({ id, FormData }: { id: TaskProduction['id'], FormData: DraftChangeOperationDate }) {
+export async function updateTaskProductionOperationDate({ id, FormData }: { id: TaskProductionByLine['id'], FormData: DraftChangeOperationDate }) {
     try {
         const url = `/api/tasks-production/change-operation-date/${id}`;
         const { data } = await clienteAxios.patch<string>(url, FormData);
@@ -558,7 +559,7 @@ export async function getTotalHoursByDate(plan_id: WeeklyPlanProductionPlan['id'
     }
 }
 
-export async function createTaskProductionEmployee({ id, FormData }: { id: TaskProduction['id'], FormData: DraftTaskProductionEmployee }) {
+export async function createTaskProductionEmployee({ id, FormData }: { id: TaskProductionByLine['id'], FormData: DraftTaskProductionEmployee }) {
     try {
         const url = `/api/tasks-production/create-assignee/${id}`;
         const { data } = await clienteAxios.post<string>(url, FormData);
@@ -606,6 +607,25 @@ export const HistoryOperationDateSchema = z.object({
     created_at: z.string()
 });
 
+export const TransactionTaskProductionSchema = z.object({
+    id: z.string(),
+    type: z.number(),
+    transaction_date: z.string(),
+    items: z.array(z.object({
+        id: z.string(),
+        code: z.string(),
+        description: z.string(),
+        lote: z.string(),
+        quantity: z.number(),
+        destination: z.string()
+    })),
+    observations: z.string().nullable(),
+    delivered_by: z.string(),
+    delivered_by_signature: z.string(),
+    responsable: z.string(),
+    responsable_signature: z.string(),
+});
+
 export const FinishedTaskProductionDetailsSchema = z.object({
     id: z.string(),
     line: z.string(),
@@ -625,14 +645,22 @@ export const FinishedTaskProductionDetailsSchema = z.object({
     timeouts: z.array(TimeoutTaskProductionSchema),
     employees: z.array(TaskProductionEmployeeSchema),
     history_operation_date: z.array(HistoryOperationDateSchema),
+    transactions: z.array(TransactionTaskProductionSchema),
+    wastages: z.array(z.object({
+        id: z.string(),
+        item: z.string(),
+        quantity: z.number(),
+        lote: z.string()
+    }))
 });
 
 export type FinishedTaskProductionDetails = z.infer<typeof FinishedTaskProductionDetailsSchema>;
 export type TaskProductionEmployee = z.infer<typeof TaskProductionEmployeeSchema>;
 export type HistoryOperationDate = z.infer<typeof HistoryOperationDateSchema>;
 export type NoteTaskProduction = z.infer<typeof NoteTaskProductionSchema>;
+export type TransactionTaskProduction = z.infer<typeof TransactionTaskProductionSchema>;
 
-export async function getFinishedTaskProductionDetails(id: TaskProduction['id']): Promise<FinishedTaskProductionDetails> {
+export async function getFinishedTaskProductionDetails(id: TaskProductionByLine['id']): Promise<FinishedTaskProductionDetails> {
     try {
         const url = `/api/tasks-production/finished/details/${id}`;
         const { data } = await clienteAxios(url);
@@ -668,19 +696,28 @@ const TaskProductionNoOperationDateSchema = z.object({
     total_lbs: z.number()
 });
 
-const TasksProductionNoOperationDateSchema = z.object({
-    data: z.array(TaskProductionNoOperationDateSchema)
+const TaskProductionEventSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    start: z.string()
 });
 
-export type TaskProductionNoOperationDate = z.infer<typeof TaskProductionNoOperationDateSchema>;
+const WeeklyProductionPlanTasksSchema = z.object({
+    tasks: z.array(TaskProductionNoOperationDateSchema),
+    events: z.array(TaskProductionEventSchema)
+});
 
-export async function getTasksNoOperationDate(id: WeeklyPlanProductionPlan['id']): Promise<TaskProductionNoOperationDate[]> {
+export type TaskProductionEvents = z.infer<typeof TaskProductionEventSchema>;
+export type TaskProductionNoOperationDate = z.infer<typeof TaskProductionNoOperationDateSchema>;
+export type WeeklyProductionPlanTasks = z.infer<typeof WeeklyProductionPlanTasksSchema>;
+
+export async function getAllTasksWeeklyProductionPlan(id: WeeklyPlanProductionPlan['id']): Promise<WeeklyProductionPlanTasks> {
     try {
-        const url = `/api/weekly-production-plans/tasks-no-operation-date/${id}`;
+        const url = `/api/weekly-production-plans/all-tasks/${id}`;
         const { data } = await clienteAxios(url);
-        const result = TasksProductionNoOperationDateSchema.safeParse(data);
+        const result = WeeklyProductionPlanTasksSchema.safeParse(data);
         if (result.success) {
-            return result.data.data
+            return result.data
         } else {
             throw new Error("Información no valida");
         }
@@ -697,7 +734,20 @@ export const TaskOperationDateSchema = z.object({
     working: z.boolean(),
     finished: z.boolean(),
     total_lbs: z.number(),
-    destination: z.string()
+    destination: z.string(),
+    status: z.string(),
+    status_id: z.string(),
+    color: z.string(),
+    box: z.string(),
+    bag: z.string(),
+    bag_inner: z.string().nullable(),
+    recipe: z.array(z.object({
+        packing_material_id: z.string(),
+        name: z.string(),
+        quantity: z.number(),
+        lote: z.string(),
+        destination: z.string().nullable()
+    }))
 });
 
 export const TasksOperationDateSchema = z.object({
@@ -714,6 +764,36 @@ export async function getTasksOperationDate(date: string): Promise<TaskOperation
         if (result.success) {
             return result.data.data
         } else {
+            throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const TaskProductionSchema = z.object({
+    code: z.string(),
+    id: z.string(),
+    line: z.string(),
+    product: z.string(),
+    operation_date: z.string()
+});
+
+export const TasksProductionSchema = z.object({
+    data: z.array(TaskProductionSchema)
+});
+
+export type TaskProduction = z.infer<typeof TaskProductionSchema>;
+
+export async function getTasksProduction() : Promise<TaskProduction[]> {
+    try {
+        const url = '/api/tasks-production';
+        const { data } = await clienteAxios(url);
+        const result = TasksProductionSchema.safeParse(data);
+        if(result.success){
+            return result.data.data;
+        }else{
             throw new Error("Información no valida");
         }
     } catch (error) {

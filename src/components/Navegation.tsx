@@ -1,133 +1,187 @@
-import { HomeIcon, UserCog, User, UserCheck, BookCheck, BookXIcon, ListCheck, Map, Warehouse, FileSpreadsheet, Truck, Users, AlarmClockPlus, BookOpenCheck, ChartBarIncreasing, ChartLine, ChartNoAxesCombined, FileUser, CalendarDays } from "lucide-react";
+import {
+  HomeIcon,
+  UserCog,
+  User,
+  UserCheck,
+  BookCheck,
+  BookXIcon,
+  ListCheck,
+  Map,
+  Warehouse,
+  FileSpreadsheet,
+  Truck,
+  Users,
+  AlarmClockPlus,
+  BookOpenCheck,
+  ChartBarIncreasing,
+  ChartLine,
+  ChartNoAxesCombined,
+  FileUser,
+  CalendarDays,
+  UserRound,
+  Box,
+  PackageOpen,
+  ClipboardPaste
+} from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
 
 export default function Navegation() {
-    const { hasPermission } = usePermissions();
-    return (
-        <div className="space-y-1.5">
-            <NavLinkComponent url="/dashboard" text="Dashboard">
-                <HomeIcon />
-            </NavLinkComponent>
+  const { hasPermission } = usePermissions();
+  return (
+    <div className="space-y-1.5">
+      <NavLinkComponent url="/dashboard" text="Dashboard">
+        <HomeIcon />
+      </NavLinkComponent>
 
-            {hasPermission('admin') && (
-                <>
-                    <NavLinkComponent url="/usuarios" text="Usuarios">
-                        <User />
-                    </NavLinkComponent>
+      {hasPermission("admin") && (
+        <>
+          <NavLinkComponent url="/usuarios" text="Usuarios">
+            <User />
+          </NavLinkComponent>
 
-                    <NavLinkComponent url="/roles" text="Roles">
-                        <UserCog />
-                    </NavLinkComponent>
+          <NavLinkComponent url="/roles" text="Roles">
+            <UserCog />
+          </NavLinkComponent>
 
-                    <NavLinkComponent url="/permisos" text="Permisos">
-                        <UserCheck />
-                    </NavLinkComponent>
-                </>
-            )}
+          <NavLinkComponent url="/permisos" text="Permisos">
+            <UserCheck />
+          </NavLinkComponent>
+        </>
+      )}
 
-            {hasPermission('see plan semanal finca') && (
-                <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
-                    <BookCheck />
-                </NavLinkComponent>
-            )}
+      {hasPermission("see plan semanal finca") && (
+        <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
+          <BookCheck />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('fincas planification') && (
-                <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
-                    <CalendarDays />
-                </NavLinkComponent>
-            )}
+      {hasPermission('see fincas planification') && (
+        <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
+          <CalendarDays />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('administrate fincas') && (
-                <>
-                    <NavLinkComponent url="/tareas" text="Tareas Generales">
-                        <ListCheck />
-                    </NavLinkComponent>
+      {hasPermission("administrate fincas") && (
+        <>
+          <NavLinkComponent url="/tareas" text="Tareas Generales">
+            <ListCheck />
+          </NavLinkComponent>
 
-                    <NavLinkComponent url="/lotes" text="Lotes">
-                        <Map />
-                    </NavLinkComponent>
+          <NavLinkComponent url="/lotes" text="Lotes">
+            <Map />
+          </NavLinkComponent>
 
-                    <NavLinkComponent url="/cdps" text="Control Plantación">
-                        <BookXIcon />
-                    </NavLinkComponent>
+          <NavLinkComponent url="/cdps" text="Control Plantación">
+            <BookXIcon />
+          </NavLinkComponent>
 
-                    <NavLinkComponent url="/insumos" text="Insumos">
-                        <Warehouse />
-                    </NavLinkComponent>
-                </>
-            )}
+          <NavLinkComponent url="/insumos" text="Insumos">
+            <Warehouse />
+          </NavLinkComponent>
+        </>
+      )}
 
+      {hasPermission("see boleta rmp") && (
+        <NavLinkComponent url="/rmp" text="Boleta Materia Prima">
+          <FileSpreadsheet />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('see boleta rmp') && (
-                <NavLinkComponent url="/rmp" text="Boleta Materia Prima">
-                    <FileSpreadsheet />
-                </NavLinkComponent>
-            )}
+      {hasPermission("see boleta transport") && (
+        <NavLinkComponent
+          url="/transporte-boleta"
+          text="Inspección de Transporte"
+        >
+          <Truck />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('see boleta transport') && (
-                <NavLinkComponent url="/transporte-boleta" text="Inspección de Transporte">
-                    <Truck />
-                </NavLinkComponent>
-            )}
+      {hasPermission("administrate products") && (
+        <NavLinkComponent url="/productos" text="Productos y Variedades">
+          <ChartBarIncreasing />
+        </NavLinkComponent>
+      )}
 
+      {hasPermission("create producers") && (
+        <NavLinkComponent url="/productores" text="Productores">
+          <User />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('administrate products') && (
-                <NavLinkComponent url="/productos" text="Productos y Variedades">
-                    <ChartBarIncreasing />
-                </NavLinkComponent>
-            )}
+      {hasPermission("create carriers") && (
+        <NavLinkComponent url="/transportistas" text="Transportistas y Pilotos">
+          <Users />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('create producers') && (
-                <NavLinkComponent url="/productores" text="Productores">
-                    <User />
-                </NavLinkComponent>
-            )}
+      {hasPermission("see plans production") && (
+        <NavLinkComponent
+          url="/planes-produccion"
+          text="Plan Semanal Producción"
+        >
+          <BookOpenCheck />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('create carriers') && (
-                <NavLinkComponent url="/transportistas" text="Transportistas y Pilotos">
-                    <Users />
-                </NavLinkComponent>
-            )}
+      {hasPermission("administrate production performances") && (
+        <>
+          <NavLinkComponent url="/lineas-skus" text="Lineas & SKUS">
+            <ChartLine />
+          </NavLinkComponent>
 
-            {hasPermission('see plans production') && (
-                <NavLinkComponent url="/planes-produccion" text="Plan Semanal Producción">
-                    <BookOpenCheck />
-                </NavLinkComponent>
-            )}
+          <NavLinkComponent url="/skus" text="Sku's">
+            <ChartBarIncreasing />
+          </NavLinkComponent>
 
-            {hasPermission('administrate production performances') && (
-                <>
-                    <NavLinkComponent url="/lineas-skus" text="Lineas & SKUS">
-                        <ChartLine />
-                    </NavLinkComponent>
+          <NavLinkComponent url="/lineas" text="Lineas">
+            <Users />
+          </NavLinkComponent>
 
-                    <NavLinkComponent url="/skus" text="Sku's">
-                        <ChartBarIncreasing />
-                    </NavLinkComponent>
+          <NavLinkComponent url="/tiempos-muertos" text="Tiempos Muertos">
+            <AlarmClockPlus />
+          </NavLinkComponent>
+        </>
+      )}
 
-                    <NavLinkComponent url="/lineas" text="Lineas">
-                        <Users />
-                    </NavLinkComponent>
+      {hasPermission("see daily production graphics") && (
+        <NavLinkComponent url="/graficas-diarias" text="Gráficas Diarias">
+          <ChartNoAxesCombined />
+        </NavLinkComponent>
+      )}
 
-                    <NavLinkComponent url="/tiempos-muertos" text="Tiempos Muertos">
-                        <AlarmClockPlus />
-                    </NavLinkComponent>
-                </>
-            )}
+      {hasPermission("permission employee") && (
+        <NavLinkComponent url="/permisos-empleados" text="Permisos Empleados">
+          <FileUser />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('see daily production graphics') && (
-                <NavLinkComponent url="/graficas-diarias" text="Gráficas Diarias">
-                    <ChartNoAxesCombined />
-                </NavLinkComponent>
-            )}
+      {hasPermission('administrate proveedores mp') && (
+        <NavLinkComponent url="/proveedores" text="Proveedores">
+          <UserRound />
+        </NavLinkComponent>
+      )}
 
-            {hasPermission('permission employee') && (
-                <NavLinkComponent url="/permisos-empleados" text="Permisos Empleados">
-                    <FileUser />
-                </NavLinkComponent>
-            )}
+      {hasPermission('create mp transactions') && (
+        <>
+          <NavLinkComponent url="/material-empaque" text="Materiales Empaque">
+            <Box />
+          </NavLinkComponent>
 
-        </div>
-    )
+          <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
+            <Warehouse />
+          </NavLinkComponent>
+
+          <NavLinkComponent url="/recepciones-insumos" text="Recepciones Insumos">
+            <PackageOpen />
+          </NavLinkComponent>
+
+          <NavLinkComponent url="/material-empaque-transacciones" text="Transacciones Material Empaque">
+            <ClipboardPaste />
+          </NavLinkComponent>
+        </>
+      )}
+
+    </div>
+  );
 }

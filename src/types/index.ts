@@ -14,7 +14,7 @@ export type AuthUser = z.infer<typeof AuthUserSchema>
 
 export type Tarea = z.infer<typeof TareaSchema>
 
-export type TaskCrop = z.infer<typeof TaskCropSchema >
+export type TaskCrop = z.infer<typeof TaskCropSchema>
 
 export type CDP = z.infer<typeof CDPSchema>
 
@@ -41,4 +41,7 @@ export type EmployeeCrop = z.infer<typeof EmployeeTaskCropPlanSchema>
 
 export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
 export type Defect = z.infer<typeof DefectSchema>
+
+export type  MaterialOutput= z.infer<typeof DefectSchema>
+
 

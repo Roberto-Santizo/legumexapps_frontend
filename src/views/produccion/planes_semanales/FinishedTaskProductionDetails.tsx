@@ -10,12 +10,14 @@ import GraphicsPlanSemanal from "./GraphicsPlanSemanal";
 import HoverCardDemo from "@/components/ui/HoverCardDemo";
 import ModalHistoryChangeOperation from "@/components/modals/ModalHistoryChangeOperation";
 import HoverCardNote from "@/components/ui/HoverCardNote";
+import ModalTaskProductionTransactionsFormats from "@/components/modals/ModalTaskProductionTransactionsFormats";
 
 export default function TareaProduccionDetails() {
   const params = useParams();
   const task_p_id = params.task_p_id!!;
 
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState<boolean>(false);
+  const [modalFormatsBodega, setModalFormatsBodega] = useState<boolean>(false);
 
   const { data: task_details, isLoading, isError } = useQuery({
     queryKey: ['getFinishedTaskProductionDetails', task_p_id],
@@ -49,7 +51,7 @@ export default function TareaProduccionDetails() {
             <p className="font-medium"><strong>Fecha de Inicio:</strong> {task_details.start_date}</p>
             <p className="font-medium"><strong>Fecha Final:</strong> {task_details.end_date}</p>
             {!task_details.is_minimum_require && (
-              <HoverCardNote note={task_details.note}/>
+              <HoverCardNote note={task_details.note} />
 
             )}
           </div>
@@ -118,9 +120,41 @@ export default function TareaProduccionDetails() {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end mt-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Mermas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full p-2 h-96 overflow-y-scroll scrollbar-hide">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Item</TableHead>
+                  <TableHead>Lote</TableHead>
+                  <TableHead>Cantidad</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {task_details.wastages.map(wastage => (
+                  <TableRow className="hover:bg-gray-100 transition-all">
+                    <TableCell>{wastage.item}</TableCell>
+                    <TableCell>{wastage.lote}</TableCell>
+                    <TableCell>{wastage.quantity}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-between mt-4 gap-5">
         <button className="button bg-indigo-500 hover:bg-indigo-600" onClick={() => setModal(true)}>
           Historial de Cambios
+        </button>
+
+        <button className="button bg-indigo-500 hover:bg-indigo-600" onClick={() => setModalFormatsBodega(true)}>
+          Formatos Bodega Empaque
         </button>
       </div>
 
@@ -129,6 +163,8 @@ export default function TareaProduccionDetails() {
       </div>
 
       <ModalHistoryChangeOperation modal={modal} setModal={setModal} changes={task_details.history_operation_date} />
+
+      <ModalTaskProductionTransactionsFormats open={modalFormatsBodega} setOpen={setModalFormatsBodega} task={task_details} />
     </div>
   );
 }
