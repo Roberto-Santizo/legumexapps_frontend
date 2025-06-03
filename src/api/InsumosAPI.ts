@@ -29,7 +29,7 @@ export async function createInsumo(FormData: DraftInsumo) {
 export async function uploadInsumos(file: File[]) {
     try {
         const url = "/api/insumos/upload";
-        const formData = new FormData();
+        const formData = new FormData();z
         formData.append("file", file[0]);
         const { data } = await clienteAxios.post<string>(url, formData);
         return data;

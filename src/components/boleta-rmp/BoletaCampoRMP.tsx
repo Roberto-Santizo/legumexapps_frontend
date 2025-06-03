@@ -1,21 +1,18 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
 import { BoletaInfoAll } from "@/api/ReceptionsDocAPI";
 import LogoLegumex from "../logos/LogoLegumex";
-import DownloadPDF from './DownloadPDF';
+import DownloadPDF from "./DownloadPDF";
 
 type Props = {
-  boleta: BoletaInfoAll
-}
+  boleta: BoletaInfoAll;
+};
 
 const BoletaCampoRMP = ({ boleta }: Props) => {
   return (
     <div>
       <div className="flex justify-end">
         <div className="p-4 inline-block bg-indigo-500 hover:bg-indigo-600 button">
-          <DownloadPDF
-            boleta={boleta}
-            buttonClassName="text-white"
-          />
+          <DownloadPDF boleta={boleta} buttonClassName="text-white" />
         </div>
       </div>
       <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 bg-yellow-100 border border-gray-300 mt-4 md:mt-8 lg:mt-10 ">
@@ -32,9 +29,13 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           </div>
 
           <div className="text-center flex-1 mx-4 md:mx-8">
-            <h1 className="text-xl md:text-2xl font-bold">RECIBO DE MATERIA PRIMA</h1>
+            <h1 className="text-xl md:text-2xl font-bold">
+              RECIBO DE MATERIA PRIMA*******f******************************
+            </h1>
             <div className="flex justify-center mb-1">
-              <span className="p-1 text-center text-2xl font-bold text-red-600">No.{boleta.field_data.ref_doc}</span>
+              <span className="p-1 text-center text-2xl font-bold text-red-600">
+                No.{boleta.field_data.ref_doc}
+              </span>
             </div>
           </div>
 
@@ -42,15 +43,21 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <p>R-PRO-MP-02</p>
             <p className="flex justify-between gap-2 md:gap-4">
               <span>GRN No.</span>
-              <span className="border-b border-black min-w-[100px] md:min-w-[150px] text-right">{boleta.grn}</span>
+              <span className="border-b border-black min-w-[100px] md:min-w-[150px] text-right">
+                {boleta.grn}
+              </span>
             </p>
             <p className="flex justify-between gap-2 md:gap-4">
               <span>FECHA</span>
-              <span className="border-b border-black min-w-[100px] md:min-w-[150px] text-right">{boleta.field_data.doc_date}</span>
+              <span className="border-b border-black min-w-[100px] md:min-w-[150px] text-right">
+                {boleta.field_data.doc_date}
+              </span>
             </p>
             <p className="flex justify-between gap-2 md:gap-4">
               <span>C.D.P.</span>
-              <span className="border-b border-black min-w-[100px] md:min-w-[150px] text-right">{boleta.field_data.cdp}</span>
+              <span className="border-b border-black min-w-[100px] md:min-w-[150px] text-right">
+                {boleta.field_data.cdp}
+              </span>
             </p>
           </div>
         </div>
@@ -58,44 +65,64 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
         <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-6 text-sm md:text-base">
           <div className="flex space-x-2">
             <span>TRANSP:</span>
-            <span className="border-b border-black flex-grow">{boleta.field_data.transport}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.field_data.transport}
+            </span>
           </div>
           <div className="flex space-x-2">
             <span>PILOTO:</span>
-            <span className="border-b border-black flex-grow">{boleta.field_data.pilot_name}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.field_data.pilot_name}
+            </span>
           </div>
           <div className="flex space-x-2">
             <span>FINCA:</span>
-            <span className="border-b border-black flex-grow">{boleta.finca}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.finca}
+            </span>
           </div>
           <div className="flex space-x-2">
             <span className="uppercase">Productor:</span>
-            <span className="border-b border-black flex-grow">{boleta.field_data.coordinator}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.field_data.coordinator}
+            </span>
           </div>
           <div className="flex space-x-2">
             <span>PLACA:</span>
-            <span className="border-b border-black flex-grow">{boleta.field_data.plate}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.field_data.plate}
+            </span>
           </div>
           <div className="flex space-x-2">
             <span>PRODUCTO:</span>
-            <span className="border-b border-black flex-grow">{boleta.field_data.product}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.field_data.product}
+            </span>
           </div>
           <div className="flex space-x-2">
             <span>INSPECT:</span>
-            <span className="border-b border-black flex-grow">{boleta.field_data.inspector}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.field_data.inspector}
+            </span>
           </div>
           <div className="flex space-x-2 col-span-2 md:col-span-3">
             <span>VARIEDAD PRODUCTO:</span>
-            <span className="border-b border-black flex-grow">{boleta.field_data.variety}</span>
+            <span className="border-b border-black flex-grow">
+              {boleta.field_data.variety}
+            </span>
           </div>
         </div>
 
         <div className="grid grid-cols-12 gap-4 md:gap-6 mb-4 md:mb-6">
           <div className="border border-black p-6 col-span-12 md:col-span-6 bg-yellow-100">
-            <p className="text-center font-bold mb-8 text-lg uppercase">Datos Campo</p>
+            <p className="text-center font-bold mb-8 text-lg uppercase">
+              Datos Campo
+            </p>
             <div className="space-y-6">
               <div className="flex items-center">
-                <span className="w-1/3"><span className="font-bold">A.</span> PESO BRUTO</span>
+                <span className="w-1/3">
+                  <span className="font-bold">A.</span> PESO BRUTO
+                </span>
                 <div className="flex-1 flex justify-end">
                   <div className="text-center w-40">
                     <span className="border border-black px-3 py-1 inline-block w-full text-center">
@@ -107,7 +134,9 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
               </div>
 
               <div className="flex items-start">
-                <span className="w-1/3"><span className="font-bold">B.</span> TARA</span>
+                <span className="w-1/3">
+                  <span className="font-bold">B.</span> TARA
+                </span>
                 <div className="flex-1 flex items-center justify-end space-x-3">
                   <div className="text-center w-28">
                     <span className="border border-black px-3 py-1 inline-block w-full text-center ">
@@ -120,7 +149,6 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
                       {boleta.field_data.weight_basket}
                     </span>
                     <p className="text-xs mt-0.5">X PESO POR CANASTAS</p>
-
                   </div>
                   <span className="px-1">=</span>
                   <div className="text-center w-28">
@@ -133,7 +161,10 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
               </div>
 
               <div className="flex items-center">
-                <span className="w-1/3"><span className="font-bold">C.</span> PESO MATERIA PRIMA (A) - (B)</span>
+                <span className="w-1/3">
+                  <span className="font-bold">C.</span> PESO MATERIA PRIMA (A) -
+                  (B)
+                </span>
                 <div className="flex-1 flex justify-end">
                   <div className="text-center w-40">
                     <span className="border border-black px-3 py-1 inline-block w-full text-center ">
@@ -145,7 +176,10 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
               </div>
 
               <div className="flex items-center">
-                <span className="w-1/3"><span className="font-bold">D.</span> PESO A PAGAR = % DE CALIDAD</span>
+                <span className="w-1/3">
+                  <span className="font-bold">D.</span> PESO A PAGAR = % DE
+                  CALIDAD
+                </span>
                 <div className="flex-1 flex items-center justify-end space-x-2">
                   <div className="text-center w-28">
                     <span className="border border-black px-3 py-1 inline-block w-full text-center ">
@@ -166,7 +200,9 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           </div>
 
           <div className="border border-black p-6 col-span-12 md:col-span-4 bg-yellow-100">
-            <p className="text-center font-bold mb-8 text-lg uppercase">DATOS DE PLANTA</p>
+            <p className="text-center font-bold mb-8 text-lg uppercase">
+              DATOS DE PLANTA
+            </p>
             <div className="space-y-6">
               <div className="flex items-center">
                 <div className="flex-1 flex justify-end">
@@ -225,7 +261,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
                   <span className="px-2">=</span>
                   <div className="text-center w-40">
                     <span className="border border-black px-3 py-1 inline-block w-full text-center ">
-                      {(boleta.quality_doc_data?.valid_pounds)?.toFixed(2)}
+                      {boleta.quality_doc_data?.valid_pounds?.toFixed(2)}
                     </span>
                     <p className="text-xs mt-0.5">LIBRAS VALIDADAS</p>
                   </div>
@@ -235,22 +271,42 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           </div>
 
           <div className="border border-black py-1 md:p-2 col-span-12 md:col-span-2">
-            <p className="text-center font-bold mb-2 md:mb-3 text-base md:text-lg py-5">DIFERENCIA</p>
+            <p className="text-center font-bold mb-2 md:mb-3 text-base md:text-lg py-5">
+              DIFERENCIA
+            </p>
             <div className="space-y-2 md:space-y-12 flex flex-col items-center">
               <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
-                {(boleta.field_data.gross_weight - (boleta.prod_data?.gross_weight ?? 0)).toFixed(2)}
+                {(
+                  boleta.field_data.gross_weight -
+                  (boleta.prod_data?.gross_weight ?? 0)
+                ).toFixed(2)}
               </div>
               <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
-                {(boleta.field_data.weight_baskets - (boleta.prod_data?.tara ?? 0)).toFixed(2)}
+                {(
+                  boleta.field_data.weight_baskets -
+                  (boleta.prod_data?.tara ?? 0)
+                ).toFixed(2)}
               </div>
               <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
-                {(boleta.field_data.net_weight - (boleta.prod_data?.net_weight ?? 0)).toFixed(2)}
+                {(
+                  boleta.field_data.net_weight -
+                  (boleta.prod_data?.net_weight ?? 0)
+                ).toFixed(2)}
               </div>
               <div className="border border-black px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
-                {(boleta.field_data.valid_pounds - (boleta.quality_doc_data?.valid_pounds ?? 0)).toFixed(2)}
+                {(
+                  boleta.field_data.valid_pounds -
+                  (boleta.quality_doc_data?.valid_pounds ?? 0)
+                ).toFixed(2)}
               </div>
 
-              <div className="px-1 min-w-[120px] text-center h-8 flex items-center justify-center">{boleta.consignacion ? <AlertCircle className="text-red-500" /> : <CheckCircle className="text-green-500" />}</div>
+              <div className="px-1 min-w-[120px] text-center h-8 flex items-center justify-center">
+                {boleta.consignacion ? (
+                  <AlertCircle className="text-red-500" />
+                ) : (
+                  <CheckCircle className="text-green-500" />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -260,7 +316,9 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-25 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.prod_data?.receptor_signature}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${
+                    boleta.prod_data?.receptor_signature
+                  }`}
                   alt="Firma Receptor"
                   className="max-h-25 md:max-h-25 object-contain"
                 />
@@ -273,7 +331,9 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data?.inspector_planta_signature}`}
+                  src={`${import.meta.env.VITE_BASE_URL}/storage/${
+                    boleta.quality_doc_data?.inspector_planta_signature
+                  }`}
                   alt="Firma Inspector Planta"
                   className="max-h-25 md:max-h-25 object-contain"
                 />
@@ -282,11 +342,12 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             </div>
           )}
 
-
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.field_data.calidad_signature}`}
+                src={`${import.meta.env.VITE_BASE_URL}/storage/${
+                  boleta.field_data.calidad_signature
+                }`}
                 alt="Firma Inspector Agrícola"
                 className="max-h-25 md:max-h-25 object-contain"
               />
