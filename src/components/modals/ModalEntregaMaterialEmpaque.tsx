@@ -30,7 +30,7 @@ export type DraftTransactionPackingMaterial = {
     user_signature: string;
     observations: string;
     items: DraftPackingMaterialTransactionItem[];
-    wastages:DraftTaskProductionWastage[];
+    wastages: DraftTaskProductionWastage[];
     type: string;
 }
 
@@ -98,6 +98,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
         data.items = items;
         data.task_production_plan_id = task.id;
         data.type = "1";
+        data.wastages = [];
         mutate(data);
     }
 

@@ -56,11 +56,11 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-            {hasPermission('see fincas planification') && (
-                <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
-                    <CalendarDays />
-                </NavLinkComponent>
-            )}
+      {hasPermission('see fincas planification') && (
+        <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
+          <CalendarDays />
+        </NavLinkComponent>
+      )}
 
       {hasPermission("administrate fincas") && (
         <>
@@ -156,28 +156,32 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-      <NavLinkComponent url="/proveedores" text="Proveedores">
-        <UserRound />
-      </NavLinkComponent>
+      {hasPermission('administrate proveedores mp') && (
+        <NavLinkComponent url="/proveedores" text="Proveedores">
+          <UserRound />
+        </NavLinkComponent>
+      )}
 
-      <NavLinkComponent url="/material-empaque" text="Materiales Empaque">
-        <Box />
-      </NavLinkComponent>
+      {hasPermission('create mp transactions') && (
+        <>
+          <NavLinkComponent url="/material-empaque" text="Materiales Empaque">
+            <Box />
+          </NavLinkComponent>
 
-      <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
-        <Warehouse />
-      </NavLinkComponent>
+          <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
+            <Warehouse />
+          </NavLinkComponent>
 
-      <NavLinkComponent url="/recepciones-insumos" text="Recepciones Insumos">
-        <PackageOpen />
-      </NavLinkComponent>
+          <NavLinkComponent url="/recepciones-insumos" text="Recepciones Insumos">
+            <PackageOpen />
+          </NavLinkComponent>
 
-      {/* <NavLinkComponent url="/boleta-empaque/salida" text="Boleta de bodega">
-        <FileUser />
-      </NavLinkComponent> */}
-      <NavLinkComponent url="/material-empaque-transacciones" text="Transacciones Material Empaque">
-        <ClipboardPaste />
-      </NavLinkComponent>
+          <NavLinkComponent url="/material-empaque-transacciones" text="Transacciones Material Empaque">
+            <ClipboardPaste />
+          </NavLinkComponent>
+        </>
+      )}
+
     </div>
   );
 }
