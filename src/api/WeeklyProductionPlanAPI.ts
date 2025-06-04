@@ -703,6 +703,7 @@ export const TaskOperationDateSchema = z.object({
     id: z.string(),
     line: z.string(),
     sku: z.string(),
+    product: z.string(),
     working: z.boolean(),
     finished: z.boolean(),
     total_lbs: z.number(),
@@ -710,12 +711,10 @@ export const TaskOperationDateSchema = z.object({
     status: z.string(),
     status_id: z.string(),
     color: z.string(),
-    box: z.string(),
-    bag: z.string(),
-    bag_inner: z.string().nullable(),
     recipe: z.array(z.object({
         packing_material_id: z.string(),
         name: z.string(),
+        code: z.string(),
         quantity: z.number(),
         lote: z.string(),
         destination: z.string().nullable()
@@ -758,14 +757,14 @@ export const TasksProductionSchema = z.object({
 
 export type TaskProduction = z.infer<typeof TaskProductionSchema>;
 
-export async function getTasksProduction() : Promise<TaskProduction[]> {
+export async function getTasksProduction(): Promise<TaskProduction[]> {
     try {
         const url = '/api/tasks-production';
         const { data } = await clienteAxios(url);
         const result = TasksProductionSchema.safeParse(data);
-        if(result.success){
+        if (result.success) {
             return result.data.data;
-        }else{
+        } else {
             throw new Error("Información no valida");
         }
     } catch (error) {

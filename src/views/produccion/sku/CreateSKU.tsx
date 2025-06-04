@@ -3,24 +3,33 @@ import { createSKU } from "@/api/SkusAPI";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { PlusIcon, TrashIcon } from "lucide-react";
+import { useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
+import ModalAddItemRecipe from "@/components/modals/ModalAddItemRecipe";
+
+export type DraftRecipeSku = {
+  packing_material_id: string;
+  lbs_per_item: string;
+  name: string;
+}
 
 export type DraftSku = {
   code: string;
   product_name: string;
   presentation: number;
   boxes_pallet: number;
-  config_box: number;
-  config_bag: number;
-  config_inner_bag: number;
   pallets_container: number;
   hours_container: number;
   client_name: string;
+  recipe: DraftRecipeSku[]
 }
 
 export default function CreateSKU() {
+  const [items, setItems] = useState<DraftRecipeSku[]>([]);
+  const [modal, setModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
@@ -40,7 +49,15 @@ export default function CreateSKU() {
     formState: { errors },
   } = useForm<DraftSku>();
 
-  const onSubmit = (data: DraftSku) => mutate(data);
+
+  const handleDeleteItem = (id: DraftRecipeSku['packing_material_id']) => {
+    setItems((prev) => prev.filter(item => item.packing_material_id !== id));
+  }
+
+  const onSubmit = (data: DraftSku) => {
+    data.recipe = items;
+    mutate(data)
+  };
 
   return (
     <>
@@ -105,45 +122,6 @@ export default function CreateSKU() {
           </InputComponent>
 
           <InputComponent<DraftSku>
-            label="Configuración de Caja"
-            id="config_box"
-            name="config_box"
-            placeholder="Configuración de caja"
-            register={register}
-            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
-            errors={errors}
-            type={'number'}
-          >
-            {errors.config_box && <Error>{errors.config_box?.message?.toString()}</Error>}
-          </InputComponent>
-
-          <InputComponent<DraftSku>
-            label="Configuración de Bolsa"
-            id="config_bag"
-            name="config_bag"
-            placeholder="Configuración de Bolsa"
-            register={register}
-            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
-            errors={errors}
-            type={'number'}
-          >
-            {errors.config_bag && <Error>{errors.config_bag?.message?.toString()}</Error>}
-          </InputComponent>
-
-          <InputComponent<DraftSku>
-            label="Configuración de Inner Bolsa"
-            id="config_inner_bag"
-            name="config_inner_bag"
-            placeholder="Configuración de Inner Bolsa"
-            register={register}
-            validation={{ min: { value: 0, message: 'El valor minimo debe de ser mayor a 0' } }}
-            errors={errors}
-            type={'number'}
-          >
-            {errors.config_inner_bag && <Error>{errors.config_inner_bag?.message?.toString()}</Error>}
-          </InputComponent>
-
-          <InputComponent<DraftSku>
             label="Pallets por Contenedor"
             id="pallets_container"
             name="pallets_container"
@@ -182,11 +160,57 @@ export default function CreateSKU() {
             {errors.client_name && <Error>{errors.client_name?.message?.toString()}</Error>}
           </InputComponent>
 
+          <fieldset className="border p-5">
+            <legend className="text-2xl font-bold">Receta</legend>
+            <button
+              className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2"
+              type="button"
+              onClick={() => setModal(true)}
+            >
+              <PlusIcon />
+              <span>Agregar Item</span>
+            </button>
+
+            {items.length > 0 ? (
+              <table className="table mt-5">
+                <thead>
+                  <tr className="thead-tr">
+                    <th className="thead-th">Item</th>
+                    <th className="thead-th">Libras por unidad</th>
+                    <th className="thead-th">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item, index) => (
+                    <tr className="tbody-tr" key={index}>
+                      <td className="tbody-td">
+                        {item.name}
+                      </td>
+                      <td className="tbody-td">
+                        {item.lbs_per_item}
+                      </td>
+                      <td className="tbody-td flex gap-2">
+                        <TrashIcon className="text-gray-500 hover:text-gray-600 cursor-pointer" onClick={() => handleDeleteItem(item.packing_material_id)} />
+                      </td>
+                    </tr>
+                  ))}
+
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-center font-medium">
+                No existen items registrados
+              </p>
+            )}
+          </fieldset>
+
           <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
             {isPending ? <Spinner /> : <p>Crear SKU</p>}
           </button>
         </form>
       </div>
+
+      <ModalAddItemRecipe modal={modal} setModal={setModal} setItems={setItems} />
     </>
   );
 }

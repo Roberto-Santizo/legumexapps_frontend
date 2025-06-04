@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { EditIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { DraftPackingMaterialTransactionItem, DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
 import FormPackingMaterialTransaction from "./FormPackingMaterialTransaction";
 import SignatureCanvas from "react-signature-canvas";
@@ -13,6 +13,10 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ModalAddItemPackingMaterialDispatch from "@/components/modals/ModalAddItemPackingMaterialDispatch";
 
 export default function CreateBodegaSalidaEmpaque() {
+  const location = useLocation();
+  const taskId = location.state?.task_production_plan_id;
+  const url = location.state?.url;
+
   const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [indexItem, setIndexItem] = useState<number | null>(null);
@@ -28,7 +32,11 @@ export default function CreateBodegaSalidaEmpaque() {
     },
     onSuccess: (data) => {
       toast.success(data);
-      navigate('/material-empaque-transacciones');
+      if (url) {
+        navigate(url, { replace: true });
+      } else {
+        navigate('/material-empaque-transacciones');
+      }
     }
   });
 
@@ -37,7 +45,14 @@ export default function CreateBodegaSalidaEmpaque() {
     formState: { errors },
     control,
     handleSubmit,
+    setValue
   } = useForm<DraftTransactionPackingMaterial>();
+
+  useEffect(() => {
+    if (taskId) {
+      setValue('task_production_plan_id', taskId);
+    }
+  }, [taskId]);
 
   const handleDeleteItem = (index: number) => {
     setItems((prevItems) => prevItems.filter((_, i) => i !== index));
@@ -55,6 +70,7 @@ export default function CreateBodegaSalidaEmpaque() {
     }
 
     data.items = items;
+    data.wastages = [];
     mutate(data);
   }
 

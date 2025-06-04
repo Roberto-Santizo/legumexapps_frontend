@@ -46,7 +46,11 @@ export async function createSKU(FormData: DraftSku) {
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            }
         }
     }
 }

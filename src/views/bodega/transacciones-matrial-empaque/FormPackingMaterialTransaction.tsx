@@ -18,7 +18,6 @@ export default function FormPackingMaterialTransaction({ errors, register, contr
 
   const [tasks, setTasks] = useState<TaskProduction[]>([]);
   const optionsType = [
-    { value: "0", label: "INGRESO" },
     { value: "1", label: "ENTREGA" },
     { value: "2", label: "DEVOLUCIÓN" },
   ]

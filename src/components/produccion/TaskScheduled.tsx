@@ -1,6 +1,7 @@
 import { TaskOperationDate } from "@/api/WeeklyProductionPlanAPI";
-import { BoxIcon, Calendar } from "lucide-react";
+import { BoxIcon, Calendar, File } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque from "../modals/ModalEntregaMaterialEmpaque";
 
@@ -13,6 +14,7 @@ type Props = {
 export default function TaskScheduled({ task, selectedId, setSelectedId }: Props) {
     const [modal, setModal] = useState<boolean>(false);
     const [modalEntrega, setModalEntrega] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     return (
         <div className="bg-white rounded-2xl shadow-md border border-gray-200 transition hover:shadow-lg">
@@ -20,6 +22,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                 <div className="flex justify-between items-start">
                     <div className="space-y-1">
                         <p><span className="font-semibold text-gray-900">SKU:</span> {task.sku}</p>
+                        <p><span className="font-semibold text-gray-900">Producto:</span> {task.product}</p>
                         <p><span className="font-semibold text-gray-900">Línea:</span> {task.line}</p>
                         <p><span className="font-semibold text-gray-900">Total libras:</span> {task.total_lbs}</p>
                         <p><span className="font-semibold text-gray-900">Destino:</span> {task.destination}</p>
@@ -47,15 +50,28 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                 )}
 
                 {task.status_id === '0' && (
-                    <button
-                        onClick={() => {
-                            setModalEntrega(true);
-                        }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
-                    >
-                        <BoxIcon className="w-4 h-4" />
-                        Entregar Material de Empaque
-                    </button>
+                    <>
+                        {task.recipe.length > 0 ? (
+                            <button
+                                onClick={() => {
+                                    setModalEntrega(true);
+                                }}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
+                            >
+                                <BoxIcon className="w-4 h-4" />
+                                Entregar Material de Empaque
+                            </button>
+                        ) : (
+                            <button
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
+                                onClick={() => navigate('/material-empaque-transacciones/crear', { state: { task_production_plan_id: task.id, url: location.pathname + location.search } })}
+                            >
+                                <File className="w-4 h-4" />
+                                Creación de Entrega Empaque
+                            </button>
+                        )}
+
+                    </>
                 )}
             </div>
 
@@ -65,11 +81,14 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                 selectedId={selectedId}
             />
 
-            <ModalEntregaMaterialEmpaque
-                modal={modalEntrega}
-                setModal={setModalEntrega}
-                task={task}
-            />
+            {task.recipe?.length > 0 && (
+                <ModalEntregaMaterialEmpaque
+                    modal={modalEntrega}
+                    setModal={setModalEntrega}
+                    task={task}
+                />
+            )}
+
         </div>
     );
 }

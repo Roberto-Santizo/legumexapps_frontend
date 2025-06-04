@@ -1,18 +1,18 @@
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { TaskOperationDate } from "@/api/WeeklyProductionPlanAPI";
-import { Package, Layers, Box } from "lucide-react";
+import { BoxIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
+import { DraftTaskProductionWastage } from "./ModalAddWastage";
 import InputComponent from "../form/InputComponent";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import Error from "../utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
-import { DraftTaskProductionWastage } from "./ModalAddWastage";
 
 export type DraftPackingMaterialTransactionItem = {
     packing_material_id: string;
@@ -107,27 +107,27 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
             <div className="p-8 space-y-8">
                 <h2 className="text-2xl font-bold uppercase text-center text-gray-800">Configuración Empaque</h2>
 
-                <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 ${error ? 'border-2 border-red-500 rounded-xl p-4' : ''}`}>
-                    {[task.box, task.bag, task.bag_inner].map((label, i) => {
-                        const icons = [<Box className="text-indigo-500" />, <Package className="text-green-500" />, <Layers className="text-purple-500" />];
-                        const ringColors = ['focus:ring-indigo-400', 'focus:ring-green-400', 'focus:ring-purple-400'];
-
-                        return (
-                            <div key={i} className="flex flex-col items-center bg-white border rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
-                                <div className="w-8 h-8 mb-3">{icons[i]}</div>
-                                <p className="text-sm text-gray-500 mb-1">{label}</p>
-                                <p className="text-2xl font-semibold text-gray-800">{task.recipe[i].quantity}</p>
-                                <input
-                                    type="text"
-                                    autoComplete="off"
-                                    className={`mt-4 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 ${ringColors[i]}`}
-                                    placeholder="Digitar lote"
-                                    id={task.recipe[i].packing_material_id}
-                                    onChange={handleChangeLote}
-                                />
+                <div className={`flex justify-center sm:grid-cols-3 gap-6 ${error ? 'border-2 border-red-500 rounded-xl p-4' : ''}`}>
+                    {task.recipe.map((item, index) => (
+                        <div key={index} className="flex flex-col items-center bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out w-full max-w-xs mx-auto">
+                            <div className="mb-4 text-blue-500">
+                                <BoxIcon className="w-10 h-10" />
                             </div>
-                        );
-                    })}
+
+                            <p className="text-base font-semibold text-gray-800 mb-1 text-center">{item.name}</p>
+                            <p className="text-sm text-gray-500 mb-1 text-center">{item.code}</p>
+                            <p className="text-3xl font-bold text-gray-900 mb-2 text-center">{item.quantity}</p>
+
+                            <input
+                                type="text"
+                                autoComplete="off"
+                                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                placeholder="Digitar lote"
+                                id={item.packing_material_id}
+                                onChange={handleChangeLote}
+                            />
+                        </div>
+                    ))}
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
