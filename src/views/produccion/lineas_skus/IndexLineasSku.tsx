@@ -59,6 +59,7 @@ export default function IndexLineasSku() {
                         <th className="thead-th">Turno</th>
                         <th className="thead-th">Libras/Hora</th>
                         <th className="thead-th">Porcentaje Aceptado</th>
+                        <th className="thead-th">Método de Pago</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,6 +75,7 @@ export default function IndexLineasSku() {
                             <td className="tbody-td">{sku.shift}</td>
                             <td className="tbody-td">{sku.performance}</td>
                             <td className="tbody-td"><span>{sku.accepted_percentage} %</span></td>
+                            <td className="tbody-td">{sku.payment_method ? 'HORAS LINEA' : 'HORAS RENDIMIENTO'}</td>
                         </tr>
                     ))}
                 </tbody>

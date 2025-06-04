@@ -8,6 +8,7 @@ import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
+import InputSelectComponent from "../form/InputSelectComponent";
 
 type Props = {
     modal: boolean;
@@ -17,7 +18,7 @@ type Props = {
     currentPage: number;
 }
 
-export type DraftEditLineSku = Pick<LineaSKU, 'accepted_percentage' | 'performance'>;
+export type DraftEditLineSku = Pick<LineaSKU, 'accepted_percentage' | 'performance' | 'payment_method'>;
 
 export default function ModalEditLineSkuData({ modal, setModal, sku, setSelectedSku, currentPage }: Props) {
     const queryClient = useQueryClient();
@@ -48,6 +49,7 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
         if (sku) {
             setValue('accepted_percentage', sku.accepted_percentage);
             setValue('performance', sku.performance);
+            setValue('payment_method', sku.payment_method);
         }
     }, [sku]);
 
@@ -56,10 +58,22 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
         setSelectedSku({} as LineaSKU);
     }
 
-    const onSubmit = (data: DraftEditLineSku) => mutate({ FormData: data, id: sku.id });
+    const options = [
+        {
+            value: '0',
+            label: 'Horas Rendimiento'
+        },
+        {
+            value: '1',
+            label: 'Horas Linea'
+        }
+    ];
+    const onSubmit = (data: DraftEditLineSku) => {
+        mutate({ FormData: data, id: sku.id })
+    };
 
     return (
-        <Modal modal={modal} closeModal={handleCloseModal} title={`${sku.sku} - ${sku.line}`}>
+        <Modal modal={modal} closeModal={handleCloseModal} title={`${sku.sku ?? ''} - ${sku.line ?? ''}`}>
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <InputComponent<DraftEditLineSku>
                     label="Libras/Horas"
@@ -88,6 +102,18 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
                         {errors.accepted_percentage && <Error>{errors.accepted_percentage?.message?.toString()}</Error>}
                     </InputComponent>
                 )}
+
+                <InputSelectComponent<DraftEditLineSku>
+                    label="Método de pago"
+                    id="payment_method"
+                    name="payment_method"
+                    options={options}
+                    register={register}
+                    validation={{ required: 'El metodo de pago es requerido' }}
+                    errors={errors}
+                >
+                    {errors.payment_method && <Error>{errors.payment_method?.message?.toString()}</Error>}
+                </InputSelectComponent>
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                     {isPending ? <Spinner /> : <p>Guardar Cambios</p>}

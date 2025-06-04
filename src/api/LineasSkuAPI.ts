@@ -11,7 +11,8 @@ export const LineaSKUSchema = z.object({
     client: z.string(),
     product: z.string(),
     shift: z.string(),
-    performance: z.string(),
+    performance: z.number().nullable(),
+    payment_method: z.number(),
     accepted_percentage: z.number()
 });
 
