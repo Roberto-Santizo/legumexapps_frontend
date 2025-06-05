@@ -17,12 +17,12 @@ export async function createPlan(file: File[]) {
         const { data } = await clienteAxios.post<string>(url, formData);
         return data;
     } catch (error) {
-        if(isAxiosError(error)){
-            if(error.response?.data.errors){
-                 throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
-            }else if(error.response?.data.msg){
+        if (isAxiosError(error)) {
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else if (error.response?.data.msg) {
                 throw new Error(error.response.data.msg);
-                
+
             }
         }
     }
@@ -64,7 +64,7 @@ export const TaskWeeklyPlanByDateSchema = z.object({
     id: z.string(),
     lote: z.string(),
     task: z.string(),
-    operation_date:z.string(),
+    operation_date: z.string(),
     status: z.boolean(),
     insumos: z.array(TaskInsumoSchema)
 });
@@ -75,7 +75,7 @@ export const TasksWeeklyPlanByDateSchema = z.object({
 
 export type TaskWeeklyPlanByDate = z.infer<typeof TaskWeeklyPlanByDateSchema>;
 
-export async function getTasksByDate({ id, date, loteId, taskId }: { id: WeeklyPlan['id'], date: string, loteId: string, taskId: string }) : Promise<TaskWeeklyPlanByDate[]> {
+export async function getTasksByDate({ id, date, loteId, taskId }: { id: WeeklyPlan['id'], date: string, loteId: string, taskId: string }): Promise<TaskWeeklyPlanByDate[]> {
     try {
         const url = `/api/plans/tasks-planned-by-date/finca?weekly_plan=${id}&date=${date}&lote=${loteId}&task=${taskId}`;
         const { data } = await clienteAxios.get(url);
@@ -97,6 +97,7 @@ export async function downloadWeeklyPlanReport(weekly_plans_ids: WeeklyPlan['id'
         const { data } = await clienteAxios.post(url, {
             data: weekly_plans_ids
         });
+
         const result = ReportSchema.safeParse(data);
         if (result.success) {
             downloadBase64File(result.data.file, result.data.fileName)
@@ -104,7 +105,13 @@ export async function downloadWeeklyPlanReport(weekly_plans_ids: WeeklyPlan['id'
             throw new Error('Información no válida');
         }
     } catch (error) {
-        throw error;
+        if (isAxiosError(error)) {
+            if (error.response?.data.msg) {
+                throw new Error(error.response.data.msg);
+            } else if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }
+        }
     }
 }
 
@@ -119,6 +126,25 @@ export async function downloadReportInsumos(weekly_plan_id: WeeklyPlan['id']): P
             throw new Error('Información no válida');
         }
     } catch (error) {
-        throw error;
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
+export async function downloadReportPlanilla(weekly_plan_id: WeeklyPlan['id']): Promise<void> {
+    try {
+        const url = `/api/report/planilla/${weekly_plan_id}`;
+        const { data } = await clienteAxios(url);
+        const result = ReportSchema.safeParse(data);
+        if (result.success) {
+            downloadBase64File(result.data.file, result.data.fileName)
+        } else {
+            throw new Error('Información no válida');
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
     }
 }

@@ -87,7 +87,9 @@ export default function IndexPlanSemanal() {
     });
   };
 
-  const handleDowloadReport = async ({ plansId }: { plansId: WeeklyPlan['id'][] }) => { handleDowloadReportMutation({ plansId }) };
+  const handleDowloadReport = async ({ plansId }: { plansId: WeeklyPlan['id'][] }) => {
+    handleDowloadReportMutation({ plansId })
+  };
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />;
@@ -163,33 +165,32 @@ export default function IndexPlanSemanal() {
             <thead>
               <tr className="thead-tr">
                 {selectingReport && <th scope="col" className="thead-th"></th>}
-
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Finca
                 </th>
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Semana
                 </th>
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Año
                 </th>
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Control de Presupuesto
                 </th>
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Monto Extraordinario
                 </th>
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Control de Tareas
                 </th>
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Control de tareas Cosecha
                 </th>
-                <th scope="col" className="thead-th">
+                <th className="thead-th">
                   Acciones
                 </th>
-                <th scope="col" className="thead-th">
-                  Reporte de Insumos
+                <th className="thead-th text-center">
+                  Reportes
                 </th>
               </tr>
             </thead>
