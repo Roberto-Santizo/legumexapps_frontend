@@ -6,7 +6,7 @@ import { getCurrentDate } from "@/helpers";
 import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 type Props = {
   modal: boolean;
@@ -21,8 +21,10 @@ export type DraftChangeOperationDate = {
 
 export default function ModalChangeOperationDate({ modal, setModal, selectedId }: Props) {
   const location = useLocation();
+  const params = useParams();
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date')!;
+  const plan_id = params.plan_id!!;
   const reasonRef = useRef<HTMLTextAreaElement | null>(null);
   const dateRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
@@ -35,6 +37,7 @@ export default function ModalChangeOperationDate({ modal, setModal, selectedId }
     onSuccess: (data) => {
       toast.success(data);
       queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
+      queryClient.invalidateQueries({ queryKey: ['getAllTasksWeeklyProductionPlan', plan_id] });
       setModal(false);
     }
   });

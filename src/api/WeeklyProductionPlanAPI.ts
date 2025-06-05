@@ -504,7 +504,7 @@ export async function getTasksByLineId(plan_id: WeeklyPlanProductionPlan['id'], 
 export async function downloadPlanillaProduction({ plan_id, line_id }: { plan_id: WeeklyPlanProductionPlan['id'], line_id: Linea['id'] }) {
     try {
         const url = `/api/report-production/${plan_id}/${line_id}`;
-        const { data } = await clienteAxios.post(url);
+        const { data } = await clienteAxios.get(url);
         const result = ReportSchema.safeParse(data);
         if (result.success) {
             downloadBase64File(result.data.file, result.data.fileName)

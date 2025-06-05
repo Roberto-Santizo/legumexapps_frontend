@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { downloadPlanillaProduction, getWeeklyPlanDetails, LineWeeklyPlan } from "@/api/WeeklyProductionPlanAPI";
-import { CircleCheck, Eye, FileDown, Upload } from "lucide-react";
+import { Eye, FileDown, Upload } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -36,39 +36,58 @@ export default function ShowPlanSemanalProduccion() {
   return (
     <div className="w-full">
       {isPending && <LoadingOverlay />}
-      <h2 className="font-bold text-3xl mb-10">Lineas Asignadas</h2>
+      <h2 className="font-bold text-4xl mb-12 text-gray-800">Líneas Asignadas</h2>
 
-      <div className="p-5 space-y-10">
+      <div className="space-y-8">
         {assignment?.map(assigment => (
-          <div key={assigment.id} className="p-10 flex justify-between items-center shadow-xl">
-            <div className="flex items-center gap-5">
-              <p className="text-2xl font-bold">{assigment.line}</p>
-              <p className="bg-orange-500 p-3 text-white font-bold rounded text-lg">{assigment.assigned_employees}/{assigment.total_employees}</p>
+          <div
+            key={assigment.id}
+            className="bg-white p-6 md:p-8 rounded-2xl shadow-md flex justify-between items-center transition hover:shadow-xl"
+          >
+            <div className="flex items-center gap-6">
+              <p className="text-xl md:text-2xl font-semibold text-gray-800">{assigment.line}</p>
+              <span className="bg-orange-500 text-white font-bold px-4 py-2 rounded-xl text-sm md:text-base shadow-sm">
+                {assigment.assigned_employees}/{assigment.total_employees}
+              </span>
             </div>
+
             <div>
               {assigment.status ? (
-                <div className="flex flex-col gap-5">
-                  <CircleCheck className="text-green-500" />
-
+                <div className="flex items-center gap-4">
                   {hasPermission('see tasks production') && (
-                    <Link to={`/planes-produccion/${id}/${assigment.id}`}>
-                      <Eye className="hover:text-gray-600" />
+                    <Link
+                      to={`/planes-produccion/${id}/${assigment.id}`}
+                      className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition"
+                      title="Ver tareas"
+                    >
+                      <Eye className="text-gray-700 w-6 h-6" />
                     </Link>
                   )}
 
                   {hasPermission('download hours line report') && (
-                    <FileDown className="hover:text-gray-600 cursor-pointer" onClick={() => mutate({ plan_id: id, line_id: assigment.id })} />
+                    <button
+                      onClick={() => mutate({ plan_id: id, line_id: assigment.id })}
+                      className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition"
+                      title="Descargar reporte"
+                    >
+                      <FileDown className="text-gray-700 w-6 h-6" />
+                    </button>
                   )}
                 </div>
               ) : (
                 <>
                   {hasPermission('assign people production lines') && (
-                    <Upload className="cursor-pointer hover:text-gray-500" onClick={() => {
-                      setIsOpen(true);
-                      setSelectedLinea(assigment)
-                    }} />
+                    <button
+                      onClick={() => {
+                        setIsOpen(true);
+                        setSelectedLinea(assigment);
+                      }}
+                      className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition"
+                      title="Asignar"
+                    >
+                      <Upload className="text-blue-600 w-6 h-6" />
+                    </button>
                   )}
-
                 </>
               )}
             </div>
@@ -76,8 +95,14 @@ export default function ShowPlanSemanalProduccion() {
         ))}
       </div>
 
-      <ModalCargaPosiciones isOpen={isOpen} setIsOpen={setIsOpen} linea={selectedLinea} refetch={refetch} />
+      <ModalCargaPosiciones
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        linea={selectedLinea}
+        refetch={refetch}
+      />
     </div>
+
   )
 }
 
