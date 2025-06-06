@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { WeeklyPlan } from "@/types";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Lote } from "@/api/LotesAPI";
@@ -16,6 +15,7 @@ import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
+import { WeeklyPlan } from "@/api/WeeklyPlansAPI";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;

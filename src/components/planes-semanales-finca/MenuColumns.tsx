@@ -1,17 +1,16 @@
-import { downloadReportInsumos, downloadReportPlanilla } from "@/api/WeeklyPlansAPI";
+import { downloadReportInsumos, downloadReportPlanilla, WeeklyPlan } from "@/api/WeeklyPlansAPI";
 import { usePermissions } from "@/hooks/usePermissions";
-import { WeeklyPlan } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import Spinner from "../utilities-components/Spinner";
 import { CalendarIcon, DownloadIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import Spinner from "../utilities-components/Spinner";
 
 
-export default function MenuColumns({ planId }: { planId: WeeklyPlan['id'] }) {
+export default function MenuColumns({ plan }: { plan: WeeklyPlan }) {
     const { hasPermission } = usePermissions();
 
     const { mutate, isPending } = useMutation({
@@ -48,7 +47,7 @@ export default function MenuColumns({ planId }: { planId: WeeklyPlan['id'] }) {
                         >
                             {hasPermission('download planilla report') && (
                                 <Menu.Item>
-                                    <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPlanillaReport(planId)}>
+                                    <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPlanillaReport(plan.id)}>
                                         <DownloadIcon className="w-4 h-4" />
                                         Descargar Planilla
                                     </button>
@@ -56,14 +55,14 @@ export default function MenuColumns({ planId }: { planId: WeeklyPlan['id'] }) {
                             )}
 
                             <Menu.Item>
-                                <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadInsumosReport(planId)}>
+                                <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadInsumosReport(plan.id)}>
                                     <DownloadIcon className="w-4 h-4" />
                                     Descargar Reporte Insumos
                                 </button>
                             </Menu.Item>
 
                             <Menu.Item>
-                                <Link to={`/planes-semanales/planificacion-tareas/${planId}`} className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400 '>
+                                <Link to={`/planes-semanales/planificacion-tareas/${plan.id}/${plan.finca_id}`} className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400 '>
                                     <CalendarIcon className="w-4 h-4" />
                                     Calendario de Planificación
                                 </Link>

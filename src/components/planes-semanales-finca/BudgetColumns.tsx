@@ -1,6 +1,6 @@
+import { WeeklyPlan } from "@/api/WeeklyPlansAPI";
 import { formatearQuetzales } from "@/helpers";
 import { usePermissions } from "@/hooks/usePermissions";
-import { WeeklyPlan } from "@/types";
 
 export default function BudgetColumns({ plan }: { plan: WeeklyPlan }) {
     const { hasPermission } = usePermissions();

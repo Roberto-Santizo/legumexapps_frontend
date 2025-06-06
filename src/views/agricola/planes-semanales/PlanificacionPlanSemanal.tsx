@@ -9,7 +9,6 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes, Lote } from '@/api/LotesAPI';
 import { Tarea } from '@/types';
 import { getTasks } from '@/api/TasksAPI';
-import { FiltersLoteInitialValues } from '../lotes/IndexLotes';
 import { FiltersTasksInitialValues } from '../tareas/IndexTareas';
 import Select from "react-select";
 import interactionPlugin from '@fullcalendar/interaction';
@@ -34,6 +33,7 @@ const CalendarComponent = () => {
     const queryClient = useQueryClient();
     const params = useParams();
     const id = params.plan_id!!;
+    const fincaId = params.finca_id!!;
 
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
@@ -52,7 +52,7 @@ const CalendarComponent = () => {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' }) },
+            { queryKey: ['getLotes'], queryFn: () => getLotes({ page: 1, filters: { name: "", cdp: "", finca_id: fincaId }, paginated: '' }) },
             { queryKey: ['getTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
         ]
     })

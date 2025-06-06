@@ -1,11 +1,10 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { getTasksByDate } from "@/api/WeeklyPlansAPI";
 import { useEffect, useState } from "react";
 import { getLotes, Lote } from "@/api/LotesAPI";
 import { Tarea } from "@/types";
 import { getTasks } from "@/api/TasksAPI";
-import { FiltersLoteInitialValues } from "@/views/agricola/lotes/IndexLotes";
 import { FiltersTasksInitialValues } from "@/views/agricola/tareas/IndexTareas";
 import { Trash2Icon } from "lucide-react";
 import Modal from "../Modal";
@@ -25,6 +24,9 @@ export default function ModalInsumosPrepared({ id }: Props) {
     const queryParams = new URLSearchParams(location.search);
     const date = queryParams.get('date')!;
     const show = date ? true : false;
+    const params = useParams();
+    const fincaId = params.finca_id!!;
+
     const [lotes, setLotes] = useState<Lote[]>([]);
     const [tareas, setTareas] = useState<Tarea[]>([]);
     const [loteId, setLoteId] = useState<string>('');
@@ -33,7 +35,7 @@ export default function ModalInsumosPrepared({ id }: Props) {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' }) },
+            { queryKey: ['getLotes'], queryFn: () => getLotes({ page: 1, filters: { name: "", cdp: "", finca_id: fincaId }, paginated: '' }) },
             { queryKey: ['getTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
         ]
     })

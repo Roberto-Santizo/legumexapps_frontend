@@ -1,5 +1,5 @@
+import { WeeklyPlan } from "@/api/WeeklyPlansAPI";
 import { usePermissions } from "@/hooks/usePermissions";
-import { WeeklyPlan } from "@/types";
 import { Link } from "react-router-dom";
 
 export default function ActionsColumns({ plan }: { plan: WeeklyPlan }) {

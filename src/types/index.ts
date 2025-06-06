@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { AuthUserSchema } from '@/utils/users-schema'
 import { TareaSchema } from '@/utils/tareas-schema'
 import { CDPSchema } from '@/utils/plantation-schema'
-import { SummaryWeeklyPlanSchema, WeeklyPlan, WeeklyPlansPaginateSchema, WeeklyPlansSchema } from '@/utils/weekly_plans-schema'
 import { TaskInsumoSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema } from '@/utils/taskWeeklyPlan-schema'
 import { EmployeeSchema } from '@/utils/employee-schema'
 import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '@/utils/taskCropWeeklyPlan-schema'
@@ -17,11 +16,6 @@ export type Tarea = z.infer<typeof TareaSchema>
 export type TaskCrop = z.infer<typeof TaskCropSchema>
 
 export type CDP = z.infer<typeof CDPSchema>
-
-export type WeeklyPlan = z.infer<typeof WeeklyPlan>
-export type WeeklyPlans = z.infer<typeof WeeklyPlansSchema>
-export type WeeklyPlansPaginate = z.infer<typeof WeeklyPlansPaginateSchema>
-export type SummaryWeeklyPlan = z.infer<typeof SummaryWeeklyPlanSchema>
 
 export type TaskWeeklyPlan = z.infer<typeof TaskWeeklyPlanSchema>
 export type TasksWeeklyPlan = z.infer<typeof TasksWeeklyPlanSchema>

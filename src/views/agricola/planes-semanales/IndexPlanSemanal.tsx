@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { CheckCircle, Download, PlusIcon, XIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import { downloadWeeklyPlanReport, getWeeklyPlans } from "@/api/WeeklyPlansAPI";
-import { WeeklyPlan } from "@/types";
+import { downloadWeeklyPlanReport, getWeeklyPlans, WeeklyPlan } from "@/api/WeeklyPlansAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Bars3Icon } from "@heroicons/react/16/solid";
@@ -223,7 +222,7 @@ export default function IndexPlanSemanal() {
 
                   <ActionsColumns plan={plan} />
 
-                  <MenuColumns planId={plan.id} />
+                  <MenuColumns plan={plan} />
                 </tr>
               ))}
             </tbody>

@@ -1,7 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { WeeklyPlan } from "@/types";
 import { toast } from "react-toastify";
 import { editTask, EditTaskWeeklyPlan, getEditTask } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
@@ -10,7 +9,7 @@ import InputComponent from "@/components/form/InputComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
+import { getWeeklyPlans, WeeklyPlan } from "@/api/WeeklyPlansAPI";
 import { FiltersPlanSemanalInitialValues } from "../planes-semanales/IndexPlanSemanal";
 
 export type DraftTaskWeeklyPlan = {
