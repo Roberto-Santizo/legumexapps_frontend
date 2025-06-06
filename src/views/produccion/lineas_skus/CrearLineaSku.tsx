@@ -59,7 +59,15 @@ export default function CrearLineaSku() {
 
 
 
-    const onSubmit = (data: DraftLineaSku) => mutate(data);
+    const onSubmit = (data: DraftLineaSku) => {
+        if (!data.lbs_performance && data.payment_method.toString() === '0') {
+            toast.error('El metodo de pago no coincide con el rendimiento asociado');
+            return;
+        }
+
+        mutate(data)
+
+    };
 
     if (results) return (
         <div>

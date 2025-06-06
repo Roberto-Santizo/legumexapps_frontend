@@ -69,6 +69,11 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
         }
     ];
     const onSubmit = (data: DraftEditLineSku) => {
+        if (!data.performance && data.payment_method.toString() === '0') {
+            toast.error('El metodo de pago no coincide con el rendimiento asociado');
+            return;
+        }
+
         mutate({ FormData: data, id: sku.id })
     };
 
