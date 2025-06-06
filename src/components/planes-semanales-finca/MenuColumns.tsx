@@ -7,9 +7,11 @@ import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import Spinner from "../utilities-components/Spinner";
+import { CalendarIcon, DownloadIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 
-export default function InsumosColumns({ planId }: { planId: WeeklyPlan['id'] }) {
+export default function MenuColumns({ planId }: { planId: WeeklyPlan['id'] }) {
     const { hasPermission } = usePermissions();
 
     const { mutate, isPending } = useMutation({
@@ -46,17 +48,25 @@ export default function InsumosColumns({ planId }: { planId: WeeklyPlan['id'] })
                         >
                             {hasPermission('download planilla report') && (
                                 <Menu.Item>
-                                    <button className='block px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPlanillaReport(planId)}>
+                                    <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPlanillaReport(planId)}>
+                                        <DownloadIcon className="w-4 h-4" />
                                         Descargar Planilla
                                     </button>
                                 </Menu.Item>
                             )}
 
-
                             <Menu.Item>
-                                <button className='block px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadInsumosReport(planId)}>
+                                <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadInsumosReport(planId)}>
+                                    <DownloadIcon className="w-4 h-4" />
                                     Descargar Reporte Insumos
                                 </button>
+                            </Menu.Item>
+
+                            <Menu.Item>
+                                <Link to={`/planes-semanales/planificacion-tareas/${planId}`} className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400 '>
+                                    <CalendarIcon className="w-4 h-4" />
+                                    Calendario de Planificación
+                                </Link>
                             </Menu.Item>
                         </Menu.Items>
                     </Transition>

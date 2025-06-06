@@ -11,7 +11,7 @@ import { Bars3Icon } from "@heroicons/react/16/solid";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import InsumosColumns from "@/components/planes-semanales-finca/InsumosColumns";
+import MenuColumns from "@/components/planes-semanales-finca/MenuColumns";
 import ActionsColumns from "@/components/planes-semanales-finca/ActionsColumns";
 import BudgetColumns from "@/components/planes-semanales-finca/BudgetColumns";
 import FiltersPlanSemanalFinca from "@/components/filters/FiltersPlanSemanalFinca";
@@ -190,7 +190,6 @@ export default function IndexPlanSemanal() {
                   Acciones
                 </th>
                 <th className="thead-th text-center">
-                  Reportes
                 </th>
               </tr>
             </thead>
@@ -224,7 +223,7 @@ export default function IndexPlanSemanal() {
 
                   <ActionsColumns plan={plan} />
 
-                  <InsumosColumns planId={plan.id} />
+                  <MenuColumns planId={plan.id} />
                 </tr>
               ))}
             </tbody>

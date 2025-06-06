@@ -16,9 +16,7 @@ import {
   ChartBarIncreasing,
   ChartLine,
   ChartNoAxesCombined,
-  FileUser,
-  CalendarDays,
-  UserRound,
+  FileUser, UserRound,
   Box,
   PackageOpen,
   ClipboardPaste
@@ -53,12 +51,6 @@ export default function Navegation() {
       {hasPermission("see plan semanal finca") && (
         <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
           <BookCheck />
-        </NavLinkComponent>
-      )}
-
-      {hasPermission('see fincas planification') && (
-        <NavLinkComponent url="/planificacion-finca" text="Planificación Tareas Finca">
-          <CalendarDays />
         </NavLinkComponent>
       )}
 

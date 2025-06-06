@@ -9,7 +9,6 @@ import { z } from "zod";
 import { Lote } from "./LotesAPI";
 import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
 import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
-import { Finca } from "./FincasAPI";
 
 export async function getTasks({ cdp, weekly_plan_id, filters }: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {
@@ -259,9 +258,9 @@ export const TasksWeeklyPlanForCalendarSchema = z.object({
 
 export type TaskWeeklyPlanForCalendar = z.infer<typeof TaskWeeklyPlanForCalendarSchema>;
 
-export async function getTasksNoPlanificationDate({ id, loteId, taskId, fincaId }: { id: WeeklyPlan['id'], loteId: Lote['id'], taskId: Tarea['id'], fincaId: Finca['id'] }): Promise<TaskWeeklyPlanForCalendar[]> {
+export async function getTasksNoPlanificationDate({ id, loteId, taskId }: { id: WeeklyPlan['id'], loteId: Lote['id'], taskId: Tarea['id'] }): Promise<TaskWeeklyPlanForCalendar[]> {
     try {
-        const url = `/api/plans/tasks-no-planification-date/finca?lote=${loteId}&task=${taskId}&weekly_plan=${id}&finca=${fincaId}`;
+        const url = `/api/plans/tasks-no-planification-date/${id}?lote=${loteId}&task=${taskId}`;
         const { data } = await clienteAxios(url);
         const result = TasksWeeklyPlanForCalendarSchema.safeParse(data);
         if (result.success) {
@@ -301,7 +300,7 @@ export type TaskForCalendar = z.infer<typeof TaskForCalendarSchema>;
 
 export async function getTasksForCalendar(id: WeeklyPlan['id']) {
     try {
-        const url = `/api/plans/tasks-for-calendar/finca?weekly_plan=${id}`;
+        const url = `/api/plans/tasks-for-calendar/${id}`;
         const { data } = await clienteAxios(url);
         const result = TasksForCalendarSchema.safeParse(data);
         if (result.success) {

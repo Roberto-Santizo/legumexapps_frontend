@@ -4,9 +4,7 @@ import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Trash } from 'lucide-react';
 import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate, TaskForCalendar } from '@/api/TasksWeeklyPlanAPI';
-import { getWeeklyPlans } from '@/api/WeeklyPlansAPI';
-import { FiltersPlanSemanalInitialValues } from './IndexPlanSemanal';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes, Lote } from '@/api/LotesAPI';
 import { Tarea } from '@/types';
@@ -23,7 +21,6 @@ import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
-import { getFincas } from '@/api/FincasAPI';
 
 
 type EventReceiveInfo = {
@@ -35,7 +32,9 @@ type EventReceiveInfo = {
 
 const CalendarComponent = () => {
     const queryClient = useQueryClient();
-    const [id, setId] = useState<string>('');
+    const params = useParams();
+    const id = params.plan_id!!;
+
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
     const [modal, setModal] = useState(false);
@@ -43,7 +42,6 @@ const CalendarComponent = () => {
     const [selectedTask, setSelectedTask] = useState<TaskForCalendar>({} as TaskForCalendar);
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
-    const [fincaId, setFincaId] = useState<string>('');
     const [lotes, setLotes] = useState<Lote[]>([]);
     const [tareas, setTareas] = useState<Tarea[]>([]);
     const { hasPermission } = usePermissions();
@@ -54,9 +52,8 @@ const CalendarComponent = () => {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getAllLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' }) },
-            { queryKey: ['getAllTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
-            { queryKey: ['getAllFincas'], queryFn: getFincas },
+            { queryKey: ['getLotes'], queryFn: () => getLotes({ page: 1, filters: FiltersLoteInitialValues, paginated: '' }) },
+            { queryKey: ['getTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
         ]
     })
 
@@ -65,13 +62,6 @@ const CalendarComponent = () => {
         if (results[0].data) setLotes(results[0].data.data)
         if (results[1].data) setTareas(results[1].data.data)
     }, [results])
-
-    const fincasFilter = results[2].data?.filter((finca) => +finca.id < 7);
-
-    const fincasOptions = fincasFilter?.map((finca) => ({
-        value: finca.id,
-        label: finca.name
-    }));
 
     const lotesOptions = lotes.map((lote) => ({
         value: lote.id,
@@ -83,11 +73,9 @@ const CalendarComponent = () => {
         label: `${lote.code} ${lote.name}`,
     }));
 
-    const { data: plans } = useQuery({ queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: '' }) });
     const { data: tasks, isLoading } = useQuery({
-        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId, fincaId],
-        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId, fincaId }),
-        retry: false
+        queryKey: ['getTasksNoPlanificationDate', id, loteId, taskId],
+        queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId }),
     });
 
     const { data: tasksForCalendar } = useQuery({
@@ -137,20 +125,6 @@ const CalendarComponent = () => {
                 {hasPermission('administrate plans production') && (
                     <div className="flex justify-end items-center gap-5 mb-4">
                         <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
-                        <div className="mb-4">
-                            <label htmlFor="selector" className="block text-sm font-medium text-gray-600 mb-1">Plan Semanal</label>
-                            <select
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                onChange={(e) => setId(e.target.value)}
-                            >
-                                <option value="">Seleccione una opción</option>
-                                {plans?.data?.map((plan) => (
-                                    <option key={plan.id} value={plan.id}>
-                                        {plan.finca} - {plan.week}/{plan.year}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
                     </div>
                 )}
 
@@ -219,18 +193,6 @@ const CalendarComponent = () => {
                                         }
                                     })}
                                     placeholder="--SELECCIONE UNA TAREA--"
-                                />
-
-                                <Select
-                                    options={fincasOptions}
-                                    className="react-select-container flex-1"
-                                    classNamePrefix="react-select"
-                                    onChange={(selected => {
-                                        if (selected?.value) {
-                                            setFincaId(selected?.value)
-                                        }
-                                    })}
-                                    placeholder="--SELECCIONE UNA FINCA--"
                                 />
                             </div>
                         </div>
