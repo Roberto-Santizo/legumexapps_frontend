@@ -5,7 +5,7 @@ import z from "zod";
 
 export const LogedInUser = z.object({
     name: z.string(),
-    email: z.string(),
+    email: z.string().nullable(),
     username: z.string()
 });
 
