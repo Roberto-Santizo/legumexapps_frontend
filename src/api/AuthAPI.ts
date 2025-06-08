@@ -14,21 +14,21 @@ export const LoginSchema = z.object({
     user: LogedInUser
 });
 
+export type LoginSuccessful = z.infer<typeof LoginSchema>;
 
-export async function login(FormData: LoginType) {
+
+export async function login(FormData: LoginType): Promise<LoginSuccessful> {
     try {
         const url = '/api/login';
         const { data } = await clienteAxios.post(url, FormData);
         const result = LoginSchema.safeParse(data);
 
         if (result.success) {
-            localStorage.setItem('AUTH_TOKEN', result.data.token);
-            localStorage.setItem('AUTH_USER', JSON.stringify(result.data.user));
+            return result.data
         } else {
             throw new Error("Información no válida");
         }
 
-        return "Autenticado correctamente";
     } catch (error) {
         if (isAxiosError(error)) {
             if (error.response?.data.errors) {
@@ -37,6 +37,7 @@ export async function login(FormData: LoginType) {
                 throw new Error(error.response?.data.message);
             }
         }
+        throw new Error("Error desconocido al iniciar sesión");
     }
 }
 
