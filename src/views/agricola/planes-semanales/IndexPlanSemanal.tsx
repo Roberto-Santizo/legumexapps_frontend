@@ -51,7 +51,7 @@ export default function IndexPlanSemanal() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedPlans', currentPage, filters],
-    queryFn: () => getWeeklyPlans({ page: currentPage, filters: filters, paginated: '' }),
+    queryFn: () => getWeeklyPlans({ page: currentPage, filters: filters, paginated: 'true' }),
   });
 
   useEffect(() => {
