@@ -8,7 +8,7 @@ export const DronHoursSchema = z.object({
 
 export async function getDronHours(): Promise<number> {
     try {
-        const url = "/api/dron-hours";
+        const url = "/api/dashboard/agricola/dron-hours";
         const { data } = await clienteAxios(url);
         const result = DronHoursSchema.safeParse(data);
         if (result.success) {
@@ -39,7 +39,7 @@ export type SummaryEmployeesHours = z.infer<typeof SummaryHoursEmployeesSchema>
 
 export async function getSummaryHoursEmployees(): Promise<SummaryEmployeeHours[]> {
     try {
-        const url = "/api/summary-hours-employees";
+        const url = "/api/dashboard/agricola/summary-hours-employees";
         const { data } = await clienteAxios(url);
         const result = SummaryHoursEmployeesSchema.safeParse(data);
         if (result.success) {
@@ -73,7 +73,7 @@ export type TaskInProgress = z.infer<typeof TaskInProgressSchema>
 
 export async function getTasksInProgress(): Promise<TaskInProgress[]> {
     try {
-        const url = "/api/tasks-in-progress";
+        const url = "/api/dashboard/agricola/tasks-in-progress";
         const { data } = await clienteAxios(url);
         const result = TasksInProgressSchema.safeParse(data);
         if (result.success) {
@@ -104,7 +104,7 @@ export type FinishedTask = z.infer<typeof FinishedTaskSchema>;
 
 export async function getTasksFinished(): Promise<FinishedTask[]> {
     try {
-        const url = "/api/finished-tasks";
+        const url = "/api/dashboard/agricola/finished-tasks";
         const { data } = await clienteAxios(url);
         const result = FinishedTasksSchema.safeParse(data);
         if (result.success) {
@@ -134,7 +134,7 @@ export type SummaryFincaTasks = z.infer<typeof SummaryFincaTasksSchema>
 
 export async function getFinishedTasksByFinca(): Promise<SummaryFincaTasks[]> {
     try {
-        const url = "/api/finished-total-tasks-finca";
+        const url = "/api/dashboard/agricola/finished-total-tasks-finca";
         const { data } = await clienteAxios(url);
         const result = FinishedTasksByFincaSchema.safeParse(data);
         if (result.success) {
@@ -166,7 +166,7 @@ export type TaskCropInProgress = z.infer<typeof TaskCropInProgressSchema>
 
 export async function getTasksCropInProgress(): Promise<TaskCropInProgress[]> {
     try {
-        const url = "/api/tasks-crops-in-progress";
+        const url = "/api/dashboard/agricola/tasks-crops-in-progress";
         const { data } = await clienteAxios(url);
         const result = TasksCropsInProgressSchema.safeParse(data);
         if (result.success) {
@@ -182,7 +182,7 @@ export async function getTasksCropInProgress(): Promise<TaskCropInProgress[]> {
 
 export async function getTasksCropFinished(): Promise<FinishedTask[]> {
     try {
-        const url = "/api/finished-tasks-crop";
+        const url = "/api/dashboard/agricola/finished-tasks-crop";
         const { data } = await clienteAxios(url);
         const result = FinishedTasksSchema.safeParse(data);
         if (result.success) {
