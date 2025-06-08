@@ -37,7 +37,7 @@ export default function IndexLotes() {
   useEffect(() => {
     if (lotes?.meta) {
       setPageCount(lotes.meta.last_page);
-      setPageCount(lotes.meta.current_page);
+      setCurrentPage(lotes.meta.current_page);
     }
   }, [lotes]);
 
