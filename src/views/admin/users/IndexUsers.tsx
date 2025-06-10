@@ -4,10 +4,9 @@ import { getUsers, changeActiveUser, User } from "@/api/UsersAPI";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
-import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function IndexUsers() {
-  const { data: users, isLoading, isError, refetch } = useQuery({
+  const { data: users } = useQuery({
     queryKey: ['getUsers'],
     queryFn: getUsers
   });
@@ -19,14 +18,11 @@ export default function IndexUsers() {
     },
     onSuccess: (data) => {
       toast.success(data);
-      refetch();
     }
   });
 
   const handleChangeUserStatus = async (id: User["id"]) => mutate(id);
 
-  if (isLoading) return <Spinner />
-  if (isError) return <ShowErrorAPI />
   if (users) return (
     <>
       <h2 className="font-bold text-4xl">Administración de Usuarios</h2>
@@ -66,7 +62,7 @@ export default function IndexUsers() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {users?.map((user) => (
                 <tr className="tbody-tr" key={user.id}>
                   <td className="tbody-td">
                     <p>{user.name}</p>

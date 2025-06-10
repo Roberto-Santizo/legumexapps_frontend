@@ -5,7 +5,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ProtectedRoutes from "@/components/middlewares/ProtectedRoutes";
 
 const routes = [
-  { path: "/dashboard", component: lazy(() => import("@/components/Dashboard")), roles: []},
+  { path: "/dashboard", component: lazy(() => import("@/components/Dashboard")), roles: [] },
   { path: "/usuarios", component: lazy(() => import("@/views/admin/users/IndexUsers")), roles: ['admin'] },
   { path: "/usuarios/crear", component: lazy(() => import("@/views/admin/users/CreateUser")), roles: ['admin'] },
   { path: "/usuarios/editar/:id", component: lazy(() => import("@/views/admin/users/EditUser")), roles: ['admin'] },

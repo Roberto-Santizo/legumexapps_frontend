@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "../components/utilities-components/Spinner";
-import ProtectedAgricolaRoutes from "../components/middlewares/ProtectedRoutes";
+import ProtectedRoutes from "../components/middlewares/ProtectedRoutes";
 
 const routes = [
   { path: "/rmp", component: lazy(() => import("@/views/calidad/rmp/IndexRMP")), roles: ['admin', 'pprod', 'pcampo', 'pcalidad', 'pcostos', 'admincalidad', 'auxcalidad'] },
@@ -45,9 +45,9 @@ export default function CalidadRoutes() {
           path={path}
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedAgricolaRoutes roles={roles}>
+              <ProtectedRoutes roles={roles}>
                 <Component />
-              </ProtectedAgricolaRoutes>
+              </ProtectedRoutes>
             </Suspense>
           }
         />

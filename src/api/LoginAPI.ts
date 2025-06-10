@@ -10,8 +10,6 @@ export async function getUserRoleByToken() {
         const result = userRoleSchema.safeParse(data);
         if (result.success) {
             return result.data.name
-        } else {
-            throw new Error("Información no válida");
         }
     } catch (error) {
         if (isAxiosError(error)) {

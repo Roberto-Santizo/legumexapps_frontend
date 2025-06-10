@@ -1,7 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
-import { getUserRoleByToken } from "@/api/LoginAPI";
+import { useRole } from "@/hooks/useRole";
 import Spinner from "./utilities-components/Spinner";
 import GeneralDashboard from "./dashboards/GeneralDashboards";
 import AgricolaDashboard from "./dashboards/AgricolaDashboard";
@@ -31,19 +28,9 @@ export default function Dashboard() {
     'gerencia': (<GerenciaDashboard />),
   };
 
-  const { data: role, isLoading, isError, error } = useQuery({
-    queryKey: ['getUserRoleByToken'],
-    queryFn: getUserRoleByToken,
-    retry: false
-  });
-
-  if (isError) {
-    toast.error(error.message, { toastId: 'loginError' });
-    return <Navigate to={'/'} />
-  }
-
+  const { data: role, isLoading } = useRole();
   if (isLoading) return <Spinner />;
-  if (role) return (
+  return (
     <>
       {dashboards[role as keyof typeof dashboards]}
     </>

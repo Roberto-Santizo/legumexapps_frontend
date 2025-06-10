@@ -30,9 +30,7 @@ function Login() {
     },
     onSuccess: (data) => {
       localStorage.setItem('AUTH_TOKEN', data.token);
-      localStorage.setItem('AUTH_USER', JSON.stringify(data.user));
       navigate("/dashboard");
-      window.location.reload();
     }
   });
 

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Spinner from "../components/utilities-components/Spinner";
-import ProtectedAgricolaRoutes from "../components/middlewares/ProtectedRoutes";
+import ProtectedRoutes from "../components/middlewares/ProtectedRoutes";
 import DocumentLayout from "../layouts/DocumentLayout";
 
 const routes = [
@@ -19,9 +19,9 @@ export default function DocumentRoutes() {
           path={path}
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedAgricolaRoutes roles={roles}>
+              <ProtectedRoutes roles={roles}>
                 <Component />
-              </ProtectedAgricolaRoutes>
+              </ProtectedRoutes>
             </Suspense>
           }
         />

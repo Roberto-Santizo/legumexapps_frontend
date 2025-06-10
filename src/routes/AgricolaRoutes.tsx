@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "@/components/utilities-components/Spinner";
-import ProtectedAgricolaRoutes from "@/components/middlewares/ProtectedRoutes";
+import ProtectedRoutes from "@/components/middlewares/ProtectedRoutes";
 
 const routes = [
   { path: "/planes-semanales", component: lazy(() => import("@/views/agricola/planes-semanales/IndexPlanSemanal")), roles: ['admin', 'adminagricola', 'alameda','linda','tehuya', 'auxrrhh'] },
@@ -52,9 +52,9 @@ export default function AgricolaRoutes() {
           path={path}
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedAgricolaRoutes roles={roles}>
+              <ProtectedRoutes roles={roles}>
                 <Component />
-              </ProtectedAgricolaRoutes>
+              </ProtectedRoutes>
             </Suspense>
           }
         />

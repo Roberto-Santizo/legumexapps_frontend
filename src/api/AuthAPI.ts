@@ -52,3 +52,27 @@ export async function logout() {
         }
     }
 }
+
+export const userSchema = LogedInUser.pick({
+    name: true,
+    email: true
+}).extend({
+    id: z.string(),
+    role: z.string()
+});
+
+export type User = z.infer<typeof userSchema>;
+
+export async function getUser() {
+    try {
+        const { data } = await clienteAxios('/api/user');
+        const result = userSchema.safeParse(data);
+        if (result.success) {
+            return result.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}

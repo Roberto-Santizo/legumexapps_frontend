@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import Spinner from "../components/utilities-components/Spinner";
-import ProtectedAgricolaRoutes from "../components/middlewares/ProtectedRoutes";
+import ProtectedRoutes from "../components/middlewares/ProtectedRoutes";
 
 const routes = [
   { path: "/form/entrega-material", component: lazy(() => import("@/views/bodega/formularios/MaterialEmpaqueSalida")), roles: ['admin'] },
@@ -36,9 +36,9 @@ export default function BodegaRoutes() {
           path={path}
           element={
             <Suspense fallback={<Spinner />}>
-              <ProtectedAgricolaRoutes roles={roles}>
+              <ProtectedRoutes roles={roles}>
                 <Component />
-              </ProtectedAgricolaRoutes>
+              </ProtectedRoutes>
             </Suspense>
           }
         />

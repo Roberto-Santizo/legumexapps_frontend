@@ -1,15 +1,17 @@
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 
-const clienteAxios : AxiosInstance = axios.create({
+const clienteAxios = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
-    headers:{
-        'Accept': 'application/json',
-        'x-Requested-With': 'XMLHttpRequest',
-        "Content-Type": 'apllication/json',
-        "Authorization": `Bearer ${localStorage.getItem('AUTH_TOKEN')}`
-    },
-    withCredentials: true,
-})
+});
+
+clienteAxios.interceptors.request.use(config => {
+    const token = localStorage.getItem('AUTH_TOKEN');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config;
+});
 
 export default clienteAxios;
 

@@ -1,43 +1,40 @@
 import { useState } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { Header } from "../components/layouts/Header";
-import { useQuery } from "@tanstack/react-query";
+import { Navigate, Outlet } from "react-router-dom";
 import { Sidebar } from "@/components/layouts/Sidebar";
-import { getUserRoleByToken } from "@/api/LoginAPI";
-import { toast } from "react-toastify";
-import Spinner from "@/components/utilities-components/Spinner";
+import { useAuth } from "@/hooks/useAuth";
+import { Bars3Icon } from "@heroicons/react/16/solid";
 import MobileSidebar from "@/components/layouts/MobileSidebar";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function Layout() {
   const [modal, setModal] = useState(false);
-  const navigate = useNavigate();
+  const { isLoading, isError, logout } = useAuth();
 
-  const { data: role, isLoading, isError, error } = useQuery({
-    queryKey: ['getUserRoleByToken'],
-    queryFn: getUserRoleByToken,
-    retry: false
-  });
-
+  if (isLoading) return <Spinner />
   if (isError) {
-    toast.error(error.message, { toastId: 'loginError' });
     return <Navigate to={'/'} />
   }
-
-  if (isError) navigate('/login');
-  if (isLoading) return <Spinner />
-  if (role) return (
+  return (
     <>
       <div className="flex h-screen bg-gray-100">
         <div className="hidden lg:block">
           <Sidebar />
         </div>
 
-        {modal && (
-          <MobileSidebar modal={modal} setModal={setModal} />
-        )}
+        <MobileSidebar modal={modal} setModal={setModal} />
 
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header setModal={setModal} />
+          <header className="flex items-center justify-end py-5">
+            <div className="flex space-x-4">
+              <div className="flex gap-5 mr-12 justify-center items-center">
+                <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6 md:hidden" onClick={() => setModal(true)} />
+                <button className="button bg-indigo-500 hover:bg-indigo-600 md:block hidden" onClick={() => logout()}>
+                  <p>Cerrar Sesión</p>
+                </button>
+              </div>
+            </div>
+          </header>
+
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white scrollbar-hide">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mt-4"></div>
