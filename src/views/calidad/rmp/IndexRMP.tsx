@@ -6,6 +6,7 @@ import { Boleta, getBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { toast } from "react-toastify";
 import { getUserRole } from "@/api/UserAPI";
+import { usePermissions } from "@/hooks/usePermissions";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersRMP, { FiletrsBoletaRMPInitialValues, FiltersBoletaRMP } from "@/components/filters/FiletrsRMP";
@@ -17,6 +18,7 @@ import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
 export default function IndexRMP() {
     const [filters, setFilters] = useState<FiltersBoletaRMP>(FiletrsBoletaRMPInitialValues);
+    const { hasPermission } = usePermissions();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [boletas, setBoletas] = useState<Boleta[]>([]);
@@ -94,7 +96,7 @@ export default function IndexRMP() {
             </h2>
 
             <div className="flex flex-col items-end gap-3 mt-10">
-                {(['admin', 'pprod'].includes(role)) && (
+                {hasPermission('create rmp doc') && (
                     <Link
                         to="/rmp/crear"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
@@ -103,6 +105,7 @@ export default function IndexRMP() {
                         <p className="text-sm md:text-base">Crear Boleta Materia Prima</p>
                     </Link>
                 )}
+
 
                 <Bars3Icon
                     className="w-6 md:w-8 cursor-pointer hover:text-gray-500"

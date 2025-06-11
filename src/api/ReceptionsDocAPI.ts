@@ -143,8 +143,8 @@ export async function createBoletaRMP(FormData: DraftBoletaRMP) {
     try {
         const url = '/api/boleta-rmp';
         const { data } = await clienteAxios.post(url, FormData);
-        const result = DraftBoletaRMPSchema.safeParse(data);
-        if(result.success) {
+        const result = BoletaInfoAllSchema.safeParse(data);
+        if (result.success) {
             return result.data;
         }
     } catch (error) {

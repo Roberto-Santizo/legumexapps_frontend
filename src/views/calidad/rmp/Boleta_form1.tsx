@@ -9,17 +9,16 @@ import { getProducts, Product } from "@/api/ProductsAPI";
 import { Finca, getFincas } from "@/api/FincasAPI";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { Piloto } from "@/api/PilotosAPI";
-import {getTransportistaInfoById, getTransportistas,Transportista,} from "@/api/TransportistasAPI";
+import { getTransportistaInfoById, getTransportistas, Transportista, } from "@/api/TransportistasAPI";
 import { Placa } from "@/api/PlacasAPI";
-import {getAllProductorCDPS, ProductorCDP,} from "@/api/ProductorPlantationAPI";
+import { getAllProductorCDPS, ProductorCDP, } from "@/api/ProductorPlantationAPI";
+import { useMutation } from "@tanstack/react-query";
+import { AutoDownloadPDF } from "@/components/boleta-rmp/AutoDownloadPDF";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import { BoletaInfoAll } from "@/api/ReceptionsDocAPI";
-import { useMutation } from "@tanstack/react-query";
-import { AutoDownloadPDF } from "@/components/boleta-rmp/AutoDownloadPDF";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -122,30 +121,23 @@ export default function Boleta_form1() {
     label: `${cdp.name}`,
   }));
 
- const { mutate, isPending } = useMutation<BoletaInfoAll, Error, DraftBoletaRMP>({
-  mutationFn: async (formData: DraftBoletaRMP) => {
-    const result = await createBoletaRMP(formData);
-    return result?.doc as BoletaInfoAll;
-  },
-  onSuccess: async (boleta: BoletaInfoAll) => {
-    toast.success("Boleta creada exitosamente");
-    navigate("/rmp"); 
-
-    if (!boleta?.field_data?.id || !boleta?.field_data?.ref_doc) {
-      toast.error("Datos de boleta incompletos para generar PDF.");
-      return;
+  const { mutate, isPending } = useMutation({
+    mutationFn: createBoletaRMP,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      if (data) {
+        try {
+          AutoDownloadPDF(data);
+        } catch (error) {
+          toast.error('Hubo un error al descargar la boleta, puede descargarla desde el apartado de la vista de la boleta');
+        }
+      }
+      toast.success('Boleta generada correctamente');
+      navigate('/rmp');
     }
-    try {
-      await AutoDownloadPDF(boleta);
-    } catch (error) {
-      console.error("Error al generar el PDF:", error);
-      toast.error("No se pudo generar el PDF");
-    }
-  },
-  onError: (error) => {
-    toast.error(error instanceof Error ? error.message : "Ocurrió un error al crear la boleta");
-  },
-});
+  });
 
   const {
     register,
@@ -154,9 +146,7 @@ export default function Boleta_form1() {
     formState: { errors },
   } = useForm<DraftBoletaRMP>();
 
-  const onSubmit = async (data: DraftBoletaRMP) => {
-    mutate(data);
-  };
+  const onSubmit = async (data: DraftBoletaRMP) => mutate(data);
 
   return (
     <>
