@@ -5,10 +5,7 @@ import { createRole } from "@/api/RolesAPI";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import RolesForm from "./RolesForm";
-
-export type DraftRole = {
-  name: string;
-};
+import { DraftRole } from "types/rolesTypes";
 
 export default function CreateRole() {
   const navigate = useNavigate();

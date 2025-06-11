@@ -3,14 +3,30 @@ import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getRoles } from "@/api/RolesAPI";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Pagination from "@/components/utilities-components/Pagination";
 
 export default function IndexRoles() {
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected + 1);
+  };
+
   const { data: roles, isLoading, isError } = useQuery({
-    queryKey: ['getRoles'],
-    queryFn: getRoles
+    queryKey: ['getRoles', currentPage],
+    queryFn: () => getRoles({ paginated: 'true', currentPage })
   });
+
+  useEffect(() => {
+    if (roles?.meta) {
+      setPageCount(roles.meta?.last_page);
+      setCurrentPage(roles.meta?.current_page);
+    }
+  }, [roles]);
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />
@@ -30,7 +46,7 @@ export default function IndexRoles() {
         </div>
 
 
-        <div className="p-2 h-96 overflow-y-auto mt-10 scrollbar-hide">
+        <div className="p-2 mt-10">
           <table className="table">
             <thead>
               <tr className="thead-tr">
@@ -49,7 +65,7 @@ export default function IndexRoles() {
               </tr>
             </thead>
             <tbody>
-              {roles.map((role) => (
+              {roles.data.map((role) => (
                 <tr className="tbody-tr" key={role.id}>
                   <td className="tbody-td">
                     <p>{role.id}</p>
@@ -68,6 +84,14 @@ export default function IndexRoles() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="mb-10 flex justify-end">
+        <Pagination
+          currentPage={currentPage}
+          pageCount={pageCount}
+          handlePageChange={handlePageChange}
+        />
       </div>
     </>
   );

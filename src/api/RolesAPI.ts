@@ -1,28 +1,15 @@
 import clienteAxios from "@/config/axios";
+import { rolesSchema } from "@/utils/rolesSchemas";
 import { isAxiosError } from "axios";
-import { DraftRole } from "views/admin/roles/CreateRole";
-import { z } from "zod";
+import { DraftRole } from "types/rolesTypes";
 
-export const RoleSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-    created_at: z.string(),
-    updated_at: z.string()
-});
-
-export type Role = z.infer<typeof RoleSchema>
-
-export const RolesSchema = z.object({
-    data: z.array(RoleSchema)
-})
-
-export async function getRoles(): Promise<Role[]> {
+export async function getRoles({ paginated, currentPage }: { paginated: string, currentPage: number }) {
     try {
-        const url = '/api/roles';
+        const url = `/api/roles?paginated=${paginated}&page=${currentPage}`;
         const { data } = await clienteAxios(url);
-        const result = RolesSchema.safeParse(data)
+        const result = rolesSchema.safeParse(data)
         if (result.success) {
-            return result.data.data
+            return result.data
         } else {
             throw new Error("Información no válida");
         }
