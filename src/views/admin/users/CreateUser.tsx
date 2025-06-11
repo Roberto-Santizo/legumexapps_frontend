@@ -4,17 +4,9 @@ import { toast } from "react-toastify";
 import { createUser } from "@/api/UsersAPI";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
+import { DraftUser } from "types/usersTypes";
 import UsersForm from "./UsersForm";
 
-export type DraftUser = {
-  name: string;
-  email: string | null;
-  username: string;
-  status: number;
-  roles: string;
-  password: string;
-  permissions: string[];
-}
 
 export default function CreateUser() {
   const navigate = useNavigate();

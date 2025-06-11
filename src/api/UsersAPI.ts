@@ -1,7 +1,7 @@
-import clienteAxios from "@/config/axios";
+import { usersSchema, userSchema } from "@/utils/usersSchemas";
 import { isAxiosError } from "axios";
-import { DraftUser } from "views/admin/users/CreateUser";
-import { z } from "zod";
+import { DraftUser, User } from "types/usersTypes";
+import clienteAxios from "@/config/axios";
 
 
 export async function createUser(user: DraftUser) {
@@ -11,34 +11,22 @@ export async function createUser(user: DraftUser) {
         return data;
     } catch (error: any) {
         if (isAxiosError(error)) {
-            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            } else if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }
         }
     }
 }
 
-export const UserSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string().nullable(),
-    username: z.string(),
-    status: z.number(),
-    roles: z.string(),
-});
-
-export const UsersSchema = z.object({
-    data: z.array(UserSchema),
-});
-
-export type User = z.infer<typeof UserSchema>
-
-
-export async function getUsers(): Promise<User[]> {
+export async function getUsers({ paginated, currentPage }: { paginated: string, currentPage: number }) {
     try {
-        const url = `/api/users`;
+        const url = `/api/users?paginated=${paginated}&page=${currentPage}`;
         const { data } = await clienteAxios(url);
-        const result = UsersSchema.safeParse(data);
+        const result = usersSchema.safeParse(data);
         if (result.success) {
-            return result.data.data;
+            return result.data;
         } else {
             throw new Error("Información no válida");
         }
@@ -72,33 +60,20 @@ export async function updateUser({ id, user }: { id: User['id'], user: DraftUser
         return data;
     } catch (error: any) {
         if (isAxiosError(error)) {
-            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            } else if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }
         }
     }
 }
 
-export const UserDetailsSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string().nullable(),
-    username: z.string(),
-    status: z.boolean(),
-    roles: z.string(),
-    permissions: z.array(
-        z.object({
-            id: z.number(),
-            name: z.string(),
-        })
-    ),
-});
-
-export type UserDetail = z.infer<typeof UserDetailsSchema>
-
-export async function getUserById(id: User['id']): Promise<UserDetail> {
-    const url = `/api/user/${id}`;
+export async function getUserById(id: User['id']) {
+    const url = `/api/users/${id}`;
     try {
         const { data } = await clienteAxios(url);
-        const result = UserDetailsSchema.safeParse(data.data);
+        const result = userSchema.safeParse(data.data);
         if (result.success) {
             return result.data;
         } else {

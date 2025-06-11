@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { getUserById, updateUser, UserDetail } from "@/api/UsersAPI";
+import { getUserById, updateUser } from "@/api/UsersAPI";
 import { toast } from "react-toastify";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { DraftUser } from "./CreateUser";
+import { DraftUser, User } from "types/usersTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import UsersForm from "./UsersForm";
 
@@ -14,7 +14,7 @@ export default function EditUser() {
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const [userEditing, setUserEditing] = useState<UserDetail>({} as UserDetail);
+  const [userEditing, setUserEditing] = useState<User>({} as User);
 
   const { data, isLoading } = useQuery({
     queryKey: ['getUser', id],
@@ -50,7 +50,7 @@ export default function EditUser() {
       setValue("name", userEditing.name || "");
       setValue("username", userEditing.username || "");
       setValue("email", userEditing.email || "");
-      setValue("roles", userEditing.roles || "");
+      setValue("role", userEditing.role || "");
 
       if (userEditing?.permissions) {
         const permisosIds = userEditing.permissions.map((permiso) => permiso.id.toString());

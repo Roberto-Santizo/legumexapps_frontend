@@ -1,9 +1,9 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { DraftUser } from "views/admin/users/CreateUser";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { getRoles, Role } from "@/api/RolesAPI";
 import { getPermissions, Permission } from "@/api/PermissionsAPI";
+import { DraftUser } from "types/usersTypes";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
@@ -107,14 +107,14 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
 
             <InputSelectComponent<DraftUser>
                 label="Rol"
-                id="roles"
-                name="roles"
+                id="role"
+                name="role"
                 options={roleOptions}
                 register={register}
                 validation={{ required: 'El rol es obligatorio' }}
                 errors={errors}
             >
-                <Error>{errors.roles?.message}</Error>
+                <Error>{errors.role?.message}</Error>
             </InputSelectComponent>
 
             <fieldset className="shadow p-5">
