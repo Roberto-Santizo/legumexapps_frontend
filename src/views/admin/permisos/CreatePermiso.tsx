@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createPermission } from "@/api/PermissionsAPI";
 import { useMutation } from "@tanstack/react-query";
+import { DraftPermiso } from "types/permissionsType";
 import Spinner from "@/components/utilities-components/Spinner";
 import PermisosForm from "./PermisosForm";
 
-export type DraftPermiso = {
-  name: string;
-}
 
 export default function CreatePermiso() {
   const navigate = useNavigate();
@@ -43,7 +41,7 @@ export default function CreatePermiso() {
         >
 
           <PermisosForm register={register} errors={errors} />
-          
+
           <button type="submit" disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
             {isPending ? <Spinner /> : <p>Crear Permiso</p>}
           </button>

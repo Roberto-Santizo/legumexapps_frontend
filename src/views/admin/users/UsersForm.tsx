@@ -2,9 +2,10 @@ import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { getRoles } from "@/api/RolesAPI";
-import { getPermissions, Permission } from "@/api/PermissionsAPI";
+import { getPermissions } from "@/api/PermissionsAPI";
 import { DraftUser } from "types/usersTypes";
 import { Role } from "types/rolesTypes";
+import { Permission } from "types/permissionsType";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
@@ -25,7 +26,7 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
     const results = useQueries({
         queries: [
             { queryKey: ['getRoles'], queryFn: () => getRoles({ paginated: '', currentPage: 1 }) },
-            { queryKey: ['getPermissions'], queryFn: getPermissions }
+            { queryKey: ['getPermissions'], queryFn: () => getPermissions({ paginated: '', currentPage: 1 }) }
         ]
     });
 
@@ -33,7 +34,7 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
 
     useEffect(() => {
         if (results[0].data) setRoles(results[0].data.data)
-        if (results[1].data) setPermissions(results[1].data)
+        if (results[1].data?.data) setPermissions(results[1].data.data)
     }, [results]);
 
     const roleOptions = roles.map((role) => ({
