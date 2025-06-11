@@ -29,7 +29,7 @@ function Login() {
       toast.error(error.message);
     },
     onSuccess: (data) => {
-      localStorage.setItem('AUTH_TOKEN', data.token);
+      localStorage.setItem('AUTH_TOKEN', data);
       navigate("/dashboard");
     }
   });

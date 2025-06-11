@@ -8,12 +8,13 @@ import Spinner from "@/components/utilities-components/Spinner";
 
 export default function Layout() {
   const [modal, setModal] = useState(false);
-  const { isLoading, isError, logout } = useAuth();
+  const { data, isLoading, isError, logout } = useAuth();
 
   if (isLoading) return <Spinner />
   if (isError) {
     return <Navigate to={'/'} />
   }
+
   return (
     <>
       <div className="flex h-screen bg-gray-100">
@@ -27,6 +28,7 @@ export default function Layout() {
           <header className="flex items-center justify-end py-5">
             <div className="flex space-x-4">
               <div className="flex gap-5 mr-12 justify-center items-center">
+                <p className="font-bold">Hola: {data?.name}</p>
                 <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6 md:hidden" onClick={() => setModal(true)} />
                 <button className="button bg-indigo-500 hover:bg-indigo-600 md:block hidden" onClick={() => logout()}>
                   <p>Cerrar Sesión</p>

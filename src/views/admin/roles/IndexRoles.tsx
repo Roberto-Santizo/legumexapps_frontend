@@ -1,4 +1,4 @@
-import { formatDate } from "../../../helpers";
+import { formatDate } from "@/helpers";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getRoles } from "@/api/RolesAPI";

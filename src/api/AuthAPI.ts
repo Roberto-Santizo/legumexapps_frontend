@@ -1,34 +1,13 @@
-import clienteAxios from "@/config/axios";
 import { LoginType } from "@/views/auth/Login";
 import { isAxiosError } from "axios";
-import z from "zod";
+import { authenticatedUser } from "@/utils/authSchemas";
+import clienteAxios from "@/config/axios";
 
-export const LogedInUser = z.object({
-    name: z.string(),
-    email: z.string().nullable(),
-    username: z.string()
-});
-
-export const LoginSchema = z.object({
-    token: z.string(),
-    user: LogedInUser
-});
-
-export type LoginSuccessful = z.infer<typeof LoginSchema>;
-
-
-export async function login(FormData: LoginType): Promise<LoginSuccessful> {
+export async function login(FormData: LoginType) {
     try {
         const url = '/api/login';
-        const { data } = await clienteAxios.post(url, FormData);
-        const result = LoginSchema.safeParse(data);
-
-        if (result.success) {
-            return result.data
-        } else {
-            throw new Error("Información no válida");
-        }
-
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
         if (isAxiosError(error)) {
             if (error.response?.data.errors) {
@@ -53,20 +32,10 @@ export async function logout() {
     }
 }
 
-export const userSchema = LogedInUser.pick({
-    name: true,
-    email: true
-}).extend({
-    id: z.string(),
-    role: z.string()
-});
-
-export type User = z.infer<typeof userSchema>;
-
 export async function getUser() {
     try {
         const { data } = await clienteAxios('/api/user');
-        const result = userSchema.safeParse(data);
+        const result = authenticatedUser.safeParse(data);
         if (result.success) {
             return result.data;
         }

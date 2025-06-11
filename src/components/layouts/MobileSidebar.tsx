@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { XIcon } from "lucide-react";
 import { Dispatch } from "react";
 import Navegation from "../Navegation";
+import { useAuth } from "@/hooks/useAuth";
 
 type Props = {
     modal: boolean;
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export default function MobileSidebar({ modal, setModal }: Props) {
+    const { logout } = useAuth();
     return (
         <>
             <div
@@ -38,6 +40,9 @@ export default function MobileSidebar({ modal, setModal }: Props) {
                             <nav className="gap-2 py-2 flex flex-col w-full">
                                 <Navegation />
                             </nav>
+                            <button className="button bg-indigo-500 hover:bg-indigo-600 w-full mt-2" onClick={() => logout()}>
+                                <p>Cerrar Sesión</p>
+                            </button>
                         </div>
                     </div>
                 </div>
