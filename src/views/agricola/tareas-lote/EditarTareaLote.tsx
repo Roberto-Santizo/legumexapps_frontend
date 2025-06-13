@@ -9,8 +9,9 @@ import InputComponent from "@/components/form/InputComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import { getWeeklyPlans, WeeklyPlan } from "@/api/WeeklyPlansAPI";
+import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
 import { FiltersPlanSemanalInitialValues } from "../planes-semanales/IndexPlanSemanal";
+import { WeeklyPlan } from "types/planificacionFincasType";
 
 export type DraftTaskWeeklyPlan = {
   hours: number,

@@ -9,14 +9,15 @@ export async function login(FormData: LoginType) {
         const { data } = await clienteAxios.post<string>(url, FormData);
         return data;
     } catch (error) {
+        console.log(error);
         if (isAxiosError(error)) {
             if (error.response?.data.errors) {
                 throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
             } else if (error.response?.data.msg) {
-                throw new Error(error.response?.data.message);
+                throw new Error(error.response?.data.msg);
             }
         }
-        throw new Error("Error desconocido al iniciar sesión");
+        throw new Error("Error al iniciar sesión");
     }
 }
 

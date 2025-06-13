@@ -5,6 +5,8 @@ import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexP
 import { z } from "zod";
 import { TaskInsumoSchema } from "@/utils/taskWeeklyPlan-schema";
 import { isAxiosError } from "axios";
+import { SummaryWeeklyPlanSchema, WeeklyPlansSchema } from "@/utils/planificacionFincasSchemas";
+import { WeeklyPlan } from "types/planificacionFincasType";
 
 export async function createPlan(file: File[]) {
     try {
@@ -26,71 +28,11 @@ export async function createPlan(file: File[]) {
     }
 }
 
-export const WeeklyPlanSchema = z.object({
-    id: z.string(),
-    year: z.number(),
-    week: z.number(),
-    finca: z.string(),
-    finca_id: z.string(),
-    created_at: z.string(),
-    total_budget: z.number(),
-    used_budget: z.number(),
-    total_budget_ext: z.number(),
-    used_total_budget_ext: z.number(),
-    total_tasks: z.number(),
-    finished_total_tasks: z.number(),
-    total_tasks_crop: z.number(),
-    finished_total_tasks_crops: z.number()
-
-});
-
-export const SummaryWeeklyPlanSchema = z.object({
-    data: z.object({
-        id: z.string(),
-        finca: z.string(),
-        week: z.number(),
-        year: z.number(),
-        summary_tasks: z.array(z.object({
-            lote: z.string(),
-            total_budget: z.number(),
-            lote_plantation_control_id: z.string(),
-            total_workers: z.number(),
-            total_hours: z.number(),
-            total_tasks: z.number(),
-            finished_tasks: z.number()
-
-        })),
-        summary_crops: z.array(z.object({
-            id: z.string(),
-            lote_plantation_control_id: z.string(),
-            lote: z.string()
-        }))
-    })
-
-});
-
-export const WeeklyPlansPaginateSchema = z.object({
-    data: z.array(WeeklyPlanSchema),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    }).optional()
-});
-
-export const WeeklyPlansSchema = z.object({
-    data: z.array(WeeklyPlanSchema),
-});
-
-export type WeeklyPlan = z.infer<typeof WeeklyPlanSchema>
-export type WeeklyPlans = z.infer<typeof WeeklyPlansSchema>
-export type WeeklyPlansPaginate = z.infer<typeof WeeklyPlansPaginateSchema>
-export type SummaryWeeklyPlan = z.infer<typeof SummaryWeeklyPlanSchema>
-
-export async function getWeeklyPlans({ page, filters, paginated }: { page: number, filters: FiltersPlanSemanalType, paginated: string }): Promise<WeeklyPlansPaginate> {
+export async function getWeeklyPlans({ page, filters, paginated }: { page: number, filters: FiltersPlanSemanalType, paginated: string }) {
     try {
         const url = `/api/plans?paginated=${paginated}&page=${page}&finca_id=${filters.finca_id}&week=${filters.week}&year=${filters.year}`;
         const { data } = await clienteAxios(url);
-        const result = WeeklyPlansPaginateSchema.safeParse(data);
+        const result = WeeklyPlansSchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
@@ -102,7 +44,7 @@ export async function getWeeklyPlans({ page, filters, paginated }: { page: numbe
     }
 }
 
-export async function getPlanById(id: WeeklyPlan['id']): Promise<SummaryWeeklyPlan> {
+export async function getPlanById(id: WeeklyPlan['id']) {
     try {
         const url = `/api/plans/${id}`;
         const { data } = await clienteAxios(url);

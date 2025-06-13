@@ -15,7 +15,7 @@ import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
-import { WeeklyPlan } from "@/api/WeeklyPlansAPI";
+import { WeeklyPlan } from "types/planificacionFincasType";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;

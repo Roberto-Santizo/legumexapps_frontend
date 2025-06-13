@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { getPlanById } from "@/api/WeeklyPlansAPI";
+import { usePermissions } from "@/hooks/usePermissions";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import { usePermissions } from "@/hooks/usePermissions";
 
 export default function ShowPlanSemanal() {
   const params = useParams();

@@ -8,7 +8,8 @@ import { DraftTaskWeeklyPlan } from "views/agricola/tareas-lote/EditarTareaLote"
 import { z } from "zod";
 import { Lote } from "./LotesAPI";
 import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
-import { TaskWeeklyPlanByDate, WeeklyPlan } from "./WeeklyPlansAPI";
+import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
+import { WeeklyPlan } from "types/planificacionFincasType";
 
 export async function getTasks({ cdp, weekly_plan_id, filters }: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {

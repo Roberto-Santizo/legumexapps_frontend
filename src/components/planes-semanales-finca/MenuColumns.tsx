@@ -1,4 +1,4 @@
-import { downloadReportInsumos, downloadReportPlanilla, WeeklyPlan } from "@/api/WeeklyPlansAPI";
+import { downloadReportInsumos, downloadReportPlanilla } from "@/api/WeeklyPlansAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -8,6 +8,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { CalendarIcon, DownloadIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import Spinner from "../utilities-components/Spinner";
+import { WeeklyPlan } from "types/planificacionFincasType";
 
 
 export default function MenuColumns({ plan }: { plan: WeeklyPlan }) {

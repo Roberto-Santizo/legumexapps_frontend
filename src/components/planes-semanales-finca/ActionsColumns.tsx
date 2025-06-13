@@ -1,6 +1,6 @@
-import { WeeklyPlan } from "@/api/WeeklyPlansAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Link } from "react-router-dom";
+import { WeeklyPlan } from "types/planificacionFincasType";
 
 export default function ActionsColumns({ plan }: { plan: WeeklyPlan }) {
     const { hasPermission } = usePermissions();
