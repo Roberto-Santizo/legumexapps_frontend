@@ -1,10 +1,10 @@
-import { TaskWeeklyPlanForCalendar } from "@/api/TasksWeeklyPlanAPI"
 import { Edit, PlusIcon, XIcon } from "lucide-react";
 import { SetStateAction } from "react";
 import { Link } from "react-router-dom";
+import { TaskWeeklyPlanWithNoOperationDate } from "types/taskWeeklyPlanTypes";
 
 type Props = {
-    task: TaskWeeklyPlanForCalendar;
+    task: TaskWeeklyPlanWithNoOperationDate;
     ids: string[];
     setIds: React.Dispatch<SetStateAction<string[]>>;
 }

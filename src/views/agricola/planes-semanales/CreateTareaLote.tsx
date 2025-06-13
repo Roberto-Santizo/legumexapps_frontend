@@ -9,30 +9,19 @@ import { toast } from "react-toastify";
 import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
 import { getCurrentDate } from "@/helpers";
 import { FiltersTasksInitialValues } from "../tareas/IndexTareas";
+import { WeeklyPlan } from "types/planificacionFincasType";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { DraftTaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;
   quantity: string;
   name: string;
-}
-
-export type DraftNewTaskWeeklyPlan = {
-  weekly_plan_id: string;
-  lote_id: string;
-  tarea_id: string;
-  workers_quantity: string;
-  budget: string;
-  hours: string;
-  extraordinary: string;
-  insumos: DraftSelectedInsumo[],
-  operation_date: string;
 }
 
 type Props = {
@@ -80,14 +69,14 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<DraftNewTaskWeeklyPlan>();
+  } = useForm<DraftTaskWeeklyPlan>();
 
   const deleteItem = (insumo_id: DraftSelectedInsumo['insumo_id']) => {
     const newSelectedItems = selectedInsumos.filter(insumo => insumo.insumo_id != insumo_id);
     setSelectedInsumos(newSelectedItems)
   }
 
-  const CreateTareaLote = async (data: DraftNewTaskWeeklyPlan) => {
+  const CreateTareaLote = async (data: DraftTaskWeeklyPlan) => {
     const FormData = {
       ...data,
       insumos: selectedInsumos
@@ -103,7 +92,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
           className="space-y-5 shadow-xl p-5"
           noValidate
         >
-          <InputComponent<DraftNewTaskWeeklyPlan>
+          <InputComponent<DraftTaskWeeklyPlan>
             label="Empleados Necesarios"
             id="workers_quantity"
             name="workers_quantity"
@@ -122,7 +111,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
             {errors.workers_quantity && <Error>{errors.workers_quantity?.message?.toString()}</Error>}
           </InputComponent>
 
-          <InputComponent<DraftNewTaskWeeklyPlan>
+          <InputComponent<DraftTaskWeeklyPlan>
             label="Horas"
             id="hours"
             name="hours"
@@ -140,7 +129,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
             {errors.hours && <Error>{errors.hours?.message?.toString()}</Error>}
           </InputComponent>
 
-          <InputComponent<DraftNewTaskWeeklyPlan>
+          <InputComponent<DraftTaskWeeklyPlan>
             label="Presupuesto"
             id="budget"
             name="budget"
@@ -159,7 +148,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
           </InputComponent>
 
 
-          <InputSelectSearchComponent<DraftNewTaskWeeklyPlan>
+          <InputSelectSearchComponent<DraftTaskWeeklyPlan>
             label="Lote"
             id="lote_id"
             name="lote_id"
@@ -171,7 +160,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
             {errors.lote_id && <Error>{errors.lote_id?.message?.toString()}</Error>}
           </InputSelectSearchComponent>
 
-          <InputSelectSearchComponent<DraftNewTaskWeeklyPlan>
+          <InputSelectSearchComponent<DraftTaskWeeklyPlan>
             label="Tarea"
             id="tarea_id"
             name="tarea_id"
@@ -183,7 +172,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
             {errors.tarea_id && <Error>{errors.tarea_id?.message?.toString()}</Error>}
           </InputSelectSearchComponent>
 
-          <InputSelectSearchComponent<DraftNewTaskWeeklyPlan>
+          <InputSelectSearchComponent<DraftTaskWeeklyPlan>
             label="Plan Semanal Destino"
             id="weekly_plan_id"
             name="weekly_plan_id"
@@ -195,7 +184,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
             {errors.weekly_plan_id && <Error>{errors.weekly_plan_id?.message?.toString()}</Error>}
           </InputSelectSearchComponent>
 
-          <InputSelectComponent<DraftNewTaskWeeklyPlan>
+          <InputSelectComponent<DraftTaskWeeklyPlan>
             label="Tipo de Tarea"
             id="extraordinary"
             name="extraordinary"
@@ -207,7 +196,7 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
             {errors.extraordinary && <Error>{errors.extraordinary?.message?.toString()}</Error>}
           </InputSelectComponent>
 
-          <InputComponent<DraftNewTaskWeeklyPlan>
+          <InputComponent<DraftTaskWeeklyPlan>
             label="Fecha de Operación"
             id="operation_date"
             name="operation_date"

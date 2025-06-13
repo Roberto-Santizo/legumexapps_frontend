@@ -2,55 +2,44 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { editTask, EditTaskWeeklyPlan, getEditTask } from "@/api/TasksWeeklyPlanAPI";
+import { editTask, getTaskById } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import { getUserRole } from "@/api/UserAPI";
+import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
+import { FiltersPlanSemanalInitialValues } from "../planes-semanales/IndexPlanSemanal";
+import { WeeklyPlan } from "types/planificacionFincasType";
+import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { useRole } from "@/hooks/useRole";
 import InputComponent from "@/components/form/InputComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
-import { FiltersPlanSemanalInitialValues } from "../planes-semanales/IndexPlanSemanal";
-import { WeeklyPlan } from "types/planificacionFincasType";
-
-export type DraftTaskWeeklyPlan = {
-  hours: number,
-  budget: number,
-  slots: number,
-  weekly_plan_id: string,
-  start_date: string | null,
-  start_time: string | null,
-  end_date: string | null,
-  end_time: string | null,
-}
 
 export default function EditarTareaLote() {
   const params = useParams();
   const id = params.id!!;
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
+
   const [plans, setPlans] = useState<WeeklyPlan[]>([]);
-  const [task, setTask] = useState<EditTaskWeeklyPlan>({} as EditTaskWeeklyPlan);
-  const [role, setRole] = useState<string>('');
+  const [task, setTask] = useState<TaskWeeklyPlan>({} as TaskWeeklyPlan);
+  const { data: role, isLoading: loadingRole } = useRole();
 
   const navigate = useNavigate();
 
   const results = useQueries({
     queries: [
-      { queryKey: ['getTask', id], queryFn: () => getEditTask(id) },
-      { queryKey: ['getUserRoleByToken'], queryFn: getUserRole },
+      { queryKey: ['getTask', id], queryFn: () => getTaskById(id) },
       { queryKey: ['getAllPlans'], queryFn: () => getWeeklyPlans({ page: 1, filters: FiltersPlanSemanalInitialValues, paginated: '' }) },
     ]
   });
 
   useEffect(() => {
     if (results[0].data) setTask(results[0].data);
-    if (results[1].data) setRole(results[1].data);
-    if (results[2].data) setPlans(results[2].data.data);
+    if (results[1].data) setPlans(results[1].data.data);
   }, [results]);
 
   console.log(task);
-  
+
   const plansOptions = plans.map((plan) => ({
     value: plan.id,
     label: `${plan.finca} - ${plan.week}`,
@@ -92,7 +81,7 @@ export default function EditarTareaLote() {
 
   const editTaskForm = async (FormData: DraftTaskWeeklyPlan) => mutate({ id, FormData });
 
-  if (isLoading) return <Spinner />
+  if (isLoading && loadingRole) return <Spinner />
   return (
     <>
       <h2 className="text-4xl font-bold">Editar Tarea</h2>

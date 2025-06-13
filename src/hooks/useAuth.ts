@@ -13,6 +13,10 @@ export const useAuth = () => {
         refetchOnWindowFocus: false
     });
 
+    if(isError){
+        localStorage.removeItem('AUTH_TOKEN');
+    }
+
     const logout = () => {
         localStorage.removeItem('AUTH_TOKEN');
         toast.success('Sesión Cerrada Correctamente');

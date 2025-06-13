@@ -1,12 +1,12 @@
 import { Card, CardContent, Typography, IconButton, Tooltip, Box, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Clock, PlayCircle, Eye, CheckCircle } from "lucide-react";
-import { TaskWeeklyPlan } from "@/types";
 import { toast } from "react-toastify";
 import { closeTask } from "@/api/TasksWeeklyPlanAPI";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { TaskInProgress } from "@/api/DashboardAgricolaAPI";
 import Swal from "sweetalert2";
+import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
 
 type Props = {
   task: TaskInProgress;

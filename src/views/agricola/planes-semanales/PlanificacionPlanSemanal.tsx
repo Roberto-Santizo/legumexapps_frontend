@@ -3,13 +3,14 @@ import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/rea
 import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Trash } from 'lucide-react';
-import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate, TaskForCalendar } from '@/api/TasksWeeklyPlanAPI';
+import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes, Lote } from '@/api/LotesAPI';
 import { Tarea } from '@/types';
 import { getTasks } from '@/api/TasksAPI';
 import { FiltersTasksInitialValues } from '../tareas/IndexTareas';
+import { TaskWeeklyPlanForCalendar } from 'types/taskWeeklyPlanTypes';
 import Select from "react-select";
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -39,7 +40,7 @@ const CalendarComponent = () => {
     const [seeTasks, setSeeTasks] = useState(false);
     const [modal, setModal] = useState(false);
     const [modalInfoTarea, setModalInfoTarea] = useState(false);
-    const [selectedTask, setSelectedTask] = useState<TaskForCalendar>({} as TaskForCalendar);
+    const [selectedTask, setSelectedTask] = useState<TaskWeeklyPlanForCalendar>({} as TaskWeeklyPlanForCalendar);
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
     const [lotes, setLotes] = useState<Lote[]>([]);

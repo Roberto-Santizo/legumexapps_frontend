@@ -3,10 +3,10 @@ import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
 import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
 import { z } from "zod";
-import { TaskInsumoSchema } from "@/utils/taskWeeklyPlan-schema";
 import { isAxiosError } from "axios";
 import { SummaryWeeklyPlanSchema, WeeklyPlansSchema } from "@/utils/planificacionFincasSchemas";
 import { WeeklyPlan } from "types/planificacionFincasType";
+import { TaskInsumoSchema } from "@/utils/taskWeeklyPlanSchemas";
 
 export async function createPlan(file: File[]) {
     try {

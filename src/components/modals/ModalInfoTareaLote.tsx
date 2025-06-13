@@ -1,15 +1,15 @@
 import { SetStateAction } from 'react'
-import { TaskForCalendar } from '@/api/TasksWeeklyPlanAPI'
 import { Link } from 'react-router-dom';
 import { Edit } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
 import Modal from '../Modal'
+import { TaskWeeklyPlanForCalendar } from 'types/taskWeeklyPlanTypes';
 
 type Props = {
     show: boolean,
     setModal: React.Dispatch<SetStateAction<boolean>>;
-    setSelectedTask: React.Dispatch<SetStateAction<TaskForCalendar>>;
-    task: TaskForCalendar;
+    setSelectedTask: React.Dispatch<SetStateAction<TaskWeeklyPlanForCalendar>>;
+    task: TaskWeeklyPlanForCalendar;
 }
 
 export default function ModalInfoTareaLote({ show, setModal, task, setSelectedTask }: Props) {
@@ -17,7 +17,7 @@ export default function ModalInfoTareaLote({ show, setModal, task, setSelectedTa
 
     const handleClose = () => {
         setModal(false);
-        setSelectedTask({} as TaskForCalendar);
+        setSelectedTask({} as TaskWeeklyPlanForCalendar);
     }
 
     return (

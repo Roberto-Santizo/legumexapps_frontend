@@ -1,28 +1,30 @@
 import { CircleCheck, CirclePause, Edit, Eraser, Info, PlayCircleIcon, SquarePlusIcon, TrashIcon } from "lucide-react";
-import { TasksWeeklyPlan, TaskWeeklyPlan } from "@/types";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { formatearQuetzales } from "@/helpers";
-import { QueryObserverResult, useMutation } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { formatDate, formatearQuetzales } from "@/helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cleanTask, closeAssigmentDron, closePartialClosure, closeTask, createPartialClosure, deteleteTask } from "@/api/TasksWeeklyPlanAPI";
-import { useState } from "react";
+import { usePermissions } from "@/hooks/usePermissions";
+import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
 import Swal from "sweetalert2";
 import TaskLabel from "../utilities-components/TaskLabel";
 import DronIcon from "../dashboard-agricola/DronIcon";
-import InsumosModal from "../modals/InsumosModal";
-import { usePermissions } from "@/hooks/usePermissions";
+import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
 
 type TaskProps = {
   task: TaskWeeklyPlan;
-  role: string;
-  getTasks: () => Promise<QueryObserverResult<TasksWeeklyPlan>>
+  filters: FiltersTareasLoteType;
+  isAdmin: boolean;
 };
 
-export default function Task({ task, role, getTasks }: TaskProps) {
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedTask, setSelectedTask] = useState<TaskWeeklyPlan['id']>('');
+export default function Task({ task, filters, isAdmin }: TaskProps) {
+  const params = useParams();
+  const lote_plantation_control_id = params.lote_plantation_control_id!!;
+  const weekly_plan_id = params.weekly_plan_id!!;
+  const queryClient = useQueryClient();
   const { hasPermission } = usePermissions();
+
+  const navigate = useNavigate();
 
   const { mutate: mutateCloseTask } = useMutation({
     mutationFn: closeTask,
@@ -31,7 +33,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      getTasks();
+      queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
 
@@ -42,7 +44,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      getTasks();
+      queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
 
@@ -53,7 +55,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      getTasks();
+      queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
 
@@ -64,7 +66,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      getTasks();
+      queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
 
@@ -75,7 +77,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      getTasks();
+      queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
 
@@ -86,14 +88,13 @@ export default function Task({ task, role, getTasks }: TaskProps) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      getTasks();
+      queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
 
   const handleCloseTask = async (idTask: TaskWeeklyPlan["id"]) => {
     if (task.insumos.length > 0) {
-      setIsOpen(true);
-      setSelectedTask(idTask);
+      navigate(`${location.pathname}?closeTaskId=${task.id}`);
     } else {
       Swal.fire({
         title: "¿Desea cerrar la tarea?",
@@ -217,13 +218,11 @@ export default function Task({ task, role, getTasks }: TaskProps) {
 
         <TaskLabel
           label={"Fecha de Asignación"}
-          text={
-            task.start_date ? task.start_date : "Sin asignación"
-          }
+          text={task.start_date ? formatDate(task.start_date) : "Sin asignación"}
         />
         <TaskLabel
           label={"Fecha de Cierre"}
-          text={task.end_date ? task.end_date : "Sin cierre"}
+          text={task.end_date ? formatDate(task.end_date) : "Sin cierre"}
         />
         <div className="flex gap-3">
           {task.use_dron && <DronIcon width={30} height={30} className="bg-orange-500 text-white inline-block p-2 rounded mt-4" />}
@@ -255,7 +254,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
                 width={35}
                 height={35}
               />
-              {(role === "admin" || role === "adminagricola") && (
+              {isAdmin && (
                 <TrashIcon
                   className="cursor-pointer hover:text-red-400"
                   onClick={() => handleDeleteTask(task.id)}
@@ -288,11 +287,12 @@ export default function Task({ task, role, getTasks }: TaskProps) {
                 onClick={() => handleCreatePartialClosure(task.id)}
               />
 
-              {(role === "admin" || role === "adminagricola") && (
+              {isAdmin && (
                 <Eraser
                   className="cursor-pointer text-red-500 hover:text-red-800"
                   onClick={() => handleEraseTask(task.id)}
                 />
+
               )}
             </>
           )}
@@ -317,7 +317,7 @@ export default function Task({ task, role, getTasks }: TaskProps) {
             </>
           )}
 
-          {(role === "admin" || role === "adminagricola") && (
+          {isAdmin && (
             <Edit
               className="cursor-pointer hover:text-gray-400"
               onClick={() => {
@@ -331,10 +331,6 @@ export default function Task({ task, role, getTasks }: TaskProps) {
           )}
         </div>
       </div>
-
-      {isOpen && (
-        <InsumosModal isOpen={isOpen} getTasks={getTasks} setIsOpen={setIsOpen} idTask={selectedTask} />
-      )}
     </div>
   );
 }
