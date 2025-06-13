@@ -2,12 +2,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getTareaById, updateTarea } from "@/api/TasksAPI";
-import { DraftTarea } from "./CreateTarea";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import TareasForm from "./TareasForm";
+import { DraftTask } from "types/taskGeneralType";
 
 export default function EditTarea() {
   const params = useParams();
@@ -35,7 +35,7 @@ export default function EditTarea() {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<DraftTarea>();
+  } = useForm<DraftTask>();
 
   useEffect(() => {
     if (editingTarea) {
@@ -46,7 +46,7 @@ export default function EditTarea() {
   }, [editingTarea, setValue]);
 
 
-  const onSubmit = (data: DraftTarea) => mutate({ id, FormData: data })
+  const onSubmit = (data: DraftTask) => mutate({ id, FormData: data })
 
   if (isLoading) return <Spinner />;
   if (isError) return <ShowErrorAPI />;

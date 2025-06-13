@@ -3,10 +3,10 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import { getTasksByDate } from "@/api/WeeklyPlansAPI";
 import { useEffect, useState } from "react";
 import { getLotes, Lote } from "@/api/LotesAPI";
-import { Tarea } from "@/types";
 import { getTasks } from "@/api/TasksAPI";
 import { FiltersTasksInitialValues } from "@/views/agricola/tareas/IndexTareas";
 import { Trash2Icon } from "lucide-react";
+import { TaskGeneral } from "types/taskGeneralType";
 import Modal from "../Modal";
 import TaskByDate from "../tareas-lote-plan/TaskByDate";
 import Spinner from "../utilities-components/Spinner";
@@ -28,7 +28,7 @@ export default function ModalInsumosPrepared({ id }: Props) {
     const fincaId = params.finca_id!!;
 
     const [lotes, setLotes] = useState<Lote[]>([]);
-    const [tareas, setTareas] = useState<Tarea[]>([]);
+    const [tareas, setTareas] = useState<TaskGeneral[]>([]);
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
 

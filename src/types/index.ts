@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { TareaSchema } from '@/utils/tareas-schema'
 import { CDPSchema } from '@/utils/plantation-schema'
 import { EmployeeSchema } from '@/utils/employee-schema'
 import { EmployeesTaskCropPlanSchema, EmployeeTaskCropPlanSchema, TaskCropIncompleteSchema, TaskCropSchema, TaskCropWeeklyPlanDetailSchema } from '@/utils/taskCropWeeklyPlan-schema'
@@ -8,12 +7,9 @@ import { DefectsPaginateSchema } from '@/utils/defectos-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
 import { TaskInsumoSchema } from '@/utils/taskWeeklyPlanSchemas'
 
-export type Tarea = z.infer<typeof TareaSchema>
-
 export type TaskCrop = z.infer<typeof TaskCropSchema>
 
 export type CDP = z.infer<typeof CDPSchema>
-
 
 export type TasksCropWeeklyPlan = z.infer<typeof TasksCropWeeklyPlanSchema>
 export type TaskCropIncomplete = z.infer<typeof TaskCropIncompleteSchema>

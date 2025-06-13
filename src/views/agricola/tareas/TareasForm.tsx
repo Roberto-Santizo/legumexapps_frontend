@@ -1,17 +1,17 @@
 import Error from "@/components/utilities-components/Error";
-import { DraftTarea } from "./CreateTarea";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import InputComponent from "@/components/form/InputComponent";
+import { DraftTask } from "types/taskGeneralType";
 
 type Props = {
-    errors: FieldErrors<DraftTarea>;
-    register: UseFormRegister<DraftTarea>;
+    errors: FieldErrors<DraftTask>;
+    register: UseFormRegister<DraftTask>;
 }
 
 export default function TareasForm({ errors, register }: Props) {
     return (
         <>
-            <InputComponent<DraftTarea>
+            <InputComponent<DraftTask>
                 label="Nombre de la tarea"
                 id="name"
                 name="name"
@@ -24,7 +24,7 @@ export default function TareasForm({ errors, register }: Props) {
                 {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
             </InputComponent>
 
-            <InputComponent<DraftTarea>
+            <InputComponent<DraftTask>
                 label="Codigo"
                 id="code"
                 name="code"
@@ -37,7 +37,7 @@ export default function TareasForm({ errors, register }: Props) {
                 {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
             </InputComponent>
 
-            <InputComponent<DraftTarea>
+            <InputComponent<DraftTask>
                 label="Descripción"
                 id="description"
                 name="description"

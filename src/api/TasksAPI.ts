@@ -1,12 +1,10 @@
 import clienteAxios from "@/config/axios";
-import { Tarea } from "@/types";
-import { TareaSchema } from "@/utils/tareas-schema";
-import { DraftTarea } from "@/views/agricola/tareas/CreateTarea";
 import { FiltersTareasType } from "@/views/agricola/tareas/IndexTareas";
 import { isAxiosError } from "axios";
-import { z } from "zod";
+import { TaskSchema, TasksSchema } from "@/utils/taskGeneralSchemas";
+import { DraftTask, TaskGeneral } from "types/taskGeneralType";
 
-export async function createTarea(FormData: DraftTarea) {
+export async function createTarea(FormData: DraftTask) {
     try {
         const url = '/api/tareas';
         const { data } = await clienteAxios.post<string>(url, FormData)
@@ -31,21 +29,13 @@ export async function uploadTareas(file: File[]) {
         }
     }
 }
-export const TareasPaginateSchema = z.object({
-    data: z.array(TareaSchema),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    }).optional(),
-})
 
-export type TareasPaginate = z.infer<typeof TareasPaginateSchema>
 
-export async function getTasks({ page, filters, paginated }: { page: number, filters: FiltersTareasType, paginated: string }): Promise<TareasPaginate> {
+export async function getTasks({ page, filters, paginated }: { page: number, filters: FiltersTareasType, paginated: string }) {
     try {
         const url = `/api/tareas?paginated=${paginated}&page=${page}&name=${filters.name}&code=${filters.code}`;
         const { data } = await clienteAxios(url);
-        const result = TareasPaginateSchema.safeParse(data);
+        const result = TasksSchema.safeParse(data);
 
         if (result.success) {
             return result.data;
@@ -59,12 +49,12 @@ export async function getTasks({ page, filters, paginated }: { page: number, fil
 }
 
 
-export async function getTareaById(id: Tarea['id']): Promise<Tarea> {
+export async function getTareaById(id: TaskGeneral['id']) {
     try {
         const url = `/api/tareas/${id}`
         const { data } = await clienteAxios(url, {
         });
-        const result = TareaSchema.safeParse(data.data);
+        const result = TaskSchema.safeParse(data.data);
         if (result.success) {
             return result.data
         } else {
@@ -76,7 +66,7 @@ export async function getTareaById(id: Tarea['id']): Promise<Tarea> {
     }
 }
 
-export async function updateTarea({ id, FormData }: { id: Tarea['id'], FormData: DraftTarea }) {
+export async function updateTarea({ id, FormData }: { id: TaskGeneral['id'], FormData: DraftTask }) {
     try {
         const url = `/api/tareas/${id}`
         const { data } = await clienteAxios.put<string>(url, FormData);

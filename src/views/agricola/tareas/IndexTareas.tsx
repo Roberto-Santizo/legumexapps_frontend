@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Edit, PlusIcon } from "lucide-react";
-import { Tarea } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { getTasks } from "@/api/TasksAPI";
+import { TaskGeneral } from "types/taskGeneralType";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
@@ -22,7 +22,7 @@ export const FiltersTasksInitialValues: FiltersTareasType = {
 }
 
 export default function IndexTareas() {
-  const [tareas, setTareas] = useState<Tarea[]>([]);
+  const [tareas, setTareas] = useState<TaskGeneral[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);

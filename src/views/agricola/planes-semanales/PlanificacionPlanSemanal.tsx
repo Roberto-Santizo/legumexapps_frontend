@@ -7,7 +7,6 @@ import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate }
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes, Lote } from '@/api/LotesAPI';
-import { Tarea } from '@/types';
 import { getTasks } from '@/api/TasksAPI';
 import { FiltersTasksInitialValues } from '../tareas/IndexTareas';
 import { TaskWeeklyPlanForCalendar } from 'types/taskWeeklyPlanTypes';
@@ -21,6 +20,7 @@ import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
+import { TaskGeneral } from 'types/taskGeneralType';
 
 
 type EventReceiveInfo = {
@@ -44,7 +44,7 @@ const CalendarComponent = () => {
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
     const [lotes, setLotes] = useState<Lote[]>([]);
-    const [tareas, setTareas] = useState<Tarea[]>([]);
+    const [tareas, setTareas] = useState<TaskGeneral[]>([]);
     const { hasPermission } = usePermissions();
 
     const calendarRef = useRef<FullCalendar | null>(null);

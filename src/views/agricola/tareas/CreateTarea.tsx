@@ -5,12 +5,7 @@ import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
 import TareasForm from "./TareasForm";
-
-export type DraftTarea = {
-  name: string;
-  code: string;
-  description: string;
-};
+import { DraftTask } from "types/taskGeneralType";
 
 export default function CreateTarea() {
 
@@ -31,9 +26,9 @@ export default function CreateTarea() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<DraftTarea>();
+  } = useForm<DraftTask>();
 
-  const onSubmit = (data: DraftTarea) => { mutate(data) };
+  const onSubmit = (data: DraftTask) => { mutate(data) };
 
   return (
     <>

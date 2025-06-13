@@ -1,5 +1,5 @@
 import clienteAxios from "@/config/axios";
-import { Employee, Tarea, TaskInsumo } from "@/types";
+import { Employee, TaskInsumo } from "@/types";
 import { EmployeesSchema } from "@/utils/employee-schema";
 import { isAxiosError } from "axios";
 import { Lote } from "./LotesAPI";
@@ -8,6 +8,7 @@ import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
 import { WeeklyPlan } from "types/planificacionFincasType";
 import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema } from "@/utils/taskWeeklyPlanSchemas";
 import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskGeneral } from "types/taskGeneralType";
 
 export async function getTasks({ cdp, weekly_plan_id, filters }: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {
@@ -214,7 +215,7 @@ export async function editTask({ FormData, id }: { FormData: DraftTaskWeeklyPlan
     }
 }
 
-export async function getTasksNoPlanificationDate({ id, loteId, taskId }: { id: WeeklyPlan['id'], loteId: Lote['id'], taskId: Tarea['id'] }) {
+export async function getTasksNoPlanificationDate({ id, loteId, taskId }: { id: WeeklyPlan['id'], loteId: Lote['id'], taskId: TaskGeneral['id'] }) {
     try {
         const url = `/api/plans/tasks-no-planification-date/${id}?lote=${loteId}&task=${taskId}`;
         const { data } = await clienteAxios(url);

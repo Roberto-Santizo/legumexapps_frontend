@@ -9,5 +9,9 @@ export const useRole = () => {
         refetchOnWindowFocus: false
     });
 
+    if (isError) {
+        localStorage.removeItem('AUTH_TOKEN');
+    }
+
     return { data, isError, isLoading }
 }
