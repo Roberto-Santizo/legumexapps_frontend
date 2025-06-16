@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Lote } from "@/api/LotesAPI";
 import { getTasks } from "@/api/TasksAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Delete, PlusIcon } from "lucide-react";
@@ -17,6 +16,7 @@ import InputSelectSearchComponent from "@/components/form/InputSelectSearchCompo
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
 import { DraftTaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { Lote } from "types/lotesType";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;

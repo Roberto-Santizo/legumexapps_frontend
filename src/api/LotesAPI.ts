@@ -4,7 +4,10 @@ import { CDPsSchema } from "@/utils/plantation-schema";
 import { DraftLote } from "@/views/agricola/lotes/CreateLote";
 import { isAxiosError } from "axios";
 import { FiltersLotesType } from "@/views/agricola/lotes/IndexLotes";
+import { Lote } from "types/lotesType";
+import { TaskWeeklyPlanSummarySchema } from "@/utils/taskWeeklyPlanSchemas";
 import clienteAxios from "@/config/axios";
+import { LotesSchema } from "@/utils/lotesSchemas";
 
 export async function createLote(draftlote: DraftLote) {
     try {
@@ -18,31 +21,11 @@ export async function createLote(draftlote: DraftLote) {
     }
 }
 
-export const LoteSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    finca: z.string(),
-    cdp: z.string()
-});
-
-export type Lote = z.infer<typeof LoteSchema>
-
-export const LotesPaginateSchema = z.object({
-    data: z.array(LoteSchema),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    }).optional(),
-});
-
-export type PaginatedLotes = z.infer<typeof LotesPaginateSchema>
-
-
-export async function getLotes({ page, filters, paginated }: { page: number, filters: FiltersLotesType, paginated: string }): Promise<PaginatedLotes> {
+export async function getLotes({ page, filters, paginated }: { page: number, filters: FiltersLotesType, paginated: string }) {
     try {
         const url = `/api/lotes?paginated=${paginated}&page=${page}&name=${filters.name}&cdp=${filters.cdp}&finca_id=${filters.finca_id}`;
         const { data } = await clienteAxios(url)
-        const result = LotesPaginateSchema.safeParse(data);
+        const result = LotesSchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
@@ -71,25 +54,6 @@ export async function getAllCdpsByLoteId(id: Lote['id']): Promise<CDP[]> {
     }
 }
 
-export const InsumoSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    assigned_quantity: z.number(),
-    measure: z.string(),
-    used_quantity: z.number().nullable(),
-});
-
-export const TaskSchema = z.object({
-    id: z.number(),
-    calendar_week: z.number(),
-    task: z.string(),
-    hours: z.number(),
-    real_hours: z.number().nullable(),
-    aplication_week: z.number(),
-    performance: z.number().nullable(),
-    closed: z.boolean(),
-    insumos: z.array(InsumoSchema),
-});
 
 export const DataLoteSchema = z.object({
     lote: z.string(),
@@ -98,9 +62,9 @@ export const DataLoteSchema = z.object({
     end_date_cdp: z.string().nullable()
 });
 
-export const DataSchema = z.record(z.array(TaskSchema));
+export const DataSchema = z.record(z.array(TaskWeeklyPlanSummarySchema));
 
-export type TaskCDP = z.infer<typeof TaskSchema>;
+export type TaskCDP = z.infer<typeof TaskWeeklyPlanSummarySchema>;
 
 export async function updateLotes(file: File[]) {
     try {

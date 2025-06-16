@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Lote } from "@/api/LotesAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { createTaskCropWeeklyPlan } from "@/api/TaskCropWeeklyPlanAPI";
 import { getAllTasksCrops } from "@/api/TasksCropAPI";
@@ -9,6 +8,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import { WeeklyPlan } from "types/planificacionFincasType";
+import { Lote } from "types/lotesType";
 
 export type DraftTaskCropWeeklyPlan = {
   weekly_plan_id: string;

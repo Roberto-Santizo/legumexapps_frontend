@@ -96,3 +96,17 @@ export const TasksWeeklyPlanSchema = z.object({
     lote: z.string(),
     data: z.array(TaskWeeklyPlanSchema),
 });
+
+
+export const TaskWeeklyPlanSummarySchema = z.object({
+    id: z.number(),
+    calendar_week: z.number(),
+    task: z.string(),
+    hours: z.number(),
+    real_hours: z.number().nullable(),
+    aplication_week: z.number(),
+    performance: z.number().nullable(),
+    closed: z.boolean(),
+    insumos: z.array(TaskInsumoSchema),
+});
+

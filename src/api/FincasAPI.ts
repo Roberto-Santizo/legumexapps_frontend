@@ -1,6 +1,6 @@
 import clienteAxios from "@/config/axios";
+import { LoteSchema } from "@/utils/lotesSchemas";
 import { z } from "zod";
-import { LoteSchema } from "./LotesAPI";
 
 
 export const FincaSchema = z.object({

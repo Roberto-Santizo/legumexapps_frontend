@@ -2,7 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { getTasksByDate } from "@/api/WeeklyPlansAPI";
 import { useEffect, useState } from "react";
-import { getLotes, Lote } from "@/api/LotesAPI";
+import { getLotes } from "@/api/LotesAPI";
 import { getTasks } from "@/api/TasksAPI";
 import { FiltersTasksInitialValues } from "@/views/agricola/tareas/IndexTareas";
 import { Trash2Icon } from "lucide-react";
@@ -12,6 +12,7 @@ import TaskByDate from "../tareas-lote-plan/TaskByDate";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 import Select from "react-select";
+import { Lote } from "types/lotesType";
 
 
 type Props = {

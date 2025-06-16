@@ -6,10 +6,12 @@ import { Trash } from 'lucide-react';
 import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
-import { getLotes, Lote } from '@/api/LotesAPI';
+import { getLotes } from '@/api/LotesAPI';
 import { getTasks } from '@/api/TasksAPI';
 import { FiltersTasksInitialValues } from '../tareas/IndexTareas';
 import { TaskWeeklyPlanForCalendar } from 'types/taskWeeklyPlanTypes';
+import { TaskGeneral } from 'types/taskGeneralType';
+import { Lote } from 'types/lotesType';
 import Select from "react-select";
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -20,7 +22,6 @@ import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
-import { TaskGeneral } from 'types/taskGeneralType';
 
 
 type EventReceiveInfo = {
