@@ -2,9 +2,11 @@ import clienteAxios from "@/config/axios";
 import { DraftCDP } from "@/views/agricola/cdps/CreateCdp";
 import { FiltersCDPType } from "@/views/agricola/cdps/IndexCdps";
 import { isAxiosError } from "axios";
-import { z } from "zod";
-import { DataLoteSchema, DataSchema } from "./LotesAPI";
 import { CDP } from "@/types";
+import { PlantationsControlSchema } from "@/utils/plantationControlSchemas";
+import { CropsSchema } from "@/utils/cropSchemas";
+import { RecipesSchema } from "@/utils/recipeSchemas";
+import { LoteCDPDetailsSchema } from "@/utils/lotesSchemas";
 
 export async function createCDP(cdp: DraftCDP) {
     try {
@@ -32,39 +34,11 @@ export async function uploadCDPS(file: File[]) {
     }
 }
 
-
-export const Plantation = z.object({
-    crop: z.string(),
-    id: z.string(),
-    name: z.string(),
-    recipe: z.string(),
-    density: z.number(),
-    start_date: z.string(),
-    end_date: z.union([z.string(), z.null()]),
-    size: z.string(),
-    aplication_week: z.number(),
-    status: z.boolean()
-
-});
-
-export type Plantation = z.infer<typeof Plantation>
-
-export const PlantationsPaginateSchema = z.object({
-    data: z.array(Plantation),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    }).optional(),
-});
-
-export type PlantationsPaginate = z.infer<typeof PlantationsPaginateSchema>
-
-
-export async function getCDPS({ page, filters, paginated }: { page: number, filters: FiltersCDPType, paginated: string }): Promise<PlantationsPaginate> {
+export async function getCDPS({ page, filters, paginated }: { page: number, filters: FiltersCDPType, paginated: string }) {
     try {
         const url = `/api/cdps?paginated=${paginated}&page=${page}&cdp=${filters.cdp}&start_date=${filters.start_date}&end_date=${filters.end_date}`;
         const { data } = await clienteAxios(url);
-        const result = PlantationsPaginateSchema.safeParse(data);
+        const result = PlantationsControlSchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
@@ -76,20 +50,7 @@ export async function getCDPS({ page, filters, paginated }: { page: number, filt
     }
 }
 
-export const CropSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    variety: z.string()
-});
-
-export const CropsSchema = z.object({
-    data: z.array(CropSchema)
-})
-
-export type Crop = z.infer<typeof CropSchema>
-
-
-export async function getCrops(): Promise<Crop[]> {
+export async function getCrops() {
     try {
         const url = '/api/crops'
         const { data } = await clienteAxios(url)
@@ -105,19 +66,7 @@ export async function getCrops(): Promise<Crop[]> {
     }
 }
 
-export const RecipeSchema = z.object({
-    id: z.string(),
-    name: z.string()
-});
-
-export const RecipesSchema = z.object({
-    data: z.array(RecipeSchema)
-});
-
-export type Recipe = z.infer<typeof RecipeSchema>
-
-
-export async function getRecipes(): Promise<Recipe[]> {
+export async function getRecipes() {
     try {
         const url = '/api/recipes'
         const { data } = await clienteAxios(url)
@@ -133,15 +82,7 @@ export async function getRecipes(): Promise<Recipe[]> {
     }
 }
 
-
-export const LoteCDPDetailsSchema = z.object({
-    data_lote: DataLoteSchema,
-    data: DataSchema,
-});
-
-export type loteCDPDetails = z.infer<typeof LoteCDPDetailsSchema>;
-
-export async function getCDPInfoByCDPId(lote_plantation_control_id: CDP['id']): Promise<loteCDPDetails> {
+export async function getCDPInfoByCDPId(lote_plantation_control_id: CDP['id']) {
     try {
         const url = `/api/cdps/${lote_plantation_control_id}`;
         const { data } = await clienteAxios(url)

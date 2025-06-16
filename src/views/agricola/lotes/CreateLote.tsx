@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { getCDPS, Plantation } from "@/api/PlantationControlAPI";
+import { getCDPS } from "@/api/PlantationControlAPI";
 import { Finca, getFincas } from "@/api/FincasAPI";
 import { createLote } from "@/api/LotesAPI";
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import { FiltersCdpInitialValues } from "../cdps/IndexCdps";
+import { PlantationControl } from "types/plantationControlTypes";
 
 export type DraftLote = {
   name: string;
@@ -20,7 +21,7 @@ export type DraftLote = {
 
 export default function CreateLote() {
   const [fincas, setFincas] = useState<Finca[]>([]);
-  const [cdps, setCdps] = useState<Plantation[]>([]); 
+  const [cdps, setCdps] = useState<PlantationControl[]>([]); 
   const navigate = useNavigate();
 
   const results = useQueries({
