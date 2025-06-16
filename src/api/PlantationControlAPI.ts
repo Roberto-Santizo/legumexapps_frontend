@@ -2,11 +2,11 @@ import clienteAxios from "@/config/axios";
 import { DraftCDP } from "@/views/agricola/cdps/CreateCdp";
 import { FiltersCDPType } from "@/views/agricola/cdps/IndexCdps";
 import { isAxiosError } from "axios";
-import { CDP } from "@/types";
 import { PlantationsControlSchema } from "@/utils/plantationControlSchemas";
 import { CropsSchema } from "@/utils/cropSchemas";
 import { RecipesSchema } from "@/utils/recipeSchemas";
 import { LoteCDPDetailsSchema } from "@/utils/lotesSchemas";
+import { PlantationControl } from "types/plantationControlTypes";
 
 export async function createCDP(cdp: DraftCDP) {
     try {
@@ -82,7 +82,7 @@ export async function getRecipes() {
     }
 }
 
-export async function getCDPInfoByCDPId(lote_plantation_control_id: CDP['id']) {
+export async function getCDPInfoByCDPId(lote_plantation_control_id: PlantationControl['id']) {
     try {
         const url = `/api/cdps/${lote_plantation_control_id}`;
         const { data } = await clienteAxios(url)

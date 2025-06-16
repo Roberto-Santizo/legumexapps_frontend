@@ -1,11 +1,12 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { createInsumo, DraftInsumo } from "@/api/InsumosAPI";
+import { createInsumo } from "@/api/InsumosAPI";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
+import { DraftInsumo } from "types/insumoTypes";
 
 export default function CrearInsumo() {
   const navigate = useNavigate();

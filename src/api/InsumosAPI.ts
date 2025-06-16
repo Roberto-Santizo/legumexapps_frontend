@@ -1,18 +1,10 @@
 import { isAxiosError } from "axios";
-import { z } from "zod";
-import clienteAxios from "@/config/axios";
 import { FiltersInsumosType } from "@/views/agricola/insumos/IndexInsumos";
+import { z } from "zod";
+import { DraftInsumo } from "types/insumoTypes";
+import { InsumosSchema } from "@/utils/insumoSchemas";
+import clienteAxios from "@/config/axios";
 
-
-export const InsumoSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    code: z.string(),
-    measure: z.string(),
-});
-
-export type Insumo = z.infer<typeof InsumoSchema>;
-export type DraftInsumo = Omit<Insumo, 'id'>;
 
 export async function createInsumo(FormData: DraftInsumo) {
     try {
@@ -40,18 +32,7 @@ export async function uploadInsumos(file: File[]) {
     }
 }
 
-
-export const InsumosSchema = z.object({
-    data: z.array(InsumoSchema),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    }).optional(),
-});
-
-export type Insumos = z.infer<typeof InsumosSchema>;
-
-export async function getInsumos({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersInsumosType, paginated: string }): Promise<Insumos> {
+export async function getInsumos({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersInsumosType, paginated: string }) {
     try {
         const url = `/api/insumos?paginated=${paginated}&page=${currentPage}&code=${filters.code}&name=${filters.name}`;
         const { data } = await clienteAxios(url);

@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { paginatedSchema } from "./schemas";
-import { DataLoteSchema, DataSchema } from "@/api/LotesAPI";
+import { TaskWeeklyPlanSummarySchema } from "./taskWeeklyPlanSchemas";
+
+export const DataSchema = z.record(z.array(TaskWeeklyPlanSummarySchema));
 
 export const LoteSchema = z.object({
     id: z.string(),
@@ -8,6 +10,14 @@ export const LoteSchema = z.object({
     finca: z.string(),
     cdp: z.string()
 });
+
+export const DataLoteSchema = z.object({
+    lote: z.string(),
+    cdp: z.string(),
+    start_date_cdp: z.string(),
+    end_date_cdp: z.string().nullable()
+});
+
 
 export const LotesSchema = z.object({
     data: z.array(LoteSchema),

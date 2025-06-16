@@ -18,3 +18,10 @@ export const PlantationsControlSchema = z.object({
     data: z.array(PlantationControlSchema),
     meta: paginatedSchema.optional()
 });
+
+export const PlantationControlsByLoteSchema = z.object({
+    data: z.array(PlantationControlSchema.pick({id:true,name:true}))
+})
+
+
+

@@ -13,4 +13,6 @@ export const rolesSchema = z.object({
     meta: paginatedSchema.optional()
 });
 
-export const draftRoleSchema = roleSchema.pick({name:true});
+export const userRoleSchema = z.object({
+    name: z.string()
+});

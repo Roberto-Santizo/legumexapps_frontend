@@ -115,7 +115,7 @@ export default function ConsultaLote() {
               <option value="">--SELECCIONE UNA OPCIÓN--</option>
               {cdps?.map((cdp) => (
                 <option key={cdp.id} value={cdp.id}>
-                  {cdp.cdp}
+                  {cdp.name}
                 </option>
               ))}
             </select>

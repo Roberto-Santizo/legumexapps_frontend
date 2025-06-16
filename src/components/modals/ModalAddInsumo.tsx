@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getInsumos, Insumo } from "@/api/InsumosAPI";
+import { getInsumos } from "@/api/InsumosAPI";
 import { useForm } from "react-hook-form";
 import { DraftSelectedInsumo } from "views/agricola/planes-semanales/CreateTareaLote";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import Error from "../utilities-components/Error";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import InputComponent from "../form/InputComponent";
+import { Insumo } from "types/insumoTypes";
 
 type Props = {
     open: boolean,
