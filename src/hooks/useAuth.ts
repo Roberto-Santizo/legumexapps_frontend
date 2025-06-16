@@ -10,10 +10,11 @@ export const useAuth = () => {
         queryKey: ['authenticate'],
         queryFn: getUser,
         retry: 1,
-        refetchOnWindowFocus: false
+        refetchIntervalInBackground: true,
+        refetchInterval: 1000 * 60 * 60 * 2 
     });
 
-    if(isError){
+    if (isError) {
         localStorage.removeItem('AUTH_TOKEN');
     }
 
