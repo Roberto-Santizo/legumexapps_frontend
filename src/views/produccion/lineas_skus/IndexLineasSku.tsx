@@ -7,6 +7,7 @@ import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalEditLineSkuData from "@/components/modals/ModalEditLineSkuData";
+import ModalCargaLineaSku from "@/components/modals/ModalCargaLineaSku";
 
 
 export default function IndexLineasSku() {
@@ -15,6 +16,7 @@ export default function IndexLineasSku() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [modal, setModal] = useState<boolean>(false);
     const [selectedSku, setSelectedSku] = useState<LineaSKU>({} as LineaSKU);
+    const [uploadModal, setUploadModal] = useState<boolean>(false);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected + 1);
@@ -40,14 +42,19 @@ export default function IndexLineasSku() {
         <div>
             <h2 className="font-bold text-4xl">Lineas & SKUS</h2>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
                 <Link
                     to="/lineas-skus/crear"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                 >
                     <PlusIcon className="w-8" />
                     <p>Relacionar Linea a SKU</p>
                 </Link>
+
+                <button className="button bg-indigo-500 hover:bg-indigo-600 flex items-center gap-2" onClick={() => setUploadModal(true)}>
+                    <PlusIcon />
+                    <p>Carga Masiva</p>
+                </button>
             </div>
             <table className="table mt-10">
                 <thead>
@@ -90,6 +97,8 @@ export default function IndexLineasSku() {
             </div>
 
             <ModalEditLineSkuData modal={modal} setModal={setModal} sku={selectedSku} setSelectedSku={setSelectedSku} currentPage={currentPage} />
+
+            <ModalCargaLineaSku modal={uploadModal} setModal={setUploadModal} currentPage={currentPage} />
         </div>
     )
 }

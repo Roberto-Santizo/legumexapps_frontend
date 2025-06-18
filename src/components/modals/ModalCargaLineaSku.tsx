@@ -1,36 +1,21 @@
 import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updatePositionsLine } from "@/api/LineasAPI";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
-import Spinner from "@/components/utilities-components/Spinner";
+import { uploadRelacionesLineSku } from "@/api/LineasSkuAPI";
 import Modal from "../Modal";
+import Spinner from "../utilities-components/Spinner";
 
 type Props = {
-    isOpen: boolean;
-    setIsOpen: Dispatch<React.SetStateAction<boolean>>;
+    modal: boolean;
+    setModal: Dispatch<React.SetStateAction<boolean>>;
+    currentPage: number;
+
 }
 
-export default function ModalCargaPosicionesLinea({ isOpen, setIsOpen }: Props) {
-    const params = useParams();
-    const line_id = params.id!!;
-    const queryClient = useQueryClient();
-
+export default function ModalCargaLineaSku({ modal, setModal, currentPage }: Props) {
     const [file, setFile] = useState<File[] | null>(null);
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: updatePositionsLine,
-        onError: (error) => {
-            toast.error(error.message);
-        },
-        onSuccess: (data) => {
-            toast.success(data);
-            setIsOpen(false);
-            setFile(null);
-            queryClient.invalidateQueries({ queryKey: ['getLineaById', line_id] });
-        }
-    });
+    const queryClient = useQueryClient();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -40,32 +25,40 @@ export default function ModalCargaPosicionesLinea({ isOpen, setIsOpen }: Props) 
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    const handleCreatePlan = async () => {
+    const { mutate, isPending } = useMutation({
+        mutationFn: (file: File[]) => uploadRelacionesLineSku(file),
+        onError: (error) => {
+            toast.error(error.message);
+        },
+        onSuccess: (data) => {
+            toast.success(data);
+            setModal(false);
+            queryClient.invalidateQueries({ queryKey: ['getPaginatedLineasSKU', currentPage] });
+        }
+    });
+
+    const handleCloseModal = () => {
+        setModal(false);
+        setFile(null);
+    }
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
         if (file) {
-            mutate({ file, id: line_id });
+            mutate(file);
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        handleCreatePlan();
-    };
-
-    const handleCloseModal = () => {
-        setIsOpen(false);
-        setFile(null);
-    }
-
     return (
-        <Modal modal={isOpen} closeModal={(handleCloseModal)} title="Carga Masiva de Recetas">
+        <Modal modal={modal} closeModal={handleCloseModal} title="Carga Masiva de Relaciones">
             <div className="flex items-center justify-center px-4">
                 <div className="w-full  bg-white shadow-xl rounded-2xl p-8">
                     <form onSubmit={handleSubmit}>
                         <div
                             {...getRootProps()}
                             className={`transition-all duration-200 border-2 border-dashed rounded-xl p-6 text-center cursor-pointer 
-                                  ${isDragActive ? 'bg-blue-50 border-blue-400' : 'bg-gray-100 border-gray-300 hover:border-blue-400'}
-                                  ${file ? 'border-green-400 bg-green-50' : ''}`}
+                          ${isDragActive ? 'bg-blue-50 border-blue-400' : 'bg-gray-100 border-gray-300 hover:border-blue-400'}
+                          ${file ? 'border-green-400 bg-green-50' : ''}`}
                         >
                             <input {...getInputProps()} disabled={isPending || !!file} />
                             {file ? (
@@ -96,5 +89,7 @@ export default function ModalCargaPosicionesLinea({ isOpen, setIsOpen }: Props) 
                 </div>
             </div>
         </Modal>
+
+
     )
 }

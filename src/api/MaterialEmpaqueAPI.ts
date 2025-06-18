@@ -10,7 +10,6 @@ export const PackingMaterialSchema = z.object({
     code: z.string(),
     description: z.string(),
     blocked: z.boolean(),
-    supplier: z.string()
 });
 
 export const PaginatedPackingMaterialsSchema = z.object({
@@ -60,6 +59,24 @@ export async function updateMaterialStatus(id: PackingMaterial['id']) {
     } catch (error) {
         if (isAxiosError(error)) {
             throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
+    }
+}
+
+export async function uploadItemsMP(file: File[]) {
+    try {
+        const url = '/api/packing-materials/upload';
+        const formData = new FormData();
+        formData.append("file", file[0]);
+        const { data } = await clienteAxios.post(url, formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            }
         }
     }
 }

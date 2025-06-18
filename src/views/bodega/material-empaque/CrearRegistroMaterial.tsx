@@ -10,7 +10,6 @@ export type DraftMaterialEmpaque = {
   name: string;
   description: string;
   code: string;
-  supplier_id: string;
 };
 
 export default function CrearRegistroMaterial() {

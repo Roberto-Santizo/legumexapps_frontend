@@ -66,3 +66,21 @@ export async function updateLineaSku({ FormData, id }: { FormData: DraftEditLine
         }
     }
 }
+
+export async function uploadRelacionesLineSku(file: File[]) {
+    try {
+        const url = '/api/lines-skus/upload';
+        const formData = new FormData();
+        formData.append("file", file[0]);
+        const { data } = await clienteAxios.post(url, formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            }
+        }
+    }
+}

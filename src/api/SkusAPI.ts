@@ -54,3 +54,38 @@ export async function createSKU(FormData: DraftSku) {
         }
     }
 }
+
+export async function uploadSkus(file: File[]) {
+    try {
+        const url = '/api/skus/upload';
+        const formData = new FormData();
+        formData.append("file", file[0]);
+        const { data } = await clienteAxios.post(url,formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            }
+        }
+    }
+}
+export async function uploadSkusRecipes(file: File[]) {
+    try {
+        const url = '/api/skus/upload/recipe';
+        const formData = new FormData();
+        formData.append("file", file[0]);
+        const { data } = await clienteAxios.post(url,formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            } else if (error.response?.data.msg) {
+                throw new Error(error.response?.data.msg);
+            }
+        }
+    }
+}

@@ -16,8 +16,7 @@ import {
   ChartBarIncreasing,
   ChartLine,
   ChartNoAxesCombined,
-  FileUser, UserRound,
-  Box,
+  FileUser, Box,
   PackageOpen,
   ClipboardPaste
 } from "lucide-react";
@@ -145,12 +144,6 @@ export default function Navegation() {
       {hasPermission("permission employee") && (
         <NavLinkComponent url="/permisos-empleados" text="Permisos Empleados">
           <FileUser />
-        </NavLinkComponent>
-      )}
-
-      {hasPermission('administrate proveedores mp') && (
-        <NavLinkComponent url="/proveedores" text="Proveedores">
-          <UserRound />
         </NavLinkComponent>
       )}
 

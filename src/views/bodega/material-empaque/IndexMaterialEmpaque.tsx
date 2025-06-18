@@ -9,6 +9,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersMaterialEmpaque from "@/components/filters/FiltersMaterialEmpaque";
+import ModalCargaItemsMP from "@/components/modals/ModalCargaItemsMP";
 
 export type FiltersPackingMaterialsType = {
   name: string;
@@ -17,7 +18,7 @@ export type FiltersPackingMaterialsType = {
   supplier: string;
 }
 
-export const FiltersPackingMaterialsInitialValues : FiltersPackingMaterialsType = {
+export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType = {
   name: '',
   code: '',
   status: '',
@@ -32,6 +33,7 @@ export default function IndexMaterialEmpaque() {
   const [filters, setFilters] = useState<FiltersPackingMaterialsType>(FiltersPackingMaterialsInitialValues);
   const [tempFilters, setTempFitlers] = useState<FiltersPackingMaterialsType>(FiltersPackingMaterialsInitialValues);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [modal, setModal] = useState<boolean>(false);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
@@ -73,17 +75,22 @@ export default function IndexMaterialEmpaque() {
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
           to="/material-empaque/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-6 md:w-8" />
           <p className="text-sm md:text-base">Crear</p>
         </Link>
 
+        <button className="button bg-indigo-500 hover:bg-indigo-600 flex items-center gap-2" onClick={() => setModal(true)}>
+          <PlusIcon />
+          <p>Carga Masiva de Items</p>
+        </button>
 
         <Bars3Icon
           className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
           onClick={() => setIsOpen(true)}
         />
+
       </div>
 
       <table className="table mt-10">
@@ -93,7 +100,6 @@ export default function IndexMaterialEmpaque() {
             <th className="thead-th">Descripcion</th>
             <th className="thead-th">código</th>
             <th className="thead-th">Bloqueo</th>
-            <th className="thead-th">Proveedor</th>
           </tr>
         </thead>
         <tbody>
@@ -105,7 +111,6 @@ export default function IndexMaterialEmpaque() {
               <td className='tbody-td' onClick={() => handleChangeStatus(item.id)}>
                 <span className={`${item.blocked ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} button`}>{item.blocked ? 'DESACTIVADO' : 'ACTIVADO'}</span>
               </td>
-              <td className="tbody-td">{item.supplier}</td>
             </tr>
           ))}
 
@@ -123,6 +128,8 @@ export default function IndexMaterialEmpaque() {
       {isOpen && (
         <FiltersMaterialEmpaque isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} setTempFilters={setTempFitlers} tempFilters={tempFilters} filters={filters} />
       )}
+
+      <ModalCargaItemsMP modal={modal} setModal={setModal} currentPage={currentPage}/>
     </>
   )
 }
