@@ -1,15 +1,14 @@
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createTaskProductionUnassignment, getTaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { createTaskProductionUnassignment, getActiveTaskProductionEmployees } from "@/api/TaskProductionPlansAPI";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
-import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
+import Spinner from "../utilities-components/Spinner";
 
 export type DraftUnassignTaskProduction = {
     reason: string;
@@ -35,9 +34,9 @@ export default function ModalUnassignNote() {
     const show = (taskId && +modal === 5) ? true : false;
     const navigate = useNavigate();
 
-    const { data: taskDetails, isLoading, isError } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['getTaskProductionDetails', taskId],
-        queryFn: () => getTaskProductionDetails(taskId),
+        queryFn: () => getActiveTaskProductionEmployees(taskId),
         enabled: !!taskId,
     });
 
@@ -51,7 +50,8 @@ export default function ModalUnassignNote() {
             navigate(location.pathname, { replace: true });
             reset();
             setIds([]);
-            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] })
+            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
+            queryClient.invalidateQueries({ queryKey: ['getTaskProductionDetails', taskId] });
         }
     });
 
@@ -71,7 +71,7 @@ export default function ModalUnassignNote() {
         mutate({ FormData: data, id: taskId })
     };
 
-    const filteredEmployees = taskDetails?.all_employees.filter(employee =>
+    const filteredEmployees = data?.data.filter(employee =>
         employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.position.toLowerCase().includes(searchTerm.toLowerCase())
@@ -91,7 +91,8 @@ export default function ModalUnassignNote() {
         setIds([]);
         reset();
     }
-    return (
+
+    if (data) return (
         <Modal
             modal={show}
             closeModal={() => handleCloseModal()}
@@ -149,13 +150,6 @@ export default function ModalUnassignNote() {
                                         <td className="px-4 py-2">{employee.position}</td>
                                     </tr>
                                 ))}
-                                {filteredEmployees?.length === 0 && (
-                                    <tr>
-                                        <td colSpan={4} className="px-4 py-4 text-center text-gray-500">
-                                            No se encontraron empleados.
-                                        </td>
-                                    </tr>
-                                )}
                             </tbody>
                         </table>
                     </div>

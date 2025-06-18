@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTaskProductionNote } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { createTaskProductionNote } from "@/api/TaskProductionPlansAPI";
 import Error from "@/components/utilities-components/Error";
-import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
+import Spinner from "../utilities-components/Spinner";
 
 export type DraftNote = {
     reason: string;
@@ -34,7 +34,7 @@ export default function ModalNotasProblemas() {
         onSuccess: (data) => {
             toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
-            navigate(location.pathname,{replace:true});
+            navigate(location.pathname, { replace: true });
         }
     });
 

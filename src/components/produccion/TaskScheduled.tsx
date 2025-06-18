@@ -1,14 +1,14 @@
-import { TaskOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { BoxIcon, Calendar, File } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque from "../modals/ModalEntregaMaterialEmpaque";
 
 type Props = {
-    task: TaskOperationDate;
+    task: TaskProductionOperationDate;
     selectedId: string;
-    setSelectedId: Dispatch<SetStateAction<TaskOperationDate['id']>>;
+    setSelectedId: Dispatch<SetStateAction<TaskProductionOperationDate['id']>>;
 }
 
 export default function TaskScheduled({ task, selectedId, setSelectedId }: Props) {
@@ -36,7 +36,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
             </div>
 
             <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-2">
-                {!task.finished && !task.working && task.status_id === '0' && (
+                {!task.finished && !task.working && (
                     <button
                         onClick={() => {
                             setSelectedId(task.id);
@@ -70,6 +70,14 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                                 Creación de Entrega Empaque
                             </button>
                         )}
+
+                        <button
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
+                            onClick={() => navigate(`/material-empaque-transacciones/crear?taskId=${task.id}`, { state: { url: location.pathname + location.search } })}
+                        >
+                            <File className="w-4 h-4" />
+                            Crear de Transacción Material Empaque
+                        </button>
 
                     </>
                 )}

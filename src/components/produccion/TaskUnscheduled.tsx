@@ -1,9 +1,9 @@
-import { assignOperationDate, TaskProductionNoOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { Calendar } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useParams } from "react-router-dom";
+import { TaskProductionNoOperationDate } from "types/taskProductionPlanTypes";
+import { assignOperationDate } from "@/api/TaskProductionPlansAPI";
+import { toast } from "react-toastify";
 
 type Props = {
   task: TaskProductionNoOperationDate;
@@ -13,11 +13,8 @@ export default function TaskUnscheduled({ task }: Props) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date')!;
-
   const params = useParams();
   const plan_id = params.plan_id!!;
-
-
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
@@ -29,8 +26,11 @@ export default function TaskUnscheduled({ task }: Props) {
       toast.success(data);
       queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id] });
       queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
+      queryClient.invalidateQueries({ queryKey: ['getAllTasksWeeklyProductionPlan', plan_id] });
+
     }
   });
+
   return (
     <div className="border border-gray-200 rounded-2xl shadow-sm bg-white overflow-hidden">
       <div className="p-6 space-y-2 text-gray-700 text-base leading-relaxed">

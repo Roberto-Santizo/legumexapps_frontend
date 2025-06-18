@@ -1,10 +1,10 @@
-import { TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { createTaskTimeout, getTimeOuts } from "@/api/TimeOutsAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { TaskProductionPlan } from "types/taskProductionPlanTypes";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import Error from "../utilities-components/Error";
@@ -12,7 +12,7 @@ import Spinner from "../utilities-components/Spinner";
 
 export type DraftTaskTimeout = {
     timeout_id: string,
-    id: TaskProduction['id']
+    id: TaskProductionPlan['id']
 }
 
 export default function ModalTiempoMuerto() {
@@ -29,6 +29,14 @@ export default function ModalTiempoMuerto() {
 
 
     const queryClient = useQueryClient();
+
+    const {
+        handleSubmit,
+        control,
+        reset,
+        formState: { errors }
+    } = useForm<DraftTaskTimeout>();
+
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskTimeout,
         onError: (error) => {
@@ -38,6 +46,7 @@ export default function ModalTiempoMuerto() {
             toast.success('Tiempo muerto agregado correctamente');
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] })
             navigate(location.pathname, { replace: true });
+            reset();
         }
     });
     const { data: timeouts } = useQuery({
@@ -50,11 +59,6 @@ export default function ModalTiempoMuerto() {
         label: `${timeout.name}`,
     }));
 
-    const {
-        handleSubmit,
-        control,
-        formState: { errors }
-    } = useForm<DraftTaskTimeout>();
 
     const onSubmit = (FormData: DraftTaskTimeout) => {
         const data = {

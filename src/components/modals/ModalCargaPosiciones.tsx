@@ -1,21 +1,25 @@
-import { LineWeeklyPlan } from "@/api/WeeklyProductionPlanAPI";
-import { createAssigmentsProductionTasks } from "@/api/WeeklyProductionPlanAPI";
 import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { QueryObserverResult, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LineWeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { createAssigmentsProductionTasks } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useParams } from "react-router-dom";
 
 type Props = {
     isOpen: boolean;
     setIsOpen: Dispatch<React.SetStateAction<boolean>>;
-    linea: LineWeeklyPlan;
-    refetch: () => Promise<QueryObserverResult<LineWeeklyPlan[]>>
+    linea: LineWeeklyProductionPlan;
 }
 
-export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch }: Props) {
+export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea }: Props) {
     const [file, setFile] = useState<File[] | null>(null);
+    const params = useParams();
+    const id = params.plan_id!!;
+
+    const queryClient = useQueryClient();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -33,8 +37,8 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea, refetch
         onSuccess: (data) => {
             toast.success(data);
             setIsOpen(false);
-            refetch();
             setFile(null);
+            queryClient.invalidateQueries({queryKey:['getWeeklyPlanDetails',id]});
         }
     });
 

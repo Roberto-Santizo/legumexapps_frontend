@@ -1,191 +1,151 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { EmployeeProduction, getTaskProductionDetails, startTaskProduction, TaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
-import { getComodines } from "@/api/WeeklyProductionPlanAPI";
 import { formatDate } from "@/helpers";
-import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-import { createPortal } from "react-dom";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { PlusIcon } from "lucide-react";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { ArrowBigRight, PlusIcon, TrashIcon, User } from "lucide-react";
+import { confirmAssignment, createTaskProductionEmployees, getComodines, getTaskProductionDetails } from "@/api/TaskProductionPlansAPI";
+import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { Position } from "@/api/LineasAPI";
 import Spinner from "@/components/utilities-components/Spinner";
-import ColumnContainer from "@/components/produccion/ColumnContainer";
-import EmployeeDraggable from "@/components/produccion/EmployeeDraggable";
 import ModalChangeEmployee from "@/components/modals/ModalChangeEmployee";
 import Swal from "sweetalert2";
 import ModalAddEmployee from "@/components/modals/ModalAddEmployee";
 
-export type Column = {
-    id: string,
-    title: string
-}
-
-const initialValues = [
-    { id: '1', title: 'fijos' },
-    { id: '2', title: 'comodines' },
-]
 
 export default function ShowTaskProductionDetails() {
     const params = useParams();
     const task_p_id = params.task_p_id!!;
     const plan_id = params.plan_id!!;
     const linea_id = params.linea_id!!;
-
     const queryClient = useQueryClient();
+
     const location = useLocation();
     const url = location.state?.url ?? '/planes-produccion';
 
-
-    const [columns] = useState<Column[]>(initialValues);
     const [modal, setModal] = useState<boolean>(false);
+    const [selectedComodin, setSelectedComodin] = useState<TaskProductionEmployee>({} as TaskProductionEmployee);
+    const [changes, setChanges] = useState<TaskProductionChange[]>([]);
+    const [newEmployees, setNewEmployees] = useState<DraftTaskProductionEmployee[]>([]);
+    const [availableEmployees, setAvailableEmployees] = useState<TaskProductionEmployee[]>([]);
+    const [comodines, setComodines] = useState<TaskProductionEmployee[]>([]);
+    const [positions, setPositions] = useState<Position[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [activeColumn, setActiveColumn] = useState<Column | null>(null);
-    const [activeEmployee, setActiveEmployee] = useState<EmployeeProduction | null>(null);
-    const [taskData, setTaskData] = useState<TaskProductionDetails>();
-    const [employees, setEmployees] = useState<EmployeeProduction[]>([]);
-    const [availableEmployees, setAvailableEmployees] = useState<EmployeeProduction[]>([]);
-    const [enableQuery, setEnableQuery] = useState<boolean>(true);
     const navigate = useNavigate();
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: startTaskProduction,
-        onError: (error) => {
-            toast.error(error.message);
-        },
-        onSuccess: (data) => {
-            toast.success(data);
-            navigate(url, { replace: true });
-            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
-
-        }
-    });
-
-    const columnsId = useMemo(() => {
-        return columns.map(column => column.id)
-    }, [columns]);
 
     const { data: taskDetails, isLoading, isError } = useQuery({
         queryKey: ['getTaskProductionDetails', task_p_id],
         queryFn: () => getTaskProductionDetails(task_p_id),
-        enabled: enableQuery
+        refetchOnWindowFocus: false,
+        retry: false
     });
 
-    const { data: comodines } = useQuery({
+    const { data: comodinesData, isLoading: isLoadingComodines, isError: isErrorComodines } = useQuery({
         queryKey: ['getComodines'],
         queryFn: getComodines,
-        enabled: enableQuery
+        refetchOnWindowFocus: false,
+        retry: false
     });
-    useEffect(() => {
-        if (taskDetails && comodines) {
-            setTaskData(taskDetails);
-            const employeesFromTask = taskDetails.in_employees ?? [];
-            const employeesFromComodines = comodines ?? [];
 
-            const uniqueEmployees = [...new Map([...employeesFromTask, ...employeesFromComodines].map(emp => [emp.id, emp])).values()];
+    const handleChangeEmployee = (comodin: TaskProductionEmployee) => {
+        setSelectedComodin(comodin);
+        setModal(true);
+    }
 
-            setEmployees(uniqueEmployees);
-            setAvailableEmployees(uniqueEmployees.filter(employee => employee.column_id === '1' && employee.active === 0));
+    const handleDeleteEmployee = (index: number) => {
+        const old_employee = changes.filter((_, i) => i === index)[0].old_employee;
+        const new_employee = changes.filter((_, i) => i === index)[0].new_employee;
+        const newChanges = changes.filter((_, i) => i !== index);
+        setChanges(newChanges);
+        setAvailableEmployees((prev) => [...prev, old_employee]);
+        setComodines((prev) => [...prev, new_employee]);
+    }
 
-            setEnableQuery(false);
-        }
+    const handleDeleteNewEmployee = (index: number) => {
+        const employeeToRemove = newEmployees[index];
 
-        if (taskDetails?.start_date) {
-            navigate('/planes-produccion');
-        }
-    }, [taskDetails, comodines]);
+        const newEmployeesAux = newEmployees.filter(emp => emp.code !== employeeToRemove.code);
+        const comodin = comodinesData?.find(c => c.code === employeeToRemove.code);
+        const position = taskDetails?.positions.find(p => p.id === employeeToRemove.position_id);
 
-
-
-    const onDragEnd = (event: DragOverEvent) => {
-        setActiveColumn(null);
-        setActiveEmployee(null);
-
-        const { active, over } = event;
-
-        if (!over || !active) return;
-
-        const activeId = active.id;
-        const overId = over.id;
-
-        if (activeId === overId) return;
-
-        const isActiveEmployee = active.data.current?.type === "Employee";
-        const isOverEmployee = over.data.current?.type === "Employee";
-
-        if (isOverEmployee && isActiveEmployee) {
-            const active = employees.filter(emp => emp.id === activeId);
-            const over = employees.filter(emp => emp.id === overId);
-
-            if (active[0].column_id !== over[0].column_id) {
-                const activeIndex = employees.findIndex(emp => emp.id === activeId);
-                setActiveEmployee(employees[activeIndex]);
-                setModal(true);
-            };
-            const newEmployees = () => {
-                const activeIndex = employees.findIndex(emp => emp.id === activeId);
-                const overIndex = employees.findIndex(emp => emp.id === overId);
-                return arrayMove(employees, activeIndex, overIndex);
-            }
-            const updatedEmployees = newEmployees();
-            setEmployees(updatedEmployees);
-        }
-
-        const isOverAColumn = over.data.current?.type === "Column";
-
-        if (isActiveEmployee && isOverAColumn) {
-            const activeIndex = employees.findIndex(emp => emp.id === activeId);
-            setActiveEmployee(employees[activeIndex]);
-            setModal(true);
+        if (comodin && position) {
+            setComodines(prev => [...prev, comodin]);
+            setPositions(prev => [...prev, position]);
+            setNewEmployees(newEmployeesAux);
         }
     };
 
-    const onDragStart = (event: DragStartEvent) => {
-        if (event.active.data.current?.type === "Column") {
-            setActiveColumn(event.active.data.current.column);
-        }
 
-        if (event.active.data.current?.type === "Employee") {
-            setActiveEmployee(event.active.data.current.employee);
+    useEffect(() => {
+        if (taskDetails) {
+            setAvailableEmployees(taskDetails.filtered_employees);
+            setPositions(taskDetails.positions);
         }
-    }
+    }, [taskDetails]);
 
-    const handleStartTask = () => {
+    useEffect(() => {
+        if (comodinesData) {
+            setComodines(comodinesData);
+        }
+    }, [comodinesData]);
+
+
+    const { mutate: firstMutation, isPending } = useMutation({
+        mutationFn: confirmAssignment,
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    });
+
+    const { mutate: secondMutation, isPending: isPendingNewEmployees } = useMutation({
+        mutationFn: createTaskProductionEmployees,
+        onError: (error) => {
+            toast.error(error.message);
+        }
+    });
+
+    const handleConfirmAssignment = () => {
         Swal.fire({
-            title: "¿Desea iniciar la tarea?",
-            text: "Una vez iniciada no podra modificar la asignación",
+            title: "¿Estas seguro?",
+            text: "Una vez cerrada la asignación no sé podrán los revertir los cambios",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Si, cerrar asignación",
+            confirmButtonText: "Si, confirmar asignación",
             cancelButtonText: "Cancelar"
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                mutate(task_p_id);
+                try {
+                    await Promise.allSettled([firstMutation({ changes, id: task_p_id }), secondMutation({ id: task_p_id, FormData: newEmployees })]);
+                    toast.success("Asignación y empleados confirmados");
+                    queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
+                    navigate(url);
+                } catch (error) {
+                    toast.error("Hubo un error en el proceso");
+                }
             }
         });
     }
 
-
-    if (isLoading) return <Spinner />;
-    if (isError) return <Spinner />;
-    if (taskData) return (
+    if (isLoading || isLoadingComodines) return <Spinner />;
+    if (isError || isErrorComodines) return <Spinner />;
+    if (taskDetails && comodines) return (
         <div className="space-y-10 mb-10">
             <h1 className="font-bold text-4xl">Información</h1>
             <div className="p-5 shadow-xl grid grid-cols-2">
                 <div>
-                    <div className="font-bold">Línea: <span className="font-normal ml-2">{taskData.line ?? 'N/A'}</span></div>
-                    <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskData.operation_date ? formatDate(taskData.operation_date) : 'N/A'}</span></div>
-                    <div className="font-bold">Total de libras:<span className="font-normal ml-2">{taskData.total_lbs ?? 0}</span></div>
-                    <div className="font-bold">SKU:<span className="font-normal ml-2">{taskData.sku.code ?? 'N/A'}</span></div>
-                    <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskData.sku.product_name ?? 'N/A'}</span></div>
-                    <div className="font-bold">Empleados asignados:<span className="font-normal ml-2">{taskData.assigned_employees}</span></div>
-                    <div className="font-bold">Empleados faltantes:<span className="font-normal ml-2">{taskData.in_employees.length ?? 0}</span></div>
+                    <div className="font-bold">Línea: <span className="font-normal ml-2">{taskDetails.line ?? 'N/A'}</span></div>
+                    <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskDetails.operation_date ? formatDate(taskDetails.operation_date) : 'N/A'}</span></div>
+                    <div className="font-bold">Total de libras:<span className="font-normal ml-2">{taskDetails.total_lbs ?? 0}</span></div>
+                    <div className="font-bold">SKU:<span className="font-normal ml-2">{taskDetails.sku.code ?? 'N/A'}</span></div>
+                    <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskDetails.sku.product_name ?? 'N/A'}</span></div>
                 </div>
                 <div>
-                    {taskData?.flag && (
-                        <button className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" onClick={() => setIsOpen(true)}>
+                    {taskDetails?.flag && (
+                        <button onClick={() => setIsOpen(true)} className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" >
                             <PlusIcon />
                             <p>Agregar Empleado</p>
                         </button>
@@ -193,37 +153,127 @@ export default function ShowTaskProductionDetails() {
                 </div>
             </div>
 
-            <div className="flex justify-between w-full mx-auto gap-5">
-                <DndContext onDragStart={onDragStart} onDragEnd={onDragEnd} >
-                    <SortableContext items={columnsId}>
-                        {columns.map(column => (
-                            <ColumnContainer key={column.id} column={column} employees={employees.filter(employee => employee.column_id === column.id)} />
+            <div className="grid grid-cols-2 gap-10">
+                <div>
+                    <p className="text-center bg-indigo-500 p-1 text-white font-bold">Comodines Disponibles</p>
+                    <div className="max-h-96 overflow-y-auto scrollbar-hide space-y-2">
+                        {comodines?.map(comodin => (
+                            <div key={comodin.position} className="flex justify-between items-center gap-3 px-5 py-3 rounded-lg shadow-md border border-gray-300 bg-white text-gray-700 font-medium transition-all cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleChangeEmployee(comodin)}
+                            >
+                                <div className='flex items-center gap-3'>
+                                    <div className="bg-indigo-500 text-white p-2 rounded-full">
+                                        <User size={18} />
+                                    </div>
+                                    <p className="text-sm">{comodin.name}</p>
+                                </div>
+                            </div>
                         ))}
-                    </SortableContext>
+                    </div>
 
-                    {createPortal(
-                        <DragOverlay>
-                            {activeColumn && (
-                                <ColumnContainer column={activeColumn} employees={employees.filter(employee => employee.column_id === activeColumn.id)} />
-                            )}
+                </div>
 
-                            {activeEmployee && (
-                                <EmployeeDraggable employee={activeEmployee} />
-                            )}
-                        </DragOverlay>,
-                        document.body
-                    )}
-                </DndContext>
+                <div className="shadow">
+                    <p className="text-center bg-indigo-500 p-1 text-white font-bold">Resumen de Cambios</p>
+
+                    <div className="mt-4 p-2 space-y-5">
+                        {(changes.length === 0 && newEmployees.length === 0) && <p className="text-center text-lg">No existen cambios</p>}
+                        <AnimatePresence>
+                            {changes.map((change, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 20 }}
+                                    transition={{ duration: 0.4 }}
+                                    className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl px-6 py-4 shadow-sm hover:shadow-md transition-shadow duration-300"
+                                >
+                                    <div className="flex items-center gap-6">
+                                        <div className="flex flex-col items-start">
+                                            <span className="text-xs text-gray-500">Nuevo</span>
+                                            <p className="text-base font-semibold text-indigo-600">{change.new_employee.name} ({change.new_employee.position})</p>
+                                        </div>
+
+                                        <ArrowBigRight className="w-6 h-6 text-gray-400" />
+
+                                        <div className="flex flex-col items-start">
+                                            <span className="text-xs text-gray-500">Anterior</span>
+                                            <p className="text-base font-semibold text-purple-600">{change.old_employee.name} ({change.old_employee.position})</p>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 group"
+                                        title="Eliminar cambio"
+                                        onClick={() => handleDeleteEmployee(index)}
+                                    >
+                                        <TrashIcon className="w-5 h-5 text-red-500 group-hover:text-red-700" />
+                                    </button>
+                                </motion.div>
+                            ))}
+
+                            {newEmployees.map((newEmployee, index) => (
+                                <motion.div
+                                    key={newEmployee.code}
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 20 }}
+                                    transition={{ duration: 0.4 }}
+                                    className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl px-6 py-4 shadow-sm hover:shadow-md transition-shadow duration-300"
+                                >
+                                    <div className="flex items-center gap-6">
+                                        <div className="flex flex-col items-start">
+                                            <span className="text-xs text-gray-500">Empleado</span>
+                                            <p className="text-base font-semibold text-indigo-600">{newEmployee.name} ({newEmployee.old_position})</p>
+                                        </div>
+
+                                        <ArrowBigRight className="w-6 h-6 text-gray-400" />
+
+                                        <div className="flex flex-col items-start">
+                                            <span className="text-xs text-gray-500">Posición</span>
+                                            <p className="text-base font-semibold text-purple-600">{newEmployee.new_position}</p>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 group"
+                                        title="Eliminar cambio"
+                                        onClick={() => handleDeleteNewEmployee(index)}
+                                    >
+                                        <TrashIcon className="w-5 h-5 text-red-500 group-hover:text-red-700" />
+                                    </button>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                </div>
             </div>
 
-            {(modal && activeEmployee) && (
-                <ModalChangeEmployee modal={modal} setModal={setModal} employee={activeEmployee} availableEmployees={availableEmployees} setEmployees={setEmployees} fijos={employees.filter(employee => employee.column_id === '1')} />
+            {modal && (
+                <ModalChangeEmployee
+                    modal={modal}
+                    setModal={setModal}
+                    availableEmployees={availableEmployees}
+                    setAvailableEmployees={setAvailableEmployees}
+                    selectedComodin={selectedComodin}
+                    setSelectedComodin={setSelectedComodin}
+                    setChanges={setChanges}
+                    setComodines={setComodines}
+                />
             )}
 
-            <ModalAddEmployee isOpen={isOpen} setIsOpen={setIsOpen} fijos={employees.filter(employee => employee.column_id === '1')} comodines={employees.filter(employee => employee.column_id === '2')} positions={taskData.positions} />
+            <ModalAddEmployee
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                comodines={comodines}
+                setComodines={setComodines}
+                positions={positions}
+                setPositions={setPositions}
+                setNewEmployees={setNewEmployees}
+            />
 
-            <button onClick={() => handleStartTask()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-                {isPending ? <Spinner /> : <p>Cerrar Asignación</p>}
+            <button onClick={() => handleConfirmAssignment()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                {(isPending || isPendingNewEmployees) ? <Spinner /> : <p>Confirmar Asignación</p>}
             </button>
         </div>
     );

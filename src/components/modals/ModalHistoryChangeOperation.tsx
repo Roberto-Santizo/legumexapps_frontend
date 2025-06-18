@@ -1,11 +1,11 @@
-import { HistoryOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { Dispatch, SetStateAction } from "react";
 import Modal from "../Modal";
+import { TaskProductionHistoryOperationDate } from "types/taskProductionPlanTypes";
 
 type Props = {
     modal: boolean;
     setModal: Dispatch<SetStateAction<boolean>>;
-    changes: HistoryOperationDate[];
+    changes: TaskProductionHistoryOperationDate[];
 };
 
 export default function ModalHistoryChangeOperation({ modal, setModal, changes }: Props) {

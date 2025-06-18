@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { getWeeklyProductionPlans, WeeklyPlanProductionPlan } from "@/api/WeeklyProductionPlanAPI";
+import { getWeeklyProductionPlans } from "@/api/WeeklyProductionPlanAPI";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarRange, Clock, Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
+import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
@@ -13,7 +14,7 @@ import Pagination from "@/components/utilities-components/Pagination";
 export default function IndexPlanSemanalProduccion() {
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [plans, setPlans] = useState<WeeklyPlanProductionPlan[]>([]);
+    const [plans, setPlans] = useState<WeeklyProductionPlan[]>([]);
     const { hasPermission } = usePermissions();
 
     const { data, isLoading, isError } = useQuery({

@@ -1,8 +1,8 @@
-import { createTaskProductionPerformance, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { createTaskProductionPerformance } from "@/api/TaskProductionPlansAPI";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import InputComponent from "../form/InputComponent";
@@ -27,8 +27,15 @@ export default function ModalTomaRendimientoProduccion() {
     const show = (taskId && +modal === 2) ? true : false;
     const navigate = useNavigate();
 
+    const {
+        handleSubmit,
+        register,
+        reset,
+        formState: { errors },
+    } = useForm<DraftPerformance>();
+
     const { mutate, isPending } = useMutation({
-        mutationFn: ({ id, data }: { id: TaskProduction['id'], data: DraftPerformance }) => createTaskProductionPerformance(id, data),
+        mutationFn: createTaskProductionPerformance,
         onError: (error) => {
             toast.error(error.message);
         },
@@ -36,17 +43,13 @@ export default function ModalTomaRendimientoProduccion() {
             toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
             navigate(location.pathname, { replace: true });
+            reset();
         }
     })
 
-    const {
-        handleSubmit,
-        register,
-        formState: { errors },
-    } = useForm<DraftPerformance>();
 
 
-    const onSubmit = (data: DraftPerformance) => mutate({ id: taskId, data });
+    const onSubmit = (data: DraftPerformance) => mutate({ id: taskId, FormData: data });
     return (
         <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Toma de Rendimiento">
             <form className="p-6 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>

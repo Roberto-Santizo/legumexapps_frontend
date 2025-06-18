@@ -1,5 +1,4 @@
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
-import { TaskOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { BoxIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
 import { DraftTaskProductionWastage } from "./ModalAddWastage";
+import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
 import InputComponent from "../form/InputComponent";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
@@ -37,7 +37,7 @@ export type DraftTransactionPackingMaterial = {
 type Props = {
     modal: boolean;
     setModal: Dispatch<SetStateAction<boolean>>;
-    task: TaskOperationDate;
+    task: TaskProductionOperationDate;
 };
 
 

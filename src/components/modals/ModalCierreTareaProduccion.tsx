@@ -1,4 +1,4 @@
-import { closeTaskProduction, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
+// import { closeTaskProduction, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
+import { closeTaskProduction } from "@/api/TaskProductionPlansAPI";
 
 
 export type DraftCloseTask = {
@@ -20,8 +21,6 @@ export default function ModalCierreTareaProduccion() {
     const params = useParams();
     const plan_id = params.plan_id!!;
     const linea_id = params.linea_id!!;
-
-
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const taskId = queryParams.get('TaskId')!;
@@ -29,8 +28,16 @@ export default function ModalCierreTareaProduccion() {
     const show = (taskId && +modal === 1) ? true : false;
     const navigate = useNavigate();
 
+    const {
+        handleSubmit,
+        register,
+        reset,
+        formState: { errors },
+    } = useForm<DraftCloseTask>();
+
+
     const { mutate, isPending } = useMutation({
-        mutationFn: ({ id, data }: { id: TaskProduction['id'], data: DraftCloseTask }) => closeTaskProduction(id, data),
+        mutationFn: closeTaskProduction,
         onError: (error) => {
             toast.error(error.message);
         },
@@ -38,16 +45,12 @@ export default function ModalCierreTareaProduccion() {
             toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
             navigate(location.pathname, { replace: true });
+            reset();
         }
     });
 
-    const {
-        handleSubmit,
-        register,
-        formState: { errors },
-    } = useForm<DraftCloseTask>();
 
-    const onSubmit = (data: DraftCloseTask) => mutate({ id: taskId, data });
+    const onSubmit = (data: DraftCloseTask) => mutate({ id: taskId, FormData: data });
 
     return (
         <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Cierre de Tarea">
@@ -79,12 +82,8 @@ export default function ModalCierreTareaProduccion() {
                     {errors.total_lbs_bascula && <Error>{errors.total_lbs_bascula?.message?.toString()}</Error>}
                 </InputComponent>
 
-                <button
-                    type="submit"
-                    disabled={isPending}
-                    className="button bg-indigo-500 hover:bg-indigo-600 w-full"
-                >
-                    {isPending ? <Spinner /> : "Cerrar Tarea"}
+                <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                    {isPending ? <Spinner /> : <p>Cerrar Tarea</p>}
                 </button>
             </form>
         </Modal>

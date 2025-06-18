@@ -1,37 +1,24 @@
 import { Dispatch, SetStateAction } from "react";
-import { createTaskProductionEmployee, EmployeeProduction } from "@/api/WeeklyProductionPlanAPI";
 import { Position } from "@/api/LineasAPI";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { DraftTaskProductionEmployee, TaskProductionEmployee } from "types/taskProductionPlanTypes";
 import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
-import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 
 type Props = {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    comodines: EmployeeProduction[];
-    fijos: EmployeeProduction[];
+    comodines: TaskProductionEmployee[];
     positions: Position[];
+    setPositions: Dispatch<SetStateAction<Position[]>>;
+    setNewEmployees: Dispatch<SetStateAction<DraftTaskProductionEmployee[]>>;
+    setComodines: Dispatch<SetStateAction<TaskProductionEmployee[]>>;
 }
 
-export type DraftTaskProductionEmployee = {
-    name: string;
-    code: string;
-    position_id: string;
-    old_position: string;
-}
+export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, positions, setNewEmployees, setComodines, setPositions }: Props) {
 
-export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, fijos, positions }: Props) {
-
-    const params = useParams();
-    const task_p_id = params.task_p_id!!;
-
-    const queryClient = useQueryClient();
     const employeeOptions = comodines.map((employee) => ({
         value: employee.id,
         label: `${employee.name} - ${employee.code} - ${employee.position}`,
@@ -42,36 +29,23 @@ export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, fijos, 
         label: `${position.name}`,
     }));
 
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: createTaskProductionEmployee,
-        onError: (error) => {
-            toast.error(error.message);
-        },
-        onSuccess: (data) => {
-            toast.success(data);
-            setIsOpen(false);
-            queryClient.invalidateQueries({ queryKey: ['getTaskProductionDetails', task_p_id] });
-        }
-    });
     const {
         handleSubmit,
         setValue,
         control,
+        reset,
         formState: { errors }
     } = useForm<DraftTaskProductionEmployee>();
 
     const onSubmit = (FormData: DraftTaskProductionEmployee) => {
-        const exists = fijos.filter(fijo => fijo.code === FormData.code);
-        if (!FormData.old_position) {
-            toast.error('Seleccione el empleado a asignar');
-            return;
-        }
-        if (exists.length > 0) {
-            toast.error(`Esta persona ya fue asignada a la posicion ${exists[0].position}`);
-        } else {
-            mutate({ id: task_p_id, FormData });
-        }
+        const position = positions.find(position => position.id === FormData.position_id);
+        FormData.new_position = position?.name ?? '';
+        setComodines(prev => prev.filter(employee => employee.code !== FormData.code));
+        setPositions(prev => prev.filter(position => position.id !== FormData.position_id));
+        setNewEmployees(prev => [...prev, FormData]);
+        setIsOpen(false);
+        reset();
+
     }
 
     const handleSelectEmployee = (id: string) => {
@@ -112,7 +86,7 @@ export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, fijos, 
                     </InputSelectSearchComponent>
 
                     <button className="button w-full bg-indigo-500 hover:bg-indigo-600">
-                        {isPending ? <Spinner /> : <p>Crear Asignación</p>}
+                        <p>Agregar Empleado</p>
                     </button>
                 </form>
             </div>

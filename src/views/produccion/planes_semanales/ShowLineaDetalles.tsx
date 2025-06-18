@@ -1,15 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getTasksByLineId } from "@/api/WeeklyProductionPlanAPI";
-import TaskProduction from "@/components/produccion/TaskProduction";
-import ModalCierreTareaProduccion from "@/components/modals/ModalCierreTareaProduccion";
-import ModalTomaRendimientoProduccion from "@/components/modals/ModalTomaRendimientoProduccion";
-import ModalTiempoMuerto from "@/components/modals/ModalTiempoMuerto";
-import ModalNotasProblemas from "@/components/modals/ModalNotasProblemas";
+import { getTasksByLineId } from "@/api/TaskProductionPlansAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import TaskProduction from "@/components/produccion/TaskProduction";
 import ModalUnassignNote from "@/components/modals/ModalUnassignNote";
-import ModalReturnPackingMaterial from "@/components/modals/ModalReturnPackingMaterial";
+import ModalTomaRendimientoProduccion from "@/components/modals/ModalTomaRendimientoProduccion";
+import ModalTiempoMuerto from "@/components/modals/ModalTiempoMuerto";
+import ModalCierreTareaProduccion from "@/components/modals/ModalCierreTareaProduccion";
+import ModalNotasProblemas from "@/components/modals/ModalNotasProblemas";
 
 export default function ShowLineaDetalles() {
     const params = useParams();
@@ -29,13 +28,14 @@ export default function ShowLineaDetalles() {
             {(tasks.length === 0) && (
                 <p className=" text-center text-3xl font-medium mt-10">No existen tareas para esta fecha</p>
             )}
+
             {tasks.map(task => (
                 <TaskProduction key={task.id} task={task} />
             ))}
 
-            <ModalCierreTareaProduccion />
-
             <ModalTomaRendimientoProduccion />
+
+            <ModalCierreTareaProduccion />
 
             <ModalTiempoMuerto />
 
@@ -43,7 +43,7 @@ export default function ShowLineaDetalles() {
 
             <ModalUnassignNote />
 
-            <ModalReturnPackingMaterial />
+            {/* <ModalReturnPackingMaterial />  */}
         </div>
     )
 }

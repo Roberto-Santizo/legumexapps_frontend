@@ -1,8 +1,8 @@
 import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
+import { TaskProductionPlan } from "types/taskProductionPlanTypes";
 import { DraftTiempoMuerto } from "views/produccion/tiempos_muertos/CrearTiempoMuerto";
 import { z } from "zod";
-import { TaskProduction } from "./WeeklyProductionPlanAPI";
 
 export const TimeoutSchema = z.object({
     id: z.string(),
@@ -81,7 +81,7 @@ export async function updateTimeOut({ id, FormData }: { id: Timeout['id'], FormD
     }
 }
 
-export async function createTaskTimeout({ id, timeout_id }: { id: TaskProduction['id'], timeout_id: Timeout['id'] }) {
+export async function createTaskTimeout({ id, timeout_id }: { id: TaskProductionPlan['id'], timeout_id: Timeout['id'] }) {
     try {
         const url = `/api/tasks-production/${id}/add-timeout/open`;
         await clienteAxios.post(url, {
@@ -94,7 +94,7 @@ export async function createTaskTimeout({ id, timeout_id }: { id: TaskProduction
     }
 }
 
-export async function closeTaskTimeOut(id: TaskProduction['id']) {
+export async function closeTaskTimeOut(id: TaskProductionPlan['id']) {
     try {
         const url = `/api/tasks-production/${id}/add-timeout/close`;
         const { data } = await clienteAxios.post<string>(url);

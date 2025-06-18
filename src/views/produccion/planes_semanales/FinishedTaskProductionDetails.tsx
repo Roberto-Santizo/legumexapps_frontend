@@ -1,9 +1,9 @@
-import { getFinishedTaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
+import { getFinishedTaskProductionDetails } from "@/api/TaskProductionPlansAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import GraphicsPlanSemanal from "./GraphicsPlanSemanal";

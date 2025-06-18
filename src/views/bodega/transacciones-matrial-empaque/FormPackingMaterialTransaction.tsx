@@ -1,12 +1,8 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
-import { useQuery } from "@tanstack/react-query";
-import { getTasksProduction, TaskProduction } from "@/api/WeeklyProductionPlanAPI";
-import { useEffect, useState } from "react";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";
-import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 type Props = {
   errors: FieldErrors<DraftTransactionPackingMaterial>;
@@ -14,30 +10,13 @@ type Props = {
   control: Control<DraftTransactionPackingMaterial, any>
 };
 
-export default function FormPackingMaterialTransaction({ errors, register, control }: Props) {
+export default function FormPackingMaterialTransaction({ errors, register }: Props) {
 
-  const [tasks, setTasks] = useState<TaskProduction[]>([]);
   const optionsType = [
     { value: "1", label: "ENTREGA" },
     { value: "2", label: "DEVOLUCIÓN" },
   ]
 
-
-  const { data } = useQuery({
-    queryKey: ['getTasksProduction'],
-    queryFn: getTasksProduction,
-  });
-
-  useEffect(() => {
-    if (data) {
-      setTasks(data);
-    }
-  }, [data]);
-
-  const tasksOptions = tasks.map((task) => ({
-    label: `${task.line} - ${task.product} - ${task.code} - ${task.operation_date}`,
-    value: task.id,
-  }))
   return (
     <>
       <InputComponent<DraftTransactionPackingMaterial>
@@ -95,19 +74,6 @@ export default function FormPackingMaterialTransaction({ errors, register, contr
       >
         {errors.type && <Error>{errors.type?.message?.toString()}</Error>}
       </InputSelectComponent>
-
-      <InputSelectSearchComponent<DraftTransactionPackingMaterial>
-        label="Tarea de producción"
-        id="task_production_plan_id"
-        name="task_production_plan_id"
-        options={tasksOptions}
-        control={control}
-        rules={{}}
-        errors={errors}
-      >
-        {errors.task_production_plan_id && <Error>{errors?.task_production_plan_id.message?.toString()}</Error>}
-      </InputSelectSearchComponent>
-
     </>
   );
 }

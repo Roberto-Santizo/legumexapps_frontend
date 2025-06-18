@@ -1,11 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getTaskReturnPackingMaterialDetails, TaskProductionItem } from '@/api/TaskProductionPlanAPI';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { DraftTransactionPackingMaterial } from './ModalEntregaMaterialEmpaque';
 import { createPackingMaterialTransaction } from '@/api/PackingMaterialTransactions';
 import { toast } from 'react-toastify';
+import { TaskProductionItem } from 'types/taskProductionPlanTypes';
+import { getTaskReturnPackingMaterialDetails } from '@/api/TaskProductionPlansAPI';
 import ModalAddWastage, { DraftTaskProductionWastage } from './ModalAddWastage';
 import Modal from '../Modal';
 import InputComponent from "../form/InputComponent";

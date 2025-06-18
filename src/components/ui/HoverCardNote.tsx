@@ -1,9 +1,9 @@
-import { NoteTaskProduction } from "@/api/WeeklyProductionPlanAPI";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { AlertCircleIcon } from "lucide-react";
+import { TaskProductionNotePerformance } from "types/taskProductionPlanTypes";
 
 type Props = {
-    note: NoteTaskProduction | null;
+    note: TaskProductionNotePerformance | null;
 }
 
 const HoverCardNote = ({ note }: Props) => (

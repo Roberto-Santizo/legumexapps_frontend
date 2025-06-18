@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import Modal from "../Modal";
 import SalidaBodegaEmpaque from "../boleta-bodega/SalidaBodegaEmpaque";
-import { FinishedTaskProductionDetails } from "@/api/WeeklyProductionPlanAPI";
 import DevolucionBodega from "../boleta-bodega/DevolucionBodega";
+import { TaskProductionFinished } from "types/taskProductionPlanTypes";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  task: FinishedTaskProductionDetails;
+  task: TaskProductionFinished;
 }
 
 export default function ModalTaskProductionTransactionsFormats({ open, setOpen, task }: Props) {

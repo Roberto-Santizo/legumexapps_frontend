@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getTaskProductionInProgressDetail } from "@/api/WeeklyProductionPlanAPI";
-import GraphicsPlanSemanal, { graphDataType } from "./GraphicsPlanSemanal";
 import { useEffect, useState } from "react";
+import { getTaskProductionInProgressDetails } from "@/api/TaskProductionPlansAPI";
+import GraphicsPlanSemanal, { graphDataType } from "./GraphicsPlanSemanal";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
@@ -13,17 +13,17 @@ export default function TaskProductionPlanDetails() {
 
   const { data: task, isLoading, isError, } = useQuery({
     queryKey: ["getTaskProductionInProgressDetail", task_p_id],
-    queryFn: () => getTaskProductionInProgressDetail(task_p_id),
-    refetchInterval: 1000
+    queryFn: () => getTaskProductionInProgressDetails(task_p_id),
+    refetchInterval: 10000
   });
 
   useEffect(() => {
     if (task) {
       setGraphData({
-        HPlan: task.data.HPlan,
-        HLinea: task.data.HLinea,
-        HRendimiento: task.data.HRendimiento,
-        HTiemposMuertos: task.data.HTiemposMuertos
+        HPlan: task.HPlan,
+        HLinea: task.HLinea,
+        HRendimiento: task.HRendimiento,
+        HTiemposMuertos: task.HTiemposMuertos
       })
     }
   }, [task])
@@ -36,7 +36,7 @@ export default function TaskProductionPlanDetails() {
         <h2 className="font-bold text-4xl">Infomación de Tarea </h2>
         <div className="mt-10 flex flex-col">
           <div>
-            <p className="font-bold text-2xl">SKU: {task.data.sku}</p>
+            <p className="font-bold text-2xl">SKU: {task.sku}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-5 p-5 shadow">
@@ -55,7 +55,7 @@ export default function TaskProductionPlanDetails() {
                     </tr>
                   </thead>
                   <tbody>
-                    {task.data.performances.map(performance => (
+                    {task.performances.map(performance => (
                       <tr key={performance.id} className="tbody-tr">
                         <td className="tbody-td">{performance.take_date}</td>
                         <td className="tbody-td">{performance.tarimas_produced}</td>
@@ -82,7 +82,7 @@ export default function TaskProductionPlanDetails() {
                     </tr>
                   </thead>
                   <tbody>
-                    {task.data.timeouts.map(timeout => (
+                    {task.timeouts.map(timeout => (
                       <tr key={timeout.id} className="tbody-tr">
                         <td className="tbody-td">{timeout.name}</td>
                         <td className="tbody-td">{timeout.start_date}</td>
@@ -109,7 +109,7 @@ export default function TaskProductionPlanDetails() {
               </tr>
             </thead>
             <tbody>
-              {task.data.employees.map((employee) => (
+              {task.employees.map((employee) => (
                 <tr key={employee.id} className="tbody-tr">
                   <td className="tbody-td">{employee.code}</td>
                   <td className="tbody-td">{employee.name}</td>

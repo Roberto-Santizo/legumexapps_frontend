@@ -14,7 +14,9 @@ import ModalAddItemPackingMaterialDispatch from "@/components/modals/ModalAddIte
 
 export default function CreateBodegaSalidaEmpaque() {
   const location = useLocation();
-  const taskId = location.state?.task_production_plan_id;
+  const queryParams = new URLSearchParams(location.search);
+  const taskId = queryParams.get('taskId')!;
+
   const url = location.state?.url;
 
   const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>([]);

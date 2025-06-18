@@ -1,8 +1,8 @@
-import { TransactionTaskProduction } from "@/api/WeeklyProductionPlanAPI";
+import { TaskProductionTransaction } from "types/taskProductionPlanTypes";
 import LogoLegumex from "../logos/LogoLegumex";
 
 type Props = {
-  transaction: TransactionTaskProduction;
+  transaction: TaskProductionTransaction;
 }
 
 export default function DevolucionBodega({ transaction }: Props) {

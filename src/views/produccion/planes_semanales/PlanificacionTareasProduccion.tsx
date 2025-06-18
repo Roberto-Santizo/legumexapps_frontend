@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAllTasksWeeklyProductionPlan, getTasksOperationDate, TaskProductionEvents, TaskProductionNoOperationDate } from '@/api/WeeklyProductionPlanAPI';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
+import { getAllTasksWeeklyProductionPlan, getTasksOperationDate } from '@/api/WeeklyProductionPlanAPI';
+import { TaskProductionEvents, TaskProductionNoOperationDate } from 'types/taskProductionPlanTypes';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from "@fullcalendar/core/locales/es";
 import interactionPlugin from "@fullcalendar/interaction";
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskScheduled from '@/components/produccion/TaskScheduled';
-import ShowErrorAPI from '@/components/utilities-components/ShowErrorAPI';
 import TaskUnscheduled from '@/components/produccion/TaskUnscheduled';
 import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduccion';
 
@@ -32,7 +32,7 @@ export default function CalendarTasks() {
 
   const navigate = useNavigate();
 
-  const { data: allTasks, isLoading, isError } = useQuery({
+  const { data: allTasks, isLoading } = useQuery({
     queryKey: ['getAllTasksWeeklyProductionPlan', plan_id],
     queryFn: () => getAllTasksWeeklyProductionPlan(plan_id),
   });
@@ -84,23 +84,33 @@ export default function CalendarTasks() {
           />
 
           <div className="border-t pt-4">
-            <h2 className="text-2xl font-bold">Tareas programadas: {date || '—'}</h2>
+            <h2 className="text-2xl font-bold">Tareas programadas: {date}</h2>
             <div className='mt-5 overflow-y-auto scrollbar-hide max-h-96 space-y-6'>
               {programedTasksLoading && <Spinner />}
-              {programedTasks?.map(pTask => (
-                <TaskScheduled key={pTask.id} task={pTask} selectedId={selectedId} setSelectedId={setSelectedId} />
-              ))}
+              {programedTasks?.length === 0 ? <p className='text-center'>No existen tareas programadas para esta fecha</p> : (
+                <>
+                  {programedTasks?.map(pTask => (
+                    <TaskScheduled key={pTask.id} task={pTask} selectedId={selectedId} setSelectedId={setSelectedId} />
+                  ))}
+                </>
+              )}
+
             </div>
           </div>
         </div>
 
         <div className="w-96 p-5 border rounded-lg bg-white shadow overflow-y-auto scrollbar-hide space-y-5 max-h-screen">
           <h2 className='font-bold text-lg uppercase'>Tareas sin programación</h2>
-          {isError && <ShowErrorAPI />}
           {isLoading && <Spinner />}
-          {tasksNoOperationDate?.map(task => (
-            <TaskUnscheduled key={task.id} task={task} />
-          ))}
+
+          {tasksNoOperationDate.length === 0 ? <p className='text-center'>No existen tareas sin programación</p> : (
+            <>
+              {tasksNoOperationDate?.map(task => (
+                <TaskUnscheduled key={task.id} task={task} />
+              ))}
+            </>
+          )}
+
         </div>
       </div>
 
