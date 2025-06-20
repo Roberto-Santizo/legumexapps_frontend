@@ -2,6 +2,7 @@ import { BoxIcon, Calendar, File } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
+import { TasksWithOperationDateFilters } from "./TasksWithOperationDate";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque from "../modals/ModalEntregaMaterialEmpaque";
 
@@ -9,9 +10,10 @@ type Props = {
     task: TaskProductionOperationDate;
     selectedId: string;
     setSelectedId: Dispatch<SetStateAction<TaskProductionOperationDate['id']>>;
+    filters: TasksWithOperationDateFilters;
 }
 
-export default function TaskScheduled({ task, selectedId, setSelectedId }: Props) {
+export default function TaskScheduled({ task, selectedId, setSelectedId, filters }: Props) {
     const [modal, setModal] = useState<boolean>(false);
     const [modalEntrega, setModalEntrega] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -49,9 +51,9 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                     </button>
                 )}
 
-                {task.status_id === '0' && (
+                {task.status_id === '1' && (
                     <>
-                        {task.recipe.length > 0 ? (
+                        {task.recipe.length > 0 && (
                             <button
                                 onClick={() => {
                                     setModalEntrega(true);
@@ -60,14 +62,6 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                             >
                                 <BoxIcon className="w-4 h-4" />
                                 Entregar Material de Empaque
-                            </button>
-                        ) : (
-                            <button
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
-                                onClick={() => navigate('/material-empaque-transacciones/crear', { state: { task_production_plan_id: task.id, url: location.pathname + location.search } })}
-                            >
-                                <File className="w-4 h-4" />
-                                Creación de Entrega Empaque
                             </button>
                         )}
 
@@ -87,6 +81,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId }: Props
                 modal={modal}
                 setModal={setModal}
                 selectedId={selectedId}
+                filters={filters}
             />
 
             {task.recipe?.length > 0 && (

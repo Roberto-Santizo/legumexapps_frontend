@@ -4,12 +4,14 @@ import { useLocation, useParams } from "react-router-dom";
 import { TaskProductionNoOperationDate } from "types/taskProductionPlanTypes";
 import { assignOperationDate } from "@/api/TaskProductionPlansAPI";
 import { toast } from "react-toastify";
+import { TaskProductionUnscheduledFilters } from "./TasksWithNoOperationDate";
 
 type Props = {
   task: TaskProductionNoOperationDate;
+  filters: TaskProductionUnscheduledFilters;
 }
 
-export default function TaskUnscheduled({ task }: Props) {
+export default function TaskUnscheduled({ task, filters }: Props) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date')!;
@@ -24,9 +26,9 @@ export default function TaskUnscheduled({ task }: Props) {
     },
     onSuccess: (data) => {
       toast.success(data);
-      queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id] });
-      queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
-      queryClient.invalidateQueries({ queryKey: ['getAllTasksWeeklyProductionPlan', plan_id] });
+      queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filters] });
+      queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date, plan_id] });
+      queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
 
     }
   });

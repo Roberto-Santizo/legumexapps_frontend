@@ -50,18 +50,14 @@ export default function TaskProductionPlanDetails() {
                       <th className="thead-th">Fecha de Toma</th>
                       <th className="thead-th">Tarimas Producidas</th>
                       <th className="thead-th">Libras Bascula</th>
-                      <th className="thead-th">Libras Producidas</th>
-                      <th className="thead-th">Sobre Dosificación</th>
                     </tr>
                   </thead>
                   <tbody>
                     {task.performances.map(performance => (
                       <tr key={performance.id} className="tbody-tr">
                         <td className="tbody-td">{performance.take_date}</td>
-                        <td className="tbody-td">{performance.tarimas_produced}</td>
+                        <td className="tbody-td">{performance.tarimas_produced ?? 0}</td>
                         <td className="tbody-td">{performance.lbs_bascula}</td>
-                        <td className="tbody-td">{performance.lbs_teoricas}</td>
-                        <td className="tbody-td">{performance.difference}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -93,13 +89,11 @@ export default function TaskProductionPlanDetails() {
                   </tbody>
                 </table>
               </div>
-
             </div>
           </div>
         </div>
 
         <div className="w-full p-2 h-96 overflow-y-scroll scrollbar-hide">
-
           <table className="table mt-5">
             <thead>
               <tr className="thead-tr">

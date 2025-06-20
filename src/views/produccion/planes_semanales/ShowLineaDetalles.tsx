@@ -9,6 +9,7 @@ import ModalTomaRendimientoProduccion from "@/components/modals/ModalTomaRendimi
 import ModalTiempoMuerto from "@/components/modals/ModalTiempoMuerto";
 import ModalCierreTareaProduccion from "@/components/modals/ModalCierreTareaProduccion";
 import ModalNotasProblemas from "@/components/modals/ModalNotasProblemas";
+import ModalReturnPackingMaterial from "@/components/modals/ModalReturnPackingMaterial";
 
 export default function ShowLineaDetalles() {
     const params = useParams();
@@ -43,7 +44,7 @@ export default function ShowLineaDetalles() {
 
             <ModalUnassignNote />
 
-            {/* <ModalReturnPackingMaterial />  */}
+            <ModalReturnPackingMaterial />
         </div>
     )
 }

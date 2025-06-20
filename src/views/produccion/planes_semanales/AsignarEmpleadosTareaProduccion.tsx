@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "@/helpers";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -103,8 +103,17 @@ export default function ShowTaskProductionDetails() {
         mutationFn: createTaskProductionEmployees,
         onError: (error) => {
             toast.error(error.message);
+        },
+        onSuccess: () => {
+            toast.success("Asignación y empleados confirmados");
+            queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
+            navigate(url);
         }
     });
+
+    const loading = useMemo(() => {
+        return isPending || isPendingNewEmployees;
+    }, [isPending, isPendingNewEmployees]);
 
     const handleConfirmAssignment = () => {
         Swal.fire({
@@ -120,9 +129,6 @@ export default function ShowTaskProductionDetails() {
             if (result.isConfirmed) {
                 try {
                     await Promise.allSettled([firstMutation({ changes, id: task_p_id }), secondMutation({ id: task_p_id, FormData: newEmployees })]);
-                    toast.success("Asignación y empleados confirmados");
-                    queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
-                    navigate(url);
                 } catch (error) {
                     toast.error("Hubo un error en el proceso");
                 }
@@ -176,8 +182,8 @@ export default function ShowTaskProductionDetails() {
                 <div className="shadow">
                     <p className="text-center bg-indigo-500 p-1 text-white font-bold">Resumen de Cambios</p>
 
-                    <div className="mt-4 p-2 space-y-5">
-                        {(changes.length === 0 && newEmployees.length === 0) && <p className="text-center text-lg">No existen cambios</p>}
+                    <div className="max-h-96 overflow-y-auto scrollbar-hide space-y-2">
+                        {(changes.length === 0 && newEmployees.length === 0) && <p className="text-center text-lg mt-10">No existen cambios</p>}
                         <AnimatePresence>
                             {changes.map((change, index) => (
                                 <motion.div
@@ -272,8 +278,8 @@ export default function ShowTaskProductionDetails() {
                 setNewEmployees={setNewEmployees}
             />
 
-            <button onClick={() => handleConfirmAssignment()} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-                {(isPending || isPendingNewEmployees) ? <Spinner /> : <p>Confirmar Asignación</p>}
+            <button onClick={() => handleConfirmAssignment()} disabled={loading} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                {loading ? <Spinner /> : <p>Confirmar Asignaciones</p>}
             </button>
         </div>
     );

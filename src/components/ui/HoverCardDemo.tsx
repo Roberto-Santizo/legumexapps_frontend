@@ -16,7 +16,7 @@ const HoverCardDemo = ({ employee }: Props) => (
                 <TableCell>{employee.name}</TableCell>
                 <TableCell>{employee.position}</TableCell>
                 <TableCell>
-                    {employee.bitacoras.length > 0 && (
+                    {(employee.bitacoras?.length ?? 0) > 0 && (
                         <AlertCircleIcon className="text-red-500" />
                     )}
                 </TableCell>
@@ -30,7 +30,7 @@ const HoverCardDemo = ({ employee }: Props) => (
                 <div className="space-y-4 p-4 bg-white rounded-lg">
                     <h2 className="text-xl font-semibold text-gray-800">Bitácoras de {employee.position}</h2>
                     <div className="divide-y divide-gray-300">
-                        {employee.bitacoras.length === 0 ? (
+                        {(employee.bitacoras?.length ?? 0) === 0 ? (
                             <p className="text-center">No existen cambios en esta posición</p>
                         ) : (
                             <table className="table">
@@ -41,7 +41,7 @@ const HoverCardDemo = ({ employee }: Props) => (
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {employee.bitacoras.map((bitacora) => (
+                                    {employee.bitacoras?.map((bitacora) => (
                                         <tr className="tbody-tr" key={bitacora.id}>
                                             <td className="tbody-td">{bitacora.original_name}</td>
                                             <td className="tbody-td">{bitacora.original_position}</td>

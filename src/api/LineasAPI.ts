@@ -83,7 +83,6 @@ export async function getLineaById(id: Linea['id']): Promise<Linea> {
         const url = `/api/lines/${id}`;
         const { data } = await clienteAxios(url);
         const result = LineaDetailSchema.safeParse(data);
-                console.log(data);
         if (result.success) {
             return result.data.data;
         } else {

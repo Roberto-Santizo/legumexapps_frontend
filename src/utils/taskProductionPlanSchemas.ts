@@ -14,7 +14,7 @@ export const TaskProductionEmployeeSchema = z.object({
     name: z.string(),
     code: z.string(),
     position: z.string(),
-    bitacoras: z.array(BitacoraTaskProductionEmployeeSchema)
+    bitacoras: z.array(BitacoraTaskProductionEmployeeSchema).optional()
 });
 
 export const TaskProductionChange = z.array(
@@ -41,8 +41,6 @@ export const TaskProductionPerformanceSchema = z.object({
     take_date: z.string(),
     tarimas_produced: z.number().nullable(),
     lbs_bascula: z.number(),
-    lbs_teoricas: z.number(),
-    difference: z.number()
 });
 
 export const TaskProductionSchema = z.object({

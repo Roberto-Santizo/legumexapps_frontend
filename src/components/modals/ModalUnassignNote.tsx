@@ -71,7 +71,7 @@ export default function ModalUnassignNote() {
         mutate({ FormData: data, id: taskId })
     };
 
-    const filteredEmployees = data?.data.filter(employee =>
+    const filteredEmployees = data?.data?.filter(employee =>
         employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.position.toLowerCase().includes(searchTerm.toLowerCase())

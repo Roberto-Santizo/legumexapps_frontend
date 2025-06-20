@@ -7,11 +7,13 @@ import { useLocation, useParams } from "react-router-dom";
 import { updateTaskProductionOperationDate } from "@/api/TaskProductionPlansAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
+import { TasksWithOperationDateFilters } from "../produccion/TasksWithOperationDate";
 
 type Props = {
   modal: boolean;
   setModal: Dispatch<SetStateAction<boolean>>;
   selectedId: string;
+  filters: TasksWithOperationDateFilters;
 }
 
 export type DraftChangeOperationDate = {
@@ -19,7 +21,7 @@ export type DraftChangeOperationDate = {
   reason: string;
 }
 
-export default function ModalChangeOperationDate({ modal, setModal, selectedId }: Props) {
+export default function ModalChangeOperationDate({ modal, setModal, selectedId, filters }: Props) {
   const location = useLocation();
   const params = useParams();
   const queryParams = new URLSearchParams(location.search);
@@ -36,8 +38,8 @@ export default function ModalChangeOperationDate({ modal, setModal, selectedId }
     },
     onSuccess: (data) => {
       toast.success(data);
-      queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
-      queryClient.invalidateQueries({ queryKey: ['getAllTasksWeeklyProductionPlan', plan_id] });
+      queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
+      queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
       setModal(false);
     }
   });

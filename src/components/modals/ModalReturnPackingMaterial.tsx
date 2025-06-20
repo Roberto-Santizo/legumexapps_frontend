@@ -96,7 +96,7 @@ export default function ModalReturnPackingMaterial() {
         <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Devolución Material Empaque" width="w-2/3">
             <div className="p-10 bg-gradient-to-br from-gray-50 to-white space-y-5">
                 {isLoading ? <Spinner /> : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 gap-2">
                         {auxItems.map((item) => (
                             <div
                                 key={item.packing_material_id}

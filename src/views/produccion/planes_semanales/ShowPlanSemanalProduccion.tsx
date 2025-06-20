@@ -1,13 +1,15 @@
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getWeeklyPlanDetails } from "@/api/WeeklyProductionPlanAPI";
-import { Eye, Upload } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { downloadPlanillaProduction, getWeeklyPlanDetails } from "@/api/WeeklyProductionPlanAPI";
+import { Eye, FileDown, Upload } from "lucide-react";
 import { useState } from "react";
 import { usePermissions } from "@/hooks/usePermissions";
 import { LineWeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalCargaPosiciones from "@/components/modals/ModalCargaPosiciones";
+import LoadingOverlay from "@/components/utilities-components/LoadingOverlay";
 
 
 export default function ShowPlanSemanalProduccion() {
@@ -18,12 +20,12 @@ export default function ShowPlanSemanalProduccion() {
   const [selectedLinea, setSelectedLinea] = useState<LineWeeklyProductionPlan>({} as LineWeeklyProductionPlan);
   const { hasPermission } = usePermissions();
 
-  // const { mutate, isPending } = useMutation({
-  //   mutationFn: downloadPlanillaProduction,
-  //   onError: (error) => {
-  //     toast.error(error.message);
-  //   }
-  // });
+  const { mutate, isPending } = useMutation({
+    mutationFn: downloadPlanillaProduction,
+    onError: (error) => {
+      toast.error(error.message);
+    }
+  });
 
   const { data: assignment, isLoading, isError } = useQuery({
     queryKey: ['getWeeklyPlanDetails', id],
@@ -34,7 +36,7 @@ export default function ShowPlanSemanalProduccion() {
   if (isError) return <ShowErrorAPI />
   return (
     <div className="w-full">
-      {/* {isPending && <LoadingOverlay />} */}
+      {isPending && <LoadingOverlay />}
       <h2 className="font-bold text-4xl mb-12 text-gray-800">Líneas Asignadas</h2>
 
       <div className="space-y-8">
@@ -62,7 +64,7 @@ export default function ShowPlanSemanalProduccion() {
                       <Eye className="text-gray-700 w-6 h-6" />
                     </Link>
                   )}
-                  {/* 
+
                   {hasPermission('download hours line report') && (
                     <button
                       onClick={() => mutate({ plan_id: id, line_id: assigment.id })}
@@ -71,7 +73,7 @@ export default function ShowPlanSemanalProduccion() {
                     >
                       <FileDown className="text-gray-700 w-6 h-6" />
                     </button>
-                  )} */}
+                  )}
                 </div>
               ) : (
                 <>

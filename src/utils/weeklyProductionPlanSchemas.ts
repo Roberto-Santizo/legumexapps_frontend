@@ -26,10 +26,8 @@ export const WeeklyProductionPlanSummarySchema = z.object({
     data: z.array(LineWeeklyProductionPlanSchema)
 });
 
-export const WeeklyProductionPlanTasksSchema = z.object({
-    tasks: z.array(TaskProductionNoOperationDateSchema),
-    events: z.array(TaskProductionEventSchema)
-});
+export const WeeklyProductionPlanTasksSchema = z.array(TaskProductionNoOperationDateSchema);
+export const WeeklyProductionPlanEvents = z.array(TaskProductionEventSchema);
 
 export const WeeklyPlanTasksOperationDateSchema = z.object({
     data: z.array(TaskProductionOperationDateSchema)

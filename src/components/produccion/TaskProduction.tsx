@@ -75,17 +75,17 @@ export default function TaskProduction({ task }: Props) {
 
       <div className="col-start-7 space-y-5 flex flex-col justify-between items-center">
         <div className="flex flex-col gap-5">
-          {(task.status === 1) && (
+          {(task.status === 2) && (
             <button onClick={() => navigate(`/planes-produccion/asignacion/${plan_id}/${linea_id}/${task.id}`, { state: { url: location.pathname } })}>
               <Paperclip className="cursor-pointer hover:text-gray-500" />
             </button>
           )}
 
-          {(task.status === 2) && (
+          {(task.status === 3) && (
             <SquarePlay className="cursor-pointer hover:text-gray-500" onClick={() => startTask(task.id)} />
           )}
 
-          {(task.status === 3 && !task.paused) && (
+          {(task.status === 4 && !task.paused) && (
             <>
 
               <CheckCircle
@@ -114,7 +114,7 @@ export default function TaskProduction({ task }: Props) {
             </>
           )}
 
-          {(task.paused && task.status === 3) && (
+          {(task.paused && task.status === 4) && (
             <>
               <AlarmClockPlus
                 className="hover:text-orange-600 cursor-pointer text-orange-500"
@@ -129,7 +129,7 @@ export default function TaskProduction({ task }: Props) {
             </>
           )}
 
-          {(task.start_date && task.end_date && task.status === 4) && (
+          {(task.start_date && task.end_date && task.status === 5) && (
             <>
               <CheckCircle className="text-green-500 cursor-pointer" />
               <Link to={`/planes-produccion/tarea-produccion/${task.id}`}>
@@ -138,7 +138,7 @@ export default function TaskProduction({ task }: Props) {
             </>
           )}
 
-          {(task.end_date && !task.is_minimum_requrire && !task.is_justified && task.status === 4) && (
+          {(task.end_date && !task.is_minimum_requrire && !task.is_justified && task.status === 5) && (
             <NotebookPen
               className="text-red-500 hover:text-gray-500 cursor-pointer"
               onClick={() => navigate(`${location.pathname}?modal=4&TaskId=${task.id}`)}
