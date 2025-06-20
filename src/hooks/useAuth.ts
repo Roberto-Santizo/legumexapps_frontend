@@ -11,7 +11,7 @@ export const useAuth = () => {
         queryFn: getUser,
         retry: 1,
         refetchIntervalInBackground: true,
-        refetchInterval: 1000 * 60 * 60 * 2 
+        refetchInterval: 1000 * 60 * 60
     });
 
     if (isError) {
