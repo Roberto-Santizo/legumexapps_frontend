@@ -21,11 +21,7 @@ export type DraftNewTaskProduction = {
     destination: string;
 }
 
-type Props = {
-    date: string;
-}
-
-export default function ModalCrearTareaProduccion({date} : Props) {
+export default function ModalCrearTareaProduccion() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const newTask = queryParams.get('newTask')!;
