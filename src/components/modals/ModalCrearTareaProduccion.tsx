@@ -21,7 +21,11 @@ export type DraftNewTaskProduction = {
     destination: string;
 }
 
-export default function ModalCrearTareaProduccion() {
+type Props = {
+    date: string;
+}
+
+export default function ModalCrearTareaProduccion({date} : Props) {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const newTask = queryParams.get('newTask')!;
@@ -63,7 +67,7 @@ export default function ModalCrearTareaProduccion() {
         },
         onSuccess: (data) => {
             toast.success(data);
-            queryClient.invalidateQueries({ queryKey: ['getAllTasksWeeklyProductionPlan', plan_id] });
+            queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
             navigate(location.pathname);
             reset();
         }

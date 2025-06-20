@@ -76,7 +76,7 @@ export default function CalendarTasks() {
         <TasksWithNoOperationDate lines={lines?.data ?? []} />
       </div>
 
-      <ModalCrearTareaProduccion />
+      <ModalCrearTareaProduccion date={date}/>
     </div>
   )
 }
