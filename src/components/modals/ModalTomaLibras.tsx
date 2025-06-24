@@ -77,7 +77,7 @@ export default function ModalTomaLibras({ isOpen, setIsOpen, id, refetch }: Prop
       <div className="p-6">
         {isLoading && <Spinner />}
         {isError && <ShowErrorAPI />}
-        {incompleteAssigments.length === 0 && (
+        {(!isLoading && incompleteAssigments.length) === 0 && (
           <p className="text-center font-bold uppercase">No existen datos incompletos</p>
         )}
         <div className="space-y-6">

@@ -114,8 +114,11 @@ export async function createProductionPlan(file: File[]) {
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            const errores = error.response?.data?.plan_errors;
+            throw new Error(`${errores ? '\n' + errores.join('\n') : ''}`);
         }
+
+        throw new Error("Error desconocido");
     }
 }
 

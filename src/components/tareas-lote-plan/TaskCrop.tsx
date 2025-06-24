@@ -4,9 +4,8 @@ import { BadgeCheck, FileText, Grid2X2Plus, ListPlus, SquarePlusIcon } from "luc
 import { toast } from "react-toastify";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { closeWeekAssignment } from "@/api/TaskCropWeeklyPlanAPI";
-import { useQuery } from "@tanstack/react-query";
-import { getUserRole } from "@/api/UserAPI";
 import { Dispatch } from "react";
+import { useRole } from "@/hooks/useRole";
 import TaskLabel from "../utilities-components/TaskLabel";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
@@ -21,10 +20,7 @@ type TaskCropProps = {
 export default function TaskCrop({ task, refetch, setId, setIsOpen }: TaskCropProps) {
   const navigate = useNavigate();
 
-  const { data: role, isLoading, isError } = useQuery({
-    queryKey: ['getUserRoleByToken'],
-    queryFn: getUserRole
-  });
+  const { data: role, isLoading, isError } = useRole();
 
   const { mutate, isPending } = useMutation({
     mutationFn: closeWeekAssignment,
@@ -41,7 +37,7 @@ export default function TaskCrop({ task, refetch, setId, setIsOpen }: TaskCropPr
 
   if (isPending) return <Spinner />
   if (isError) return <ShowErrorAPI />
-  return (
+  if (role) return (
     <div className="grid grid-cols-6 shadow-xl p-10 text-xl">
       <div className="col-span-5">
         <TaskLabel label={"ID"} text={task.id} />

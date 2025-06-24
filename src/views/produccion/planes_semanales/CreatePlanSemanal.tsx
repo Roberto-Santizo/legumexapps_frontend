@@ -3,11 +3,14 @@ import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import Spinner from "@/components/utilities-components/Spinner";
 import { createProductionPlan } from "@/api/WeeklyProductionPlanAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ModalErrorsTable from "@/components/modals/ModalErrorsTable";
 
 export default function CreatePlanSemanal() {
   const [file, setFile] = useState<File[] | null>(null);
+  const [errores, setErrores] = useState<string[]>([]);
+  const [modalErrors, setModalErrors] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -21,7 +24,9 @@ export default function CreatePlanSemanal() {
   const { mutate, isPending } = useMutation({
     mutationFn: (file: File[]) => createProductionPlan(file),
     onError: (error) => {
-      toast.error(error.message);
+      const erroresCapturados = error.message.split('\n').slice(1);
+      setErrores(erroresCapturados);
+      setModalErrors(true);
     },
     onSuccess: (data) => {
       toast.success(data);
@@ -83,6 +88,8 @@ export default function CreatePlanSemanal() {
           </div>
         </form>
       </div>
+
+      <ModalErrorsTable modal={modalErrors} setModal={setModalErrors} errors={errores}/>
     </div>
   );
 }
