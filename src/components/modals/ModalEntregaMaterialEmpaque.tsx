@@ -2,7 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { BoxIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
 import { DraftTaskProductionWastage } from "./ModalAddWastage";
@@ -13,6 +13,7 @@ import Spinner from "../utilities-components/Spinner";
 import Error from "../utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
+import { TasksWithOperationDateFilters } from "../produccion/TasksWithOperationDate";
 
 export type DraftPackingMaterialTransactionItem = {
     packing_material_id: string;
@@ -48,6 +49,9 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
     const queryClient = useQueryClient();
     const responsableSignatureRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
+    const params = useParams();
+    const plan_id = params.plan_id!!;
+
     const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>(task.recipe);
     const [error, setError] = useState<boolean>(false);
 
@@ -58,7 +62,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
             setModal(false);
             toast.success(data);
             reset();
-            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date] });
+            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date,plan_id, {} as TasksWithOperationDateFilters] });
         }
     });
 
@@ -107,7 +111,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
             <div className="p-8 space-y-8">
                 <h2 className="text-2xl font-bold uppercase text-center text-gray-800">Configuración Empaque</h2>
 
-                <div className={`flex justify-center sm:grid-cols-3 gap-6 ${error ? 'border-2 border-red-500 rounded-xl p-4' : ''}`}>
+                <div className={`grid grid-cols-1 xl:grid-cols-3 gap-6 ${error ? 'border-2 border-red-500 rounded-xl p-4' : ''}`}>
                     {task.recipe.map((item, index) => (
                         <div key={index} className="flex flex-col items-center bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out w-full max-w-xs mx-auto">
                             <div className="mb-4 text-blue-500">

@@ -42,14 +42,12 @@ export default function PosicionesLinea() {
                 <table className="table mt-10">
                     <thead>
                         <tr className="thead-tr">
-                            <th className="thead-th">ID</th>
                             <th className="thead-th">Posición</th>
                         </tr>
                     </thead>
                     <tbody>
                         {line?.positions?.map(position => (
                             <tr className="tbody-tr" key={position.id}>
-                                <td className="tbody-td">{position.id}</td>
                                 <td className="tbody-td">{position.name}</td>
                             </tr>
                         ))}

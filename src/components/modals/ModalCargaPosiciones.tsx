@@ -1,23 +1,23 @@
-import { Dispatch, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LineWeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import { createAssigmentsProductionTasks } from "@/api/WeeklyProductionPlanAPI";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
-import { useParams } from "react-router-dom";
 
-type Props = {
-    isOpen: boolean;
-    setIsOpen: Dispatch<React.SetStateAction<boolean>>;
-    linea: LineWeeklyProductionPlan;
-}
 
-export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea }: Props) {
-    const [file, setFile] = useState<File[] | null>(null);
+export default function ModalCargaPosiciones() {
     const params = useParams();
     const id = params.plan_id!!;
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const modal = queryParams.get('uploadPositions');
+    const open = modal ? true : false;
+
+    const [file, setFile] = useState<File[] | null>(null);
+    const navigate = useNavigate();
 
     const queryClient = useQueryClient();
 
@@ -36,15 +36,15 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea }: Props
         },
         onSuccess: (data) => {
             toast.success(data);
-            setIsOpen(false);
             setFile(null);
             queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanDetails', id] });
+            handleCloseModal();
         }
     });
 
     const handleCreatePlan = async () => {
         if (file) {
-            mutate({ file, id: linea.id });
+            mutate(file);
         }
     };
 
@@ -54,11 +54,11 @@ export default function ModalCargaPosiciones({ isOpen, setIsOpen, linea }: Props
     };
 
     const handleCloseModal = () => {
+        navigate(location.pathname, { replace: true });
         setFile(null);
-        setIsOpen(false);
     }
     return (
-        <Modal modal={isOpen} closeModal={handleCloseModal} title="Carga de Posiciones">
+        <Modal modal={open} closeModal={handleCloseModal} title="Carga de Posiciones">
             <div className="flex items-center justify-center px-4">
                 <div className="w-full  bg-white shadow-xl rounded-2xl p-8">
                     <form onSubmit={handleSubmit}>

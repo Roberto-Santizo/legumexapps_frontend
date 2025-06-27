@@ -3,7 +3,7 @@ import { TasksWithOperationDateFilters } from "@/components/produccion/TasksWith
 import clienteAxios from "@/config/axios";
 import { WeeklyPlanTasksOperationDateSchema, WeeklyProductionPlanEvents, WeeklyProductionPlansSchema, WeeklyProductionPlanSummarySchema, WeeklyProductionPlanTasksSchema } from "@/utils/weeklyProductionPlanSchemas";
 import { isAxiosError } from "axios";
-import { LineWeeklyProductionPlan, WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import { Linea } from "./LineasAPI";
 import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
@@ -41,9 +41,9 @@ export async function getWeeklyPlanDetails(id: WeeklyProductionPlan['id']) {
     }
 }
 
-export async function createAssigmentsProductionTasks({ file, id }: { file: File[], id: LineWeeklyProductionPlan['id'] }) {
+export async function createAssigmentsProductionTasks(file : File[]) {
     try {
-        const url = `/api/weekly-production-plans/assign/${id}`;
+        const url = `/api/weekly-production-plans/assign`;
         const formData = new FormData();
         formData.append("file", file[0]);
 
