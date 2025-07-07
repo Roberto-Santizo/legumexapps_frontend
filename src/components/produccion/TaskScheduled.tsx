@@ -54,7 +54,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId, filters
                     </button>
                 )}
 
-                {(task.status_id === '1' && hasPermission('create mp transaction')) && (
+                {(task.status_id === '1' && hasPermission('create mp transactions')) && (
                     <>
                         {task.recipe.length > 0 && (
                             <button
