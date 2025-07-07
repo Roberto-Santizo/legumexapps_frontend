@@ -11,6 +11,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import TasksWithOperationDate from '@/components/produccion/TasksWithOperationDate';
+import { usePermissions } from '@/hooks/usePermissions';
 
 type DateClickInfo = {
   dateStr: string;
@@ -26,6 +27,7 @@ export default function CalendarTasks() {
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState<string>(date);
+  const { hasPermission } = usePermissions();
 
   const { data: events } = useQuery({
     queryKey: ['getWeeklyProductionPlanEvents', plan_id],
@@ -48,12 +50,14 @@ export default function CalendarTasks() {
         <h1 className="font-bold text-4xl mb-4">Planificación Producción</h1>
       </div>
 
-      <div className='flex justify-end'>
-        <button className='button bg-indigo-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
-          <PlusIcon />
-          Crear Tarea Producción
-        </button>
-      </div>
+      {hasPermission('administrate plans production') && (
+        <div className='flex justify-end'>
+          <button className='button bg-indigo-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
+            <PlusIcon />
+            Crear Tarea Producción
+          </button>
+        </div>
+      )}
 
       <div className="flex gap-5 p-5">
         <div className="flex-1 border p-5 rounded-lg bg-white shadow max-h-screen overflow-y-auto scrollbar-hide space-y-6">
@@ -73,7 +77,9 @@ export default function CalendarTasks() {
           <TasksWithOperationDate date={selectedDate} lines={lines?.data ?? []} />
         </div>
 
-        <TasksWithNoOperationDate lines={lines?.data ?? []} />
+        {hasPermission('administrate plans production') && (
+          <TasksWithNoOperationDate lines={lines?.data ?? []} />
+        )}
       </div>
 
       <ModalCrearTareaProduccion />

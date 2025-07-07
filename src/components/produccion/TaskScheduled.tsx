@@ -5,6 +5,7 @@ import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
 import { TasksWithOperationDateFilters } from "./TasksWithOperationDate";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque from "../modals/ModalEntregaMaterialEmpaque";
+import { usePermissions } from "@/hooks/usePermissions";
 
 type Props = {
     task: TaskProductionOperationDate;
@@ -16,6 +17,8 @@ type Props = {
 export default function TaskScheduled({ task, selectedId, setSelectedId, filters }: Props) {
     const [modal, setModal] = useState<boolean>(false);
     const [modalEntrega, setModalEntrega] = useState<boolean>(false);
+    const { hasPermission } = usePermissions();
+    
     const navigate = useNavigate();
 
     return (
@@ -38,7 +41,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId, filters
             </div>
 
             <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-2">
-                {!task.finished && !task.working && (
+                {(!task.finished && !task.working && hasPermission('administrate plans production')) && (
                     <button
                         onClick={() => {
                             setSelectedId(task.id);
@@ -51,7 +54,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId, filters
                     </button>
                 )}
 
-                {task.status_id === '1' && (
+                {(task.status_id === '1' && hasPermission('create mp transaction')) && (
                     <>
                         {task.recipe.length > 0 && (
                             <button
