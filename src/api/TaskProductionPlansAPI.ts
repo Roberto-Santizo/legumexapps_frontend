@@ -1,6 +1,6 @@
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import { Linea } from "./LineasAPI";
-import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
+import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TaskProductionReprogramDetailsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
 import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionNoOperationDate, TaskProductionOperationDate, TaskProductionPlan } from "types/taskProductionPlanTypes";
 import { isAxiosError } from "axios";
 import clienteAxios from "@/config/axios";
@@ -234,7 +234,9 @@ export async function updateTaskProductionOperationDate({ id, FormData }: { id: 
 export async function createNewTaskProduction(FormData: DraftNewTaskProduction) {
     try {
         const url = '/api/tasks-production/new-task';
-        const { data } = await clienteAxios.post<string>(url, FormData);
+        const { data } = await clienteAxios.post<string>(url, {
+            data: [FormData]
+        });
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
@@ -243,12 +245,26 @@ export async function createNewTaskProduction(FormData: DraftNewTaskProduction) 
     }
 }
 
-export async function getTaskReturnPackingMaterialDetails({ id } : { id: TaskProductionPlan['id'] }) {
+export async function createNewTasksProduction({FormData} : {FormData: DraftNewTaskProduction[]}) {
+    try {
+        const url = '/api/tasks-production/new-task';
+        const { data } = await clienteAxios.post<string>(url, {
+            data: FormData
+        });
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg)
+        }
+    }
+}
+
+export async function getTaskReturnPackingMaterialDetails({ id }: { id: TaskProductionPlan['id'] }) {
     try {
         const url = `api/tasks-production/devolution-details/${id}`;
         const { data } = await clienteAxios(url);
         const result = TaskProductionItemsSchema.safeParse(data);
-       
+
         if (result.success) {
             return result.data
         } else {
@@ -276,6 +292,35 @@ export async function getTasksProduction() {
     }
 }
 
+export async function getTaskProductionReprogramDetails({ taskId }: { taskId: TaskProductionPlan['id'] }) {
+    try {
+        const url = `/api/tasks-production/reprogram-details/${taskId}`;
+        const { data } = await clienteAxios(url);
+
+        const result = TaskProductionReprogramDetailsSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function deleteTaskProduction({ taskId }: { taskId: TaskProductionPlan['id'] }) {
+    try {
+        const url = `/api/tasks-production/${taskId}`;
+
+        const { data } = await clienteAxios.delete(url);
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
 
 
 

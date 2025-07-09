@@ -209,3 +209,8 @@ export const TaskProductionItemsSchema = z.object({
     })
 })
 
+export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateSchema.pick({id: true, total_lbs:true, destination:true, line: true, sku:true }).extend({
+    line_id: z.string(),
+    sku_id: z.string()
+});;
+

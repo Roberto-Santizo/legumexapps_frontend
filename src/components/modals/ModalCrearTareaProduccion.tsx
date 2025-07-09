@@ -64,6 +64,7 @@ export default function ModalCrearTareaProduccion() {
         onSuccess: (data) => {
             toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
+            queryClient.invalidateQueries({ queryKey: ['getLineHoursPerWeek', plan_id] });
             navigate(location.pathname);
             reset();
         }

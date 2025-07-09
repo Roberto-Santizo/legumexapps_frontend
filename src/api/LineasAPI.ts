@@ -3,6 +3,7 @@ import { isAxiosError } from "axios";
 import { DraftLinea } from "views/produccion/lineas/CrearLinea";
 import { z } from "zod";
 import { SKU } from "./SkusAPI";
+import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 
 export const PositionSchema = z.object({
     id: z.string(),
@@ -33,7 +34,7 @@ export type LineasPaginated = z.infer<typeof LineasPaginatedSchema>;
 export type Linea = z.infer<typeof LineaSchema>;
 export type Position = z.infer<typeof PositionSchema>;
 
-export async function getLineas( {page,paginated} : {page: number,paginated:string}): Promise<LineasPaginated> {
+export async function getLineas({ page, paginated }: { page: number, paginated: string }): Promise<LineasPaginated> {
     try {
         const url = `/api/lines?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
@@ -163,6 +164,28 @@ export async function getLinePerformanceByDay(line_id: Linea['id'], date: string
             return result.data
         } else {
             throw new Error("Información no valida");
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export const LinesHoursPerWeekSchema = z.array(z.object({
+    line_id: z.string(),
+    line: z.string(),
+    total_hours: z.number()
+}));
+
+export async function getLineHoursPerWeek({ weeklyplanId }: { weeklyplanId: WeeklyProductionPlan['id'] }) {
+    try {
+        const url = `/api/lines/hours-per-week/${weeklyplanId}`;
+        const { data } = await clienteAxios(url);
+
+        const result = LinesHoursPerWeekSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data
         }
     } catch (error) {
         console.log(error);

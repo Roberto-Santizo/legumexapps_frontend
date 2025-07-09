@@ -20,7 +20,8 @@
       "@/lib/*": ["lib/*"],
       "@/views/*": ["views/*"],
       "@/hooks/*": ["hooks/*"],
-      "@/dashboards/*": ["components/dashboards/*"]
+      "@/dashboards/*": ["components/dashboards/*"],
+      "@/store": ["store.ts"],
     },
 
     "moduleResolution": "bundler",

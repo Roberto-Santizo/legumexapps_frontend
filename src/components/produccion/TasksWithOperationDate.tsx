@@ -1,20 +1,14 @@
 import { Linea } from "@/api/LineasAPI";
 import { getTasksOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useMemo } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { useAppStore } from "@/store";
 import Spinner from "../utilities-components/Spinner";
 import TaskScheduled from "./TaskScheduled";
 
 type Props = {
     lines: Linea[];
-    date: string;
-}
-
-export type TasksWithOperationDateFilters = {
-    line: string;
-    status: string;
-    sku: string;
 }
 
 const statuses = [
@@ -25,35 +19,29 @@ const statuses = [
     { value: '5', label: 'Finalizada' }
 ];
 
-export default function TasksWithOperationDate({ lines, date }: Props) {
+export default function TasksWithOperationDate({ lines }: Props) {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const date = queryParams.get('date') ?? '';
     const params = useParams();
     const plan_id = params.plan_id!!;
 
-    const [filters, setFilters] = useState<TasksWithOperationDateFilters>({
-        line: '',
-        status: '',
-        sku: ''
-    });
+    const filters = useAppStore((state) => state.filtersWithOperationDate);
+    const handleChangefiltersOperationDate = useAppStore((state) => state.handleChangefiltersOperationDate);
 
-    const { data: tasks, isLoading } = useQuery({
+    const { data: tasks, isLoading, isFetching } = useQuery({
         queryKey: ['getTasksOperationDate', plan_id, date, filters],
         queryFn: () => getTasksOperationDate({ id: plan_id, date, filters }),
-        enabled: !!date
+        enabled: !!date,
+        refetchOnWindowFocus: false
     });
-
-
-    const [selectedId, setSelectedId] = useState<string>('');
 
     const linesOptions = lines?.map((line) => ({
         value: line.id,
         label: `${line.name}`,
     }));
 
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFilters({ ...filters, [e.target.id]: e.target.value });
-    }
-
-
+    const isUpdating = useMemo(() => isFetching || isLoading, [isFetching, isLoading])
     return (
         <div className="border-t pt-4">
             <h2 className="text-2xl font-bold">Tareas programadas: {date}</h2>
@@ -65,13 +53,13 @@ export default function TasksWithOperationDate({ lines, date }: Props) {
                         type="text"
                         placeholder="Ingrese SKU"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => handleOnChange(e)}
+                        onChange={(e) => handleChangefiltersOperationDate(e)}
                     />
                 </div>
 
                 <div className='flex gap-5'>
                     <select className="border px-3 py-2 rounded-md w-full" id='line'
-                        onChange={(e) => handleOnChange(e)}
+                        onChange={(e) => handleChangefiltersOperationDate(e)}
                     >
                         <option value="">Todas las Líneas</option>
                         {linesOptions?.map((line) => (
@@ -80,7 +68,7 @@ export default function TasksWithOperationDate({ lines, date }: Props) {
                     </select>
 
                     <select className="border px-3 py-2 rounded-md w-full" id='status'
-                        onChange={(e) => handleOnChange(e)}
+                        onChange={(e) => handleChangefiltersOperationDate(e)}
                     >
                         <option value="">Todos los estados</option>
                         {statuses.map((status) => (
@@ -91,14 +79,18 @@ export default function TasksWithOperationDate({ lines, date }: Props) {
 
             </div>
             <div className='mt-5 overflow-y-auto scrollbar-hide max-h-96 space-y-6'>
-                {isLoading && <Spinner />}
-                {tasks?.length === 0 ? <p className='text-center'>No existen tareas programadas para esta fecha</p> : (
+                {isUpdating && <Spinner />}
+
+                {(!isUpdating && tasks?.length === 0) && <p className='text-center'>No existen tareas programadas para esta fecha</p>}
+
+                {(!isUpdating && (tasks?.length ?? 0) > 0) && (
                     <>
                         {tasks?.map(task => (
-                            <TaskScheduled key={task.id} task={task} selectedId={selectedId} setSelectedId={setSelectedId} filters={filters}/>
+                            <TaskScheduled key={task.id} task={task} />
                         ))}
                     </>
                 )}
+
 
             </div>
         </div>

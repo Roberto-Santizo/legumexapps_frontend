@@ -1,12 +1,11 @@
-import { TaskProductionUnscheduledFilters } from "@/components/produccion/TasksWithNoOperationDate";
-import { TasksWithOperationDateFilters } from "@/components/produccion/TasksWithOperationDate";
 import clienteAxios from "@/config/axios";
-import { WeeklyPlanTasksOperationDateSchema, WeeklyProductionPlanEvents, WeeklyProductionPlansSchema, WeeklyProductionPlanSummarySchema, WeeklyProductionPlanTasksSchema } from "@/utils/weeklyProductionPlanSchemas";
+import { WeeklyPlanTasksOperationDateSchema, WeeklyProductionPlanEventsShema, WeeklyProductionPlansSchema, WeeklyProductionPlanSummarySchema, WeeklyProductionPlanTasksSchema } from "@/utils/weeklyProductionPlanSchemas";
 import { isAxiosError } from "axios";
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import { Linea } from "./LineasAPI";
 import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
+import { TaskProductionUnscheduledFilters, TasksWithOperationDateFilters } from "@/stores/planificationProductionSlice";
 
 
 export async function getWeeklyProductionPlans({ page, paginated }: { page: number, paginated: string }) {
@@ -76,7 +75,8 @@ export async function getWeeklyProductionPlanEvents(id: WeeklyProductionPlan['id
     try {
         const url = `/api/weekly-production-plans/events-for-calendar/${id}`;
         const { data } = await clienteAxios(url);
-        const result = WeeklyProductionPlanEvents.safeParse(data);
+        const result = WeeklyProductionPlanEventsShema.safeParse(data);
+
         if (result.success) {
             return result.data
         } else {

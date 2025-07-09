@@ -1,37 +1,45 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PlusIcon } from 'lucide-react';
 import { getLineas } from '@/api/LineasAPI';
+import { usePermissions } from '@/hooks/usePermissions';
+import { getCurrentDate } from '@/helpers';
 import { getWeeklyProductionPlanEvents } from '@/api/WeeklyProductionPlanAPI';
-import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduccion';
-import TasksWithNoOperationDate from '@/components/produccion/TasksWithNoOperationDate';
 import FullCalendar from '@fullcalendar/react';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import Spinner from '@/components/utilities-components/Spinner';
+import TasksWithNoOperationDate from '@/components/produccion/TasksWithNoOperationDate';
 import TasksWithOperationDate from '@/components/produccion/TasksWithOperationDate';
-import { usePermissions } from '@/hooks/usePermissions';
+import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduccion';
+import HoverSummaryHoursPerLine from '@/components/ui/HoverSummaryHoursPerLine';
+import ModalReprogramTaskProduction from '@/components/modals/ModalReprogramTaskProduction';
 
 type DateClickInfo = {
   dateStr: string;
+}
+
+export type TaskProductionUnscheduledFilters = {
+  sku: string;
+  line: string;
 }
 
 
 export default function CalendarTasks() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const date = queryParams.get('date')!;
+  const date = queryParams.get('date');
   const params = useParams();
   const plan_id = params.plan_id!!;
   const navigate = useNavigate();
 
-  const [selectedDate, setSelectedDate] = useState<string>(date);
   const { hasPermission } = usePermissions();
 
-  const { data: events } = useQuery({
+  const { data: events, isFetching } = useQuery({
     queryKey: ['getWeeklyProductionPlanEvents', plan_id],
     queryFn: () => getWeeklyProductionPlanEvents(plan_id),
+    refetchOnWindowFocus: false
   });
 
   const { data: lines } = useQuery({
@@ -41,7 +49,6 @@ export default function CalendarTasks() {
 
   const handleClickDate = (info: DateClickInfo) => {
     navigate(`${location.pathname}?date=${info.dateStr}`);
-    setSelectedDate(info.dateStr);
   }
 
   return (
@@ -61,21 +68,34 @@ export default function CalendarTasks() {
 
       <div className="flex gap-5 p-5">
         <div className="flex-1 border p-5 rounded-lg bg-white shadow max-h-screen overflow-y-auto scrollbar-hide space-y-6">
-          <FullCalendar
-            plugins={[dayGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            events={events}
-            locale={esLocale}
-            dateClick={handleClickDate}
-            dayCellClassNames={(arg) =>
-              arg.date.toISOString().split('T')[0] === selectedDate
-                ? ['bg-indigo-200']
-                : []
-            }
-          />
+          <div className="min-h-[600px] relative">
+            {isFetching && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10 rounded-lg flex-col gap-2">
+                <Spinner />
+                <p className='text-xl text-gray-500'>Cargando calendario...</p>
+              </div>
+            )}
 
-          <TasksWithOperationDate date={selectedDate} lines={lines?.data ?? []} />
+            {!isFetching && (
+              <FullCalendar
+                plugins={[dayGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                events={[...(events ?? [])]}
+                locale={esLocale}
+                dateClick={handleClickDate}
+                dayCellClassNames={(arg) =>
+                  arg.date.toISOString().split('T')[0] === (date ?? getCurrentDate())
+                    ? ['bg-indigo-200']
+                    : []
+                }
+              />
+
+            )}
+          </div>
+
+          <TasksWithOperationDate lines={lines?.data ?? []} />
         </div>
+
 
         {hasPermission('administrate plans production') && (
           <TasksWithNoOperationDate lines={lines?.data ?? []} />
@@ -83,6 +103,9 @@ export default function CalendarTasks() {
       </div>
 
       <ModalCrearTareaProduccion />
+
+      <HoverSummaryHoursPerLine />
+      <ModalReprogramTaskProduction />
     </div>
   )
 }

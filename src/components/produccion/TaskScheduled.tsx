@@ -1,24 +1,23 @@
 import { BoxIcon, Calendar, File } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
-import { TasksWithOperationDateFilters } from "./TasksWithOperationDate";
+import { usePermissions } from "@/hooks/usePermissions";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque from "../modals/ModalEntregaMaterialEmpaque";
-import { usePermissions } from "@/hooks/usePermissions";
 
 type Props = {
     task: TaskProductionOperationDate;
-    selectedId: string;
-    setSelectedId: Dispatch<SetStateAction<TaskProductionOperationDate['id']>>;
-    filters: TasksWithOperationDateFilters;
 }
 
-export default function TaskScheduled({ task, selectedId, setSelectedId, filters }: Props) {
-    const [modal, setModal] = useState<boolean>(false);
+export default function TaskScheduled({ task }: Props) {
     const [modalEntrega, setModalEntrega] = useState<boolean>(false);
     const { hasPermission } = usePermissions();
-    
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set('changeOperationTask', task.id);
+
     const navigate = useNavigate();
 
     return (
@@ -44,8 +43,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId, filters
                 {(!task.finished && !task.working && hasPermission('administrate plans production')) && (
                     <button
                         onClick={() => {
-                            setSelectedId(task.id);
-                            setModal(true);
+                            navigate(`${location.pathname}?${queryParams.toString()}`)
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
                     >
@@ -80,12 +78,7 @@ export default function TaskScheduled({ task, selectedId, setSelectedId, filters
                 )}
             </div>
 
-            <ModalChangeOperationDate
-                modal={modal}
-                setModal={setModal}
-                selectedId={selectedId}
-                filters={filters}
-            />
+            <ModalChangeOperationDate />
 
             {task.recipe?.length > 0 && (
                 <ModalEntregaMaterialEmpaque

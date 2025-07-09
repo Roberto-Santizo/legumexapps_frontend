@@ -1,35 +1,45 @@
-import { Dispatch, FormEvent, SetStateAction, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { getCurrentDate } from "@/helpers";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { updateTaskProductionOperationDate } from "@/api/TaskProductionPlansAPI";
+import { useAppStore } from "@/store";
+import { useForm } from "react-hook-form";
 import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
-import { TasksWithOperationDateFilters } from "../produccion/TasksWithOperationDate";
+import InputComponent from "../form/InputComponent";
+import Error from "../utilities-components/Error";
 
-type Props = {
-  modal: boolean;
-  setModal: Dispatch<SetStateAction<boolean>>;
-  selectedId: string;
-  filters: TasksWithOperationDateFilters;
-}
 
 export type DraftChangeOperationDate = {
   date: string;
   reason: string;
 }
 
-export default function ModalChangeOperationDate({ modal, setModal, selectedId, filters }: Props) {
+export default function ModalChangeOperationDate() {
   const location = useLocation();
   const params = useParams();
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date')!;
+  const taskId = queryParams.get('changeOperationTask')!;
   const plan_id = params.plan_id!!;
-  const reasonRef = useRef<HTMLTextAreaElement | null>(null);
-  const dateRef = useRef<HTMLInputElement | null>(null);
+  const open = taskId ? true : false;
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const filters = useAppStore((state) => state.filtersWithOperationDate);
+
+  const handleCloseModal = () => {
+    queryParams.delete('changeOperationTask');
+    navigate(`${location.pathname}?${queryParams.toString()}`);
+  }
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors }
+  } = useForm<DraftChangeOperationDate>();
 
   const { mutate, isPending } = useMutation({
     mutationFn: updateTaskProductionOperationDate,
@@ -40,46 +50,42 @@ export default function ModalChangeOperationDate({ modal, setModal, selectedId, 
       toast.success(data);
       queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
       queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
-      setModal(false);
+      handleCloseModal();
     }
   });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if ((reasonRef.current?.value === "" || dateRef.current?.value === "")) {
-      toast.error("Todos los datos son requeridos");
-      return;
-    } else if (reasonRef.current?.value && reasonRef.current?.value.length < 15) {
-      toast.error("La razón del cambio debe tener al menos 10 caracteres");
-      return;
-    }
+  const onSubmit = (FormData: DraftChangeOperationDate) => mutate({ id: taskId, FormData })
 
-    if (reasonRef.current?.value && dateRef.current?.value) {
-      const FormData: DraftChangeOperationDate = {
-        date: dateRef.current?.value,
-        reason: reasonRef.current?.value
-      }
-
-      mutate({ id: selectedId, FormData });
-    }
-
-  }
   return (
-    <Modal modal={modal} closeModal={() => setModal(false)} title="Cambio de Fecha Operación">
-      <form className="w-full p-10 mx-auto space-y-5" onSubmit={(e) => handleSubmit(e)}>
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="code">
-            Fecha Destino:
-          </label>
-          <input ref={dateRef} type="date" className="p-2 border border-gray-300" min={getCurrentDate()} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-bold uppercase" htmlFor="code">
-            Razón del Cambio:
-          </label>
-          <textarea ref={reasonRef} className="border border-gray-300 rounded-md p-2 w-full" placeholder="Escriba la razón del cambio de fecha">
-          </textarea>
-        </div>
+    <Modal modal={open} closeModal={() => handleCloseModal()} title="Cambio de Fecha Operación">
+      <form className="w-full p-10 mx-auto space-y-5" onSubmit={handleSubmit(onSubmit)}>
+
+        <InputComponent<DraftChangeOperationDate>
+          label="Nueva Fecha de Operación"
+          id="date"
+          name="date"
+          placeholder=""
+          register={register}
+          validation={{ required: 'La fecha de operación es obligatoria' }}
+          errors={errors}
+          type={'date'}
+          min={getCurrentDate()}
+        >
+          {errors.date && <Error>{errors.date?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <InputComponent<DraftChangeOperationDate>
+          label="Razón"
+          id="reason"
+          name="reason"
+          placeholder="Razón del cambio"
+          register={register}
+          validation={{ required: 'La razón es requerida' }}
+          errors={errors}
+          type={'text'}
+        >
+          {errors.reason && <Error>{errors.reason?.message?.toString()}</Error>}
+        </InputComponent>
 
         <button type="submit" className="button w-full mt-5 bg-indigo-500 hover:bg-indigo-600">
           {isPending ? <Spinner /> : <p>Realizar Cambio</p>}

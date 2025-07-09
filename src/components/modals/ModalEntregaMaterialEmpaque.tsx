@@ -13,7 +13,7 @@ import Spinner from "../utilities-components/Spinner";
 import Error from "../utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
-import { TasksWithOperationDateFilters } from "../produccion/TasksWithOperationDate";
+import { useAppStore } from "@/store";
 
 export type DraftPackingMaterialTransactionItem = {
     packing_material_id: string;
@@ -55,14 +55,16 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
     const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>(task.recipe);
     const [error, setError] = useState<boolean>(false);
 
+    const filters = useAppStore((state) => state.filtersWithOperationDate);
+
     const { mutate, isPending } = useMutation({
         mutationFn: createPackingMaterialTransaction,
         onError: (error) => toast.error(error.message),
         onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date, plan_id, filters] });
             setModal(false);
             toast.success(data);
             reset();
-            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date,plan_id, {} as TasksWithOperationDateFilters] });
         }
     });
 
