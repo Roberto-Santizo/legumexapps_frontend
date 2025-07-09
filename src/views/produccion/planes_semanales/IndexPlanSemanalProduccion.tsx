@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { getWeeklyProductionPlans } from "@/api/WeeklyProductionPlanAPI";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { CalendarRange, Clock, Eye } from "lucide-react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
+import ModalCreateProductionPlan from "@/components/modals/ModalCreateProductionPlan";
+import ModalErrorsTable from "@/components/modals/ModalErrorsTable";
 
 export default function IndexPlanSemanalProduccion() {
     const [pageCount, setPageCount] = useState<number>(0);
@@ -17,9 +19,15 @@ export default function IndexPlanSemanalProduccion() {
     const [plans, setPlans] = useState<WeeklyProductionPlan[]>([]);
     const { hasPermission } = usePermissions();
 
+    const [errores, setErrores] = useState<string[]>([]);
+    const [modalErrors, setModalErrors] = useState<boolean>(false);
+
+    const navigate = useNavigate();
+
     const { data, isLoading, isError } = useQuery({
         queryKey: ['getPaginatedWeeklyProductionPlans', currentPage],
         queryFn: () => getWeeklyProductionPlans({ page: currentPage, paginated: 'true' }),
+        placeholderData: keepPreviousData
     });
 
     useEffect(() => {
@@ -44,13 +52,13 @@ export default function IndexPlanSemanalProduccion() {
             {hasPermission('create plan production semanal') && (
                 <div className="flex flex-row justify-end gap-5 mb-5">
                     <div className="flex flex-row justify-end gap-5">
-                        <Link
-                            to="/planes-produccion/crear"
+                        <button
+                            onClick={() => navigate(`${location.pathname}?createPlan=true`)}
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                         >
                             <PlusIcon className="w-8" />
                             <p>crear plan semanal</p>
-                        </Link>
+                        </button>
                     </div>
                 </div>
             )}
@@ -101,6 +109,9 @@ export default function IndexPlanSemanalProduccion() {
                     />
                 </div>
             </div>
+
+            <ModalCreateProductionPlan setErrors={setErrores} setModalErrors={setModalErrors} currentPage={currentPage} />
+            <ModalErrorsTable modal={modalErrors} setModal={setModalErrors} errors={errores} />
         </>
     )
 }

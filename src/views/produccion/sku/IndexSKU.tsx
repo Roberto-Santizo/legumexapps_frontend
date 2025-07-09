@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getSkus, SKU } from "@/api/SkusAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -21,6 +21,7 @@ export default function IndexSKU() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getSkusPaginated', currentPage],
     queryFn: () => getSkus({ page: currentPage, paginated: 'true' }),
+    placeholderData: keepPreviousData
   });
 
   useEffect(() => {
@@ -44,24 +45,28 @@ export default function IndexSKU() {
     <>
       <h2 className="font-bold text-4xl">SKU</h2>
 
-      <div className="flex flex-row justify-end gap-5 mb-5">
-        <div className="flex flex-row justify-end gap-5 flex-1">
-          <Link
-            to="/skus/crear"
-            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-          >
-            <PlusIcon className="w-8" />
-            <p>Crear sku</p>
-          </Link>
-        </div>
+      <div className="flex flex-row justify-end gap-5 flex-wrap mt-5">
+        <Link
+          to="/skus/crear"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+        >
+          <PlusIcon className="w-5 h-5" />
+          <p>Crear SKU</p>
+        </Link>
 
-        <button className="button bg-indigo-500 hover:bg-indigo-600 flex items-center gap-2" onClick={() => setModal(true)}>
-          <PlusIcon />
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+          onClick={() => setModal(true)}
+        >
+          <PlusIcon className="w-5 h-5" />
           <p>Carga Masiva de SKU</p>
         </button>
 
-        <button className="button bg-indigo-500 hover:bg-indigo-600 flex items-center gap-2" onClick={() => setModalRecipe(true)}>
-          <PlusIcon />
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+          onClick={() => setModalRecipe(true)}
+        >
+          <PlusIcon className="w-5 h-5" />
           <p>Carga Masiva de Recetas</p>
         </button>
       </div>

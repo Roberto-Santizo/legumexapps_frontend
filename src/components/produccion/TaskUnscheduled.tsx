@@ -42,6 +42,7 @@ export default function TaskUnscheduled({ task }: Props) {
     <div className="border border-gray-200 rounded-2xl shadow-sm bg-white overflow-hidden">
       <div className="p-6 space-y-2 text-gray-700 text-base leading-relaxed">
         <p><span className="font-semibold text-gray-900">SKU:</span> {task.sku}</p>
+        <p><span className="font-semibold text-gray-900">Producto:</span> {task.product_name}</p>
         <p><span className="font-semibold text-gray-900">Línea:</span> {task.line}</p>
         <p><span className="font-semibold text-gray-900">Total libras:</span> {task.total_lbs}</p>
         <p><span className="font-semibold text-gray-900">Destino:</span> {task.destination}</p>

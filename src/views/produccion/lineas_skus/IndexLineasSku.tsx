@@ -1,5 +1,5 @@
 import { getPaginatedLineasSKU, LineaSKU } from "@/api/LineasSkuAPI";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
@@ -24,7 +24,8 @@ export default function IndexLineasSku() {
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['getPaginatedLineasSKU', currentPage],
-        queryFn: () => getPaginatedLineasSKU(currentPage)
+        queryFn: () => getPaginatedLineasSKU(currentPage),
+        placeholderData: keepPreviousData
     });
 
     useEffect(() => {
@@ -41,21 +42,25 @@ export default function IndexLineasSku() {
     if (skus) return (
         <div>
             <h2 className="font-bold text-4xl">Lineas & SKUS</h2>
-
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-3 mt-5 flex-wrap">
                 <Link
                     to="/lineas-skus/crear"
-                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
                 >
-                    <PlusIcon className="w-8" />
-                    <p>Relacionar Linea a SKU</p>
+                    <PlusIcon className="w-5 h-5" />
+                    <p>Relacionar Línea a SKU</p>
                 </Link>
 
-                <button className="button bg-indigo-500 hover:bg-indigo-600 flex items-center gap-2" onClick={() => setUploadModal(true)}>
-                    <PlusIcon />
+                <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+                    onClick={() => setUploadModal(true)}
+                >
+                    <PlusIcon className="w-5 h-5" />
                     <p>Carga Masiva</p>
                 </button>
             </div>
+
+
             <table className="table mt-10">
                 <thead>
                     <tr className="thead-tr">

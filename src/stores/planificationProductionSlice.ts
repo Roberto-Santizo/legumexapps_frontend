@@ -3,6 +3,7 @@ import type { StateCreator } from "zustand";
 export type TaskProductionUnscheduledFilters = {
     sku: string;
     line: string;
+    product: string;
 }
 
 export type TasksWithOperationDateFilters = {
@@ -13,7 +14,8 @@ export type TasksWithOperationDateFilters = {
 
 const filtersNoOperationDateInitialValues = {
     sku: '',
-    line: ''
+    line: '',
+    product: ''
 }
 
 const filtersWithOperationDateInitialValues = {

@@ -44,6 +44,21 @@ export default function TasksWithNoOperationDate({ lines }: Props) {
                             placeholder="Ingrese SKU"
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             onChange={(e) => handleChangefiltersNoOperationDate(e)}
+                            autoComplete="off"
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="space-y-1">
+                        <label htmlFor="product" className="block text-sm font-semibold text-gray-700">Producto</label>
+                        <input
+                            id="product"
+                            type="text"
+                            placeholder="Ingrese nombre del producto"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onChange={(e) => handleChangefiltersNoOperationDate(e)}
+                            autoComplete="off"
                         />
                     </div>
                 </div>

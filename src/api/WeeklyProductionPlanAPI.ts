@@ -40,7 +40,7 @@ export async function getWeeklyPlanDetails(id: WeeklyProductionPlan['id']) {
     }
 }
 
-export async function createAssigmentsProductionTasks(file : File[]) {
+export async function createAssigmentsProductionTasks(file: File[]) {
     try {
         const url = `/api/weekly-production-plans/assign`;
         const formData = new FormData();
@@ -57,7 +57,7 @@ export async function createAssigmentsProductionTasks(file : File[]) {
 
 export async function getTasksNoOperationDate({ id, filters }: { id: WeeklyProductionPlan['id'], filters: TaskProductionUnscheduledFilters }) {
     try {
-        const url = `/api/weekly-production-plans/tasks-no-operation-date/${id}?sku=${filters.sku}&line=${filters.line}`;
+        const url = `/api/weekly-production-plans/tasks-no-operation-date/${id}?sku=${filters.sku}&line=${filters.line}&product=${filters.product}`;
         const { data } = await clienteAxios(url);
         const result = WeeklyProductionPlanTasksSchema.safeParse(data);
         if (result.success) {
@@ -114,11 +114,18 @@ export async function createProductionPlan(file: File[]) {
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            const errores = error.response?.data?.plan_errors;
-            throw new Error(`${errores ? '\n' + errores.join('\n') : ''}`);
+            if (error.response?.data.plan_errors) {
+                throw {
+                    type: 'validation',
+                    messages: error.response?.data.plan_errors
+                }
+            } else if (error.response?.data.msg) {
+                throw {
+                    type: 'general',
+                    message: error.response?.data.msg
+                }
+            }
         }
-
-        throw new Error("Error desconocido");
     }
 }
 

@@ -1,7 +1,7 @@
 import { PlusIcon, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getLineas, Linea } from "@/api/LineasAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -15,6 +15,7 @@ export default function IndexLineas() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getLineasPaginated', currentPage],
     queryFn: () => getLineas({ page: currentPage, paginated: 'true' }),
+    placeholderData: keepPreviousData
   });
 
   useEffect(() => {

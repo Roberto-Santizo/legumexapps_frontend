@@ -30,7 +30,7 @@ export default function Layout() {
               <div className="flex gap-5 mr-12 justify-center items-center">
                 <p className="font-bold">Hola: {data?.name}</p>
                 <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6 md:hidden" onClick={() => setModal(true)} />
-                <button className="button bg-indigo-500 hover:bg-indigo-600 md:block hidden" onClick={() => logout()}>
+                <button className="button bg-blue-500 hover:bg-blue-600 md:block hidden" onClick={() => logout()}>
                   <p>Cerrar Sesión</p>
                 </button>
               </div>

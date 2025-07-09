@@ -80,40 +80,34 @@ export default function IndexLotes() {
         />
       </div>
 
-      {lotes.data.length === 0 ? (
-        <p className="text-2xl font-semibold text-gray-400 text-center mt-10">
-          No existen lotes
-        </p>
-      ) : (
-        <table className="table mt-10">
-          <thead>
-            <tr className="thead-tr">
-              <th scope="col" className="thead-th">
-                ID
-              </th>
-              <th scope="col" className="thead-th">
-                Nombre
-              </th>
-              <th scope="col" className="thead-th">
-                Finca
-              </th>
-              <th scope="col" className="thead-th">
-                CDP Activo
-              </th>
+      <table className="table mt-10">
+        <thead>
+          <tr className="thead-tr">
+            <th scope="col" className="thead-th">
+              ID
+            </th>
+            <th scope="col" className="thead-th">
+              Nombre
+            </th>
+            <th scope="col" className="thead-th">
+              Finca
+            </th>
+            <th scope="col" className="thead-th">
+              CDP Activo
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {lotes?.data.map((lote) => (
+            <tr className="tbody-tr" key={lote.id}>
+              <td className="tbody-td">{lote.id}</td>
+              <td className="tbody-td">{lote.name}</td>
+              <td className="tbody-td">{lote.finca}</td>
+              <td className="tbody-td">{lote.cdp}</td>
             </tr>
-          </thead>
-          <tbody>
-            {lotes?.data.map((lote) => (
-              <tr className="tbody-tr" key={lote.id}>
-                <td className="tbody-td">{lote.id}</td>
-                <td className="tbody-td">{lote.name}</td>
-                <td className="tbody-td">{lote.finca}</td>
-                <td className="tbody-td">{lote.cdp}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
 
       <div className="mb-10 flex justify-end">
         <Pagination

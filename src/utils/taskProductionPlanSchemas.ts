@@ -150,7 +150,8 @@ export const FinishedTaskProductionDetailsSchema = z.object({
 });
 
 export const TaskProductionNoOperationDateSchema = TaskProductionSchema.pick({ id: true, line: true, sku: true, total_lbs: true }).extend({
-    destination: z.string()
+    destination: z.string(),
+    product_name: z.string()
 });
 
 export const TaskProductionEventSchema = z.object({
