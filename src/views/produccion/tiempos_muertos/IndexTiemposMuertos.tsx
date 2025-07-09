@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getTimeOuts, Timeout } from "@/api/TimeOutsAPI";
 import { Edit, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ export default function IndexTiemposMuertos() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedTimeouts', currentPage],
     queryFn: () => getTimeOuts({ page: currentPage, paginated: 'true' }),
+    placeholderData: keepPreviousData
   });
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query";
 import { closeEmployeePermission, getPermisosEmpleadosPaginated, PermisoEmpleado } from "@/api/PermisosEmpleadosAPI";
 import { formatDate } from "@/helpers";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
@@ -29,7 +29,8 @@ export default function IndexPermisosEmpleados() {
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['getPermisosEmpleadosPaginated', currentPage],
-    queryFn: () => getPermisosEmpleadosPaginated(currentPage)
+    queryFn: () => getPermisosEmpleadosPaginated(currentPage),
+    placeholderData: keepPreviousData
   });
 
   useEffect(() => {

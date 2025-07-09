@@ -32,6 +32,7 @@ export default function ModalCrearTareaProduccion() {
     const navigate = useNavigate();
     const [skuId, setSkuId] = useState<string>('');
 
+
     const { data: lineas } = useQuery({
         queryKey: ['getLinesBySkuId', skuId],
         queryFn: () => getLinesBySkuId(skuId),

@@ -1,7 +1,9 @@
 import { DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
-import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { z } from "zod";
+import clienteAxios from "@/config/axios";
+import { TransactionTaskProductionSchema } from "@/utils/taskProductionPlanSchemas";
+import { FiltersPackingMaterialsTransactionType } from "@/views/bodega/transacciones-matrial-empaque/IndexPackingMaterialTransaction";
 
 export async function createPackingMaterialTransaction(FormData: DraftTransactionPackingMaterial) {
     try {
@@ -40,9 +42,9 @@ export const PackingMaterialTransactionsSchema = z.object({
 export type PackingMaterialTransaction = z.infer<typeof PackingMaterialTransactionSchema>;
 export type PackingMaterialTransactions = z.infer<typeof PackingMaterialTransactionsSchema>;
 
-export async function getPackingMaterialTransactions({ page, paginated }: { page: number, paginated: string }): Promise<PackingMaterialTransactions> {
+export async function getPackingMaterialTransactions({ page, paginated, filters}: { page: number, paginated: string, filters: FiltersPackingMaterialsTransactionType }): Promise<PackingMaterialTransactions> {
     try {
-        const url = `/api/packing-material-transaction?paginated=${paginated}&page=${page}`;
+        const url = `/api/packing-material-transaction?paginated=${paginated}&page=${page}&transaction=${filters.transaction_id}&responsable=${filters.responsable}&delivered_by=${filters.delivered_by}&delivered_date=${filters.delivered_date}&type=${filters.type}`;
         const { data } = await clienteAxios(url);
         const result = PackingMaterialTransactionsSchema.safeParse(data);
         if (result.success) {
@@ -52,5 +54,23 @@ export async function getPackingMaterialTransactions({ page, paginated }: { page
         }
     } catch (error) {
         throw error;
+    }
+}
+export async function getPackingMaterialTransactionById({ id }: { id: PackingMaterialTransaction['id'] }) {
+    try {
+        const url = `/api/packing-material-transaction/${id}`;
+
+        const { data } = await clienteAxios(url);
+
+        const result = TransactionTaskProductionSchema.safeParse(data);
+
+        if(result){
+            return result.data
+        }
+    } catch (error) {
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.msg);
+            
+        }
     }
 }

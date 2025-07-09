@@ -16,9 +16,7 @@ import {
   ChartBarIncreasing,
   ChartLine,
   ChartNoAxesCombined,
-  FileUser, Box,
-  PackageOpen,
-  ClipboardPaste
+  FileUser, Box, ClipboardPaste
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
@@ -141,25 +139,19 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-      {hasPermission("permission employee") && (
-        <NavLinkComponent url="/permisos-empleados" text="Permisos Empleados">
-          <FileUser />
-        </NavLinkComponent>
-      )}
-
       {hasPermission('create mp transactions') && (
         <>
-          <NavLinkComponent url="/material-empaque" text="Materiales Empaque">
+          <NavLinkComponent url="/material-empaque" text="Items Material Empaque">
             <Box />
           </NavLinkComponent>
 
-          <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
+          {/* <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
             <Warehouse />
           </NavLinkComponent>
 
           <NavLinkComponent url="/recepciones-insumos" text="Recepciones Insumos">
             <PackageOpen />
-          </NavLinkComponent>
+          </NavLinkComponent> */}
 
           <NavLinkComponent url="/material-empaque-transacciones" text="Transacciones Material Empaque">
             <ClipboardPaste />
@@ -167,6 +159,11 @@ export default function Navegation() {
         </>
       )}
 
+      {hasPermission("permission employee") && (
+        <NavLinkComponent url="/permisos-empleados" text="Permisos Empleados">
+          <FileUser />
+        </NavLinkComponent>
+      )}
     </div>
   );
 }

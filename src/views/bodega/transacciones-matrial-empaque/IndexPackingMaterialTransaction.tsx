@@ -1,26 +1,48 @@
-import { PlusIcon } from "lucide-react";
+import { EyeIcon, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Bars3Icon } from "@heroicons/react/16/solid";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getPackingMaterialTransactions, PackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import FiltersPackingMaterialTransactions from "@/components/filters/FiltersPackingMaterialTransactions";
+
+export type FiltersPackingMaterialsTransactionType = {
+  transaction_id: string;
+  responsable: string;
+  delivered_by: string;
+  delivered_date: string;
+  type: string;
+}
+
+export const FiltersPackingMaterialsTransactionInitialValues: FiltersPackingMaterialsTransactionType = {
+  transaction_id: '',
+  responsable: '',
+  delivered_by: '',
+  delivered_date: '',
+  type: ''
+};
 
 export default function IndexPackingMaterialTransaction() {
 
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [transactions, setTransactions] = useState<PackingMaterialTransaction[]>([]);
+  const [filters, setFilters] = useState<FiltersPackingMaterialsTransactionType>(FiltersPackingMaterialsTransactionInitialValues);
+  const [tempFilters, setTempFitlers] = useState<FiltersPackingMaterialsTransactionType>(FiltersPackingMaterialsTransactionInitialValues);
+
+  const [modal, setModal] = useState<boolean>(false);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['getPackingMaterialDispatches', currentPage],
-    queryFn: () => getPackingMaterialTransactions({ page: currentPage, paginated: 'true' })
+    queryKey: ['getPackingMaterialDispatches', currentPage, filters],
+    queryFn: () => getPackingMaterialTransactions({ page: currentPage, paginated: 'true', filters }),
+    placeholderData: keepPreviousData
   });
 
   useEffect(() => {
@@ -51,7 +73,7 @@ export default function IndexPackingMaterialTransaction() {
         </Link>
         <Bars3Icon
           className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
-        // onClick={() => setModal(true)} {/* Agregar la funcion de FilterMaterialSalida.tsx */}
+          onClick={() => setModal(true)}
         />
       </div>
 
@@ -63,6 +85,7 @@ export default function IndexPackingMaterialTransaction() {
             <th className="thead-th">Entregado Por</th>
             <th className="thead-th">Fecha de Entrega</th>
             <th className="thead-th">Tipo</th>
+            <th className="thead-th">Acción</th>
           </tr>
         </thead>
         <tbody>
@@ -73,6 +96,11 @@ export default function IndexPackingMaterialTransaction() {
               <td className="tbody-td">{transaction.user}</td>
               <td className="tbody-td">{transaction.transaction_date}</td>
               <td className="tbody-td">{transaction.type}</td>
+              <td className="tbody-td">
+                <Link to={`/material-empaque-transacciones/${transaction.id}`}>
+                  <EyeIcon />
+                </Link>
+              </td>
             </tr>
           ))}
 
@@ -85,6 +113,10 @@ export default function IndexPackingMaterialTransaction() {
           handlePageChange={handlePageChange}
         />
       </div>
+
+      {modal && (
+        <FiltersPackingMaterialTransactions isOpen={modal} setIsOpen={setModal} filters={filters} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFitlers} />
+      )}
     </>
   );
 }

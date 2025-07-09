@@ -61,7 +61,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
         mutationFn: createPackingMaterialTransaction,
         onError: (error) => toast.error(error.message),
         onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', date, plan_id, filters] });
+            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             setModal(false);
             toast.success(data);
             reset();

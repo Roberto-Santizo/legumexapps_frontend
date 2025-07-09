@@ -71,7 +71,7 @@ export default function IndexMaterialEmpaque() {
   if (isError) return <ShowErrorAPI />
   if (data) return (
     <>
-      <h1 className="font-bold text-4xl">Material de empaque</h1>
+      <h1 className="font-bold text-4xl">Items Material Empaque</h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
           to="/material-empaque/crear"

@@ -22,9 +22,8 @@ const routes = [
   { path: "/proveedores/crear", component: lazy(() => import("@/views/bodega/proveedores/CrearProveedor")), roles: ['admin'] },
 
   { path: "/material-empaque-transacciones", component: lazy(() => import("@/views/bodega/transacciones-matrial-empaque/IndexPackingMaterialTransaction")), roles: ['admin'] },
-  { path: "/material-empaque-transacciones/crear", component: lazy(() => import("@/views/bodega/transacciones-matrial-empaque/CreatePackingMaterialTransaction")), roles: ['admin'] }
-
-
+  { path: "/material-empaque-transacciones/crear", component: lazy(() => import("@/views/bodega/transacciones-matrial-empaque/CreatePackingMaterialTransaction")), roles: ['admin'] },
+  { path: "/material-empaque-transacciones/:id", component: lazy(() => import("@/views/bodega/transacciones-matrial-empaque/PackingMaterialTransactionDetails")), roles: ['admin'] }
 ];
 
 export default function BodegaRoutes() {

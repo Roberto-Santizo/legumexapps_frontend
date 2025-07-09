@@ -59,7 +59,7 @@ export default function CalendarTasks() {
 
       {hasPermission('administrate plans production') && (
         <div className='flex justify-end'>
-          <button className='button bg-indigo-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
+          <button className='button bg-blue-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
             <PlusIcon />
             Crear Tarea Producción
           </button>
