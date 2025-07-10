@@ -57,7 +57,7 @@ export default function CalendarTasks() {
         <h1 className="font-bold text-4xl mb-4">Planificación Producción</h1>
       </div>
 
-      {hasPermission('administrate plans production') && (
+      {hasPermission('create new task production') && (
         <div className='flex justify-end'>
           <button className='button bg-blue-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
             <PlusIcon />
