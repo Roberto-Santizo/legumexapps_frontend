@@ -20,10 +20,8 @@ export default function HoverSummaryHoursPerLine() {
     useEffect(() => {
         if (isFetching) {
             setAnimate(true);
-
-            setTimeout(() => {
-                setAnimate(false);
-            }, 2200);
+            const timeout = setTimeout(() => setAnimate(false), 2200);
+            return () => clearTimeout(timeout);
         }
     }, [isFetching]);
 
@@ -38,32 +36,28 @@ export default function HoverSummaryHoursPerLine() {
             </HoverCard.Trigger>
             <HoverCard.Portal>
                 <HoverCard.Content
-                    className="data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade data-[state=open]:transition-all"
+                    className="z-[99999] bg-white rounded-xl p-6 shadow-lg space-y-4 w-96 h-96 data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade data-[state=open]:transition-all"
                     sideOffset={5}
                 >
-                    <div className="bg-white rounded-xl p-6 shadow-lg space-y-4 w-full h-96">
-                        <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 sticky top-0">Resumen de Horas Semanales por Línea</h2>
-
-                        {isLoading && <Spinner />}
-                        <div className="divide-y divide-gray-200 overflow-y-scroll scrollbar-hide min-h-full">
-                            {(data?.length === 0 && !isLoading) ? (
-                                <p className="text-center">No existen datos programados</p>
-                            ) : (
-                                <>
-                                    {data?.map((summary, index) => (
-                                        <div key={index} className="flex justify-between py-2">
-                                            <span className="text-gray-600 font-medium">{summary.line}</span>
-                                            <span className="text-gray-900 font-semibold">{summary.total_hours.toFixed(2)} hrs</span>
-                                        </div>
-                                    ))}
-
-                                </>
-                            )}
-                        </div>
+                    <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Resumen de Horas Semanales por Línea</h2>
+                    {isLoading && <Spinner />}
+                    <div className="divide-y divide-gray-200 overflow-y-auto max-h-[16rem] scrollbar-hide">
+                        {(data?.length === 0 && !isLoading) ? (
+                            <p className="text-center">No existen datos programados</p>
+                        ) : (
+                            <>
+                                {data?.map((summary, index) => (
+                                    <div key={index} className="flex justify-between py-2">
+                                        <span className="text-gray-600 font-medium">{summary.line}</span>
+                                        <span className="text-gray-900 font-semibold">{summary.total_hours.toFixed(2)} hrs</span>
+                                    </div>
+                                ))}
+                            </>
+                        )}
                     </div>
                     <HoverCard.Arrow className="fill-white" />
                 </HoverCard.Content>
             </HoverCard.Portal>
-        </HoverCard.Root >
-    )
+        </HoverCard.Root>
+    );
 }
