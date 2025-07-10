@@ -91,7 +91,7 @@ export default function IndexPlanSemanalProduccion() {
                                         <Eye />
                                     </Link>
 
-                                    {hasPermission('administrate plans production') && (
+                                    {hasPermission('see production plan calendar') && (
                                         <Link to={`/planes-produccion/calendario/${plan.id}`}>
                                             <CalendarRange />
                                         </Link>
