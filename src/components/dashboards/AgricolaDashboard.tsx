@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getUserRole } from "@/api/UserAPI";
+import { useRole } from "@/hooks/useRole";
 import SummaryTasksFincas from "@/components/dashboard-agricola/SummaryTasksFincas";
 import DronHours from "@/components/dashboard-agricola/DronHours";
 import SummaryHoursEmployees from "@/components/dashboard-agricola/SummaryHoursEmployees";
@@ -9,7 +8,6 @@ import FinishedTasks from "@/components/dashboard-agricola/FinishedTasks";
 import TasksCropInProgress from "@/components/dashboard-agricola/TasksCropInProgress";
 import FinishedTasksCrop from "@/components/dashboard-agricola/FinishedTasksCrop";
 import Spinner from "../utilities-components/Spinner";
-import { useRole } from "@/hooks/useRole";
 
 export default function AgricolaDashboard() {
   const navigate = useNavigate();
