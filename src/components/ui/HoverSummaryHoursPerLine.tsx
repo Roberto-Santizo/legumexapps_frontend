@@ -41,11 +41,11 @@ export default function HoverSummaryHoursPerLine() {
                     className="data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade data-[state=open]:transition-all"
                     sideOffset={5}
                 >
-                    <div className="bg-white rounded-xl p-6 shadow-lg space-y-4 w-full">
-                        <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Resumen de Horas Semanales por Línea</h2>
+                    <div className="bg-white rounded-xl p-6 shadow-lg space-y-4 w-full h-96">
+                        <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 sticky top-0">Resumen de Horas Semanales por Línea</h2>
 
                         {isLoading && <Spinner />}
-                        <div className="divide-y divide-gray-200">
+                        <div className="divide-y divide-gray-200 overflow-y-scroll scrollbar-hide min-h-full">
                             {(data?.length === 0 && !isLoading) ? (
                                 <p className="text-center">No existen datos programados</p>
                             ) : (
