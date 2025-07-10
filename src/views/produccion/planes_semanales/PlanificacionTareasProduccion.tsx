@@ -104,8 +104,11 @@ export default function CalendarTasks() {
 
       <ModalCrearTareaProduccion />
 
-      <HoverSummaryHoursPerLine />
       <ModalReprogramTaskProduction />
+
+      {hasPermission('administrate plans production') && (
+        <HoverSummaryHoursPerLine />
+      )}
     </div>
   )
 }

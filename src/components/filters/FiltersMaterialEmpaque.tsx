@@ -74,12 +74,12 @@ export default function FiltersMaterialEmpaque({ isOpen, setIsOpen, setTempFilte
                         />
                     </div>
 
-                    <div>
+                    {/* <div>
                         <label className="block text-sm font-medium">Proveedor</label>
                         <input type="text" name="supplier" className="w-full border p-2 rounded" placeholder="Nombre del proveedor"
                             onChange={handleFilterTempChange} value={tempFilters.supplier || ""} autoComplete="off"
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="border-t pt-3 space-y-2">

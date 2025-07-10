@@ -1,6 +1,6 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getPackingMaterials, PackingMaterial, updateMaterialStatus } from "@/api/MaterialEmpaqueAPI";
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersMaterialEmpaque from "@/components/filters/FiltersMaterialEmpaque";
 import ModalCargaItemsMP from "@/components/modals/ModalCargaItemsMP";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export type FiltersPackingMaterialsType = {
   name: string;
@@ -35,13 +36,16 @@ export default function IndexMaterialEmpaque() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
 
+  const { hasPermission } = usePermissions();
+
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['getPaginatedPackingMaterials', currentPage, filters],
-    queryFn: () => getPackingMaterials({ currentPage, filters, paginated: 'true' })
+    queryFn: () => getPackingMaterials({ currentPage, filters, paginated: 'true' }),
+    placeholderData: keepPreviousData
   });
 
   const { mutate } = useMutation({
@@ -73,18 +77,24 @@ export default function IndexMaterialEmpaque() {
     <>
       <h1 className="font-bold text-4xl">Items Material Empaque</h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
-        <Link
-          to="/material-empaque/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
-        >
-          <PlusIcon className="w-6 md:w-8" />
-          <p className="text-sm md:text-base">Crear</p>
-        </Link>
 
-        <button className="button bg-blue-500 hover:bg-blue-600 flex items-center gap-2" onClick={() => setModal(true)}>
-          <PlusIcon />
-          <p>Carga Masiva de Items</p>
-        </button>
+        {hasPermission('create item packing material') && (
+          <>
+            <Link
+              to="/material-empaque/crear"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+            >
+              <PlusIcon className="w-6 md:w-8" />
+              <p className="text-sm md:text-base">Crear</p>
+            </Link>
+
+            <button className="button bg-blue-500 hover:bg-blue-600 flex items-center gap-2" onClick={() => setModal(true)}>
+              <PlusIcon />
+              <p>Carga Masiva de Items</p>
+            </button>
+          </>
+        )}
+
 
         <Bars3Icon
           className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
@@ -108,8 +118,12 @@ export default function IndexMaterialEmpaque() {
               <td className="tbody-td">{item.name}</td>
               <td className="tbody-td">{item.description}</td>
               <td className="tbody-td">{item.code}</td>
-              <td className='tbody-td' onClick={() => handleChangeStatus(item.id)}>
-                <span className={`${item.blocked ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} button`}>{item.blocked ? 'DESACTIVADO' : 'ACTIVADO'}</span>
+              <td className='tbody-td'>
+                <button
+                  onClick={hasPermission('create item packing material') ? () => handleChangeStatus(item.id) : undefined}
+                  className={`${item.blocked ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} button`}>
+                  {item.blocked ? 'DESACTIVADO' : 'ACTIVADO'}
+                </button>
               </td>
             </tr>
           ))}

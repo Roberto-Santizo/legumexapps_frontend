@@ -36,7 +36,7 @@ export default function Modal({ modal, closeModal, title, children, width = 'sm:
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className={`relative transform overflow-hidden bg-white shadow-xl ${width}`}>
+                            <Dialog.Panel className={`relative transform bg-white shadow-xl ${width}`}>
                                 <div className="flex justify-between items-center bg-indigo-600 px-6 py-4 text-white">
                                     <h3 className="text-xl font-bold uppercase">
                                         {title}
