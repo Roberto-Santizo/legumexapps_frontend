@@ -9,14 +9,12 @@ import FinishedTasks from "@/components/dashboard-agricola/FinishedTasks";
 import TasksCropInProgress from "@/components/dashboard-agricola/TasksCropInProgress";
 import FinishedTasksCrop from "@/components/dashboard-agricola/FinishedTasksCrop";
 import Spinner from "../utilities-components/Spinner";
+import { useRole } from "@/hooks/useRole";
 
 export default function AgricolaDashboard() {
   const navigate = useNavigate();
 
-  const { data: role, isLoading, isError } = useQuery({
-    queryKey: ['getUserRole'],
-    queryFn: getUserRole
-  });
+  const { data: role, isLoading, isError } = useRole();
 
   if (isError) navigate('/login');
   if (isLoading) return <Spinner />
