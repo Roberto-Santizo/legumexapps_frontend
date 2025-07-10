@@ -20,8 +20,10 @@ export default function HoverSummaryHoursPerLine() {
     useEffect(() => {
         if (isFetching) {
             setAnimate(true);
-            const timeout = setTimeout(() => setAnimate(false), 2200);
-            return () => clearTimeout(timeout);
+
+            setTimeout(() => {
+                setAnimate(false);
+            }, 2200);
         }
     }, [isFetching]);
 
@@ -39,9 +41,9 @@ export default function HoverSummaryHoursPerLine() {
                     className="z-[99999] bg-white rounded-xl p-6 shadow-lg space-y-4 w-96 h-96 data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade data-[state=open]:transition-all"
                     sideOffset={5}
                 >
-                    <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Resumen de Horas Semanales por Línea</h2>
+                    <h2 className="text-xl font-semibold text-gray-800 pb-2">Resumen de Horas Semanales por Línea</h2>
                     {isLoading && <Spinner />}
-                    <div className="divide-y divide-gray-200 overflow-y-auto max-h-[16rem] scrollbar-hide">
+                    <div className="divide-y divide-gray-200 overflow-y-auto max-h-[16rem] scrollbar-hide space-y-2">
                         {(data?.length === 0 && !isLoading) ? (
                             <p className="text-center">No existen datos programados</p>
                         ) : (
