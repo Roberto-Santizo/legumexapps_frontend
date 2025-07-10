@@ -43,7 +43,11 @@ export default function Login() {
   return (
     <>
       <div className="text-5xl font-black text-white text-center flex items-center justify-center">
-        <img src="/LOGO_LX.png" alt="Img Logo" className="w-1/4" />
+        <img
+          src={`${import.meta.env.VITE_BASE_URL}/logo.png`}
+          alt="Img Logo"
+          className="w-1/4"
+        />
         <p className="flex-1">Iniciar Sesión</p>
       </div>
 

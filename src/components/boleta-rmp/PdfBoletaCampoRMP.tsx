@@ -1,8 +1,7 @@
 import React from 'react';
 import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
-import LogoLegumex from "../../../public/LOGO_LX.png";
-import Signature from '../utilities-components/Signature';
 import { BoletaInfoAll } from '@/api/ReceptionsDocAPI';
+import Signature from '../utilities-components/Signature';
 
 const styles = StyleSheet.create({
   row: {
@@ -272,7 +271,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
       <View style={styles.header}>
         <View style={styles.logoContainer}>
           <Image
-            src={LogoLegumex}
+            src={`${import.meta.env.VITE_BASE_URL}/logo.png`}
             style={styles.logo}
           />
           <View style={styles.companyInfo}>
