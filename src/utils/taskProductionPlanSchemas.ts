@@ -198,14 +198,15 @@ export const TaskProductionItemSchema = z.object({
     packing_material_id: z.string(),
     quantity: z.number(),
     lote: z.string(),
-    destination: z.string()
+    destination: z.string(),
+    code: z.string()
 });
 
 export const TaskProductionItemsSchema = z.object({
     data: z.object({
         available: z.boolean(),
         items: z.array(TaskProductionPackingMaterialRecipeSchema.pick({
-            name: true, packing_material_id: true, quantity: true, lote: true, destination: true
+            name: true, packing_material_id: true, quantity: true, lote: true, destination: true, code: true
         }))
     })
 })

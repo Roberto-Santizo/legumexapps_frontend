@@ -261,7 +261,7 @@ export async function createNewTasksProduction({FormData} : {FormData: DraftNewT
 
 export async function getTaskReturnPackingMaterialDetails({ id }: { id: TaskProductionPlan['id'] }) {
     try {
-        const url = `api/tasks-production/devolution-details/${id}`;
+        const url = `/api/tasks-production/devolution-details/${id}`;
         const { data } = await clienteAxios(url);
         const result = TaskProductionItemsSchema.safeParse(data);
 

@@ -27,7 +27,7 @@ const InputComponent = <T extends Record<string, any>>({
 }: InputFieldProps<T>) => {
     const classes =
         "border border-gray-300 rounded-sm p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 ease-in-out hover:border-indigo-400";
-    const errorClasses = "border-red-600 ring-2 ring-red-600"; 
+    const errorClasses = "border-red-600 ring-2 ring-red-600";
 
     return (
         <div className="flex flex-col gap-2">
@@ -35,7 +35,6 @@ const InputComponent = <T extends Record<string, any>>({
                 {label}
             </label>
             <input
-                autoComplete="off"
                 min={min}
                 id={id}
                 type={type}

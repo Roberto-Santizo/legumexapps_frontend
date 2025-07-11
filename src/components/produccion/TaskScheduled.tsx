@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
 import { usePermissions } from "@/hooks/usePermissions";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
-import ModalEntregaMaterialEmpaque from "../modals/ModalEntregaMaterialEmpaque";
+import ModalEntregaMaterialEmpaque, { DraftPackingMaterialTransactionItem } from "../modals/ModalEntregaMaterialEmpaque";
 
 type Props = {
     task: TaskProductionOperationDate;
@@ -13,6 +13,7 @@ type Props = {
 export default function TaskScheduled({ task }: Props) {
     const [modalEntrega, setModalEntrega] = useState<boolean>(false);
     const { hasPermission } = usePermissions();
+    const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>(task.recipe);
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -85,6 +86,8 @@ export default function TaskScheduled({ task }: Props) {
                     modal={modalEntrega}
                     setModal={setModalEntrega}
                     task={task}
+                    items={items}
+                    setItems={setItems}
                 />
             )}
 

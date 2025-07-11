@@ -21,6 +21,7 @@ export type DraftPackingMaterialTransactionItem = {
     quantity: number;
     lote: string;
     destination: string | null;
+    code: string;
 }
 
 export type DraftTransactionPackingMaterial = {
@@ -39,10 +40,12 @@ type Props = {
     modal: boolean;
     setModal: Dispatch<SetStateAction<boolean>>;
     task: TaskProductionOperationDate;
+    setItems: Dispatch<SetStateAction<DraftPackingMaterialTransactionItem[]>>,
+    items: DraftPackingMaterialTransactionItem[]
 };
 
 
-export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: Props) {
+export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, setItems, items }: Props) {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const date = queryParams.get('date')!;
@@ -52,7 +55,6 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
     const params = useParams();
     const plan_id = params.plan_id!!;
 
-    const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>(task.recipe);
     const [error, setError] = useState<boolean>(false);
 
     const filters = useAppStore((state) => state.filtersWithOperationDate);
@@ -88,7 +90,6 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
     }
 
     const handleCloseModal = () => {
-        reset();
         setModal(false);
     };
 
@@ -114,7 +115,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
                 <h2 className="text-2xl font-bold uppercase text-center text-gray-800">Configuración Empaque</h2>
 
                 <div className={`grid grid-cols-1 xl:grid-cols-3 gap-6 ${error ? 'border-2 border-red-500 rounded-xl p-4' : ''}`}>
-                    {task.recipe.map((item, index) => (
+                    {items.map((item, index) => (
                         <div key={index} className="flex flex-col items-center bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out w-full max-w-xs mx-auto">
                             <div className="mb-4 text-blue-500">
                                 <BoxIcon className="w-10 h-10" />
@@ -131,6 +132,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task }: P
                                 placeholder="Digitar lote"
                                 id={item.packing_material_id}
                                 onChange={handleChangeLote}
+                                value={item.lote}
                             />
                         </div>
                     ))}
