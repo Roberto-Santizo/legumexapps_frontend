@@ -44,7 +44,7 @@ export default function ModalCargaPosiciones() {
 
     const handleCreatePlan = async () => {
         if (file) {
-            mutate(file);
+            mutate({ file, id });
         }
     };
 

@@ -40,9 +40,9 @@ export async function getWeeklyPlanDetails(id: WeeklyProductionPlan['id']) {
     }
 }
 
-export async function createAssigmentsProductionTasks(file: File[]) {
+export async function createAssigmentsProductionTasks({ file, id }: { file: File[], id: WeeklyProductionPlan['id'] }) {
     try {
-        const url = `/api/weekly-production-plans/assign`;
+        const url = `/api/weekly-production-plans/assign/${id}`;
         const formData = new FormData();
         formData.append("file", file[0]);
 
