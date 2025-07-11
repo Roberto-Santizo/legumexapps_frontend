@@ -36,11 +36,13 @@ export default function ShowPlanSemanalProduccion() {
       {isPending && <LoadingOverlay />}
       <h2 className="font-bold text-4xl mb-12 text-gray-800">Líneas Asignadas</h2>
 
-      <div className="flex justify-end mb-5">
-        <button className="button bg-indigo-500 hover:bg-indigo-600" onClick={() => navigate(`${location.pathname}?uploadPositions=true`)}>
-          <p>Cargar Posiciones</p>
-        </button>
-      </div>
+      {hasPermission('upload task production employees') && (
+        <div className="flex justify-end mb-5">
+          <button className="button bg-indigo-500 hover:bg-indigo-600" onClick={() => navigate(`${location.pathname}?uploadPositions=true`)}>
+            <p>Cargar Posiciones</p>
+          </button>
+        </div>
+      )}
 
       <table className="table">
         <thead>

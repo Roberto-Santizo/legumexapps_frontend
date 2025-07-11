@@ -167,14 +167,6 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
                         </InputComponent>
                     </div>
 
-                    <fieldset className="border rounded-xl p-6 shadow-sm space-y-4">
-                        <legend className="text-lg font-semibold text-gray-700 px-2">Firmas</legend>
-                        <div className="grid grid-cols-2">
-                            <SignatureField label="Firma" name="responsable_signature" control={control} errors={errors} canvasRef={responsableSignatureRef} />
-                            <SignatureField label="Firma de bodega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
-                        </div>
-                    </fieldset>
-
                     <InputComponent
                         label="Observaciones"
                         id="observations"
@@ -187,6 +179,14 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
                     >
                         {errors.observations && <Error>{errors.observations.message?.toString()}</Error>}
                     </InputComponent>
+
+                    <fieldset className="border rounded-xl p-6 shadow-sm space-y-4">
+                        <legend className="text-lg font-semibold text-gray-700 px-2">Firmas</legend>
+                        <div className="grid grid-cols-2">
+                            <SignatureField label="Firma" name="responsable_signature" control={control} errors={errors} canvasRef={responsableSignatureRef} />
+                            <SignatureField label="Firma de bodega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
+                        </div>
+                    </fieldset>
 
                     <button
                         disabled={isPending}

@@ -16,7 +16,7 @@ export default function ShowLineaDetalles() {
     const plan_id = params.plan_id!!;
     const linea_id = params.linea_id!!;
 
-    const { data: tasks, isLoading, isError } = useQuery({
+    const { data: tasks, isLoading, isError, isFetching } = useQuery({
         queryKey: ['getTasksByLineId', plan_id, linea_id],
         queryFn: () => getTasksByLineId(plan_id, linea_id),
     });
@@ -30,9 +30,11 @@ export default function ShowLineaDetalles() {
                 <p className=" text-center text-3xl font-medium mt-10">No existen tareas para esta fecha</p>
             )}
 
-            {tasks.map(task => (
-                <TaskProduction key={task.id} task={task} />
-            ))}
+            <div className="space-y-5">
+                {tasks.map(task => (
+                    <TaskProduction key={task.id} task={task} isFetching={isFetching} />
+                ))}
+            </div>
 
             <ModalTomaRendimientoProduccion />
 

@@ -29,6 +29,11 @@ export default function ModalCreateProductionPlan({ setErrors, setModalErrors, c
         }
     }, []);
 
+    const handleCloseModal = () => {
+        navigate(location.pathname);
+        setFile(null);
+    }
+
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
     const { mutate, isPending } = useMutation({
@@ -46,6 +51,8 @@ export default function ModalCreateProductionPlan({ setErrors, setModalErrors, c
         },
         onSuccess: (data) => {
             toast.success(data);
+            queryClient.invalidateQueries({ queryKey: ['getPaginatedWeeklyProductionPlans', currentPage] });
+            handleCloseModal();
         }
     });
 
@@ -55,11 +62,6 @@ export default function ModalCreateProductionPlan({ setErrors, setModalErrors, c
         } else {
             toast.error('Debe cargar un archivo')
         }
-    }
-
-    const handleCloseModal = () => {
-        navigate(location.pathname);
-        setFile(null);
     }
 
     const handleSubmit = (e: React.FormEvent) => {
