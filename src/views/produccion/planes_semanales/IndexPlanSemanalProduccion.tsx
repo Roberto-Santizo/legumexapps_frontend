@@ -12,6 +12,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import ModalCreateProductionPlan from "@/components/modals/ModalCreateProductionPlan";
 import ModalErrorsTable from "@/components/modals/ModalErrorsTable";
+import MenuOptionsProduction from "@/components/planes-semanales-produccion/MenuOptionsProduction";
 
 export default function IndexPlanSemanalProduccion() {
     const [pageCount, setPageCount] = useState<number>(0);
@@ -71,6 +72,7 @@ export default function IndexPlanSemanalProduccion() {
                             <th className="thead-th">Año</th>
                             <th className="thead-th">Semana</th>
                             <th className="thead-th">Acción</th>
+                            <th className="thead-th">Reporteria</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,6 +98,10 @@ export default function IndexPlanSemanalProduccion() {
                                             <CalendarRange />
                                         </Link>
                                     )}
+                                </td>
+
+                                <td className="tbody-td">
+                                    <MenuOptionsProduction plan_id={plan.id} />
                                 </td>
                             </tr>
                         ))}

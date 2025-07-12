@@ -41,7 +41,7 @@ export default function TaskScheduled({ task }: Props) {
             </div>
 
             <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-2">
-                {(!task.finished && !task.working && hasPermission('administrate plans production') && (Number(task.status) >= 3)) && (
+                {(!task.finished && !task.working && hasPermission('administrate plans production') && (Number(task.status_id) < 3)) && (
                     <button
                         onClick={() => {
                             navigate(`${location.pathname}?${queryParams.toString()}`)
@@ -55,7 +55,7 @@ export default function TaskScheduled({ task }: Props) {
 
                 {(hasPermission('create mp transactions')) && (
                     <>
-                        {task.status === '1' && task.recipe.length > 0 && (
+                        {(task.status_id === '1' && task.recipe.length > 0) && (
                             <button
                                 onClick={() => {
                                     setModalEntrega(true);
@@ -72,7 +72,7 @@ export default function TaskScheduled({ task }: Props) {
                             onClick={() => navigate(`/material-empaque-transacciones/crear?taskId=${task.id}`, { state: { url: location.pathname + location.search } })}
                         >
                             <File className="w-4 h-4" />
-                            Crear de Transacción Material Empaque
+                            Crear Transacción de Material Empaque
                         </button>
 
                     </>

@@ -7,8 +7,8 @@ import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { CalendarIcon, DownloadIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import Spinner from "../utilities-components/Spinner";
 import { WeeklyPlan } from "types/planificacionFincasType";
+import Spinner from "../utilities-components/Spinner";
 
 
 export default function MenuColumns({ plan }: { plan: WeeklyPlan }) {

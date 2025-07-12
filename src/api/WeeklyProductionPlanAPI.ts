@@ -146,3 +146,33 @@ export async function downloadPlanillaProduction({ plan_id, line_id }: { plan_id
     }
 }
 
+export async function downloadPackingMaterialNecessity({ plan_id }: { plan_id: WeeklyProductionPlan['id'] }) {
+    try {
+        const url = `/api/weekly-production-plans/packing-material-necessity/${plan_id}`;
+        const { data } = await clienteAxios.post(url);
+        const result = ReportSchema.safeParse(data);
+        if (result.success) {
+            return result.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
+export async function downloadWeeklyProductionPlan({ plan_id }: { plan_id: WeeklyProductionPlan['id'] }) {
+    try {
+        const url = `/api/weekly-production-plans/report-weekly-production/${plan_id}`;
+        const { data } = await clienteAxios.post(url);
+        const result = ReportSchema.safeParse(data);
+        if (result.success) {
+            return result.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
