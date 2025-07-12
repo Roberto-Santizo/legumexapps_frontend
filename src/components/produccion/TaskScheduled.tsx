@@ -1,6 +1,6 @@
-import { BoxIcon, Calendar, File } from "lucide-react";
+import { BoxIcon, Calendar, EyeIcon, File } from "lucide-react";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
 import { usePermissions } from "@/hooks/usePermissions";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
@@ -76,6 +76,20 @@ export default function TaskScheduled({ task }: Props) {
                         </button>
 
                     </>
+                )}
+
+                {(task.status_id === '4') && (
+                    <Link to={`/planes-produccion/informacion/${task.id}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm">
+                        <EyeIcon className="hover:text-gray-400" />
+                        <p>Ver detalles</p>
+                    </Link>
+                )}
+
+                {(task.status_id === '5') && (
+                    <Link to={`/planes-produccion/tarea-produccion/${task.id}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm">
+                        <EyeIcon className="hover:text-gray-400" />
+                        <p>Ver detalles</p>
+                    </Link>
                 )}
             </div>
 
