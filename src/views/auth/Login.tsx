@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
+import Error from "@/components/utilities-components/Error";
 
 export type LoginType = {
   username: string,
@@ -42,18 +43,10 @@ export default function Login() {
 
   return (
     <>
-      <div className="text-5xl font-black text-white text-center flex items-center justify-center">
-        <img
-          src={`${import.meta.env.VITE_BASE_URL}/logo.png`}
-          alt="Img Logo"
-          className="w-1/4"
-        />
-        <p className="flex-1">Iniciar Sesión</p>
-      </div>
-
+      <h2 className="font-bold text-3xl">Iniciar Sesión</h2>
       <form
         onSubmit={handleSubmit(OnSubmit)}
-        className="space-y-8 p-10 bg-white mt-10"
+        className="space-y-8 p-10 bg-white mt-10 w-4/5 shadow border border-gray-200"
         noValidate
       >
         <div className="flex flex-col gap-5">
@@ -73,7 +66,7 @@ export default function Login() {
           />
 
           {errors?.username && (
-            <span className="border border-l-red-500 border-l-8 text-sm mt-1 bg-red-300 font-bold text-white p-2 uppercase">{errors?.username.message}</span>
+            <Error>{errors?.username.message}</Error>
           )}
         </div>
 
@@ -91,7 +84,7 @@ export default function Login() {
           />
 
           {errors?.password && (
-            <span className="border border-l-red-500 border-l-8 text-sm mt-1 bg-red-300 font-bold text-white p-2 uppercase">{errors?.password.message}</span>
+            <Error>{errors?.password.message}</Error>
           )}
         </div>
 
