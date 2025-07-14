@@ -1,4 +1,4 @@
-import { AlarmClockPlus, CheckCircle, Eye, NotebookPen, Paperclip, SquarePlay, UserRoundX } from "lucide-react";
+import { AlarmClockPlus, CheckCircle, Eye, NotebookPen, SquarePlay, UserRoundX } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeTaskTimeOut } from "@/api/TimeOutsAPI";
