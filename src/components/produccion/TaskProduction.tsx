@@ -69,17 +69,17 @@ export default function TaskProduction({ task, isFetching }: Props) {
           text={task.end_date || "SIN FECHA DE CIERRE"}
         />
 
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <span className="inline-block bg-sky-500 text-white px-4 py-2 font-semibold shadow">
             {task.total_in_employees}/{task.total_employees} empleados
           </span>
-        </div>
+        </div> */}
       </div>
 
       <div className="col-span-6 md:col-span-1 flex flex-col justify-between items-center space-y-6">
         {isUpdating ? (<Spinner />) : (
           <div className="flex flex-col gap-5 items-center">
-            {task.status === 2 && (
+            {/* {task.status === 2 && (
               <button
                 onClick={() =>
                   navigate(
@@ -90,7 +90,7 @@ export default function TaskProduction({ task, isFetching }: Props) {
               >
                 <Paperclip className="w-6 h-6 text-gray-700 hover:text-gray-500 transition" />
               </button>
-            )}
+            )} */}
 
             {!(task.start_date) && (
               <SquarePlay
