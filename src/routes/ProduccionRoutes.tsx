@@ -6,14 +6,14 @@ import ProtectedRoutes from "@/components/middlewares/ProtectedRoutes";
 
 const routes = [
   { path: "/planes-produccion/crear", component: lazy(() => import("@/views/produccion/planes_semanales/CreatePlanSemanal")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega'] },
-  { path: "/planes-produccion", component: lazy(() => import("@/views/produccion/planes_semanales/IndexPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser','adminagricola'] },
+  { path: "/planes-produccion", component: lazy(() => import("@/views/produccion/planes_semanales/IndexPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola', 'pcalidad'] },
 
-  { path: "/planes-produccion/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega','adminagricola'] },
-  { path: "/planes-produccion/calendario/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/PlanificacionTareasProduccion")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola'] },
+  { path: "/planes-produccion/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega', 'adminagricola', 'pcalidad'] },
+  { path: "/planes-produccion/calendario/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/PlanificacionTareasProduccion")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola', 'pcalidad'] },
   { path: "/planes-produccion/:plan_id/:linea_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowLineaDetalles")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega'] },
   { path: "/planes-produccion/asignacion/:plan_id/:linea_id/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/AsignarEmpleadosTareaProduccion")), roles: ['admin', 'audiproceso'] },
-  { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/TaskProductionPlanDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser','adminagricola'] },
-  { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/FinishedTaskProductionDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser','adminagricola'] },
+  { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/TaskProductionPlanDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola'] },
+  { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/FinishedTaskProductionDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola'] },
 
   { path: "/skus", component: lazy(() => import("@/views/produccion/sku/IndexSKU")), roles: ['admin', 'pcostos'] },
   { path: "/skus/crear", component: lazy(() => import("@/views/produccion/sku/CreateSKU")), roles: ['admin', 'pcostos'] },
@@ -30,7 +30,7 @@ const routes = [
   { path: "/tiempos-muertos/crear", component: lazy(() => import("@/views/produccion/tiempos_muertos/CrearTiempoMuerto")), roles: ['admin', 'pcostos'] },
   { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("@/views/produccion/tiempos_muertos/EditarTiempoMuerto")), roles: ['admin', 'pcostos'] },
 
-  { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/graficasDiarias/DailyGraphs")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser','adminagricola'] },
+  { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/graficasDiarias/DailyGraphs")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
 
 ];
 
