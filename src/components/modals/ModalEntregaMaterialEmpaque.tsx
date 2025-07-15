@@ -1,13 +1,11 @@
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { BoxIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation, useParams } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
 import { DraftTaskProductionWastage } from "./ModalAddWastage";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
-import { useAppStore } from "@/store";
 import InputComponent from "../form/InputComponent";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
@@ -46,27 +44,20 @@ type Props = {
 
 
 export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, setItems, items }: Props) {
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const date = queryParams.get('date')!;
-    const queryClient = useQueryClient();
     const responsableSignatureRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
-    const params = useParams();
-    const plan_id = params.plan_id!!;
 
     const [error, setError] = useState<boolean>(false);
-
-    const filters = useAppStore((state) => state.filtersWithOperationDate);
 
     const { mutate, isPending } = useMutation({
         mutationFn: createPackingMaterialTransaction,
         onError: (error) => toast.error(error.message),
         onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             setModal(false);
             toast.success(data);
-            reset();
+            task.status_id = '3';
+            task.status = 'Lista para ejecución';
+            task.color = 'bg-blue-500';
         }
     });
 
@@ -75,7 +66,6 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
         register,
         formState: { errors },
         control,
-        reset,
     } = useForm<DraftTransactionPackingMaterial>();
 
     const handleChangeLote = (e: ChangeEvent<HTMLInputElement>) => {
