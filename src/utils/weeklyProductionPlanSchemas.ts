@@ -6,7 +6,6 @@ export const WeeklyProductionPlanSchema = z.object({
     id: z.string(),
     week: z.number(),
     year: z.number(),
-    completed: z.boolean()
 })
 
 export const WeeklyProductionPlansSchema = z.object({

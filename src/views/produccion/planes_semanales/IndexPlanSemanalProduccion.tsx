@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { getWeeklyProductionPlans } from "@/api/WeeklyProductionPlanAPI";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { CalendarRange, Clock, Eye } from "lucide-react";
-import { CheckBadgeIcon } from "@heroicons/react/16/solid";
+import { CalendarRange, Eye } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -68,7 +67,6 @@ export default function IndexPlanSemanalProduccion() {
                 <table className="table">
                     <thead>
                         <tr className="thead-tr">
-                            <th className="thead-th">Estatus</th>
                             <th className="thead-th">Año</th>
                             <th className="thead-th">Semana</th>
                             <th className="thead-th">Acción</th>
@@ -78,13 +76,6 @@ export default function IndexPlanSemanalProduccion() {
                     <tbody>
                         {plans.map(plan => (
                             <tr className="tbody-tr" key={plan.id}>
-                                <td className="tbody-td">
-                                    {plan.completed ? (
-                                        <CheckBadgeIcon className="w-8 text-green-500" />
-                                    ) : (
-                                        <Clock className="w-8 text-orange-500" />
-                                    )}
-                                </td>
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
 
