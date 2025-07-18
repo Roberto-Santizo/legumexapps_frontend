@@ -94,7 +94,7 @@ export default function ModalReprogramTaskProduction() {
             return;
         }
 
-        mutate({ FormData: newTasks });
+        mutate({ FormData: newTasks, id: plan_id });
     }
 
     const onSubmit = (data: { days: string }) => {

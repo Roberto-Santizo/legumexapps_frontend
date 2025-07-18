@@ -231,7 +231,7 @@ export async function updateTaskProductionOperationDate({ id, FormData }: { id: 
 }
 
 
-export async function createNewTaskProduction({FormData, id } : {FormData: DraftNewTaskProduction, id: WeeklyProductionPlan['id']}) {
+export async function createNewTaskProduction({ FormData, id }: { FormData: DraftNewTaskProduction, id: WeeklyProductionPlan['id'] }) {
     try {
         const url = `/api/tasks-production/new-task/${id}`;
         const { data } = await clienteAxios.post<string>(url, {
@@ -245,9 +245,9 @@ export async function createNewTaskProduction({FormData, id } : {FormData: Draft
     }
 }
 
-export async function createNewTasksProduction({FormData} : {FormData: DraftNewTaskProduction[]}) {
+export async function createNewTasksProduction({ FormData, id }: { FormData: DraftNewTaskProduction[], id: WeeklyProductionPlan['id'] }) {
     try {
-        const url = '/api/tasks-production/new-task';
+        const url = `/api/tasks-production/new-task/${id}`;
         const { data } = await clienteAxios.post<string>(url, {
             data: FormData
         });
