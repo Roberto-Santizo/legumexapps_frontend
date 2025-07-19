@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createUser } from "@/api/UsersAPI";
 import { useMutation } from "@tanstack/react-query";
-import Spinner from "@/components/utilities-components/Spinner";
 import { DraftUser } from "types/usersTypes";
+import Spinner from "@/components/utilities-components/Spinner";
 import UsersForm from "./UsersForm";
 
 
@@ -41,9 +41,9 @@ export default function CreateUser() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear Usuario</h2>
+      <h2 className="text-2xl xl:text-4xl font-bold">Crear Usuario</h2>
       <form
-        className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5 my-5"
+        className="mt-10 w-full xl:w-3/4 mx-auto shadow-xl p-10 space-y-5 my-5"
         onSubmit={handleSubmit(onSubmit)}
       >
 

@@ -95,12 +95,13 @@ export default function IndexPlanSemanal() {
   if (isError) return <ShowErrorAPI />;
   return (
     <>
-      <h2 className="font-bold text-4xl">Planes Semanales</h2>
+      <h2 className="font-bold text-xl text-center xl:text-4xl xl:text-left">Planes Semanales</h2>
+
       {hasPermission('create plan semanal') && (
-        <div className="flex flex-row justify-end gap-5 mb-5">
+        <div className="flex xl:flex-row flex-col justify-end xl:gap-5 mb-5 space-y-5">
           <Link
             to="/planes-semanales/crear"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
           >
             <PlusIcon className="w-8" />
             <p>Crear Plan Semanal</p>
@@ -108,17 +109,19 @@ export default function IndexPlanSemanal() {
 
           <Link
             to="/planes-semanales/tareas-lote/crear"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
           >
             <PlusIcon className="w-8" />
             <p>Crear Actividad</p>
           </Link>
 
           {hasPermission('filter plan semanal') && (
-            <Bars3Icon
-              className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
-              onClick={() => setIsOpen(true)}
-            />
+            <div className="flex justify-end">
+              <Bars3Icon
+                className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+                onClick={() => setIsOpen(true)}
+              />
+            </div>
           )}
         </div>
       )}
@@ -159,8 +162,8 @@ export default function IndexPlanSemanal() {
         </motion.div>
       )}
 
-      {weeklyPlans.length === 0 ? <p className="text-center text-xl">No existen planes semanales</p> : (
-        <>
+      {weeklyPlans.length === 0 ? <p className="text-center text-xl text-gray-500">No existen planes semanales</p> : (
+        <div className="table-wrapper">
           <table className="table mt-10">
             <thead>
               <tr className="thead-tr">
@@ -228,21 +231,21 @@ export default function IndexPlanSemanal() {
               ))}
             </tbody>
           </table>
-          <div className="mb-10 flex justify-end">
-            <Pagination
-              currentPage={currentPage}
-              pageCount={pageCount}
-              handlePageChange={handlePageChange}
-            />
-          </div>
-
-        </>
+        </div>
       )}
 
 
       {isOpen && (
         <FiltersPlanSemanalFinca isOpen={isOpen} setIsOpen={setIsOpen} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFilters} />
       )}
+
+      <div className="mb-10 flex justify-end">
+        <Pagination
+          currentPage={currentPage}
+          pageCount={pageCount}
+          handlePageChange={handlePageChange}
+        />
+      </div>
     </>
   );
 }

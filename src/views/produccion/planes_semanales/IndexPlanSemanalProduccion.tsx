@@ -48,13 +48,13 @@ export default function IndexPlanSemanalProduccion() {
     if (isError) return <ShowErrorAPI />
     return (
         <>
-            <h1 className="font-bold text-4xl">Plan Semanal Produccion</h1>
+            <h1 className="font-bold text-center text-xl xl:text-left xl:text-4xl">Plan Semanal Produccion</h1>
             {hasPermission('create plan production semanal') && (
                 <div className="flex flex-row justify-end gap-5 mb-5">
                     <div className="flex flex-row justify-end gap-5">
                         <button
                             onClick={() => navigate(`${location.pathname}?createPlan=true`)}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                         >
                             <PlusIcon className="w-8" />
                             <p>crear plan semanal</p>
@@ -63,7 +63,7 @@ export default function IndexPlanSemanalProduccion() {
                 </div>
             )}
 
-            <div className="mt-10">
+            <div className="mt-10 table-wrapper">
                 <table className="table">
                     <thead>
                         <tr className="thead-tr">
@@ -98,17 +98,18 @@ export default function IndexPlanSemanalProduccion() {
                         ))}
                     </tbody>
                 </table>
-                <div className="mb-10 flex justify-end">
-                    <Pagination
-                        currentPage={currentPage}
-                        pageCount={pageCount}
-                        handlePageChange={handlePageChange}
-                    />
-                </div>
             </div>
 
             <ModalCreateProductionPlan setErrors={setErrores} setModalErrors={setModalErrors} currentPage={currentPage} />
             <ModalErrorsTable modal={modalErrors} setModal={setModalErrors} errors={errores} />
+
+            <div className="mb-10 flex justify-end">
+                <Pagination
+                    currentPage={currentPage}
+                    pageCount={pageCount}
+                    handlePageChange={handlePageChange}
+                />
+            </div>
         </>
     )
 }

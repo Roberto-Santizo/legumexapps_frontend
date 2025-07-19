@@ -38,36 +38,38 @@ export default function IndexTiemposMuertos() {
 
   if (timeouts) return (
     <div>
-      <h2 className="font-bold text-4xl">Tiempos Muertos</h2>
-      <div className="flex flex-row justify-end gap-5">
+      <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Tiempos Muertos</h2>
+      <div className="flex xl:flex-row flex-col justify-end gap-5">
         <Link
           to="/tiempos-muertos/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-8" />
           <p>Crear Tiempo Muerto</p>
         </Link>
       </div>
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th className="thead-th">Nombre</th>
-            <th className="thead-th">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {timeouts.map(timeout => (
-            <tr key={timeout.id} className="tbody-tr">
-              <td className="tbody-td">{timeout.name}</td>
-              <td>
-                <Link to={`/tiempos-muertos/editar/${timeout.id}`}>
-                  <Edit />
-                </Link>
-              </td>
+      <div className="table-wrapper">
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th className="thead-th">Nombre</th>
+              <th className="thead-th">Acción</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {timeouts.map(timeout => (
+              <tr key={timeout.id} className="tbody-tr">
+                <td className="tbody-td">{timeout.name}</td>
+                <td>
+                  <Link to={`/tiempos-muertos/editar/${timeout.id}`}>
+                    <Edit />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mb-10 flex justify-end">
         <Pagination

@@ -79,11 +79,11 @@ export default function CreateCdp() {
   if (isLoading) return <Spinner />;
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear Control de Plantación</h2>
+      <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">Crear Control de Plantación</h2>
 
       <form
         action=""
-        className="space-y-5 w-2/3 mx-auto p-5 mt-10"
+        className="space-y-5 xl:w-2/3 mx-auto p-5 mt-10"
         onSubmit={handleSubmit(handleCreateCDP)}
       >
         <InputComponent<DraftCDP>

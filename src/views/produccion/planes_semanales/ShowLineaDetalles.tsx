@@ -25,7 +25,7 @@ export default function ShowLineaDetalles() {
     if (isError) return <ShowErrorAPI />;
     if (tasks) return (
         <div>
-            <h1 className="font-bold text-4xl">Detalles de Linea</h1>
+            <h1 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Detalles de Linea</h1>
             {(tasks.length === 0) && (
                 <p className=" text-center text-3xl font-medium mt-10">No existen tareas para esta fecha</p>
             )}

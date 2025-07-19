@@ -14,8 +14,8 @@ export default function GeneralDashboard() {
   const [activeForm, setActiveForm] = useState<string>("A");
 
   return (
-    <div className="relative p-4 bg-white rounded-lg">
-      <div className="flex justify-end space-x-2 mb-6">
+    <div className="relative p-4 bg-white rounded-lg space-y-5">
+      <div className="flex flex-col lg:flex-row gap-2 xl:justify-end">
         {tabs.map((tab) => (
           <button
             key={tab.id}

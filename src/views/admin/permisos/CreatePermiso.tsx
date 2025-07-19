@@ -36,7 +36,7 @@ export default function CreatePermiso() {
 
       <div>
         <form
-          className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
+          className="mt-10 xl:w-3/4 mx-auto shadow-xl p-10 space-y-5"
           onSubmit={handleSubmit(handleCreatePermission)}
         >
 

@@ -22,7 +22,7 @@ const GraphicsPlanSemanal = ({ graphData }: Props) => {
   return (
     <div className="w-4/6 p-6 bg-white rounded-lg shadow-lg mx-auto ">
       <div className="bg-gray-50 p-4 rounded-lg">
-        <div className="flex justify-between h-64 bg-gray-50 p-4 rounded-lg">
+        <div className="flex flex-col xl:flex-row justify-between h-64 bg-gray-50 p-4 rounded-lg">
           {(Object.keys(graphData) as Array<keyof typeof graphData>).map(
             (tipo, index) => {
               const altura = (graphData[tipo] / valorMaximo) * 100;
@@ -45,7 +45,7 @@ const GraphicsPlanSemanal = ({ graphData }: Props) => {
         </div>
       </div>
 
-      <div className="mt-8 flex justify-center gap-6 flex-wrap">
+      <div className="xl:flex mt-8 hidden justify-center gap-6 flex-wrap">
         {(Object.keys(colores) as Array<keyof typeof colores>).map(
           (tipo, index) => (
             <div key={index} className="flex items-center">

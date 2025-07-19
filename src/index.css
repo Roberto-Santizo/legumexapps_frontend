@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  .table-wrapper {
+    @apply w-full overflow-x-auto scrollbar-hide;
+  }
+
   .table {
     @apply min-w-full border-collapse bg-gray-100 text-gray-800 shadow-md rounded-lg;
   }
@@ -12,15 +16,15 @@
   }
 
   .thead-th {
-    @apply px-4 py-2 text-left;
+    @apply px-4 py-3 text-left whitespace-nowrap;
   }
 
   .tbody-tr {
-    @apply border-b odd:bg-gray-100 even:bg-gray-200 hover:bg-gray-300 transition
+    @apply border-b odd:bg-gray-100 even:bg-gray-200 hover:bg-gray-300 transition;
   }
 
   .tbody-td {
-    @apply px-4 py-2;
+    @apply px-4 py-3 whitespace-nowrap;
   }
 
   .button {
@@ -136,9 +140,12 @@
 }
 
 @keyframes pulseColor {
-  0%, 100% {
+
+  0%,
+  100% {
     background-color: #2563eb;
   }
+
   50% {
     background-color: green;
   }
@@ -147,4 +154,3 @@
 .animate-pulseColor {
   animation: pulseColor 2s ease-in-out infinite;
 }
-

@@ -70,42 +70,44 @@ export default function IndexPermisosEmpleados() {
   if (isPending) return <Spinner />;
   if (empleadosPermisos) return (
     <div>
-      <h2 className="font-bold text-4xl">Permisos de Empleados Cambios de Linea</h2>
+      <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Permisos de Empleados Cambios de Linea</h2>
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th className="thead-th">Linea</th>
-            <th className="thead-th">Empleado Original</th>
-            <th className="thead-th">Empleado Nuevo</th>
-            <th className="thead-th">Fecha</th>
-            <th className="thead-th">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {empleadosPermisos.map(permisoEmpleado => (
-            <tr className="tbody-tr" key={permisoEmpleado.id}>
-              <td className="tbody-td">{permisoEmpleado.line}</td>
-              <td className="tbody-td">{permisoEmpleado.original_name}</td>
-              <td className="tbody-td">{permisoEmpleado.new_name}</td>
-              <td className="tbody-td">{formatDate(permisoEmpleado.date)}</td>
-              <td className="tbody-td flex gap-5">
-                {permisoEmpleado.confirmed ? (
-                  <CheckBadgeIcon className="w-6 text-green-500" />
-                ) : (
-                  <>
-                    <button className="button bg-green-500" onClick={() => handleClosePermission(permisoEmpleado.id, '1')}>CON PERMISO</button>
-                    <button className="button bg-red-500" onClick={() => handleClosePermission(permisoEmpleado.id, '0')}>SIN PERMISO</button>
-                  </>
-                )}
-                <Link to={`/permisos-empleados/${permisoEmpleado.id}`}>
-                  <Eye className="cursor-pointer hover:text-gray-500"/>
-                </Link>
-              </td>
+      <div className="table-wrapper">
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th className="thead-th">Linea</th>
+              <th className="thead-th">Empleado Original</th>
+              <th className="thead-th">Empleado Nuevo</th>
+              <th className="thead-th">Fecha</th>
+              <th className="thead-th">Acción</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {empleadosPermisos.map(permisoEmpleado => (
+              <tr className="tbody-tr" key={permisoEmpleado.id}>
+                <td className="tbody-td">{permisoEmpleado.line}</td>
+                <td className="tbody-td">{permisoEmpleado.original_name}</td>
+                <td className="tbody-td">{permisoEmpleado.new_name}</td>
+                <td className="tbody-td">{formatDate(permisoEmpleado.date)}</td>
+                <td className="tbody-td flex gap-5">
+                  {permisoEmpleado.confirmed ? (
+                    <CheckBadgeIcon className="w-6 text-green-500" />
+                  ) : (
+                    <>
+                      <button className="button bg-green-500" onClick={() => handleClosePermission(permisoEmpleado.id, '1')}>CON PERMISO</button>
+                      <button className="button bg-red-500" onClick={() => handleClosePermission(permisoEmpleado.id, '0')}>SIN PERMISO</button>
+                    </>
+                  )}
+                  <Link to={`/permisos-empleados/${permisoEmpleado.id}`}>
+                    <Eye className="cursor-pointer hover:text-gray-500" />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mb-10 flex justify-end">
         <Pagination

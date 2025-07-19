@@ -73,7 +73,7 @@ export default function CreateLote() {
     <>
       <h2 className="text-4xl font-bold">Crear Lote</h2>
       <form
-        className="w-1/2 mx-auto p-5 space-y-5"
+        className="xl:w-1/2 mx-auto p-5 space-y-5"
         onSubmit={handleSubmit(onSubmit)}
       >
 

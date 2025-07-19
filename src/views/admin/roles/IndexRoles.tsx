@@ -33,20 +33,20 @@ export default function IndexRoles() {
   if (roles) return (
     <>
       <div>
-        <h2 className="font-bold text-4xl">Administración de Roles</h2>
+        <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Administración de Roles</h2>
 
         <div className="flex flex-row justify-end gap-5">
           <Link
             to="/roles/crear"
             className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
           >
-            <PlusIcon className="w-8" />
-            <p>Crear Rol</p>
+            <PlusIcon className="w-4 xl:w-8" />
+            <p className="text-xs xl:text-base">Crear Rol</p>
           </Link>
         </div>
 
 
-        <div className="p-2 mt-10">
+        <div className="p-2 mt-10 table-wrapper">
           <table className="table">
             <thead>
               <tr className="thead-tr">

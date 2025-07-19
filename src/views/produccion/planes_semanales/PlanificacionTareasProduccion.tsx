@@ -59,14 +59,14 @@ export default function CalendarTasks() {
 
       {hasPermission('create new task production') && (
         <div className='flex justify-end'>
-          <button className='button bg-blue-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
+          <button className='button bg-indigo-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
             <PlusIcon />
             Crear Tarea Producción
           </button>
         </div>
       )}
 
-      <div className="flex gap-5 p-5">
+      <div className="flex xl:flex-row flex-col gap-5 p-5">
         <div className="flex-1 border p-5 rounded-lg bg-white shadow max-h-screen overflow-y-auto scrollbar-hide space-y-6">
           <div className="min-h-[600px] relative">
             {isFetching && (
@@ -77,19 +77,20 @@ export default function CalendarTasks() {
             )}
 
             {!isFetching && (
-              <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth"
-                events={[...(events ?? [])]}
-                locale={esLocale}
-                dateClick={handleClickDate}
-                dayCellClassNames={(arg) =>
-                  arg.date.toISOString().split('T')[0] === (date ?? getCurrentDate())
-                    ? ['bg-indigo-200']
-                    : []
-                }
-              />
-
+              <div className="w-full overflow-x-auto">
+                <FullCalendar
+                  plugins={[dayGridPlugin, interactionPlugin]}
+                  initialView="dayGridMonth"
+                  events={[...(events ?? [])]}
+                  locale={esLocale}
+                  dateClick={handleClickDate}
+                  dayCellClassNames={(arg) =>
+                    arg.date.toISOString().split('T')[0] === (date ?? getCurrentDate())
+                      ? ['bg-indigo-200']
+                      : []
+                  }
+                />
+              </div>
             )}
           </div>
 

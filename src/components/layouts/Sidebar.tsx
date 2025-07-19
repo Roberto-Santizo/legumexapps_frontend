@@ -1,18 +1,52 @@
+import { useAuth } from "@/hooks/useAuth";
+import { motion, AnimatePresence } from "framer-motion";
 import Navegation from "../Navegation";
+import { XIcon } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 
-export function Sidebar() {
+type Props = {
+  show: boolean;
+  setShowSidebar: Dispatch<SetStateAction<boolean>>;
+};
+
+export function Sidebar({ show, setShowSidebar}: Props) {
+  const { logout } = useAuth();
+
   return (
-    <div className="pb-12 h-screen w-64 bg-gray-100 ">
-      <div className="space-y-4 py-4 max-h-screen  overflow-y-auto scrollbar-hide">
-        <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
-            Menu
-          </h2>
-          <nav className="gap-2 py-2 flex flex-col w-full">
-            <Navegation />
-          </nav>
-        </div>
-      </div>
-    </div>
+    <AnimatePresence>
+      {show && (
+        <motion.aside
+          initial={{ x: -300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -300, opacity: 0 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          className="h-screen w-72 bg-[#232232] shadow-lg z-[9999] fixed top-0 left-0 xl:static xl:z-auto"
+        >
+          <div className="space-y-4 py-4 max-h-screen overflow-y-auto scrollbar-hide">
+            <div className="px-3 py-2">
+              <div className="mb-2 px-4 text-xl text-white font-semibold tracking-tight flex justify-between">
+                <p>
+                  LegumexApps <span className="text-indigo-500 font-bold">Web</span>
+                </p>
+                <button className="block xl:hidden">
+                  <XIcon onClick={() => setShowSidebar(false)}/>
+                </button>
+              </div>
+
+              <nav className="gap-2 py-2 flex flex-col w-full text-white">
+                <Navegation />
+              </nav>
+
+              <button
+                onClick={() => logout()}
+                className="mt-6 w-full rounded-lg bg-red-500 py-2 text-sm font-medium text-white transition-colors hover:bg-red-600"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </motion.aside>
+      )}
+    </AnimatePresence>
   );
 }

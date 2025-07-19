@@ -108,32 +108,34 @@ export default function DailyGraphs() {
             </div>
           </div>
 
-          <table className="table mt-10">
-            <thead>
-              <tr className="thead-tr">
-                <th className="thead-th">SKU</th>
-                <th className="thead-th">Descripción</th>
-                <th className="thead-th">Fecha de Inicio</th>
-                <th className="thead-th">Fecha Final</th>
-                <th className="thead-th">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.details?.map(task => (
-                <tr key={task.id} className="tbody-tr">
-                  <td className="tbody-td">{task.sku}</td>
-                  <td className="tbody-td">{task.sku_description}</td>
-                  <td className="tbody-td">{task.start_date}</td>
-                  <td className="tbody-td">{task.end_date}</td>
-                  <td className="tbody-td">
-                    <Link to={`/planes-produccion/tarea-produccion/${task.id}`} target="_blank">
-                      <Eye className="hover:text-gray-500 cursor-pointer" />
-                    </Link>
-                  </td>
+          <div className="table-wrapper">
+            <table className="table mt-10">
+              <thead>
+                <tr className="thead-tr">
+                  <th className="thead-th">SKU</th>
+                  <th className="thead-th">Descripción</th>
+                  <th className="thead-th">Fecha de Inicio</th>
+                  <th className="thead-th">Fecha Final</th>
+                  <th className="thead-th">Acción</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data?.details?.map(task => (
+                  <tr key={task.id} className="tbody-tr">
+                    <td className="tbody-td">{task.sku}</td>
+                    <td className="tbody-td">{task.sku_description}</td>
+                    <td className="tbody-td">{task.start_date}</td>
+                    <td className="tbody-td">{task.end_date}</td>
+                    <td className="tbody-td">
+                      <Link to={`/planes-produccion/tarea-produccion/${task.id}`} target="_blank">
+                        <Eye className="hover:text-gray-500 cursor-pointer" />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </div>

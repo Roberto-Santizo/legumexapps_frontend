@@ -76,7 +76,7 @@ export default function ModalCargaLineaSku({ modal, setModal, currentPage }: Pro
                             )}
                         </div>
 
-                        <div className="flex justify-center items-center gap-2 mt-5">
+                        <div className="flex flex-col xl:flex-row justify-center items-center gap-2 mt-5">
                             <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                                 {isPending ? <Spinner /> : <p>Crear</p>}
                             </button>

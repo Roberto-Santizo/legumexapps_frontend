@@ -43,19 +43,19 @@ export default function IndexSKU() {
   if (isError) return <ShowErrorAPI />
   return (
     <>
-      <h2 className="font-bold text-4xl">SKU</h2>
+      <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">SKU</h2>
 
-      <div className="flex flex-row justify-end gap-5 flex-wrap mt-5">
+      <div className="flex xl:flex-row flex-col justify-end gap-5 flex-wrap mt-5">
         <Link
           to="/skus/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
         >
           <PlusIcon className="w-5 h-5" />
           <p>Crear SKU</p>
         </Link>
 
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
           onClick={() => setModal(true)}
         >
           <PlusIcon className="w-5 h-5" />
@@ -63,7 +63,7 @@ export default function IndexSKU() {
         </button>
 
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
           onClick={() => setModalRecipe(true)}
         >
           <PlusIcon className="w-5 h-5" />
@@ -72,7 +72,7 @@ export default function IndexSKU() {
       </div>
 
 
-      <div className="mt-10">
+      <div className="mt-10 table-wrapper">
         <table className="table">
           <thead>
             <tr className="thead-tr">

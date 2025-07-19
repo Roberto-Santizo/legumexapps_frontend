@@ -22,7 +22,7 @@ export default function ShowPlanSemanal() {
   if (summaryPlan) return (
     <>
       <div className="space-y-10">
-        <h2 className="text-4xl font-bold">
+        <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">
           Plan Semanal {summaryPlan.data.finca} Semana {summaryPlan.data.week} -{" "}
           {summaryPlan.data.year}
         </h2>
@@ -30,8 +30,7 @@ export default function ShowPlanSemanal() {
         {summaryPlan.data.summary_tasks.length === 0 ? (
           <p className="text-center text-xl">No existen tareas programadas el día de hoy</p>
         ) : (
-          <div>
-            <h2 className="text-xl font-bold uppercase">Tareas Generales</h2>
+          <div className="table-wrapper">
             <table className="table mt-10">
               <thead>
                 <tr className="thead-tr">
@@ -75,7 +74,7 @@ export default function ShowPlanSemanal() {
                             `/planes-semanales/tareas-lote/${id}/${task.lote_plantation_control_id}`
                           )
                         }
-                        className="button bg-gray-400 hover:bg-gray-500"
+                        className="button bg-indigo-500 hover:bg-indigo-600"
                       >
                         <p>Ver Tareas de Lote</p>
                       </button>

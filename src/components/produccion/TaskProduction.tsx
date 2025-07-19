@@ -5,10 +5,10 @@ import { closeTaskTimeOut } from "@/api/TimeOutsAPI";
 import { toast } from "react-toastify";
 import { TaskProductionPlan } from "types/taskProductionPlanTypes";
 import { startTaskProductionPlan } from "@/api/TaskProductionPlansAPI";
-import TaskLabel from "@/components/utilities-components/TaskLabel";
 import { useMemo } from "react";
-import Spinner from "../utilities-components/Spinner";
 import { usePermissions } from "@/hooks/usePermissions";
+import TaskLabel from "@/components/utilities-components/TaskLabel";
+import Spinner from "../utilities-components/Spinner";
 
 type Props = {
   task: TaskProductionPlan;
@@ -53,7 +53,7 @@ export default function TaskProduction({ task, isFetching }: Props) {
   const isUpdating = useMemo(() => startTaskPending || closeTaskTimeOutPending || isFetching, [isFetching, startTaskPending, closeTaskTimeOutPending]);
 
   return (
-    <div className="grid grid-cols-6 gap-8 shadow-xl rounded-2xl bg-white p-10 text-base sm:text-lg md:text-xl">
+    <div className="flex flex-col xl:grid xl:grid-cols-6 gap-8 shadow-xl rounded-2xl bg-white p-10 xl:text-xl text-xs">
       <div className="col-span-6 md:col-span-5">
         <TaskLabel label="SKU" text={task.sku} />
         <TaskLabel label="Producto" text={task.product} />
@@ -78,7 +78,7 @@ export default function TaskProduction({ task, isFetching }: Props) {
 
       <div className="col-span-6 md:col-span-1 flex flex-col justify-between items-center space-y-6">
         {isUpdating ? (<Spinner />) : (
-          <div className="flex flex-col gap-5 items-center">
+          <div className="flex xl:flex-col gap-5 items-center">
             {/* {task.status === 2 && (
               <button
                 onClick={() =>
@@ -170,7 +170,6 @@ export default function TaskProduction({ task, isFetching }: Props) {
 
           </div>
         )}
-
       </div>
     </div>
 

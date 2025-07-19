@@ -33,14 +33,14 @@ export default function CargaMasivaCDPs() {
     e.preventDefault();
     if (file) {
       mutate(file);
-    }else{
+    } else {
       toast.error('El archivo de carga es necesario');
     }
   };
   return (
     <>
-      <h2 className="font-bold text-4xl">Carga Masiva de CDPS</h2>
-      <form className="w-1/2 mx-auto mt-5" onSubmit={handleSubmit}>
+      <h2 className="font-bold text-center text-xl xl:text-left xl:text-4xl">Carga Masiva de CDPS</h2>
+      <form className="xl:w-1/2 mx-auto mt-5" onSubmit={handleSubmit}>
         <div
           className="mt-5"
           {...getRootProps()}

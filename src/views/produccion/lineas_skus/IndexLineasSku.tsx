@@ -41,18 +41,18 @@ export default function IndexLineasSku() {
     if (isError) return <ShowErrorAPI />;
     if (skus) return (
         <div>
-            <h2 className="font-bold text-4xl">Lineas & SKUS</h2>
-            <div className="flex justify-end gap-3 mt-5 flex-wrap">
+            <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Lineas & SKUS</h2>
+            <div className="flex flex-col xl:flex-row justify-end gap-3 mt-5 flex-wrap">
                 <Link
                     to="/lineas-skus/crear"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
                 >
                     <PlusIcon className="w-5 h-5" />
                     <p>Relacionar Línea a SKU</p>
                 </Link>
 
                 <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
                     onClick={() => setUploadModal(true)}
                 >
                     <PlusIcon className="w-5 h-5" />
@@ -60,38 +60,39 @@ export default function IndexLineasSku() {
                 </button>
             </div>
 
-
-            <table className="table mt-10">
-                <thead>
-                    <tr className="thead-tr">
-                        <th className="thead-th">Linea</th>
-                        <th className="thead-th">SKU</th>
-                        <th className="thead-th">Cliente</th>
-                        <th className="thead-th">Producto</th>
-                        <th className="thead-th">Turno</th>
-                        <th className="thead-th">Libras/Hora</th>
-                        <th className="thead-th">Porcentaje Aceptado</th>
-                        <th className="thead-th">Método de Pago</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {skus.map(sku => (
-                        <tr key={sku.id} className="tbody-tr" onDoubleClick={() => {
-                            setModal(true)
-                            setSelectedSku(sku);
-                        }}>
-                            <td className="tbody-td">{sku.line}</td>
-                            <td className="tbody-td">{sku.sku}</td>
-                            <td className="tbody-td">{sku.client}</td>
-                            <td className="tbody-td">{sku.product}</td>
-                            <td className="tbody-td">{sku.shift}</td>
-                            <td className="tbody-td">{sku.performance}</td>
-                            <td className="tbody-td"><span>{sku.accepted_percentage} %</span></td>
-                            <td className="tbody-td">{sku.payment_method ? 'HORAS LINEA' : 'HORAS RENDIMIENTO'}</td>
+            <div className="table-wrapper">
+                <table className="table mt-10">
+                    <thead>
+                        <tr className="thead-tr">
+                            <th className="thead-th">Linea</th>
+                            <th className="thead-th">SKU</th>
+                            <th className="thead-th">Cliente</th>
+                            <th className="thead-th">Producto</th>
+                            <th className="thead-th">Turno</th>
+                            <th className="thead-th">Libras/Hora</th>
+                            <th className="thead-th">Porcentaje Aceptado</th>
+                            <th className="thead-th">Método de Pago</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {skus.map(sku => (
+                            <tr key={sku.id} className="tbody-tr" onDoubleClick={() => {
+                                setModal(true)
+                                setSelectedSku(sku);
+                            }}>
+                                <td className="tbody-td">{sku.line}</td>
+                                <td className="tbody-td">{sku.sku}</td>
+                                <td className="tbody-td">{sku.client}</td>
+                                <td className="tbody-td">{sku.product}</td>
+                                <td className="tbody-td">{sku.shift}</td>
+                                <td className="tbody-td">{sku.performance}</td>
+                                <td className="tbody-td"><span>{sku.accepted_percentage} %</span></td>
+                                <td className="tbody-td">{sku.payment_method ? 'HORAS LINEA' : 'HORAS RENDIMIENTO'}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             <div className="mb-10 flex justify-end">
                 <Pagination

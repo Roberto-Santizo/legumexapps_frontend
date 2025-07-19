@@ -42,8 +42,8 @@ export default function IndexTareasLote() {
 
   if (tasks && role) return (
     <>
-      <div className="flex justify-between">
-        <h2 className="font-bold text-3xl">
+      <div className="flex flex-col xl:flex-row justify-between">
+        <h2 className="font-bold xl:text-left text-xl text-center xl:text-3xl">
           Plan Semanal Semana {tasks.week} - FINCA {tasks.finca} - LOTE{" "}
           {tasks.lote}
         </h2>

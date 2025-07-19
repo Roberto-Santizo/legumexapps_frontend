@@ -45,19 +45,19 @@ export default function IndexUsers() {
   if (isLoading) return <Spinner />
   if (users) return (
     <>
-      <h2 className="font-bold text-4xl">Administración de Usuarios</h2>
+      <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Administración de Usuarios</h2>
       <div>
         <div className="flex flex-row justify-end gap-5">
           <Link
             to="/usuarios/crear"
             className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
           >
-            <PlusIcon className="w-8" />
-            <p>Crear Usuario</p>
+            <PlusIcon className="w-4 xl:w-8" />
+            <p className="text-xs xl:text-base">Crear Usuario</p>
           </Link>
         </div>
 
-        <div className="p-2 mt-10">
+        <div className="p-2 mt-10 table-wrapper">
           <table className="table">
             <thead>
               <tr className="thead-tr">
