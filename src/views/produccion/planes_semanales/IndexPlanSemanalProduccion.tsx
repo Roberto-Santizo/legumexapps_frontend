@@ -63,7 +63,7 @@ export default function IndexPlanSemanalProduccion() {
                 </div>
             )}
 
-            <div className="mt-10 table-wrapper">
+            <div className="mt-10">
                 <table className="table">
                     <thead>
                         <tr className="thead-tr">
