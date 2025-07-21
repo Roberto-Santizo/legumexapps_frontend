@@ -12,8 +12,8 @@ const routes = [
   { path: "/planes-produccion/calendario/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/PlanificacionTareasProduccion")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola', 'pcalidad'] },
   { path: "/planes-produccion/:plan_id/:linea_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowLineaDetalles")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega'] },
   { path: "/planes-produccion/asignacion/:plan_id/:linea_id/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/AsignarEmpleadosTareaProduccion")), roles: ['admin', 'audiproceso'] },
-  { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/TaskProductionPlanDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola'] },
-  { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/FinishedTaskProductionDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola'] },
+  { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/TaskProductionPlanDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola','exportuser'] },
+  { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/FinishedTaskProductionDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola','exportuser'] },
 
   { path: "/skus", component: lazy(() => import("@/views/produccion/sku/IndexSKU")), roles: ['admin', 'pcostos'] },
   { path: "/skus/crear", component: lazy(() => import("@/views/produccion/sku/CreateSKU")), roles: ['admin', 'pcostos'] },
