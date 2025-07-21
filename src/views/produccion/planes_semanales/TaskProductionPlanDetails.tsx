@@ -42,7 +42,7 @@ export default function TaskProductionPlanDetails() {
           <div className="flex flex-col xl:grid xl:grid-cols-2 gap-10 p-5 shadow">
             <div>
               <h2 className="font-bold xl:text-2xl uppercase mb-5">Información de rendimientos</h2>
-              <div className="table-wrapper">
+              <div className="table-wrapper max-h-96">
                 <table className="table">
                   <thead>
                     <tr className="thead-tr">
@@ -66,7 +66,7 @@ export default function TaskProductionPlanDetails() {
 
             <div>
               <h2 className="font-bold xl:text-2xl uppercase mb-5">Información de tiempos muertos</h2>
-              <div className="table-wrapper">
+              <div className="table-wrapper max-h-96">
                 <table className="table">
                   <thead>
                     <tr className="thead-tr">
@@ -92,7 +92,7 @@ export default function TaskProductionPlanDetails() {
           </div>
         </div>
 
-        <div className="table-wrapper">
+        <div className="table-wrapper max-h-96">
           <table className="table mt-5">
             <thead>
               <tr className="thead-tr">

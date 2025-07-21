@@ -9,13 +9,13 @@ import { useMemo } from "react";
 import { usePermissions } from "@/hooks/usePermissions";
 import TaskLabel from "@/components/utilities-components/TaskLabel";
 import Spinner from "../utilities-components/Spinner";
+import { PaperClipIcon } from "@heroicons/react/16/solid";
 
 type Props = {
   task: TaskProductionPlan;
-  isFetching: boolean;
 };
 
-export default function TaskProduction({ task, isFetching }: Props) {
+export default function TaskProduction({ task }: Props) {
   const params = useParams();
   const plan_id = params.plan_id!!;
   const linea_id = params.linea_id!!;
@@ -50,7 +50,7 @@ export default function TaskProduction({ task, isFetching }: Props) {
     },
   });
 
-  const isUpdating = useMemo(() => startTaskPending || closeTaskTimeOutPending || isFetching, [isFetching, startTaskPending, closeTaskTimeOutPending]);
+  const isUpdating = useMemo(() => startTaskPending || closeTaskTimeOutPending, [startTaskPending, closeTaskTimeOutPending]);
 
   return (
     <div className="flex flex-col xl:grid xl:grid-cols-6 gap-8 shadow-xl rounded-2xl bg-white p-10 xl:text-xl text-xs">
@@ -69,17 +69,17 @@ export default function TaskProduction({ task, isFetching }: Props) {
           text={task.end_date || "SIN FECHA DE CIERRE"}
         />
 
-        {/* <div className="mt-6">
+        <div className="mt-6">
           <span className="inline-block bg-sky-500 text-white px-4 py-2 font-semibold shadow">
             {task.total_in_employees}/{task.total_employees} empleados
           </span>
-        </div> */}
+        </div>
       </div>
 
       <div className="col-span-6 md:col-span-1 flex flex-col justify-between items-center space-y-6">
         {isUpdating ? (<Spinner />) : (
           <div className="flex xl:flex-col gap-5 items-center">
-            {/* {task.status === 2 && (
+            {task.status === 2 && (
               <button
                 onClick={() =>
                   navigate(
@@ -88,9 +88,9 @@ export default function TaskProduction({ task, isFetching }: Props) {
                   )
                 }
               >
-                <Paperclip className="w-6 h-6 text-gray-700 hover:text-gray-500 transition" />
+                <PaperClipIcon className="w-6 h-6 text-gray-700 hover:text-gray-500 transition" />
               </button>
-            )} */}
+            )}
 
             {(!task.start_date && task.status === 3) && (
               <SquarePlay
