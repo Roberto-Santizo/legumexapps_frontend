@@ -16,7 +16,8 @@ import {
   ChartBarIncreasing,
   ChartLine,
   ChartNoAxesCombined,
-  FileUser, Box, ClipboardPaste
+  FileUser, Box, ClipboardPaste,
+  ChartPie
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
@@ -112,6 +113,10 @@ export default function Navegation() {
           <BookOpenCheck />
         </NavLinkComponent>
       )}
+
+      <NavLinkComponent url="/planificador-produccion" text="Planificador Producción">
+        <ChartPie />
+      </NavLinkComponent>
 
       {hasPermission("administrate production performances") && (
         <>

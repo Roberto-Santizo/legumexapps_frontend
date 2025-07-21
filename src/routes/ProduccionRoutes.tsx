@@ -31,6 +31,8 @@ const routes = [
   { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("@/views/produccion/tiempos_muertos/EditarTiempoMuerto")), roles: ['admin', 'pcostos'] },
 
   { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/graficasDiarias/DailyGraphs")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
+  
+  { path: "/planificador-produccion", component: lazy(() => import("@/views/produccion/planificador/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
 
 ];
 

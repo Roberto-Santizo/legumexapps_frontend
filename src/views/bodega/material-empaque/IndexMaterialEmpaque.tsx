@@ -1,16 +1,18 @@
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getPackingMaterials, PackingMaterial, updateMaterialStatus } from "@/api/MaterialEmpaqueAPI";
 import { toast } from "react-toastify";
 import { Bars3Icon } from "@heroicons/react/16/solid";
+import { usePermissions } from "@/hooks/usePermissions";
+import { useAuth } from "@/hooks/useAuth";
+import "@/lib/echo"; 
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersMaterialEmpaque from "@/components/filters/FiltersMaterialEmpaque";
 import ModalCargaItemsMP from "@/components/modals/ModalCargaItemsMP";
-import { usePermissions } from "@/hooks/usePermissions";
 
 export type FiltersPackingMaterialsType = {
   name: string;
@@ -18,6 +20,11 @@ export type FiltersPackingMaterialsType = {
   status: string;
   supplier: string;
 }
+
+export type ChangeItemStatusEvent = {
+  status: string;
+}
+
 
 export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType = {
   name: '',
@@ -27,7 +34,7 @@ export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType =
 };
 
 export default function IndexMaterialEmpaque() {
-
+  const { data: user } = useAuth();
   const [items, setItems] = useState<PackingMaterial[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -35,8 +42,17 @@ export default function IndexMaterialEmpaque() {
   const [tempFilters, setTempFitlers] = useState<FiltersPackingMaterialsType>(FiltersPackingMaterialsInitialValues);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
-
   const { hasPermission } = usePermissions();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (user && window.Echo) {
+      window.Echo.private(`item.status`).listen('.ChangeItemStatus', (e: ChangeItemStatusEvent) => {
+        toast.success(e.status);
+        queryClient.invalidateQueries({queryKey: ['getPaginatedPackingMaterials', currentPage, filters],});
+      });
+    }
+  }, []);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
