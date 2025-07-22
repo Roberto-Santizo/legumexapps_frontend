@@ -71,11 +71,16 @@ export default function ShowTaskProductionDetails() {
 
         const newEmployeesAux = newEmployees.filter(emp => emp.code !== employeeToRemove.code);
         const comodin = comodinesData?.find(c => c.code === employeeToRemove.code);
-        const position = taskDetails?.positions.find(p => p.id === employeeToRemove.position_id);
 
-        if (comodin && position) {
+        if (employeeToRemove.position_id) {
+            const position = taskDetails?.positions.find(p => p.id === employeeToRemove.position_id);
+            if (position) {
+                setPositions(prev => [...prev, position]);
+            }
+        }
+
+        if (comodin) {
             setComodines(prev => [...prev, comodin]);
-            setPositions(prev => [...prev, position]);
             setNewEmployees(newEmployeesAux);
         }
     };
@@ -160,6 +165,9 @@ export default function ShowTaskProductionDetails() {
         });
     }
 
+    useEffect(() => {
+        console.log(newEmployees);
+    }, [newEmployees]);
     if (isLoading || isLoadingComodines) return <TaskProductionAsignacionSkeleton />;
     if (isError || isErrorComodines) return <Spinner />;
     if (taskDetails && comodines) return (
@@ -174,12 +182,10 @@ export default function ShowTaskProductionDetails() {
                     <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskDetails.sku.product_name ?? 'N/A'}</span></div>
                 </div>
                 <div>
-                    {taskDetails?.flag && (
-                        <button onClick={() => setIsOpen(true)} className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" >
-                            <PlusIcon />
-                            <p>Agregar Empleado</p>
-                        </button>
-                    )}
+                    <button onClick={() => setIsOpen(true)} className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" >
+                        <PlusIcon />
+                        <p>Agregar Empleado</p>
+                    </button>
                 </div>
             </div>
 
