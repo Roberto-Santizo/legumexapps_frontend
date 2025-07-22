@@ -82,7 +82,11 @@ export const TaskProductionInProgressSchema = TaskProductionSchema.pick({ line: 
     HTiemposMuertos: z.number(),
     employees: z.array(TaskProductionEmployeeSchema),
     performances: z.array(TaskProductionPerformanceSchema),
-    timeouts: z.array(TaskProductionTimeOutSchema)
+    timeouts: z.array(TaskProductionTimeOutSchema),
+    percentage: z.number(),
+    total_produced: z.number(),
+    total_lbs: z.number(),
+    total_tarimas: z.number()
 })
 
 
@@ -213,7 +217,7 @@ export const TaskProductionItemsSchema = z.object({
     })
 })
 
-export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateSchema.pick({id: true, total_lbs:true, destination:true, line: true, sku:true }).extend({
+export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateSchema.pick({ id: true, total_lbs: true, destination: true, line: true, sku: true }).extend({
     line_id: z.string(),
     sku_id: z.string()
 });;
