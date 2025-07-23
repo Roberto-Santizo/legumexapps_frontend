@@ -28,7 +28,7 @@ export interface PlanificationProductionSlice {
     filtersNoOperationDate: TaskProductionUnscheduledFilters;
     filtersWithOperationDate: TasksWithOperationDateFilters;
     handleChangefiltersNoOperationDate: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    handleChangefiltersOperationDate: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+    handleChangefiltersOperationDate: (filters: TasksWithOperationDateFilters) => void;
 }
 
 export const createPlanificationProductionSlice: StateCreator<PlanificationProductionSlice, [], []> = (set) => ({
@@ -44,14 +44,9 @@ export const createPlanificationProductionSlice: StateCreator<PlanificationProdu
             },
         }));
     },
-    handleChangefiltersOperationDate: (e) => {
-        const { id, value } = e.target;
-
-        set((state) => ({
-            filtersWithOperationDate: {
-                ...state.filtersWithOperationDate,
-                [id]: value,
-            },
+    handleChangefiltersOperationDate: (filters) => {
+        set(() => ({
+            filtersWithOperationDate: filters
         }));
     }
 });

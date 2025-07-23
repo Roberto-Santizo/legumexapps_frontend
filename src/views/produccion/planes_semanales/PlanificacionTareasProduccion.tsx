@@ -48,7 +48,9 @@ export default function CalendarTasks() {
   });
 
   const handleClickDate = (info: DateClickInfo) => {
-    navigate(`${location.pathname}?date=${info.dateStr}`);
+    const currentParams = new URLSearchParams(location.search);
+    currentParams.set("date", info.dateStr);
+    navigate(`${location.pathname}?${currentParams.toString()}`);
   }
 
   return (

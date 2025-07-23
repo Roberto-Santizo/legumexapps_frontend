@@ -1,10 +1,14 @@
 import { BoxIcon, Calendar, EyeIcon, File } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque, { DraftPackingMaterialTransactionItem } from "../modals/ModalEntregaMaterialEmpaque";
+import { UnAssignTaskProduction } from "@/api/TaskProductionPlansAPI";
+import { toast } from "react-toastify";
+import { useAppStore } from "@/store";
 
 type Props = {
     task: TaskProductionOperationDate;
@@ -14,12 +18,30 @@ export default function TaskScheduled({ task }: Props) {
     const [modalEntrega, setModalEntrega] = useState<boolean>(false);
     const { hasPermission } = usePermissions();
     const [items, setItems] = useState<DraftPackingMaterialTransactionItem[]>(task.recipe);
-
     const location = useLocation();
+
+    const params = useParams();
+    const plan_id = params.plan_id!!;
     const queryParams = new URLSearchParams(location.search);
     queryParams.set('changeOperationTask', task.id);
+    const date = queryParams.get('date') ?? '';
+    const queryClient = useQueryClient();
+    const filters = useAppStore((state) => state.filtersWithOperationDate);
+    const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
 
     const navigate = useNavigate();
+
+    const { mutate } = useMutation({
+        mutationFn: UnAssignTaskProduction,
+        onError: (error) => {
+            toast.error(error.message);
+        },
+        onSuccess: (data) => {
+            toast.success(data);
+            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
+            queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate], });
+        }
+    });
 
     return (
         <div className="bg-white rounded-2xl shadow-md border border-gray-200 transition hover:shadow-lg">
@@ -42,17 +64,31 @@ export default function TaskScheduled({ task }: Props) {
 
             <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-5">
                 {(!task.finished && !task.working && hasPermission('administrate plans production') && (Number(task.status_id) < 3)) && (
-                    <button
-                        onClick={() => {
-                            navigate(`${location.pathname}?${queryParams.toString()}`)
-                        }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
-                    >
-                        <Calendar className="w-4 h-4" />
-                        <p className="hidden xl:inline-block">
-                            Cambiar fecha de operación
-                        </p>
-                    </button>
+                    <>
+                        <button
+                            onClick={() => {
+                                navigate(`${location.pathname}?${queryParams.toString()}`)
+                            }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
+                        >
+                            <Calendar className="w-4 h-4" />
+                            <p className="hidden xl:inline-block">
+                                Cambiar fecha de operación
+                            </p>
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                mutate({ taskId: task.id });
+                            }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
+                        >
+                            <Calendar className="w-4 h-4" />
+                            <p className="hidden xl:inline-block">
+                                Desasignar
+                            </p>
+                        </button>
+                    </>
                 )}
 
                 {(hasPermission('create mp transactions')) && (

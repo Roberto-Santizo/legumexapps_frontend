@@ -323,5 +323,19 @@ export async function deleteTaskProduction({ taskId }: { taskId: TaskProductionP
     }
 }
 
+export async function UnAssignTaskProduction({ taskId }: { taskId: TaskProductionPlan['id'] }) {
+    try {
+        const url = `/api/tasks-production/${taskId}/unassign`;
+
+        const { data } = await clienteAxios.patch(url);
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
 
 
