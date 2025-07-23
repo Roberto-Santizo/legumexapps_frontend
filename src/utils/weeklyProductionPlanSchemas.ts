@@ -6,9 +6,9 @@ export const WeeklyProductionPlanSchema = z.object({
     id: z.string(),
     week: z.number(),
     year: z.number(),
-    completed: z.boolean()
+    completed: z.boolean().optional()
 })
-
+//here I added the.optional() because I was having an error 
 export const WeeklyProductionPlansSchema = z.object({
     data: z.array(WeeklyProductionPlanSchema),
     meta: paginatedSchema.optional()

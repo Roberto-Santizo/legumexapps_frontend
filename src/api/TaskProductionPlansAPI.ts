@@ -230,7 +230,6 @@ export async function updateTaskProductionOperationDate({ id, FormData }: { id: 
     }
 }
 
-
 export async function createNewTaskProduction(FormData: DraftNewTaskProduction) {
     try {
         const url = '/api/tasks-production/new-task';
@@ -240,7 +239,7 @@ export async function createNewTaskProduction(FormData: DraftNewTaskProduction) 
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg)
+            throw new Error(error.response?.data.msg || "Error al crear nueva tarea")
         }
     }
 }
