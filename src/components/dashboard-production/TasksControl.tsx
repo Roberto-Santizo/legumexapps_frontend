@@ -19,7 +19,7 @@ export default function TasksControl() {
         Control de Tareas Producción
       </p>
 
-      <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-x-scroll scrollbar-hide">
         <div className="flex flex-nowrap gap-10 p-10">
           {data?.map((item) => (
             <div
@@ -36,6 +36,7 @@ export default function TasksControl() {
                   textSize: 15,
                 })}
               />
+              <p className="font-bold">{item.line}</p>
             </div>
           ))}
         </div>

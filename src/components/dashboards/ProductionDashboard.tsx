@@ -2,11 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import Spinner from "../utilities-components/Spinner";
 import TasksControl from '@/components/dashboard-production/TasksControl';
-import TasksInProgress from '@/components/dashboard-production/TasksInProgress'
-import CompletedTasks from '@/components/dashboard-production/CompletedTasks'
+import TasksInProgress from '@/components/dashboard-production/TasksInProgress';
 
 
-export default function AgricolaDashboard() {
+export default function ProductionDashboard() {
   const navigate = useNavigate();
 
   const { data: role, isLoading, isError } = useRole();
@@ -14,7 +13,7 @@ export default function AgricolaDashboard() {
   if (isError) navigate('/login');
   if (isLoading) return <Spinner />
   if (role) return (
-    <div>
+    <div className="p-10">
       <h1 className="text-5xl font-bold mb-10">Dashboard Producción</h1>
 
       <div className="mt-10 grid grid-cols-12 gap-5">
@@ -24,7 +23,7 @@ export default function AgricolaDashboard() {
           </>
         )}
         <TasksInProgress />
-         <CompletedTasks />
+        {/* <CompletedTasks /> */}
       </div>
     </div>
   );

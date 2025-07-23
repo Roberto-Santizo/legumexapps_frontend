@@ -4,11 +4,9 @@ import GeneralDashboard from "./dashboards/GeneralDashboards";
 import AgricolaDashboard from "./dashboards/AgricolaDashboard";
 import PersonalCalidadDashboard from "./dashboards/PersonalCalidadDashboard";
 import CalidadDashboard from "./dashboards/CalidadDashboard";
-import ProduccionCDashboard from "./dashboards/ProduccionCDashboard";
 import CostosDashboard from "./dashboards/CostosDashboard";
 import RecursosDashboard from "./dashboards/RecursosDashboard";
-import LogisticsDashboard from "./dashboards/LogisticsDashboard";
-import GerenciaDashboard from "./dashboards/GerenciaDashboard";
+import ProductionDashboard from "./dashboards/ProductionDashboard";
 
 export default function Dashboard() {
   const dashboards = {
@@ -21,11 +19,11 @@ export default function Dashboard() {
     'pcalidad': (<PersonalCalidadDashboard />),
     'auxcalidad': (<CalidadDashboard />),
     'admincalidad': (<CalidadDashboard />),
-    'pprod': (<ProduccionCDashboard />),
+    'pprod': (<ProductionDashboard />),
     'pcostos': (<CostosDashboard />),
     'auxrrhh': (<RecursosDashboard />),
-    'logistics': (<LogisticsDashboard />),
-    'gerencia': (<GerenciaDashboard />),
+    'logistics': (<ProductionDashboard />),
+    'gerencia': (<ProductionDashboard />),
   };
 
   const { data: role, isLoading } = useRole();
