@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { XIcon } from "lucide-react";
 import { Dispatch } from "react";
-import Navegation from "../Navegation";
 import { useAuth } from "@/hooks/useAuth";
+import Navegation from "../Navegation";
 
 type Props = {
     modal: boolean;

@@ -200,7 +200,7 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
   };
 
   return (
-    <div className="grid grid-cols-6 shadow-xl p-10 text-xl">
+    <div className="flex flex-col xl:grid xl:grid-cols-6 shadow-xl p-10 text-xs xl:text-xl">
       <div className="col-span-5">
         <TaskLabel label={"ID"} text={task.id} />
         <TaskLabel label={"Lote"} text={task.lote} />
@@ -232,7 +232,7 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
       </div>
 
       <div className="col-start-7 space-y-5">
-        <div className="flex flex-col justify-center items-center gap-4">
+        <div className="flex xl:flex-col justify-center items-center gap-4 mt-5 xl:mt-0">
           {!task.start_date && !task.end_date && !task.active_closure && (
             <>
               <SquarePlusIcon

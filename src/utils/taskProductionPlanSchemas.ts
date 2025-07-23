@@ -65,7 +65,9 @@ export const TaskProductionSchema = z.object({
 export const TaskProductionDetailsSchema = TaskProductionSchema.pick({ id: true, line: true, operation_date: true, start_date: true, total_lbs: true }).extend({
     sku: SKUSchema,
     filtered_employees: z.array(TaskProductionEmployeeSchema),
+    all_employees: z.array(TaskProductionEmployeeSchema),
     positions: z.array(PositionSchema),
+    exists_previuos_config: z.boolean(),
     flag: z.boolean()
 });
 

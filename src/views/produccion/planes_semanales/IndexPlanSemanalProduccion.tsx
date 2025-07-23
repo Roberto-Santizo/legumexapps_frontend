@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { getWeeklyProductionPlans } from "@/api/WeeklyProductionPlanAPI";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { CalendarRange, Clock, Eye } from "lucide-react";
-import { CheckBadgeIcon } from "@heroicons/react/16/solid";
+import { CalendarRange, Eye } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -49,13 +48,13 @@ export default function IndexPlanSemanalProduccion() {
     if (isError) return <ShowErrorAPI />
     return (
         <>
-            <h1 className="font-bold text-4xl">Plan Semanal Produccion</h1>
+            <h1 className="font-bold text-center text-xl xl:text-left xl:text-4xl">Plan Semanal Produccion</h1>
             {hasPermission('create plan production semanal') && (
                 <div className="flex flex-row justify-end gap-5 mb-5">
                     <div className="flex flex-row justify-end gap-5">
                         <button
                             onClick={() => navigate(`${location.pathname}?createPlan=true`)}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                         >
                             <PlusIcon className="w-8" />
                             <p>crear plan semanal</p>
@@ -68,7 +67,6 @@ export default function IndexPlanSemanalProduccion() {
                 <table className="table">
                     <thead>
                         <tr className="thead-tr">
-                            <th className="thead-th">Estatus</th>
                             <th className="thead-th">Año</th>
                             <th className="thead-th">Semana</th>
                             <th className="thead-th">Acción</th>
@@ -78,13 +76,6 @@ export default function IndexPlanSemanalProduccion() {
                     <tbody>
                         {plans.map(plan => (
                             <tr className="tbody-tr" key={plan.id}>
-                                <td className="tbody-td">
-                                    {plan.completed ? (
-                                        <CheckBadgeIcon className="w-8 text-green-500" />
-                                    ) : (
-                                        <Clock className="w-8 text-orange-500" />
-                                    )}
-                                </td>
                                 <td className="tbody-td">{plan.year}</td>
                                 <td className="tbody-td">{plan.week}</td>
 
@@ -107,17 +98,18 @@ export default function IndexPlanSemanalProduccion() {
                         ))}
                     </tbody>
                 </table>
-                <div className="mb-10 flex justify-end">
-                    <Pagination
-                        currentPage={currentPage}
-                        pageCount={pageCount}
-                        handlePageChange={handlePageChange}
-                    />
-                </div>
             </div>
 
             <ModalCreateProductionPlan setErrors={setErrores} setModalErrors={setModalErrors} currentPage={currentPage} />
             <ModalErrorsTable modal={modalErrors} setModal={setModalErrors} errors={errores} />
+
+            <div className="mb-10 flex justify-end">
+                <Pagination
+                    currentPage={currentPage}
+                    pageCount={pageCount}
+                    handlePageChange={handlePageChange}
+                />
+            </div>
         </>
     )
 }

@@ -44,7 +44,7 @@ export default function TasksWithOperationDate({ lines }: Props) {
     const isUpdating = useMemo(() => isFetching || isLoading, [isFetching, isLoading])
     return (
         <div className="border-t pt-4">
-            <h2 className="text-2xl font-bold">Tareas programadas: {date}</h2>
+            <h2 className="xl:text-2xl font-bold">Tareas programadas: {date}</h2>
             <div className='mt-5 flex flex-col gap-5'>
                 <div className="space-y-1">
                     <label htmlFor="sku" className="block text-sm font-semibold text-gray-700">SKU</label>

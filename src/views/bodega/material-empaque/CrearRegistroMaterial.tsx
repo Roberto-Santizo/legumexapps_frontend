@@ -37,9 +37,9 @@ export default function CrearRegistroMaterial() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear Item Material de Empaque</h2>
+      <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">Crear Item Material de Empaque</h2>
       <form
-        className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
+        className="mt-10 xl:w-3/4 mx-auto shadow-xl p-10 space-y-5"
         onSubmit={handleSubmit(onSubmit)}
       >
 

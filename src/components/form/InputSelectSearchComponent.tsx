@@ -67,7 +67,7 @@ const InputSelectSearchComponent = <T extends Record<string, any>>({
             }}
             value={options.find((option) => option.value === field.value)}
             styles={customStyles}
-            className="react-select-container"
+            className="react-select-container text-xs xl:text-base"
             classNamePrefix="react-select"
           />
         )}

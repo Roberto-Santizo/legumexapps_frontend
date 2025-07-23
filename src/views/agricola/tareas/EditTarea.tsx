@@ -52,10 +52,10 @@ export default function EditTarea() {
   if (isError) return <ShowErrorAPI />;
   if (editingTarea) return (
     <>
-      <h2 className="text-4xl font-bold">Editar Tarea {editingTarea.name}</h2>
+      <h2 className="text-4xl font-bold">Editar Tarea</h2>
       <div>
         <form
-          className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5"
+          className="mt-10 xl:w-2/3 mx-auto shadow p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
         >
           <TareasForm register={register} errors={errors} />

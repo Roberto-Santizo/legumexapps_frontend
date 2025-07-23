@@ -32,7 +32,7 @@ export default function TasksWithNoOperationDate({ lines }: Props) {
     const isUpdating = useMemo(() => isLoading || isFetching, [isLoading, isFetching]);
 
     return (
-        <div className="w-96 p-0 border border-gray-200 rounded-2xl bg-white shadow-lg overflow-y-auto scrollbar-hide max-h-screen">
+        <div className="xl:w-96 p-0 border border-gray-200 rounded-2xl bg-white shadow-lg overflow-y-auto scrollbar-hide max-h-screen">
             <div className="sticky top-0 z-10 bg-white p-6 border-b border-gray-200 space-y-5">
                 <h2 className="text-xl font-extrabold uppercase tracking-wide text-gray-800 mb-4">Tareas sin programación</h2>
                 <div className="space-y-4">

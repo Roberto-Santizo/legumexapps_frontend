@@ -71,9 +71,9 @@ export default function CrearLineaSku() {
 
     if (results) return (
         <div>
-            <h2 className="font-bold text-4xl">Relacionar Linea a SKU</h2>
+            <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Relacionar Linea a SKU</h2>
 
-            <form className="mt-10 w-2/3 mx-auto space-y-5 p-10 shadow-xl" onSubmit={handleSubmit(onSubmit)}>
+            <form className="mt-10 xl:w-2/3 mx-auto space-y-5 p-10 shadow-xl" onSubmit={handleSubmit(onSubmit)}>
 
                 <InputSelectSearchComponent<DraftLineaSku>
                     label="SKU"

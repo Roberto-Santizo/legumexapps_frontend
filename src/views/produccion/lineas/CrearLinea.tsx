@@ -39,11 +39,11 @@ export default function CreateSKU() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear línea</h2>
+      <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">Crear línea</h2>
 
       <div>
         <form
-          className="mt-10 w-2/3 shadow-xl mx-auto p-10 space-y-5"
+          className="mt-10 xl:w-2/3 shadow-xl mx-auto p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
         >
 

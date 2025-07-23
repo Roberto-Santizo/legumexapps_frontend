@@ -72,7 +72,7 @@ export default function ModalCrearTareaProduccion() {
     });
 
     const onSubmit = (data: DraftNewTaskProduction) => {
-        mutate(data);
+        mutate({ FormData: data, id: plan_id });
     };
 
     return (

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createRole } from "@/api/RolesAPI";
 import { useMutation } from "@tanstack/react-query";
+import { DraftRole } from "types/rolesTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import RolesForm from "./RolesForm";
-import { DraftRole } from "types/rolesTypes";
 
 export default function CreateRole() {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export default function CreateRole() {
 
       <div>
         <form
-          className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
+          className="mt-10 xl:w-3/4 mx-auto shadow-xl p-10 space-y-5"
           onSubmit={handleSubmit(handleCreateRole)}
         >
 

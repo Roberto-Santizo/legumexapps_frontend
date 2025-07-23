@@ -100,20 +100,37 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
     }
 
     return (
-        <Modal modal={modal} closeModal={handleCloseModal} title="Entrega Material de Empaque" width="w-2/3">
-            <div className="p-8 space-y-8">
-                <h2 className="text-2xl font-bold uppercase text-center text-gray-800">Configuración Empaque</h2>
+        <Modal
+            modal={modal}
+            closeModal={handleCloseModal}
+            title="Entrega Material de Empaque"
+            width="w-full max-w-5xl"
+        >
+            <div className="p-4 sm:p-6 md:p-8 space-y-8">
+                <h2 className="text-2xl font-bold uppercase text-center text-gray-800">
+                    Configuración Empaque
+                </h2>
 
-                <div className={`grid grid-cols-1 xl:grid-cols-3 gap-6 ${error ? 'border-2 border-red-500 rounded-xl p-4' : ''}`}>
+                <div
+                    className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 ${error ? "border-2 border-red-500 rounded-xl p-4" : ""
+                        }`}
+                >
                     {items.map((item, index) => (
-                        <div key={index} className="flex flex-col items-center bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out w-full max-w-xs mx-auto">
+                        <div
+                            key={index}
+                            className="flex flex-col items-center bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out w-full max-w-xs mx-auto"
+                        >
                             <div className="mb-4 text-blue-500">
                                 <BoxIcon className="w-10 h-10" />
                             </div>
 
-                            <p className="text-base font-semibold text-gray-800 mb-1 text-center">{item.name}</p>
+                            <p className="text-base font-semibold text-gray-800 mb-1 text-center">
+                                {item.name}
+                            </p>
                             <p className="text-sm text-gray-500 mb-1 text-center">{item.code}</p>
-                            <p className="text-3xl font-bold text-gray-900 mb-2 text-center">{item.quantity}</p>
+                            <p className="text-3xl font-bold text-gray-900 mb-2 text-center">
+                                {item.quantity}
+                            </p>
 
                             <input
                                 type="text"
@@ -129,18 +146,20 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <InputComponent
                             label="Referencia"
                             id="reference"
                             name="reference"
                             placeholder="Referencia de Transferencia"
                             register={register}
-                            validation={{ required: 'El referencia de transferencia es requerida' }}
+                            validation={{ required: "El referencia de transferencia es requerida" }}
                             errors={errors}
                             type="text"
                         >
-                            {errors.reference && <Error>{errors.reference.message?.toString()}</Error>}
+                            {errors.reference && (
+                                <Error>{errors.reference.message?.toString()}</Error>
+                            )}
                         </InputComponent>
 
                         <InputComponent
@@ -149,11 +168,13 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
                             name="responsable"
                             placeholder="Nombre del Responsable"
                             register={register}
-                            validation={{ required: 'El nombre es requerido' }}
+                            validation={{ required: "El nombre es requerido" }}
                             errors={errors}
                             type="text"
                         >
-                            {errors.responsable && <Error>{errors.responsable.message?.toString()}</Error>}
+                            {errors.responsable && (
+                                <Error>{errors.responsable.message?.toString()}</Error>
+                            )}
                         </InputComponent>
                     </div>
 
@@ -167,14 +188,30 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
                         errors={errors}
                         type="text"
                     >
-                        {errors.observations && <Error>{errors.observations.message?.toString()}</Error>}
+                        {errors.observations && (
+                            <Error>{errors.observations.message?.toString()}</Error>
+                        )}
                     </InputComponent>
 
-                    <fieldset className="border rounded-xl p-6 shadow-sm space-y-4">
-                        <legend className="text-lg font-semibold text-gray-700 px-2">Firmas</legend>
-                        <div className="grid grid-cols-2">
-                            <SignatureField label="Firma" name="responsable_signature" control={control} errors={errors} canvasRef={responsableSignatureRef} />
-                            <SignatureField label="Firma de bodega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
+                    <fieldset className="border rounded-xl p-4 sm:p-6 shadow-sm space-y-4">
+                        <legend className="text-lg font-semibold text-gray-700 px-2">
+                            Firmas
+                        </legend>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <SignatureField
+                                label="Firma"
+                                name="responsable_signature"
+                                control={control}
+                                errors={errors}
+                                canvasRef={responsableSignatureRef}
+                            />
+                            <SignatureField
+                                label="Firma de bodega"
+                                name="user_signature"
+                                control={control}
+                                errors={errors}
+                                canvasRef={userRef}
+                            />
                         </div>
                     </fieldset>
 
@@ -182,12 +219,12 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
                         disabled={isPending}
                         className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-md transition duration-300 uppercase"
                     >
-                        {isPending ? <Spinner /> : 'CREAR'}
+                        {isPending ? <Spinner /> : "CREAR"}
                     </button>
                 </form>
             </div>
         </Modal>
-
     );
+
 }
 

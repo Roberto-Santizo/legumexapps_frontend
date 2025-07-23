@@ -59,11 +59,12 @@ export async function getTaskProductionDetails(id: TaskProductionPlan['id']) {
     }
 }
 
-export async function confirmAssignment({ changes, id }: { changes: TaskProductionChange[], id: TaskProductionPlan['id'] }) {
+export async function confirmAssignment({ changes, id, previousConfig }: { changes: TaskProductionChange[], id: TaskProductionPlan['id'], previousConfig: boolean }) {
     try {
         const url = `api/tasks-production/${id}/confirm-assignments`;
         const { data } = await clienteAxios.patch<string>(url, {
-            data: changes
+            data: changes,
+            previous_config: previousConfig
         });
 
         return data;
@@ -230,9 +231,10 @@ export async function updateTaskProductionOperationDate({ id, FormData }: { id: 
     }
 }
 
-export async function createNewTaskProduction(FormData: DraftNewTaskProduction) {
+
+export async function createNewTaskProduction({ FormData, id }: { FormData: DraftNewTaskProduction, id: WeeklyProductionPlan['id'] }) {
     try {
-        const url = '/api/tasks-production/new-task';
+        const url = `/api/tasks-production/new-task/${id}`;
         const { data } = await clienteAxios.post<string>(url, {
             data: [FormData]
         });
@@ -244,9 +246,9 @@ export async function createNewTaskProduction(FormData: DraftNewTaskProduction) 
     }
 }
 
-export async function createNewTasksProduction({FormData} : {FormData: DraftNewTaskProduction[]}) {
+export async function createNewTasksProduction({ FormData, id }: { FormData: DraftNewTaskProduction[], id: WeeklyProductionPlan['id'] }) {
     try {
-        const url = '/api/tasks-production/new-task';
+        const url = `/api/tasks-production/new-task/${id}`;
         const { data } = await clienteAxios.post<string>(url, {
             data: FormData
         });

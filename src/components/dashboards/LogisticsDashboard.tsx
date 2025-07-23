@@ -1,10 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
-// import FinishedTasks from "@/components/dashboard-agricola/FinishedTasks";
-// import TasksCropInProgress from "@/components/dashboard-agricola/TasksCropInProgress";
-// import FinishedTasksCrop from "@/components/dashboard-agricola/FinishedTasksCrop";
 import Spinner from "../utilities-components/Spinner";
-
 import TasksControl from '@/components/dashboard-production/TasksControl';
 import TasksInProgress from '@/components/dashboard-production/TasksInProgress'
 import CompletedTasks from '@/components/dashboard-production/CompletedTasks'
@@ -29,8 +25,6 @@ export default function AgricolaDashboard() {
         )}
         <TasksInProgress />
          <CompletedTasks />
-        {/* <TasksCropInProgress />
-        <FinishedTasksCrop /> */} 
       </div>
     </div>
   );

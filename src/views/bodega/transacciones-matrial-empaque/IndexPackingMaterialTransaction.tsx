@@ -60,13 +60,14 @@ export default function IndexPackingMaterialTransaction() {
   if (isLoading) return <Spinner />
   if (data) return (
     <>
-      <h1 className="font-bold text-4xl capitalize">
+      <h1 className="font-bold text-xl text-center xl:text-left xl:text-4xl capitalize">
         Transacciones de Material de Empaque
       </h1>
-      <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
+
+      <div className="flex xl:flex-row flex-col justify-end gap-5 mt-5">
         <Link
           to="/material-empaque-transacciones/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-6 md:w-8" />
           <p className="text-sm md:text-base">Crear</p>
@@ -77,35 +78,38 @@ export default function IndexPackingMaterialTransaction() {
         />
       </div>
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th className="thead-th">Referencia</th>
-            <th className="thead-th">Responsable</th>
-            <th className="thead-th">Entregado Por</th>
-            <th className="thead-th">Fecha de Entrega</th>
-            <th className="thead-th">Tipo</th>
-            <th className="thead-th">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map(transaction => (
-            <tr className="tbody-tr" key={transaction.id}>
-              <td className="tbody-td">{transaction.reference}</td>
-              <td className="tbody-td">{transaction.responsable}</td>
-              <td className="tbody-td">{transaction.user}</td>
-              <td className="tbody-td">{transaction.transaction_date}</td>
-              <td className="tbody-td">{transaction.type}</td>
-              <td className="tbody-td">
-                <Link to={`/material-empaque-transacciones/${transaction.id}`}>
-                  <EyeIcon />
-                </Link>
-              </td>
+      <div className="table-wrapper">
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th className="thead-th">Referencia</th>
+              <th className="thead-th">Responsable</th>
+              <th className="thead-th">Entregado Por</th>
+              <th className="thead-th">Fecha de Entrega</th>
+              <th className="thead-th">Tipo</th>
+              <th className="thead-th">Acción</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            {transactions.map(transaction => (
+              <tr className="tbody-tr" key={transaction.id}>
+                <td className="tbody-td">{transaction.reference}</td>
+                <td className="tbody-td">{transaction.responsable}</td>
+                <td className="tbody-td">{transaction.user}</td>
+                <td className="tbody-td">{transaction.transaction_date}</td>
+                <td className="tbody-td">{transaction.type}</td>
+                <td className="tbody-td">
+                  <Link to={`/material-empaque-transacciones/${transaction.id}`}>
+                    <EyeIcon />
+                  </Link>
+                </td>
+              </tr>
+            ))}
 
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
+
       <div className="mt-5 mb-10 flex justify-center md:justify-end">
         <Pagination
           currentPage={currentPage}

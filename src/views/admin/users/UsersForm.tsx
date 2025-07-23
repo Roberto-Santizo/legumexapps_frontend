@@ -119,39 +119,37 @@ export default function UsersForm({ register, errors, setSelectedPermissions, is
                 <Error>{errors.role?.message}</Error>
             </InputSelectComponent>
 
-            <fieldset className="shadow p-5">
+            <fieldset className="shadow xl:p-5">
                 <legend className="text-3xl font-bold">Permisos</legend>
-                <div className="flex flex-col gap-5 my-5 w-full p-2 max-h-96 overflow-y-scroll scrollbar-hide">
-                    <table className="table">
-                        <thead>
-                            <tr className="thead-tr">
-                                <th className="thead-th">Permiso</th>
-                                <th className="thead-th">Acción</th>
+                <table className="table">
+                    <thead>
+                        <tr className="thead-tr">
+                            <th className="thead-th">Permiso</th>
+                            <th className="thead-th">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {permissions.map(permission => (
+                            <tr className="tbody-tr" key={permission.id}>
+                                <td className="tbody-td">
+                                    {permission.name}
+                                </td>
+                                <td className="tbody-td">
+                                    <input
+                                        type="checkbox"
+                                        id={permission.name}
+                                        value={permission.id}
+                                        {...register("permissions", {
+                                            required: "Selecciona al menos un permiso",
+                                        })}
+                                        className="w-10 h-6"
+                                        onChange={() => handleCheckboxChange?.(permission.id.toString())}
+                                    />
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {permissions.map(permission => (
-                                <tr className="tbody-tr" key={permission.id}>
-                                    <td className="tbody-td">
-                                        {permission.name}
-                                    </td>
-                                    <td className="tbody-td">
-                                        <input
-                                            type="checkbox"
-                                            id={permission.name}
-                                            value={permission.id}
-                                            {...register("permissions", {
-                                                required: "Selecciona al menos un permiso",
-                                            })}
-                                            className="w-10 h-6"
-                                            onChange={() => handleCheckboxChange?.(permission.id.toString())}
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        ))}
+                    </tbody>
+                </table>
 
                 {errors.permissions && (
                     <Error>{errors.permissions.message?.toString()}</Error>

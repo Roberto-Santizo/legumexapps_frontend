@@ -11,14 +11,13 @@ export default function SummaryTasksFincas() {
     queryFn: getFinishedTasksByFinca,
   });
 
-  if (isLoading) return <Spinner />;
-  if (isError) return <ShowErrorAPI />;
-  if (data)
-    return (
-      <div className="flex flex-col items-center shadow-xl row-start-1 col-start-1 col-span-12 rounded-xl gap-5">
-        <p className="uppercase w-full text-center bg-gray-400 p-3 text-white font-bold rounded-t-xl text-2xl">
-          Control de Tareas Finca
-        </p>
+  if (isLoading) return <Spinner />
+  if (isError) return <ShowErrorAPI />
+  if (data) return (
+    <div className="flex flex-col items-center shadow-xl row-start-1 col-start-1 col-span-12 rounded-xl gap-5">
+      <p className="uppercase w-full text-center bg-gray-400 p-3 text-white font-bold rounded-t-xl text-lg xl:text-2xl">
+        Control de Tareas Finca
+      </p>
 
         <div className="flex gap-5 p-10 justify-between w-full">
           {data.map((data) => (

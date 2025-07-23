@@ -37,7 +37,7 @@ export default function CrearTiempoMuerto() {
     <div>
       <h2 className="font-bold text-4xl">Crear Tiempo Muerto</h2>
 
-      <form className="mx-auto w-2/3 shadow-xl p-10 mt-10 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="mx-auto xl:w-2/3 shadow-xl p-10 mt-10 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormTiempoMuerto register={register} errors={errors} />
 
         <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

@@ -39,9 +39,16 @@ export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, positio
 
     const onSubmit = (FormData: DraftTaskProductionEmployee) => {
         const position = positions.find(position => position.id === FormData.position_id);
+
+        if(position){
+            setPositions(prev => prev.filter(position => position.id !== FormData.position_id));
+        }else{
+            FormData.position_id = '';
+        }
+
         FormData.new_position = position?.name ?? '';
+
         setComodines(prev => prev.filter(employee => employee.code !== FormData.code));
-        setPositions(prev => prev.filter(position => position.id !== FormData.position_id));
         setNewEmployees(prev => [...prev, FormData]);
         setIsOpen(false);
         reset();
@@ -79,7 +86,7 @@ export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, positio
                         name="position_id"
                         options={positionOptions}
                         control={control}
-                        rules={{ required: 'Seleccione una posición' }}
+                        rules={{}}
                         errors={errors}
                     >
                         {errors.position_id && <Error>{errors.position_id?.message?.toString()}</Error>}

@@ -13,6 +13,8 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ModalChangeEmployee from "@/components/modals/ModalChangeEmployee";
 import Swal from "sweetalert2";
 import ModalAddEmployee from "@/components/modals/ModalAddEmployee";
+import TaskProductionAsignacionSkeleton from "@/components/produccion/TaskProductionAsignacionSkeleton";
+import ModalTaskEmployees from "@/components/modals/ModalTaskEmployees";
 
 
 export default function ShowTaskProductionDetails() {
@@ -33,6 +35,7 @@ export default function ShowTaskProductionDetails() {
     const [comodines, setComodines] = useState<TaskProductionEmployee[]>([]);
     const [positions, setPositions] = useState<Position[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [modalEmployees, setModalEmployees] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const { data: taskDetails, isLoading, isError } = useQuery({
@@ -68,11 +71,16 @@ export default function ShowTaskProductionDetails() {
 
         const newEmployeesAux = newEmployees.filter(emp => emp.code !== employeeToRemove.code);
         const comodin = comodinesData?.find(c => c.code === employeeToRemove.code);
-        const position = taskDetails?.positions.find(p => p.id === employeeToRemove.position_id);
 
-        if (comodin && position) {
+        if (employeeToRemove.position_id) {
+            const position = taskDetails?.positions.find(p => p.id === employeeToRemove.position_id);
+            if (position) {
+                setPositions(prev => [...prev, position]);
+            }
+        }
+
+        if (comodin) {
             setComodines(prev => [...prev, comodin]);
-            setPositions(prev => [...prev, position]);
             setNewEmployees(newEmployeesAux);
         }
     };
@@ -115,6 +123,27 @@ export default function ShowTaskProductionDetails() {
         return isPending || isPendingNewEmployees;
     }, [isPending, isPendingNewEmployees]);
 
+    const handleUsePreviousConfig = () => {
+        Swal.fire({
+            title: "¿Estas seguro?",
+            text: "Los cambios se confirmarán y se utilizará la configuración de empleados de la tarea anterior",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, confirmar asignación",
+            cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.allSettled([firstMutation({ changes, id: task_p_id, previousConfig: true }), secondMutation({ id: task_p_id, FormData: newEmployees })]);
+                } catch (error) {
+                    toast.error("Hubo un error en el proceso");
+                }
+            }
+        });
+    }
+
     const handleConfirmAssignment = () => {
         Swal.fire({
             title: "¿Estas seguro?",
@@ -128,7 +157,7 @@ export default function ShowTaskProductionDetails() {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await Promise.allSettled([firstMutation({ changes, id: task_p_id }), secondMutation({ id: task_p_id, FormData: newEmployees })]);
+                    await Promise.allSettled([firstMutation({ changes, id: task_p_id, previousConfig: false }), secondMutation({ id: task_p_id, FormData: newEmployees })]);
                 } catch (error) {
                     toast.error("Hubo un error en el proceso");
                 }
@@ -136,7 +165,10 @@ export default function ShowTaskProductionDetails() {
         });
     }
 
-    if (isLoading || isLoadingComodines) return <Spinner />;
+    useEffect(() => {
+        console.log(newEmployees);
+    }, [newEmployees]);
+    if (isLoading || isLoadingComodines) return <TaskProductionAsignacionSkeleton />;
     if (isError || isErrorComodines) return <Spinner />;
     if (taskDetails && comodines) return (
         <div className="space-y-10 mb-10">
@@ -150,13 +182,21 @@ export default function ShowTaskProductionDetails() {
                     <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskDetails.sku.product_name ?? 'N/A'}</span></div>
                 </div>
                 <div>
-                    {taskDetails?.flag && (
-                        <button onClick={() => setIsOpen(true)} className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" >
-                            <PlusIcon />
-                            <p>Agregar Empleado</p>
-                        </button>
-                    )}
+                    <button onClick={() => setIsOpen(true)} className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" >
+                        <PlusIcon />
+                        <p>Agregar Empleado</p>
+                    </button>
                 </div>
+            </div>
+
+            <div className="flex flex-row justify-between gap-2">
+                <button className="button bg-indigo-500 hover:bg-indigo-600 w-full mb-5" onClick={() => setModalEmployees(true)}>
+                    Ver Empleados Asignados
+                </button>
+
+                <button disabled={!taskDetails.exists_previuos_config} className={`${taskDetails.exists_previuos_config ? 'bg-red-500 hover:bg-red-600 cursor-pointer' : 'bg-red-500/40 cursor-not-allowed'} button  w-full mb-5`} onClick={() => handleUsePreviousConfig()}>
+                    Utilizar configuración anterior
+                </button>
             </div>
 
             <div className="grid grid-cols-2 gap-10">
@@ -277,6 +317,8 @@ export default function ShowTaskProductionDetails() {
                 setPositions={setPositions}
                 setNewEmployees={setNewEmployees}
             />
+
+            <ModalTaskEmployees open={modalEmployees} setOpen={setModalEmployees} employees={taskDetails.all_employees} />
 
             <button onClick={() => handleConfirmAssignment()} disabled={loading} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                 {loading ? <Spinner /> : <p>Confirmar Asignaciones</p>}

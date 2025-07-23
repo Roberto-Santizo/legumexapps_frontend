@@ -42,7 +42,7 @@ export default function CreatePlanSemanal() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-xl bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        <h2 className="text-lg xl:text-2xl font-bold text-gray-800 mb-6 text-center">
           Crear Plan Semanal Fincas
         </h2>
 
@@ -55,21 +55,21 @@ export default function CreatePlanSemanal() {
           >
             <input {...getInputProps()} disabled={isPending || !!file} />
             {file ? (
-              <p className="text-indigo-600 font-medium">
+              <p className="text-indigo-600 font-medium text-xs xl:text-xl">
                 Archivo: {file[0].name}
               </p>
             ) : isDragActive ? (
-              <p className="text-blue-600 font-medium uppercase">
+              <p className="text-blue-600 font-medium uppercase text-xs xl:text-xl">
                 Suelta el archivo aquí
               </p>
             ) : (
-              <p className="text-gray-600 font-medium uppercase">
+              <p className="text-gray-600 font-medium uppercase text-xs xl:text-xl">
                 Arrastra o haz clic para subir el archivo
               </p>
             )}
           </div>
 
-          <div className="flex justify-center items-center gap-2 mt-5">
+          <div className="flex xl:flex-row flex-col justify-center items-center gap-2 mt-5">
             <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
               {isPending ? <Spinner /> : <p>Crear</p>}
             </button>

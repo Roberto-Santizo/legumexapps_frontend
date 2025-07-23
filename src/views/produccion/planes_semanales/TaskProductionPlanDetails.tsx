@@ -33,17 +33,16 @@ export default function TaskProductionPlanDetails() {
   if (task)
     return (
       <div>
-        <h2 className="font-bold text-4xl">Infomación de Tarea </h2>
-        <div className="mt-10 flex flex-col">
+        <h2 className="font-bold text-center text-xl xl:text-left xl:text-4xl">Infomación de Tarea </h2>
+        <div className="mt-10 flex flex-col gap-10">
           <div>
-            <p className="font-bold text-2xl">SKU: {task.sku}</p>
+            <p className="font-bold xl:text-2xl">SKU: {task.sku}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-5 p-5 shadow">
+          <div className="flex flex-col xl:grid xl:grid-cols-2 gap-10 p-5 shadow">
             <div>
-              <h2 className="font-bold text-2xl uppercase mb-5">Información de rendimientos</h2>
-              <div className="w-full p-2 h-64 overflow-y-scroll scrollbar-hide">
-
+              <h2 className="font-bold xl:text-2xl uppercase mb-5">Información de rendimientos</h2>
+              <div className="table-wrapper max-h-96">
                 <table className="table">
                   <thead>
                     <tr className="thead-tr">
@@ -66,8 +65,8 @@ export default function TaskProductionPlanDetails() {
             </div>
 
             <div>
-              <h2 className="font-bold text-2xl uppercase mb-5">Información de tiempos muertos</h2>
-              <div className="w-full p-2 h-64 overflow-y-scroll scrollbar-hide">
+              <h2 className="font-bold xl:text-2xl uppercase mb-5">Información de tiempos muertos</h2>
+              <div className="table-wrapper max-h-96">
                 <table className="table">
                   <thead>
                     <tr className="thead-tr">
@@ -93,7 +92,7 @@ export default function TaskProductionPlanDetails() {
           </div>
         </div>
 
-        <div className="w-full p-2 h-96 overflow-y-scroll scrollbar-hide">
+        <div className="table-wrapper max-h-96">
           <table className="table mt-5">
             <thead>
               <tr className="thead-tr">

@@ -75,24 +75,24 @@ export default function IndexMaterialEmpaque() {
   if (isError) return <ShowErrorAPI />
   if (data) return (
     <>
-      <h1 className="font-bold text-4xl">Items Material Empaque</h1>
+      <h1 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Items Material Empaque</h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
 
         {hasPermission('create item packing material') && (
-          <>
+          <div className="flex xl:flex-row flex-col gap-3">
             <Link
               to="/material-empaque/crear"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
             >
               <PlusIcon className="w-6 md:w-8" />
               <p className="text-sm md:text-base">Crear</p>
             </Link>
 
-            <button className="button bg-blue-500 hover:bg-blue-600 flex items-center gap-2" onClick={() => setModal(true)}>
+            <button className="button bg-indigo-500 hover:bg-indigo-600 flex items-center gap-2" onClick={() => setModal(true)}>
               <PlusIcon />
               <p>Carga Masiva de Items</p>
             </button>
-          </>
+          </div>
         )}
 
 
@@ -103,33 +103,35 @@ export default function IndexMaterialEmpaque() {
 
       </div>
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th className="thead-th">Nombre</th>
-            <th className="thead-th">Descripcion</th>
-            <th className="thead-th">código</th>
-            <th className="thead-th">Bloqueo</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map(item => (
-            <tr className="tbody-tr" key={item.id}>
-              <td className="tbody-td">{item.name}</td>
-              <td className="tbody-td">{item.description}</td>
-              <td className="tbody-td">{item.code}</td>
-              <td className='tbody-td'>
-                <button
-                  onClick={hasPermission('create item packing material') ? () => handleChangeStatus(item.id) : undefined}
-                  className={`${item.blocked ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} button`}>
-                  {item.blocked ? 'DESACTIVADO' : 'ACTIVADO'}
-                </button>
-              </td>
+      <div className="table-wrapper">
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th className="thead-th">Nombre</th>
+              <th className="thead-th">Descripcion</th>
+              <th className="thead-th">código</th>
+              <th className="thead-th">Bloqueo</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            {items.map(item => (
+              <tr className="tbody-tr" key={item.id}>
+                <td className="tbody-td">{item.name}</td>
+                <td className="tbody-td">{item.description}</td>
+                <td className="tbody-td">{item.code}</td>
+                <td className='tbody-td'>
+                  <button
+                    onClick={hasPermission('create item packing material') ? () => handleChangeStatus(item.id) : undefined}
+                    className={`${item.blocked ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} button`}>
+                    {item.blocked ? 'DESACTIVADO' : 'ACTIVADO'}
+                  </button>
+                </td>
+              </tr>
+            ))}
 
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
 
       <div className="mt-5 mb-10 flex justify-center md:justify-end">
         <Pagination

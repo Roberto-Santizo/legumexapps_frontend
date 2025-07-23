@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { getPermissions } from "@/api/PermissionsAPI";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
@@ -17,7 +17,8 @@ export default function IndexPermisos() {
 
   const { data: permissions, isLoading, isError } = useQuery({
     queryKey: ['getPermissions', currentPage],
-    queryFn: () => getPermissions({ paginated: 'true', currentPage })
+    queryFn: () => getPermissions({ paginated: 'true', currentPage }),
+    placeholderData: keepPreviousData
   });
 
   useEffect(() => {
@@ -32,17 +33,18 @@ export default function IndexPermisos() {
 
   if (permissions) return (
     <>
-      <h2 className="font-bold text-4xl">Administración de Permisos</h2>
+      <h2 className="font-bold  text-xl text-center xl:text-4xl xl:text-left">Administración de Permisos</h2>
       <div className="flex flex-row justify-end gap-5">
         <Link
           to="/permisos/crear"
           className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
         >
-          <PlusIcon className="w-8" />
-          <p>Crear Permiso</p>
+          <PlusIcon className="w-4 xl:w-8" />
+          <p className="text-xs xl:text-base">Crear Permiso</p>
         </Link>
       </div>
-      <div className="p-2 mt-10">
+
+      <div className="p-2 mt-10 table-wrapper">
         <table className="table">
           <thead>
             <tr className="thead-tr">

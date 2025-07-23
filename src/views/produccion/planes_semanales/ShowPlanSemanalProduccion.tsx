@@ -34,7 +34,7 @@ export default function ShowPlanSemanalProduccion() {
   if (assignments) return (
     <div className="w-full">
       {isPending && <LoadingOverlay />}
-      <h2 className="font-bold text-4xl mb-12 text-gray-800">Líneas Asignadas</h2>
+      <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl mb-12 text-gray-800">Líneas Asignadas</h2>
 
       {hasPermission('upload task production employees') && (
         <div className="flex justify-end mb-5">
@@ -44,48 +44,50 @@ export default function ShowPlanSemanalProduccion() {
         </div>
       )}
 
-      <table className="table">
-        <thead>
-          <tr className="thead-tr">
-            <th className="thead-th">Linea</th>
-            <th className="thead-th">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {assignments.map(line => (
-            <tr className="tbody-tr" key={line.id}>
-              <td className="tbody-td">{line.line}</td>
-              {line.status ? (
-                <td className="tbody-td">
-                  <div className="flex items-center gap-4">
-                    {hasPermission('see tasks production') && (
-                      <Link
-                        to={`/planes-produccion/${id}/${line.id}`}
-                        className="hover:text-gray-100 cursor-pointer"
-                        title="Ver tareas"
-                      >
-                        <Eye className="text-gray-700 w-6 h-6" />
-                      </Link>
-                    )}
-
-                    {hasPermission('download hours line report') && (
-                      <button
-                        onClick={() => mutate({ plan_id: id, line_id: line.id })}
-                        className="hover:text-gray-100 cursor-pointer"
-                        title="Descargar reporte"
-                      >
-                        <FileDown className="text-gray-700 w-6 h-6" />
-                      </button>
-                    )}
-                  </div>
-                </td>
-              ) : (
-                <td className="tbody-td"></td>
-              )}
+      <div className="table-wrapper">
+        <table className="table">
+          <thead>
+            <tr className="thead-tr">
+              <th className="thead-th">Linea</th>
+              <th className="thead-th">Acción</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {assignments.map(line => (
+              <tr className="tbody-tr" key={line.id}>
+                <td className="tbody-td">{line.line}</td>
+                {line.status ? (
+                  <td className="tbody-td">
+                    <div className="flex items-center gap-4">
+                      {hasPermission('see tasks production') && (
+                        <Link
+                          to={`/planes-produccion/${id}/${line.id}`}
+                          className="hover:text-gray-100 cursor-pointer"
+                          title="Ver tareas"
+                        >
+                          <Eye className="text-gray-700 w-6 h-6" />
+                        </Link>
+                      )}
+
+                      {hasPermission('download hours line report') && (
+                        <button
+                          onClick={() => mutate({ plan_id: id, line_id: line.id })}
+                          className="hover:text-gray-100 cursor-pointer"
+                          title="Descargar reporte"
+                        >
+                          <FileDown className="text-gray-700 w-6 h-6" />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                ) : (
+                  <td className="tbody-td"></td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <ModalCargaPosiciones />
     </div>

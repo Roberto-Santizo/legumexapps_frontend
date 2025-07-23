@@ -78,8 +78,8 @@ export default function CreateBodegaSalidaEmpaque() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Registrar salida de bodega</h2>
-      <form className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5" onSubmit={handleSubmit(onSubmit)}>
+      <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">Registrar salida de bodega</h2>
+      <form className="mt-10 xl:w-3/4 mx-auto shadow-xl p-10 space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <FormPackingMaterialTransaction register={register} errors={errors} control={control} />
 
         <fieldset className="border p-5">
@@ -94,40 +94,42 @@ export default function CreateBodegaSalidaEmpaque() {
           </button>
 
           {items.length > 0 ? (
-            <table className="table mt-5">
-              <thead>
-                <tr className="thead-tr">
-                  <th className="thead-th">Item</th>
-                  <th className="thead-th">Cantidad</th>
-                  <th className="thead-th">Uso/Destino</th>
-                  <th className="thead-th">Lote</th>
-                  <th className="thead-th"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr className="tbody-tr" key={index}>
-                    <td className="tbody-td">{item.name}</td>
-                    <td className="tbody-td">{item.quantity}</td>
-                    <td className="tbody-td">{item.destination}</td>
-                    <td className="tbody-td">{item.lote}</td>
-                    <td className="tbody-td flex gap-2">
-                      <TrashIcon className="text-gray-500 hover:text-gray-600 cursor-pointer" onClick={() => handleDeleteItem(index)} />
-                      <EditIcon className="text-gray-500 hover:text-gray-600 cursor-pointer" onClick={() => handleEditItem(index)} />
-                    </td>
+            <div className="table-wrapper w-48 xl:w-full">
+              <table className="table mt-5">
+                <thead>
+                  <tr className="thead-tr">
+                    <th className="thead-th">Item</th>
+                    <th className="thead-th">Cantidad</th>
+                    <th className="thead-th">Uso/Destino</th>
+                    <th className="thead-th">Lote</th>
+                    <th className="thead-th"></th>
                   </tr>
-                ))}
+                </thead>
+                <tbody>
+                  {items.map((item, index) => (
+                    <tr className="tbody-tr" key={index}>
+                      <td className="tbody-td">{item.name}</td>
+                      <td className="tbody-td">{item.quantity}</td>
+                      <td className="tbody-td">{item.destination}</td>
+                      <td className="tbody-td">{item.lote}</td>
+                      <td className="tbody-td flex gap-2">
+                        <TrashIcon className="text-gray-500 hover:text-gray-600 cursor-pointer" onClick={() => handleDeleteItem(index)} />
+                        <EditIcon className="text-gray-500 hover:text-gray-600 cursor-pointer" onClick={() => handleEditItem(index)} />
+                      </td>
+                    </tr>
+                  ))}
 
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           ) : (
-            <p className="text-center font-medium">
+            <p className="text-center font-medium text-xs xl:text-base mt-5">
               No existen items registrados
             </p>
           )}
         </fieldset>
 
-        <fieldset className="flex gap-2 border p-5">
+        <fieldset className="flex gap-2 border p-5 flex-col xl:flex-row">
           <legend className="font-bold text-3xl">Firmas</legend>
           <SignatureField
             name="responsable_signature"

@@ -55,9 +55,9 @@ export default function EditarTiempoMuerto() {
     if (isError) return <ShowErrorAPI />;
     if (task) return (
         <div>
-            <h2 className="font-bold text-4xl">Editar Tiempo Muerto</h2>
+            <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Editar Tiempo Muerto</h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-10 w-2/3 shadow-xl p-10 mx-auto space-y-5" noValidate>
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-10 xl:w-2/3 shadow-xl p-10 mx-auto space-y-5" noValidate>
                 <FormTiempoMuerto register={register} errors={errors} />
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

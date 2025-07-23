@@ -86,7 +86,7 @@ export default function EditarTareaLote() {
     <>
       <h2 className="text-4xl font-bold">Editar Tarea</h2>
       <form
-        className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5 my-5"
+        className="mt-10 xl:w-3/4 mx-auto shadow-xl p-10 space-y-5 my-5"
         onSubmit={handleSubmit(editTaskForm)}
         noValidate
       >

@@ -24,7 +24,7 @@ export default function TaskScheduled({ task }: Props) {
     return (
         <div className="bg-white rounded-2xl shadow-md border border-gray-200 transition hover:shadow-lg">
             <div className="p-6 space-y-3 text-gray-700">
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col xl:flex-row justify-between items-center gap-5 text-xs xl:text-base">
                     <div className="space-y-1">
                         <p><span className="font-semibold text-gray-900">SKU:</span> {task.sku}</p>
                         <p><span className="font-semibold text-gray-900">Producto:</span> {task.product}</p>
@@ -40,7 +40,7 @@ export default function TaskScheduled({ task }: Props) {
                 </div>
             </div>
 
-            <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-2">
+            <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-5">
                 {(!task.finished && !task.working && hasPermission('administrate plans production') && (Number(task.status_id) < 3)) && (
                     <button
                         onClick={() => {
@@ -49,7 +49,9 @@ export default function TaskScheduled({ task }: Props) {
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
                     >
                         <Calendar className="w-4 h-4" />
-                        Cambiar fecha de operación
+                        <p className="hidden xl:inline-block">
+                            Cambiar fecha de operación
+                        </p>
                     </button>
                 )}
 
@@ -63,7 +65,9 @@ export default function TaskScheduled({ task }: Props) {
                                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
                             >
                                 <BoxIcon className="w-4 h-4" />
-                                Entregar Material de Empaque
+                                <p className="hidden xl:inline-block">
+                                    Entregar Material de Empaque
+                                </p>
                             </button>
                         )}
 
@@ -72,7 +76,9 @@ export default function TaskScheduled({ task }: Props) {
                             onClick={() => navigate(`/material-empaque-transacciones/crear?taskId=${task.id}`, { state: { url: location.pathname + location.search } })}
                         >
                             <File className="w-4 h-4" />
-                            Crear Transacción de Material Empaque
+                            <p className="hidden xl:inline-block">
+                                Crear Transacción de Material Empaque
+                            </p>
                         </button>
 
                     </>
@@ -81,7 +87,7 @@ export default function TaskScheduled({ task }: Props) {
                 {(task.status_id === '4') && (
                     <Link to={`/planes-produccion/informacion/${task.id}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm">
                         <EyeIcon className="hover:text-gray-400" />
-                        <p>Ver detalles</p>
+                        <p className="hidden xl:inline-block">Ver detalles</p>
                     </Link>
                 )}
 

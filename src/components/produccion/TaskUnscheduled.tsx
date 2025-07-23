@@ -40,7 +40,7 @@ export default function TaskUnscheduled({ task }: Props) {
 
   return (
     <div className="border border-gray-200 rounded-2xl shadow-sm bg-white overflow-hidden">
-      <div className="p-6 space-y-2 text-gray-700 text-base leading-relaxed">
+      <div className="p-6 space-y-2 text-gray-700 xl:text-base text-xs leading-relaxed">
         <p><span className="font-semibold text-gray-900">SKU:</span> {task.sku}</p>
         <p><span className="font-semibold text-gray-900">Producto:</span> {task.product_name}</p>
         <p><span className="font-semibold text-gray-900">Línea:</span> {task.line}</p>
@@ -52,7 +52,7 @@ export default function TaskUnscheduled({ task }: Props) {
         <button
           disabled={!date || isPending}
           onClick={() => mutate({ id: task.id, date: date })}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium transition-all 
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-xs xl:text-base font-medium transition-all 
             ${date ? 'bg-white hover:border-gray-400 hover:shadow-md text-gray-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
         >
           <Calendar className="w-4 h-4" />
@@ -62,7 +62,7 @@ export default function TaskUnscheduled({ task }: Props) {
 
         <button
           onClick={() => navigate(`${location.pathname}?reprogramTask=${task.id}`, { replace: true })}
-          className={'inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium transition-all hover:bg-gray-200'}
+          className={'inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-xs xl:text-base font-medium transition-all hover:bg-gray-200'}
         >
           <Divide className="w-4 h-4" />
           <p>Dividr tarea</p>

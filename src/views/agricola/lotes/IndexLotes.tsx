@@ -49,12 +49,12 @@ export default function IndexLotes() {
   if (isError) return <ShowErrorAPI />;
   if (lotes) return (
     <>
-      <h2 className="font-bold text-4xl">Lotes</h2>
+      <h2 className="font-bold text-center xl:text-left text-4xl">Lotes</h2>
 
-      <div className="flex flex-row justify-end gap-10 mb-10">
+      <div className="flex xl:flex-row flex-col justify-end gap-3 mb-10 mt-5">
         <Link
           to="/lotes/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-8" />
           <p>Crear Lote</p>
@@ -62,52 +62,56 @@ export default function IndexLotes() {
 
         <Link
           to="/lotes/consulta"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <p>Consulta de Información de Lote</p>
         </Link>
 
         <Link
           to="/lotes/actualizacion"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <p>Actualización masiva de lotes</p>
         </Link>
 
-        <Bars3Icon
-          className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
-          onClick={() => setIsOpen(true)}
-        />
+        <div className="flex justify-end">
+          <Bars3Icon
+            className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+            onClick={() => setIsOpen(true)}
+          />
+        </div>
       </div>
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th scope="col" className="thead-th">
-              ID
-            </th>
-            <th scope="col" className="thead-th">
-              Nombre
-            </th>
-            <th scope="col" className="thead-th">
-              Finca
-            </th>
-            <th scope="col" className="thead-th">
-              CDP Activo
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {lotes?.data.map((lote) => (
-            <tr className="tbody-tr" key={lote.id}>
-              <td className="tbody-td">{lote.id}</td>
-              <td className="tbody-td">{lote.name}</td>
-              <td className="tbody-td">{lote.finca}</td>
-              <td className="tbody-td">{lote.cdp}</td>
+      <div className="table-wrapper">
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th scope="col" className="thead-th">
+                ID
+              </th>
+              <th scope="col" className="thead-th">
+                Nombre
+              </th>
+              <th scope="col" className="thead-th">
+                Finca
+              </th>
+              <th scope="col" className="thead-th">
+                CDP Activo
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {lotes?.data.map((lote) => (
+              <tr className="tbody-tr" key={lote.id}>
+                <td className="tbody-td">{lote.id}</td>
+                <td className="tbody-td">{lote.name}</td>
+                <td className="tbody-td">{lote.finca}</td>
+                <td className="tbody-td">{lote.cdp}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mb-10 flex justify-end">
         <Pagination

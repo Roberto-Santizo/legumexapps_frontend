@@ -61,11 +61,11 @@ export default function CreateSKU() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear SKU</h2>
+      <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">Crear SKU</h2>
 
       <div>
         <form
-          className="mt-10 w-2/3 mx-auto shadow-xl p-10 space-y-5"
+          className="mt-10 xl:w-2/3 mx-auto shadow-xl p-10 space-y-5"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
@@ -172,33 +172,36 @@ export default function CreateSKU() {
             </button>
 
             {items.length > 0 ? (
-              <table className="table mt-5">
-                <thead>
-                  <tr className="thead-tr">
-                    <th className="thead-th">Item</th>
-                    <th className="thead-th">Libras por unidad</th>
-                    <th className="thead-th">Acción</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item, index) => (
-                    <tr className="tbody-tr" key={index}>
-                      <td className="tbody-td">
-                        {item.name}
-                      </td>
-                      <td className="tbody-td">
-                        {item.lbs_per_item}
-                      </td>
-                      <td className="tbody-td flex gap-2">
-                        <TrashIcon className="text-gray-500 hover:text-gray-600 cursor-pointer" onClick={() => handleDeleteItem(item.packing_material_id)} />
-                      </td>
-                    </tr>
-                  ))}
+              <div className="table-wrapper w-1/2 xl:w-full overflow-x-auto">
 
-                </tbody>
-              </table>
+                <table className="table mt-5">
+                  <thead>
+                    <tr className="thead-tr">
+                      <th className="thead-th">Item</th>
+                      <th className="thead-th">Libras por unidad</th>
+                      <th className="thead-th">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item, index) => (
+                      <tr className="tbody-tr" key={index}>
+                        <td className="tbody-td">
+                          {item.name}
+                        </td>
+                        <td className="tbody-td">
+                          {item.lbs_per_item}
+                        </td>
+                        <td className="tbody-td flex gap-2">
+                          <TrashIcon className="text-gray-500 hover:text-gray-600 cursor-pointer" onClick={() => handleDeleteItem(item.packing_material_id)} />
+                        </td>
+                      </tr>
+                    ))}
+
+                  </tbody>
+                </table>
+              </div>
             ) : (
-              <p className="text-center font-medium">
+              <p className="text-center font-medium text-xs xl:text-base mt-5">
                 No existen items registrados
               </p>
             )}

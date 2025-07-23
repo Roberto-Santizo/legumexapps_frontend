@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTasksByLineId } from "@/api/TaskProductionPlansAPI";
-import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import TaskProduction from "@/components/produccion/TaskProduction";
 import ModalUnassignNote from "@/components/modals/ModalUnassignNote";
@@ -10,6 +9,7 @@ import ModalTiempoMuerto from "@/components/modals/ModalTiempoMuerto";
 import ModalCierreTareaProduccion from "@/components/modals/ModalCierreTareaProduccion";
 import ModalNotasProblemas from "@/components/modals/ModalNotasProblemas";
 import ModalReturnPackingMaterial from "@/components/modals/ModalReturnPackingMaterial";
+import TaskProductionSkeleton from "@/components/produccion/TaskProductionSkeleton";
 
 export default function ShowLineaDetalles() {
     const params = useParams();
@@ -21,18 +21,18 @@ export default function ShowLineaDetalles() {
         queryFn: () => getTasksByLineId(plan_id, linea_id),
     });
 
-    if (isLoading) return <Spinner />;
+    if (isLoading || isFetching) return <TaskProductionSkeleton />;
     if (isError) return <ShowErrorAPI />;
     if (tasks) return (
         <div>
-            <h1 className="font-bold text-4xl">Detalles de Linea</h1>
+            <h1 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Detalles de Linea</h1>
             {(tasks.length === 0) && (
                 <p className=" text-center text-3xl font-medium mt-10">No existen tareas para esta fecha</p>
             )}
 
             <div className="space-y-5">
                 {tasks.map(task => (
-                    <TaskProduction key={task.id} task={task} isFetching={isFetching} />
+                    <TaskProduction key={task.id} task={task} />
                 ))}
             </div>
 

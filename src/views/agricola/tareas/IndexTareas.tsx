@@ -54,12 +54,12 @@ export default function IndexTareas() {
   if (isError) return <ShowErrorAPI />
   return (
     <>
-      <h2 className="font-bold text-4xl">Tareas Generales</h2>
+      <h2 className="font-bold text-center text-xl xl:text-left xl:text-4xl">Tareas Generales</h2>
 
-      <div className="flex flex-row justify-end gap-5">
+      <div className="flex flex-col xl:flex-row justify-end gap-2 mt-5">
         <Link
           to="/tareas/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-8" />
           <p>Crear Tarea</p>
@@ -67,19 +67,21 @@ export default function IndexTareas() {
 
         <Link
           to="/tareas/carga-masiva"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-8" />
           <p>Carga Masiva de Tareas</p>
         </Link>
 
-        <Bars3Icon
-          className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
-          onClick={() => setIsOpen(true)}
-        />
+        <div className="flex justify-end mt-5">
+          <Bars3Icon
+            className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+            onClick={() => setIsOpen(true)}
+          />
+        </div>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-10 table-wrapper">
         <table className="table">
           <thead>
             <tr className="thead-tr">
