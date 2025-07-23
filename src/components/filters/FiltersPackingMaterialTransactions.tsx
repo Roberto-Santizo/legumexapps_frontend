@@ -2,37 +2,43 @@ import { FiltersPackingMaterialsTransactionInitialValues, FiltersPackingMaterial
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 type Props = {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    setTempFilters: Dispatch<SetStateAction<FiltersPackingMaterialsTransactionType>>;
     setFilters: Dispatch<SetStateAction<FiltersPackingMaterialsTransactionType>>;
-    tempFilters: FiltersPackingMaterialsTransactionType;
     filters: FiltersPackingMaterialsTransactionType;
 }
 
-export default function FiltersPackingMaterialTransactions({ isOpen, setIsOpen, setTempFilters, setFilters, tempFilters, filters }: Props) {
+export default function FiltersPackingMaterialTransactions({ isOpen, setIsOpen, setFilters, filters }: Props) {
 
-    const handleFilterTempChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setTempFilters((prev) => ({ ...prev, [name]: value }));
-    };
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const handleFilterData = () => {
-        setFilters(tempFilters);
-        setIsOpen(false);
-    };
-
-    const handleResetFilters = () => {
-        setFilters(FiltersPackingMaterialsTransactionInitialValues);
-        setIsOpen(false);
+    const handleFiltroChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+        setSearchParams({
+            ...Object.fromEntries(searchParams.entries()),
+            [e.target.name]: e.target.value,
+        });
     };
 
     useEffect(() => {
-        setTempFilters(filters);
-    }, [filters]);
+        const filters = {
+            'transaction_id': searchParams.get('transaction_id') ?? '',
+            'responsable': searchParams.get('responsable') ?? '',
+            'delivered_by': searchParams.get('delivered_by') ?? '',
+            'delivered_date': searchParams.get('delivered_date') ?? '',
+            'type': searchParams.get('type') ?? ''
+        }
 
+        setFilters(filters);
+    }, [searchParams]);
+
+    const handleClearFilters = () => {
+        setSearchParams({});
+        setFilters(FiltersPackingMaterialsTransactionInitialValues);
+        setIsOpen(false);
+    }
 
     return (
         <div className="relative">
@@ -55,34 +61,34 @@ export default function FiltersPackingMaterialTransactions({ isOpen, setIsOpen, 
                     <div>
                         <label className="block text-sm font-medium">Transferencia</label>
                         <input type="text" name="transaction_id" className="w-full border p-2 rounded" placeholder="Referencia de transferencia"
-                            onChange={handleFilterTempChange} value={tempFilters.transaction_id || ""} autoComplete="off"
+                            onChange={handleFiltroChange} value={filters.transaction_id || ""} autoComplete="off"
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium">Responsable</label>
                         <input type="text" name="responsable" className="w-full border p-2 rounded" placeholder="Nombre del Responsable"
-                            onChange={handleFilterTempChange} value={tempFilters.responsable || ""} autoComplete="off"
+                            onChange={handleFiltroChange} value={filters.responsable || ""} autoComplete="off"
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium">Entregado Por</label>
                         <input type="text" name="delivered_by" className="w-full border p-2 rounded" placeholder="Nombre del responsable bodega"
-                            onChange={handleFilterTempChange} value={tempFilters.delivered_by || ""} autoComplete="off"
+                            onChange={handleFiltroChange} value={filters.delivered_by || ""} autoComplete="off"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium">Fecha de entrega</label>
+                        <label className="block text-sm font-medium">Fecha de Uso</label>
                         <input type="date" name="delivered_date" className="w-full border p-2 rounded"
-                            onChange={handleFilterTempChange} value={tempFilters.delivered_date || ""} autoComplete="off"
+                            onChange={handleFiltroChange} value={filters.delivered_date || ""} autoComplete="off"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium">Fecha de entrega</label>
-                        <select name="type" className="w-full border p-2 rounded" onChange={handleFilterTempChange} value={tempFilters.type || ""}>
+                        <label className="block text-sm font-medium">Tipo de Transacción</label>
+                        <select name="type" className="w-full border p-2 rounded" onChange={handleFiltroChange} value={filters.type || ""}>
                             <option value="">--SELECCIONE UNA OPCIÓN--</option>
                             <option value="1">Salida</option>
                             <option value="2">Devolución</option>
@@ -91,14 +97,8 @@ export default function FiltersPackingMaterialTransactions({ isOpen, setIsOpen, 
                 </div>
 
                 <div className="border-t pt-3 space-y-2">
-                    <button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded"
-                        onClick={handleFilterData}
-                    >
-                        Filtrar
-                    </button>
-
                     <button className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded"
-                        onClick={handleResetFilters}
+                        onClick={handleClearFilters}
                     >
                         Borrar Filtros
                     </button>

@@ -1,8 +1,8 @@
 import { Linea } from "@/api/LineasAPI";
 import { getTasksOperationDate } from "@/api/WeeklyProductionPlanAPI";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { ChangeEvent, useEffect, useMemo } from "react";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { useAppStore } from "@/store";
 import Spinner from "../utilities-components/Spinner";
 import TaskScheduled from "./TaskScheduled";
@@ -26,6 +26,13 @@ export default function TasksWithOperationDate({ lines }: Props) {
     const params = useParams();
     const plan_id = params.plan_id!!;
 
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const line = searchParams.get('line') || "";
+    const status = searchParams.get('status') || "";
+    const sku = searchParams.get('sku') || "";
+
+
     const filters = useAppStore((state) => state.filtersWithOperationDate);
     const handleChangefiltersOperationDate = useAppStore((state) => state.handleChangefiltersOperationDate);
 
@@ -33,11 +40,29 @@ export default function TasksWithOperationDate({ lines }: Props) {
         queryKey: ['getTasksOperationDate', plan_id, date, filters],
         queryFn: () => getTasksOperationDate({ id: plan_id, date, filters }),
         enabled: !!date,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        placeholderData: keepPreviousData
     });
 
+    const handleFiltroChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+        setSearchParams({
+            ...Object.fromEntries(searchParams.entries()),
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    useEffect(() => {
+        const filters = {
+            'line': line,
+            'status': status,
+            'sku': sku
+        }
+
+        handleChangefiltersOperationDate(filters);
+    }, [searchParams]);
+
     const linesOptions = lines?.map((line) => ({
-        value: line.id,
+        value: line.code,
         label: `${line.name}`,
     }));
 
@@ -50,17 +75,21 @@ export default function TasksWithOperationDate({ lines }: Props) {
                     <label htmlFor="sku" className="block text-sm font-semibold text-gray-700">SKU</label>
                     <input
                         id="sku"
+                        name="sku"
                         type="text"
                         autoComplete="off"
                         placeholder="Ingrese SKU"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => handleChangefiltersOperationDate(e)}
+                        value={filters.sku}
+                        onChange={(e) => handleFiltroChange(e)}
                     />
                 </div>
 
                 <div className='flex gap-5'>
                     <select className="border px-3 py-2 rounded-md w-full" id='line'
-                        onChange={(e) => handleChangefiltersOperationDate(e)}
+                        name="line"
+                        onChange={(e) => handleFiltroChange(e)}
+                        value={filters.line}
                     >
                         <option value="">Todas las Líneas</option>
                         {linesOptions?.map((line) => (
@@ -69,7 +98,9 @@ export default function TasksWithOperationDate({ lines }: Props) {
                     </select>
 
                     <select className="border px-3 py-2 rounded-md w-full" id='status'
-                        onChange={(e) => handleChangefiltersOperationDate(e)}
+                        name="status"
+                        onChange={(e) => handleFiltroChange(e)}
+                        value={filters.status}
                     >
                         <option value="">Todos los estados</option>
                         {statuses.map((status) => (

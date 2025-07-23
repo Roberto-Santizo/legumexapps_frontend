@@ -31,7 +31,6 @@ export default function IndexPackingMaterialTransaction() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [transactions, setTransactions] = useState<PackingMaterialTransaction[]>([]);
   const [filters, setFilters] = useState<FiltersPackingMaterialsTransactionType>(FiltersPackingMaterialsTransactionInitialValues);
-  const [tempFilters, setTempFitlers] = useState<FiltersPackingMaterialsTransactionType>(FiltersPackingMaterialsTransactionInitialValues);
 
   const [modal, setModal] = useState<boolean>(false);
 
@@ -54,7 +53,7 @@ export default function IndexPackingMaterialTransaction() {
       setPageCount(data.meta.last_page);
       setCurrentPage(data.meta.current_page);
     }
-  }, [data])
+  }, [data]);
 
   if (isError) return <ShowErrorAPI />
   if (isLoading) return <Spinner />
@@ -99,7 +98,7 @@ export default function IndexPackingMaterialTransaction() {
                 <td className="tbody-td">{transaction.transaction_date}</td>
                 <td className="tbody-td">{transaction.type}</td>
                 <td className="tbody-td">
-                  <Link to={`/material-empaque-transacciones/${transaction.id}`}>
+                  <Link target="_blank" to={`/material-empaque-transacciones/${transaction.id}`}>
                     <EyeIcon />
                   </Link>
                 </td>
@@ -119,7 +118,7 @@ export default function IndexPackingMaterialTransaction() {
       </div>
 
       {modal && (
-        <FiltersPackingMaterialTransactions isOpen={modal} setIsOpen={setModal} filters={filters} setFilters={setFilters} tempFilters={tempFilters} setTempFilters={setTempFitlers} />
+        <FiltersPackingMaterialTransactions isOpen={modal} setIsOpen={setModal} filters={filters} setFilters={setFilters} />
       )}
     </>
   );
