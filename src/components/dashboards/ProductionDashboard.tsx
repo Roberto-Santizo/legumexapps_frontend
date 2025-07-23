@@ -13,7 +13,7 @@ export default function ProductionDashboard() {
   if (isError) navigate('/login');
   if (isLoading) return <Spinner />
   if (role) return (
-    <div className="p-10">
+    <div className="mb-10">
       <h1 className="text-5xl font-bold mb-10">Dashboard Producción</h1>
 
       <div className="mt-10 grid grid-cols-12 gap-5">
