@@ -13,18 +13,12 @@ export default function ProductionDashboard() {
   if (isError) navigate('/login');
   if (isLoading) return <Spinner />
   if (role) return (
-    <div className="mb-10">
-      <h1 className="text-5xl font-bold mb-10">Dashboard Producción</h1>
+    <div className="mb-10 space-y-5">
+      <h1 className="text-center text-xl xl:text-left xl:text-5xl font-bold mb-10">Dashboard Producción</h1>
 
-      <div className="mt-10 grid grid-cols-12 gap-5">
-        {['admin', 'adminagricola'].includes(role) && (
-          <>
-            <TasksControl />
-          </>
-        )}
-        <TasksInProgress />
-        {/* <CompletedTasks /> */}
-      </div>
+      <TasksControl />
+      <TasksInProgress />
+      {/* <CompletedTasks /> */}
     </div>
   );
 }

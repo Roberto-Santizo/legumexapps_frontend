@@ -1,67 +1,103 @@
-import { useQuery } from "@tanstack/react-query";
-import { Clock, CheckCircle } from "lucide-react";
-import { DashboardProduction } from "@/utils/utilsProductionDashboard/tasksInProgress";
-import { tasksInProgress } from "@/api/dashboardProductionAPI/tasksInProgress";
-import Spinner from "../utilities-components/Spinner";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { GetTasksProductionInProgress } from "@/api/DashboardProductionAPI";
+import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
+import { TaskProductionDashboardInProgress } from "types/dashboardProductionTypes";
+import { useEffect, useState } from "react";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const TasksInProgress = () => {
-  const { data: tasks, isLoading, isError } = useQuery<DashboardProduction[]>({
-    queryKey: ["tasks-in-tasksInProgress"],
-    queryFn: tasksInProgress,
+const columnHelper = createColumnHelper<TaskProductionDashboardInProgress>();
+
+const columns = [
+  columnHelper.accessor('line', {
+    header: () => 'LINEA',
+    cell: (info) => info.getValue()
+  }),
+  columnHelper.accessor('product', {
+    header: () => 'Producto',
+    cell: (info) => info.getValue()
+  }),
+  columnHelper.accessor('sku', {
+    header: () => 'SKU',
+    cell: (info) => info.getValue()
+  }),
+];
+
+export type filtersDashboardTasksInProgress = {
+  line: string;
+}
+
+const filtersDashboardTasksInProgressInitialValues: filtersDashboardTasksInProgress = {
+  line: ''
+}
+
+export default function TasksInProgress() {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [filters, setFilters] = useState<filtersDashboardTasksInProgress>(filtersDashboardTasksInProgressInitialValues);
+  const navigate = useNavigate();
+
+  const { data: tasks } = useQuery({
+    queryKey: ["GetTasksProductionInProgress", filters],
+    queryFn: () => GetTasksProductionInProgress({ filters }),
+    placeholderData: keepPreviousData
   });
 
-  const getStatusColor = (status: string) =>
-    status === "completed" ? "text-emerald-600" : "text-amber-600";
+  const table = useReactTable({
+    data: tasks ?? [],
+    columns,
+    debugTable: true,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting
+    },
+    onSortingChange: setSorting
+  });
 
-  const getStatusIcon = (status: string) =>
-    status === "completed" ? CheckCircle : Clock;
+  useEffect(() => {
+    const order = sorting[0] ? (sorting[0].desc ? 'desc' : 'asc') : '';
+    setFilters({
+      line: order
+    })
+  }, [sorting]);
 
-  if(isLoading) return <Spinner />
   if (tasks) return (
     <div className="flex flex-col items-center shadow-xl row-start-4 col-start-1 col-span-12 rounded-xl gap-5">
       <p className="uppercase w-full text-center bg-gradient-to-r from-slate-700 to-slate-600 text-white p-3 font-bold rounded-t-xl text-2xl">
         CONTROL DE TAREAS EN PROCESO
       </p>
       <div className="w-full">
-        <div className="bg-white rounded-b-lg shadow-sm">
-          {isLoading ? (
-            <div className="text-center py-6 text-gray-500">Cargando tareas...</div>
-          ) : isError ? (
-            <div className="text-center py-6 text-red-500">Error al cargar tareas.</div>
-          ) : tasks.length === 0 ? (
-            <div className="text-center py-6 text-gray-500">No hay tareas en proceso.</div>
-          ) : (
-            tasks.map((task, index) => {
-              const StatusIcon = getStatusIcon("in-progress");
-              return (
-                <div
-                  key={task.id}
-                  className={`flex items-center justify-between p-6 hover:bg-gray-100 transition-colors duration-200 ${index !== tasks.length - 1 ? "border-b border-gray-100" : ""
-                    }`}
-                >
-                  <div className="flex items-center space-x-4 flex-1">
-                    <div className="p-2 rounded-full bg-amber-50">
-                      <StatusIcon className={`w-5 h-5 ${getStatusColor("in-progress")}`} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center space-x-3 text-gray-700 justify-between">
-                        <span className="font-medium text-gray-800">{task.product}</span>
-                        <span className="text-gray-400">-</span>
-                        <span className="text-gray-600">{task.line}</span>
-                        <span className="text-gray-400">-</span>
-                        <span className="text-gray-600 font-mono text-sm bg-gray-100 px-2 py-1 rounded">
-                          {task.sku}
-                        </span>
+        <div className="bg-white rounded-b-lg shadow-sm p-5 ">
+          <table className="table">
+            <thead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <tr key={headerGroup.id} className="thead-tr">
+                  {headerGroup.headers.map(header => (
+                    <th key={header.id} className="thead-th" >
+                      <div  {...{ className: header.column.getCanSort() ? 'cursor-pointer select-none flex gap-2' : '', onClick: header.column.getToggleSortingHandler() }}>
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {{ asc: <ArrowUp className="w-4" />, desc: <ArrowDown className="w-4" /> }[header.column.getIsSorted() as string] ?? null}
                       </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+
+            <tbody>
+              {table.getRowModel().rows.map(row => (
+                <tr key={row.id} className="tbody-tr" onClick={() => navigate(`/planes-produccion/informacion/${row.original.id}`)}>
+                  {row.getVisibleCells().map(cel => (
+                    <td key={cel.id} className="tbody-td">
+                      {flexRender(cel.column.columnDef.cell, cel.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   );
-};
-export default TasksInProgress;
+}
