@@ -184,6 +184,7 @@ export const TaskProductionOperationDateSchema = z.object({
     finished: z.boolean(),
     total_lbs: z.number(),
     destination: z.string(),
+    has_employees: z.boolean(),
     status: z.string(),
     status_id: z.string(),
     color: z.string(),

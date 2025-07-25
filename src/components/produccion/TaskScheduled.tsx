@@ -1,4 +1,4 @@
-import { BoxIcon, Calendar, EyeIcon, File } from "lucide-react";
+import { BoxIcon, Calendar, EyeIcon, File, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
@@ -6,7 +6,7 @@ import { usePermissions } from "@/hooks/usePermissions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
 import ModalEntregaMaterialEmpaque, { DraftPackingMaterialTransactionItem } from "../modals/ModalEntregaMaterialEmpaque";
-import { UnAssignTaskProduction } from "@/api/TaskProductionPlansAPI";
+import { deleteTaskProductionAssignments, UnAssignTaskProduction } from "@/api/TaskProductionPlansAPI";
 import { toast } from "react-toastify";
 import { useAppStore } from "@/store";
 
@@ -40,6 +40,17 @@ export default function TaskScheduled({ task }: Props) {
             toast.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate], });
+        }
+    });
+
+    const { mutate: deleteAssigments } = useMutation({
+        mutationFn: deleteTaskProductionAssignments,
+        onError: (error) => {
+            toast.error(error.message);
+        },
+        onSuccess: (data) => {
+            toast.success(data);
+            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
         }
     });
 
@@ -88,6 +99,13 @@ export default function TaskScheduled({ task }: Props) {
                                 Desasignar
                             </p>
                         </button>
+
+                        {(hasPermission('delete assignments') && task.has_employees) && (
+                            <button onClick={() => deleteAssigments({ taskId: task.id })} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm">
+                                <TrashIcon className="hover:text-gray-400" />
+                                <p>Eliminar Asignaciones</p>
+                            </button>
+                        )}
                     </>
                 )}
 

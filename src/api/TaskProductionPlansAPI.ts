@@ -337,5 +337,19 @@ export async function UnAssignTaskProduction({ taskId }: { taskId: TaskProductio
     }
 }
 
+export async function deleteTaskProductionAssignments({ taskId }: { taskId: TaskProductionPlan['id'] }) {
+    try {
+        const url = `/api/tasks-production/${taskId}/delete-assignments`;
+
+        const { data } = await clienteAxios.patch(url);
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
 
 
