@@ -136,7 +136,7 @@ export default function ModalCrearTareaProduccion() {
                     name="operation_date"
                     placeholder=""
                     register={register}
-                    validation={{ required: 'La fecha de operación es obligatoria' }}
+                    validation={{}}
                     errors={errors}
                     type={'date'}
                     min={getCurrentDate()}
