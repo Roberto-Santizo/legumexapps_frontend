@@ -15,6 +15,7 @@ import TasksWithOperationDate from '@/components/produccion/TasksWithOperationDa
 import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduccion';
 import HoverSummaryHoursPerLine from '@/components/ui/HoverSummaryHoursPerLine';
 import ModalReprogramTaskProduction from '@/components/modals/ModalReprogramTaskProduction';
+import ModalEditTareaProduccion from '@/components/modals/ModalEditTareaProduccion';
 
 type DateClickInfo = {
   dateStr: string;
@@ -108,6 +109,8 @@ export default function CalendarTasks() {
       <ModalCrearTareaProduccion />
 
       <ModalReprogramTaskProduction />
+
+      <ModalEditTareaProduccion />
 
       {hasPermission('administrate plans production') && (
         <HoverSummaryHoursPerLine />

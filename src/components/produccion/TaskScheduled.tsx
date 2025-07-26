@@ -1,4 +1,4 @@
-import { BoxIcon, Calendar, EyeIcon, File, TrashIcon } from "lucide-react";
+import { BoxIcon, Calendar, EditIcon, EyeIcon, File, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
@@ -54,102 +54,118 @@ export default function TaskScheduled({ task }: Props) {
         }
     });
 
+    const handleEditClick = () => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set("editTask", task.id);
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+    };
+
     return (
-        <div className="bg-white rounded-2xl shadow-md border border-gray-200 transition hover:shadow-lg">
-            <div className="p-6 space-y-3 text-gray-700">
-                <div className="flex flex-col xl:flex-row justify-between items-center gap-5 text-xs xl:text-base">
-                    <div className="space-y-1">
-                        <p><span className="font-semibold text-gray-900">SKU:</span> {task.sku}</p>
-                        <p><span className="font-semibold text-gray-900">Producto:</span> {task.product}</p>
-                        <p><span className="font-semibold text-gray-900">Línea:</span> {task.line}</p>
-                        <p><span className="font-semibold text-gray-900">Total libras:</span> {task.total_lbs}</p>
-                        <p><span className="font-semibold text-gray-900">Destino:</span> {task.destination}</p>
+        <div className="bg-white rounded-2xl shadow border border-gray-200 transition hover:shadow-lg">
+            <div className="p-6 space-y-4 text-gray-700">
+                <div className="grid xl:grid-cols-2 gap-6 items-start text-sm xl:text-base">
+                    <div className="space-y-2">
+                        <p><span className="font-medium text-gray-900">SKU:</span> {task.sku}</p>
+                        <p><span className="font-medium text-gray-900">Producto:</span> {task.product}</p>
+                        <p><span className="font-medium text-gray-900">Línea:</span> {task.line}</p>
+                        <p><span className="font-medium text-gray-900">Total libras:</span> {task.total_lbs}</p>
+                        <p><span className="font-medium text-gray-900">Destino:</span> {task.destination}</p>
                     </div>
-                    <div>
-                        <span className={`inline-block rounded-full text-xs px-3 py-1 font-semibold ${task.color} bg-opacity-10 border ${task.color.replace("text-", "border-")}`}>
+
+                    <div className="flex xl:justify-end items-center">
+                        <span className={`text-sm px-4 py-1 rounded-full font-semibold ${task.color} bg-opacity-10 border ${task.color.replace("text-", "border-")}`}>
                             {task.status}
                         </span>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-5">
-                {(!task.finished && !task.working && hasPermission('administrate plans production') && (Number(task.status_id) < 3)) && (
+            <div className="bg-gray-50 px-6 py-4 flex flex-wrap justify-end gap-3 xl:gap-5">
+                {(Number(task.status_id) === 1 && hasPermission('administrate plans production')) && (
+                    <button
+                        onClick={() => mutate({ taskId: task.id })}
+                        className="action-btn"
+                    >
+                        <Calendar className="w-4 h-4" />
+                        <span className="hidden xl:inline">Desasignar</span>
+                    </button>
+
+                )}
+
+                {(!task.finished && !task.working && hasPermission('administrate plans production') && Number(task.status_id) < 3) && (
                     <>
                         <button
-                            onClick={() => {
-                                navigate(`${location.pathname}?${queryParams.toString()}`)
-                            }}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
+                            onClick={() => navigate(`${location.pathname}?${queryParams.toString()}`)}
+                            className="action-btn"
                         >
                             <Calendar className="w-4 h-4" />
-                            <p className="hidden xl:inline-block">
-                                Cambiar fecha de operación
-                            </p>
+                            <span className="hidden xl:inline">Cambiar fecha de operación</span>
                         </button>
 
-                        <button
-                            onClick={() => {
-                                mutate({ taskId: task.id });
-                            }}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
-                        >
-                            <Calendar className="w-4 h-4" />
-                            <p className="hidden xl:inline-block">
-                                Desasignar
-                            </p>
-                        </button>
-
-                        {(hasPermission('delete assignments') && task.has_employees) && (
-                            <button onClick={() => deleteAssigments({ taskId: task.id })} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm">
-                                <TrashIcon className="hover:text-gray-400" />
-                                <p>Eliminar Asignaciones</p>
+                        {hasPermission('delete assignments') && task.has_employees && (
+                            <button
+                                onClick={() => deleteAssigments({ taskId: task.id })}
+                                className="action-btn"
+                            >
+                                <TrashIcon className="w-4 h-4 text-gray-500 group-hover:text-red-500" />
+                                <span>Eliminar Asignaciones</span>
                             </button>
                         )}
                     </>
                 )}
 
-                {(hasPermission('create mp transactions')) && (
+                {hasPermission('create mp transactions') && (
                     <>
-                        {(task.status_id === '1' && task.recipe.length > 0) && (
+                        {task.status_id === '1' && task.recipe.length > 0 && (
                             <button
-                                onClick={() => {
-                                    setModalEntrega(true);
-                                }}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
+                                onClick={() => setModalEntrega(true)}
+                                className="action-btn"
                             >
                                 <BoxIcon className="w-4 h-4" />
-                                <p className="hidden xl:inline-block">
-                                    Entregar Material de Empaque
-                                </p>
+                                <span className="hidden xl:inline">Entregar Material de Empaque</span>
                             </button>
                         )}
 
                         <button
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm"
-                            onClick={() => navigate(`/material-empaque-transacciones/crear?taskId=${task.id}`, { state: { url: location.pathname + location.search } })}
+                            onClick={() => navigate(`/material-empaque-transacciones/crear?taskId=${task.id}`, {
+                                state: { url: location.pathname + location.search },
+                            })}
+                            className="action-btn"
                         >
                             <File className="w-4 h-4" />
-                            <p className="hidden xl:inline-block">
-                                Crear Transacción de Material Empaque
-                            </p>
+                            <span className="hidden xl:inline">Crear Transacción de Material Empaque</span>
                         </button>
-
                     </>
                 )}
 
-                {(task.status_id === '4') && (
-                    <Link to={`/planes-produccion/informacion/${task.id}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm">
-                        <EyeIcon className="hover:text-gray-400" />
-                        <p className="hidden xl:inline-block">Ver detalles</p>
+                {task.status_id === '4' && (
+                    <Link
+                        to={`/planes-produccion/informacion/${task.id}`}
+                        className="action-btn"
+                    >
+                        <EyeIcon className="w-4 h-4" />
+                        <span className="hidden xl:inline">Ver detalles</span>
                     </Link>
                 )}
 
-                {(task.status_id === '5') && (
-                    <Link to={`/planes-produccion/tarea-produccion/${task.id}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm">
-                        <EyeIcon className="hover:text-gray-400" />
-                        <p>Ver detalles</p>
+                {task.status_id === '5' && (
+                    <Link
+                        to={`/planes-produccion/tarea-produccion/${task.id}`}
+                        className="action-btn"
+                    >
+                        <EyeIcon className="w-4 h-4" />
+                        <span>Ver detalles</span>
                     </Link>
+                )}
+
+                {hasPermission('edit production task') && (
+                    <button
+                        onClick={() => handleEditClick()}
+                        className="action-btn"
+                    >
+                        <EditIcon className="w-4 h-4" />
+                        <span className="hidden xl:inline">Editar Tarea</span>
+                    </button>
                 )}
             </div>
 
@@ -164,7 +180,7 @@ export default function TaskScheduled({ task }: Props) {
                     setItems={setItems}
                 />
             )}
-
         </div>
+
     );
 }

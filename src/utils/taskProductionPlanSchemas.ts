@@ -223,3 +223,9 @@ export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateS
     sku_id: z.string()
 });;
 
+export const TaskProductionEditiDetailsSchema = TaskProductionSchema.pick({id: true, total_lbs: true, operation_date: true}).extend({
+    sku_id: z.string(),
+    line_id: z.string(),
+    destination: z.string()
+});
+
