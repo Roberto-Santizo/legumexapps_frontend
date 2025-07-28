@@ -7,7 +7,7 @@ export const WeeklyProductionPlanSchema = z.object({
     week: z.number(),
     year: z.number(),
 })
-//here I added the.optional() because I was having an error 
+
 export const WeeklyProductionPlansSchema = z.object({
     data: z.array(WeeklyProductionPlanSchema),
     meta: paginatedSchema.optional()
