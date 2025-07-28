@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { DraftTransactionPackingMaterial } from './ModalEntregaMaterialEmpaque';
@@ -7,6 +7,7 @@ import { createPackingMaterialTransaction } from '@/api/PackingMaterialTransacti
 import { toast } from 'react-toastify';
 import { TaskProductionItem } from 'types/taskProductionPlanTypes';
 import { getTaskReturnPackingMaterialDetails } from '@/api/TaskProductionPlansAPI';
+import { useAppStore } from '@/store';
 import ModalAddWastage, { DraftTaskProductionWastage } from './ModalAddWastage';
 import Modal from '../Modal';
 import InputComponent from "../form/InputComponent";
@@ -20,14 +21,23 @@ export default function ModalReturnPackingMaterial() {
     const queryParams = new URLSearchParams(location.search);
     const taskId = queryParams.get('devolutionTaskId')!;
     const show = (taskId) ? true : false;
+    const params = useParams();
+    const date = queryParams.get('date') ?? '';
+    const plan_id = params.plan_id!!;
+    
     const [auxItems, setAuxItems] = useState<TaskProductionItem[]>([]);
     const [wastages, setWastages] = useState<DraftTaskProductionWastage[]>([]);
     const [selectedItem, setSelectedItem] = useState<TaskProductionItem>({} as TaskProductionItem);
     const [difference, setDifference] = useState<number>(0);
     const [modal, setModal] = useState<boolean>(false);
+    const queryClient = useQueryClient();
     const responsableSignatureRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
     const navigate = useNavigate();
+
+    const filters = useAppStore((state) => state.filtersWithOperationDate);
+    const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
+
 
     const { data, isLoading } = useQuery({
         queryKey: ['getTaskReturnPackingMaterialDetails', taskId],
@@ -35,14 +45,29 @@ export default function ModalReturnPackingMaterial() {
         enabled: !!taskId
     });
 
+
+    const handleCloseModal = () => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.delete("devolutionTaskId");
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+    }
+
+    const handleClickItem = (item: TaskProductionItem) => {
+        setSelectedItem(item);
+        setModal(true);
+    }
+
     const { mutate, isPending } = useMutation({
         mutationFn: createPackingMaterialTransaction,
         onError: (error) => toast.error(error.message),
         onSuccess: (data) => {
-            navigate(location.pathname, { replace: true })
+            handleCloseModal();
             toast.success(data);
             reset();
             setSelectedItem({} as TaskProductionItem);
+            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
+            queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate] });
+            queryClient.invalidateQueries({ queryKey: ['getLineHoursPerWeek', plan_id] });
         }
     });
 
@@ -58,7 +83,7 @@ export default function ModalReturnPackingMaterial() {
     useEffect(() => {
         if (data) {
             if (!data.data.available) {
-                navigate(location.pathname, { replace: true });
+                handleCloseModal();
                 toast.error('La boleta ya cuenta con registro de devolución');
             } else {
                 setAuxItems(data.data.items);
@@ -87,36 +112,41 @@ export default function ModalReturnPackingMaterial() {
         mutate(data);
     }
 
-    const handleClickItem = (item: TaskProductionItem) => {
-        setSelectedItem(item);
-        setModal(true);
-    }
-
     return (
-        <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Devolución Material Empaque" width="w-2/3">
-            <div className="p-10 bg-gradient-to-br from-gray-50 to-white space-y-5">
-                {isLoading ? <Spinner /> : (
-                    <div className="grid grid-cols-2 gap-2">
+        <Modal
+            modal={show}
+            closeModal={() => handleCloseModal()}
+            title="Devolución Material Empaque"
+            width="w-full sm:w-4/5 lg:w-2/3"
+        >
+            <div className="p-4 sm:p-6 md:p-10 bg-gradient-to-br from-gray-50 to-white space-y-5">
+                {isLoading ? (
+                    <Spinner />
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {auxItems.map((item) => (
                             <div
                                 key={item.packing_material_id}
-                                className={` 'bg-white/80' flex flex-col items-center justify-center text-center  backdrop-blur-md rounded-2xl p-6 shadow-xl ring-1 ring-gray-200 hover:ring-blue-400 hover:shadow-2xl transition-all duration-300`}
+                                className="bg-white/80 flex flex-col items-center justify-center text-center backdrop-blur-md rounded-2xl p-6 shadow-xl ring-1 ring-gray-200 hover:ring-blue-400 hover:shadow-2xl transition-all duration-300"
                                 onClick={() => handleClickItem(item)}
                             >
                                 <p className="text-sm text-gray-500 mb-1 uppercase tracking-wide">{item.name}</p>
                                 <p className="text-sm font-medium text-blue-600">{item.lote}</p>
                                 <p
-                                    className={`${((selectedItem.packing_material_id === item.packing_material_id) && !modal) ? 'animate-pulseScale' : ''} text-3xl font-bold text-gray-900 mt-2`}
+                                    className={`${selectedItem.packing_material_id === item.packing_material_id && !modal
+                                        ? "animate-pulseScale"
+                                        : ""
+                                        } text-3xl font-bold text-gray-900 mt-2`}
                                 >
                                     {item.quantity}
-                                    {((selectedItem.packing_material_id === item.packing_material_id) && !modal) && <span className='text-red-400'>{` ${difference}`}</span>}
-
+                                    {selectedItem.packing_material_id === item.packing_material_id && !modal && (
+                                        <span className="text-red-400">{` ${difference}`}</span>
+                                    )}
                                 </p>
                             </div>
                         ))}
                     </div>
                 )}
-
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
@@ -126,7 +156,7 @@ export default function ModalReturnPackingMaterial() {
                             name="reference"
                             placeholder="Referencia de Transferencia"
                             register={register}
-                            validation={{ required: 'El referencia de transferencia es requerida' }}
+                            validation={{ required: "El referencia de transferencia es requerida" }}
                             errors={errors}
                             type="text"
                         >
@@ -139,7 +169,7 @@ export default function ModalReturnPackingMaterial() {
                             name="responsable"
                             placeholder="Nombre del Responsable"
                             register={register}
-                            validation={{ required: 'El nombre es requerido' }}
+                            validation={{ required: "El nombre es requerido" }}
                             errors={errors}
                             type="text"
                         >
@@ -147,11 +177,23 @@ export default function ModalReturnPackingMaterial() {
                         </InputComponent>
                     </div>
 
-                    <fieldset className="border rounded-xl p-6 shadow-sm space-y-4">
+                    <fieldset className="border rounded-xl p-4 sm:p-6 shadow-sm space-y-4">
                         <legend className="text-lg font-semibold text-gray-700 px-2">Firmas</legend>
-                        <div className="grid grid-cols-2">
-                            <SignatureField label="Firma" name="responsable_signature" control={control} errors={errors} canvasRef={responsableSignatureRef} />
-                            <SignatureField label="Firma de bodega" name="user_signature" control={control} errors={errors} canvasRef={userRef} />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <SignatureField
+                                label="Firma"
+                                name="responsable_signature"
+                                control={control}
+                                errors={errors}
+                                canvasRef={responsableSignatureRef}
+                            />
+                            <SignatureField
+                                label="Firma de bodega"
+                                name="user_signature"
+                                control={control}
+                                errors={errors}
+                                canvasRef={userRef}
+                            />
                         </div>
                     </fieldset>
 
@@ -172,12 +214,20 @@ export default function ModalReturnPackingMaterial() {
                         disabled={isPending}
                         className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-md transition duration-300 uppercase"
                     >
-                        {isPending ? <Spinner /> : 'CREAR'}
+                        {isPending ? <Spinner /> : "CREAR"}
                     </button>
                 </form>
             </div>
 
-            <ModalAddWastage modal={modal} setModal={setModal} selectedItem={selectedItem} setAuxItems={setAuxItems} setWastages={setWastages} SetSelectedItem={setSelectedItem} />
+            <ModalAddWastage
+                modal={modal}
+                setModal={setModal}
+                selectedItem={selectedItem}
+                setAuxItems={setAuxItems}
+                setWastages={setWastages}
+                SetSelectedItem={setSelectedItem}
+            />
         </Modal>
+
     )
 }

@@ -188,6 +188,7 @@ export const TaskProductionOperationDateSchema = z.object({
     status: z.string(),
     status_id: z.string(),
     color: z.string(),
+    devolution: z.boolean(),
     recipe: z.array(TaskProductionPackingMaterialRecipeSchema)
 });
 

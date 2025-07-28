@@ -8,7 +8,6 @@ import ModalTomaRendimientoProduccion from "@/components/modals/ModalTomaRendimi
 import ModalTiempoMuerto from "@/components/modals/ModalTiempoMuerto";
 import ModalCierreTareaProduccion from "@/components/modals/ModalCierreTareaProduccion";
 import ModalNotasProblemas from "@/components/modals/ModalNotasProblemas";
-import ModalReturnPackingMaterial from "@/components/modals/ModalReturnPackingMaterial";
 import TaskProductionSkeleton from "@/components/produccion/TaskProductionSkeleton";
 
 export default function ShowLineaDetalles() {
@@ -45,8 +44,6 @@ export default function ShowLineaDetalles() {
             <ModalNotasProblemas />
 
             <ModalUnassignNote />
-
-            <ModalReturnPackingMaterial />
         </div>
     )
 }

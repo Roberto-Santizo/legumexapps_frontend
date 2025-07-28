@@ -1,4 +1,4 @@
-import { BoxIcon, Calendar, EditIcon, EyeIcon, File, TrashIcon } from "lucide-react";
+import { Boxes, BoxIcon, Calendar, EditIcon, EyeIcon, File, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
@@ -57,6 +57,12 @@ export default function TaskScheduled({ task }: Props) {
     const handleEditClick = () => {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set("editTask", task.id);
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+    };
+
+    const handleDevolutionClick = () => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set("devolutionTaskId", task.id);
         navigate(`${location.pathname}?${searchParams.toString()}`);
     };
 
@@ -165,6 +171,16 @@ export default function TaskScheduled({ task }: Props) {
                     >
                         <EditIcon className="w-4 h-4" />
                         <span className="hidden xl:inline">Editar Tarea</span>
+                    </button>
+                )}
+
+                {(task.devolution) && (
+                    <button
+                        onClick={() => handleDevolutionClick()}
+                        className="action-btn"
+                    >
+                        <Boxes className="w-4 h-4" />
+                        <span className="hidden xl:inline">Devolución de Material Empaque</span>
                     </button>
                 )}
             </div>

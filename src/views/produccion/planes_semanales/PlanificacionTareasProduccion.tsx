@@ -16,6 +16,7 @@ import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduc
 import HoverSummaryHoursPerLine from '@/components/ui/HoverSummaryHoursPerLine';
 import ModalReprogramTaskProduction from '@/components/modals/ModalReprogramTaskProduction';
 import ModalEditTareaProduccion from '@/components/modals/ModalEditTareaProduccion';
+import ModalReturnPackingMaterial from '@/components/modals/ModalReturnPackingMaterial';
 
 type DateClickInfo = {
   dateStr: string;
@@ -111,6 +112,8 @@ export default function CalendarTasks() {
       <ModalReprogramTaskProduction />
 
       <ModalEditTareaProduccion />
+
+      <ModalReturnPackingMaterial />
 
       {hasPermission('administrate plans production') && (
         <HoverSummaryHoursPerLine />

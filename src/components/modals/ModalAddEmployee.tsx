@@ -6,6 +6,7 @@ import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
+import { toast } from "react-toastify";
 
 type Props = {
     isOpen: boolean;
@@ -38,11 +39,15 @@ export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, positio
     } = useForm<DraftTaskProductionEmployee>();
 
     const onSubmit = (FormData: DraftTaskProductionEmployee) => {
+        if (!FormData.name) {
+            toast.error('Debe seleccionar un empleado');
+            return;
+        }
         const position = positions.find(position => position.id === FormData.position_id);
 
-        if(position){
+        if (position) {
             setPositions(prev => prev.filter(position => position.id !== FormData.position_id));
-        }else{
+        } else {
             FormData.position_id = '';
         }
 
