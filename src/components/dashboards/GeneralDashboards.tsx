@@ -2,12 +2,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminDashboard from "./AdminDashboard";
 import AgricolaDashboard from "./AgricolaDashboard";
-import LogisticsDashboard from "./LogisticsDashboard";
+import ProductionDashboard from "./ProductionDashboard";
 
 const tabs = [
   { id: "A", label: "Administrador", component: <AdminDashboard /> },
   { id: "B", label: "Agrícola", component: <AgricolaDashboard /> },
-  { id: "C", label: "Logística", component: <LogisticsDashboard /> },
+  { id: "C", label: "Producción", component: <ProductionDashboard /> },
 ];
 
 export default function GeneralDashboard() {

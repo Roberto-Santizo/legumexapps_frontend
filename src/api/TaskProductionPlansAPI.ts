@@ -1,6 +1,6 @@
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import { Linea } from "./LineasAPI";
-import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TaskProductionReprogramDetailsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
+import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionEditiDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TaskProductionReprogramDetailsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
 import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionNoOperationDate, TaskProductionOperationDate, TaskProductionPlan } from "types/taskProductionPlanTypes";
 import { isAxiosError } from "axios";
 import clienteAxios from "@/config/axios";
@@ -59,11 +59,12 @@ export async function getTaskProductionDetails(id: TaskProductionPlan['id']) {
     }
 }
 
-export async function confirmAssignment({ changes, id }: { changes: TaskProductionChange[], id: TaskProductionPlan['id'] }) {
+export async function confirmAssignment({ changes, id, previousConfig }: { changes: TaskProductionChange[], id: TaskProductionPlan['id'], previousConfig: boolean }) {
     try {
         const url = `api/tasks-production/${id}/confirm-assignments`;
         const { data } = await clienteAxios.patch<string>(url, {
-            data: changes
+            data: changes,
+            previous_config: previousConfig
         });
 
         return data;
@@ -240,7 +241,7 @@ export async function createNewTaskProduction({ FormData, id }: { FormData: Draf
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg)
+            throw new Error(error.response?.data.msg || "Error al crear nueva tarea")
         }
     }
 }
@@ -321,6 +322,67 @@ export async function deleteTaskProduction({ taskId }: { taskId: TaskProductionP
         }
     }
 }
+
+export async function UnAssignTaskProduction({ taskId }: { taskId: TaskProductionPlan['id'] }) {
+    try {
+        const url = `/api/tasks-production/${taskId}/unassign`;
+
+        const { data } = await clienteAxios.patch(url);
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
+export async function deleteTaskProductionAssignments({ taskId }: { taskId: TaskProductionPlan['id'] }) {
+    try {
+        const url = `/api/tasks-production/${taskId}/delete-assignments`;
+
+        const { data } = await clienteAxios.patch(url);
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
+export async function getEditDetailsProductionTask({ taskId }: { taskId: TaskProductionPlan['id'] }) {
+    try {
+        const url = `/api/tasks-production/edit-details/${taskId}`;
+
+        const { data } = await clienteAxios(url);
+
+        const result = TaskProductionEditiDetailsSchema.safeParse(data);
+
+        if (result) {
+            return result.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
+export async function editProductionTask({ taskId, formData }: { taskId: TaskProductionPlan['id'], formData: DraftNewTaskProduction }) {
+    try {
+        const url = `/api/tasks-production/${taskId}`;
+
+        const { data } = await clienteAxios.put(url, formData);
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
 
 
 

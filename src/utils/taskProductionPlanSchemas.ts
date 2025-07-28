@@ -65,7 +65,9 @@ export const TaskProductionSchema = z.object({
 export const TaskProductionDetailsSchema = TaskProductionSchema.pick({ id: true, line: true, operation_date: true, start_date: true, total_lbs: true }).extend({
     sku: SKUSchema,
     filtered_employees: z.array(TaskProductionEmployeeSchema),
+    all_employees: z.array(TaskProductionEmployeeSchema),
     positions: z.array(PositionSchema),
+    exists_previuos_config: z.boolean(),
     flag: z.boolean()
 });
 
@@ -80,7 +82,11 @@ export const TaskProductionInProgressSchema = TaskProductionSchema.pick({ line: 
     HTiemposMuertos: z.number(),
     employees: z.array(TaskProductionEmployeeSchema),
     performances: z.array(TaskProductionPerformanceSchema),
-    timeouts: z.array(TaskProductionTimeOutSchema)
+    timeouts: z.array(TaskProductionTimeOutSchema),
+    percentage: z.number(),
+    total_produced: z.number(),
+    total_lbs: z.number(),
+    total_tarimas: z.number()
 })
 
 
@@ -178,9 +184,11 @@ export const TaskProductionOperationDateSchema = z.object({
     finished: z.boolean(),
     total_lbs: z.number(),
     destination: z.string(),
+    has_employees: z.boolean(),
     status: z.string(),
     status_id: z.string(),
     color: z.string(),
+    devolution: z.boolean(),
     recipe: z.array(TaskProductionPackingMaterialRecipeSchema)
 });
 
@@ -211,8 +219,14 @@ export const TaskProductionItemsSchema = z.object({
     })
 })
 
-export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateSchema.pick({id: true, total_lbs:true, destination:true, line: true, sku:true }).extend({
+export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateSchema.pick({ id: true, total_lbs: true, destination: true, line: true, sku: true }).extend({
     line_id: z.string(),
     sku_id: z.string()
 });;
+
+export const TaskProductionEditiDetailsSchema = TaskProductionSchema.pick({id: true, total_lbs: true, operation_date: true}).extend({
+    sku_id: z.string(),
+    line_id: z.string(),
+    destination: z.string()
+});
 

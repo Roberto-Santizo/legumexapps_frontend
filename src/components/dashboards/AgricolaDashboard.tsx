@@ -19,7 +19,6 @@ export default function AgricolaDashboard() {
   if (role) return (
     <div>
       <h1 className="text-xl xl:text-5xl font-bold mb-10 text-center xl:text-left">Dashboard Agricola</h1>
-
       <div className="flex flex-col mt-10 xl:grid xl:grid-cols-12 gap-5">
         {['admin', 'adminagricola'].includes(role) && (
           <>

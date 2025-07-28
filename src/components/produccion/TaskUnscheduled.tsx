@@ -1,10 +1,11 @@
-import { Calendar, Divide } from "lucide-react";
+import { Calendar, Divide, EditIcon, TrashIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { TaskProductionNoOperationDate } from "types/taskProductionPlanTypes";
-import { assignOperationDate } from "@/api/TaskProductionPlansAPI";
+import { assignOperationDate, deleteTaskProduction } from "@/api/TaskProductionPlansAPI";
 import { toast } from "react-toastify";
 import { useAppStore } from "@/store";
+import { usePermissions } from "@/hooks/usePermissions";
 
 type Props = {
   task: TaskProductionNoOperationDate;
@@ -17,6 +18,8 @@ export default function TaskUnscheduled({ task }: Props) {
   const params = useParams();
   const plan_id = params.plan_id!!;
   const queryClient = useQueryClient();
+
+  const { hasPermission } = usePermissions();
 
   const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
   const filtersWithOperationDate = useAppStore((state) => state.filtersWithOperationDate);
@@ -37,6 +40,25 @@ export default function TaskUnscheduled({ task }: Props) {
 
     }
   });
+
+
+  const { mutate: deleteTask } = useMutation({
+    mutationFn: deleteTaskProduction,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data);
+      queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate] });
+      queryClient.invalidateQueries({ queryKey: ['getLineHoursPerWeek', plan_id] });
+    }
+  });
+
+  const handleEditClick = () => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("editTask", task.id);
+    navigate(`${location.pathname}?${searchParams.toString()}`);
+  };
 
   return (
     <div className="border border-gray-200 rounded-2xl shadow-sm bg-white overflow-hidden">
@@ -67,6 +89,26 @@ export default function TaskUnscheduled({ task }: Props) {
           <Divide className="w-4 h-4" />
           <p>Dividr tarea</p>
         </button>
+
+        {hasPermission('edit production task') && (
+          <button
+            onClick={() => handleEditClick()}
+            className="action-btn"
+          >
+            <EditIcon className="w-4 h-4" />
+            <span className="hidden xl:inline">Editar Tarea</span>
+          </button>
+        )}
+
+        {hasPermission('delete production task') && (
+          <button
+            onClick={() => deleteTask({ taskId: task.id })}
+            className="action-btn hover:bg-red-200"
+          >
+            <TrashIcon className="w-4 h-4" />
+            <span className="hidden xl:inline">Eliminar Tarea</span>
+          </button>
+        )}
       </div>
     </div>
   );

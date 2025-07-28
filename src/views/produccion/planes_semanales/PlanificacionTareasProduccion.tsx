@@ -15,6 +15,8 @@ import TasksWithOperationDate from '@/components/produccion/TasksWithOperationDa
 import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduccion';
 import HoverSummaryHoursPerLine from '@/components/ui/HoverSummaryHoursPerLine';
 import ModalReprogramTaskProduction from '@/components/modals/ModalReprogramTaskProduction';
+import ModalEditTareaProduccion from '@/components/modals/ModalEditTareaProduccion';
+import ModalReturnPackingMaterial from '@/components/modals/ModalReturnPackingMaterial';
 
 type DateClickInfo = {
   dateStr: string;
@@ -48,7 +50,9 @@ export default function CalendarTasks() {
   });
 
   const handleClickDate = (info: DateClickInfo) => {
-    navigate(`${location.pathname}?date=${info.dateStr}`);
+    const currentParams = new URLSearchParams(location.search);
+    currentParams.set("date", info.dateStr);
+    navigate(`${location.pathname}?${currentParams.toString()}`);
   }
 
   return (
@@ -106,6 +110,10 @@ export default function CalendarTasks() {
       <ModalCrearTareaProduccion />
 
       <ModalReprogramTaskProduction />
+
+      <ModalEditTareaProduccion />
+
+      <ModalReturnPackingMaterial />
 
       {hasPermission('administrate plans production') && (
         <HoverSummaryHoursPerLine />
