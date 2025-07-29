@@ -85,6 +85,7 @@ export default function ModalErrorsTable({ modal, setModal, errors }: Props) {
                             <FileSymlink className="w-4 h-4" />
                             Exportar
                         </button>
+                        
                         <button
                             onClick={handleCloseModal}
                             className="inline-flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow transition"

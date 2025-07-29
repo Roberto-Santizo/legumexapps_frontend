@@ -33,6 +33,7 @@ const routes = [
   { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/graficasDiarias/DailyGraphs")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
   
   { path: "/planificador-produccion", component: lazy(() => import("@/views/produccion/planificador/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
+  { path: "/planificador-produccion/:id", component: lazy(() => import("@/views/produccion/planificador/ShowPlanification")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
 
 ];
 
