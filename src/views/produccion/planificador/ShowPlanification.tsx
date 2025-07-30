@@ -11,6 +11,7 @@ import SummaryLines from "./SummaryLines";
 import SummaryItems from "./SummaryItems";
 import ModalEditTaskProductionDraft from "@/components/modals/ModalEditTaskProductionDraft";
 import "@/lib/echo";
+import SummaryItemsRawMaterial from "./SummaryItemsRawMaterial";
 
 
 export default function ShowPlanification() {
@@ -33,6 +34,7 @@ export default function ShowPlanification() {
         queryClient.invalidateQueries({ queryKey: ['getSummaryDraftLines', id] });
         queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlanById', id] });
         queryClient.invalidateQueries({ queryKey: ['getSummaryDraftItems', id] });
+        queryClient.invalidateQueries({ queryKey: ['getSummaryDraftRawMaterial', id] });
       });
     }
   }, []);
@@ -84,6 +86,7 @@ export default function ShowPlanification() {
         <SummaryLines />
 
         <SummaryItems />
+        <SummaryItemsRawMaterial />
       </div>
 
       <aside className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 lg:col-start-4 h-screen overflow-y-auto scrollbar-hide flex flex-col space-y-6">

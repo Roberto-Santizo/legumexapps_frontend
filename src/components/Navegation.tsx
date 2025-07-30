@@ -17,7 +17,8 @@ import {
   ChartLine,
   ChartNoAxesCombined,
   FileUser, Box, ClipboardPaste,
-  ChartPie
+  ChartPie,
+  Apple
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
@@ -150,14 +151,6 @@ export default function Navegation() {
             <Box />
           </NavLinkComponent>
 
-          {/* <NavLinkComponent url="/recepciones-mp" text="Recepciones MP">
-            <Warehouse />
-          </NavLinkComponent>
-
-          <NavLinkComponent url="/recepciones-insumos" text="Recepciones Insumos">
-            <PackageOpen />
-          </NavLinkComponent> */}
-
           <NavLinkComponent url="/material-empaque-transacciones" text="Transacciones Material Empaque">
             <ClipboardPaste />
           </NavLinkComponent>
@@ -169,6 +162,10 @@ export default function Navegation() {
           <FileUser />
         </NavLinkComponent>
       )}
+
+      <NavLinkComponent url="/materia-prima" text="Materia Prima">
+        <Apple />
+      </NavLinkComponent>
     </div>
   );
 }

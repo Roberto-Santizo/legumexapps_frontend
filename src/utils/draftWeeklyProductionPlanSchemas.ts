@@ -25,4 +25,4 @@ export const DraftWeeklyPlanSummaryItemSchema = TaskProductionPackingMaterialRec
     inventory: z.number()
 })
 
-export const DraftWeeklyProductionPlanPackingMaterialRecipeSchema = z.array(DraftWeeklyPlanSummaryItemSchema);
+export const DraftWeeklyProductionPlanRecipeSchema = z.array(DraftWeeklyPlanSummaryItemSchema);

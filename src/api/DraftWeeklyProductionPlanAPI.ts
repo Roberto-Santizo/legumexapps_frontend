@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import { DraftWeeklyProductionPlanDetailsSchema, DraftWeeklyProductionPlanPackingMaterialRecipeSchema } from "@/utils/draftWeeklyProductionPlanSchemas";
+import { DraftWeeklyProductionPlanDetailsSchema, DraftWeeklyProductionPlanRecipeSchema } from "@/utils/draftWeeklyProductionPlanSchemas";
 import clienteAxios from "@/config/axios";
 import { DraftWeeklyProductionPlan } from "@/components/modals/ModalCreateDraftPlanProduction";
 import { WeeklyProductionPlanDraft } from "types/draftWeeklyProductionPlanTypes";
@@ -57,7 +57,23 @@ export async function getSummaryDraftItems({ id }: { id: WeeklyProductionPlanDra
         const url = `/api/weekly-production-plans-drafts/${id}/packing-material-necessity`;
         const { data } = await clienteAxios(url);
 
-        const result = DraftWeeklyProductionPlanPackingMaterialRecipeSchema.safeParse(data);
+        const result = DraftWeeklyProductionPlanRecipeSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+export async function getSummaryDraftRawMaterial({ id }: { id: WeeklyProductionPlanDraft['id'] }) {
+    try {
+        const url = `/api/weekly-production-plans-drafts/${id}/raw-material-necessity`;
+        const { data } = await clienteAxios(url);
+
+        const result = DraftWeeklyProductionPlanRecipeSchema.safeParse(data);
 
         if (result.success) {
             return result.data;
