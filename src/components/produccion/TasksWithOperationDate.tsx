@@ -108,8 +108,8 @@ export default function TasksWithOperationDate({ lines }: Props) {
                         ))}
                     </select>
                 </div>
-
             </div>
+            
             <div className='mt-5 overflow-y-auto scrollbar-hide max-h-96 space-y-6'>
                 {isUpdating && <Spinner />}
 

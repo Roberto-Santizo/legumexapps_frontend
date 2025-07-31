@@ -171,11 +171,15 @@ export async function getLinePerformanceByDay(line_id: Linea['id'], date: string
     }
 }
 
-export const LinesHoursPerWeekSchema = z.array(z.object({
+export const LineHoursPerWeekSchema = z.object({
     line_id: z.string(),
     line: z.string(),
     total_hours: z.number()
-}));
+});
+
+export const LinesHoursPerWeekSchema = z.array(LineHoursPerWeekSchema);
+
+export type LineHoursPerWeek = z.infer<typeof LineHoursPerWeekSchema>;
 
 export async function getLineHoursPerWeek({ weeklyplanId }: { weeklyplanId: WeeklyProductionPlan['id'] }) {
     try {
