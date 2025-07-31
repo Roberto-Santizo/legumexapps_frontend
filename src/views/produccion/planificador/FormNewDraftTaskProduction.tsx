@@ -7,6 +7,7 @@ import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import Error from "@/components/utilities-components/Error";
 import { Dispatch, SetStateAction } from "react";
+import { FiltersSkuInitialValues } from "../sku/IndexSKU";
 
 type Props = {
     control: Control<NewTaskProductionDraft>;
@@ -26,7 +27,7 @@ export default function FormNewDraftTaskProduction({ register, errors, control, 
 
     const { data: skus } = useQuery({
         queryKey: ['getSkus'],
-        queryFn: () => getSkus({ page: 1, paginated: '' })
+        queryFn: () => getSkus({ page: 1, paginated: '', filters: FiltersSkuInitialValues })
     });
 
     const skuOptions = skus?.data?.map((sku) => ({
@@ -66,7 +67,7 @@ export default function FormNewDraftTaskProduction({ register, errors, control, 
                 label="Total de Cajas"
                 id="total_boxes"
                 name="total_boxes"
-                placeholder="Total de Libras"
+                placeholder="Total de Cajas"
                 register={register}
                 validation={{ required: 'El total de cajas es requerida' }}
                 errors={errors}

@@ -115,9 +115,11 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-      <NavLinkComponent url="/planificador-produccion" text="Planificador Producción">
-        <ChartPie />
-      </NavLinkComponent>
+      {hasPermission('see draft planification') && (
+        <NavLinkComponent url="/planificador-produccion" text="Planificador Producción">
+          <ChartPie />
+        </NavLinkComponent>
+      )}
 
       {hasPermission("administrate production performances") && (
         <>
@@ -163,9 +165,11 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-      <NavLinkComponent url="/materia-prima" text="Materia Prima">
-        <Apple />
-      </NavLinkComponent>
+      {hasPermission('see raw material items') && (
+        <NavLinkComponent url="/materia-prima" text="Materia Prima">
+          <Apple />
+        </NavLinkComponent>
+      )}
     </div>
   );
 }

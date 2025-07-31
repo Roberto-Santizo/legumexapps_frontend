@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Pagination from "@/components/utilities-components/Pagination";
 import { Link } from "react-router-dom";
-import { EyeIcon, PlusIcon } from "lucide-react";
+import { EditIcon, PlusIcon } from "lucide-react";
 
 export default function IndexMateriaPrima() {
   const [pageCount, setPageCount] = useState<number>(0);
@@ -58,7 +58,7 @@ export default function IndexMateriaPrima() {
                 <td className="tbody-td">{item.type}</td>
                 <td className="tbody-td">
                   <Link to={`/materia-prima/${item.id}/editar`}>
-                    <EyeIcon className="w-12 hover:text-gray-500" />
+                    <EditIcon className="w-12 hover:text-gray-500" />
                   </Link>
                 </td>
               </tr>

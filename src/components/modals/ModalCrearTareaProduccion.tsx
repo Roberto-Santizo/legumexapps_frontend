@@ -21,7 +21,7 @@ export default function ModalCrearTareaProduccion() {
     const queryParams = new URLSearchParams(location.search);
     const newTask = queryParams.get('newTask')!;
     const show = newTask ? true : false;
-    
+
     const params = useParams();
     const plan_id = params.plan_id!!;
     const queryClient = useQueryClient();

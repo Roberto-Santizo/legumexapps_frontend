@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import { DraftWeeklyProductionPlanDetailsSchema, DraftWeeklyProductionPlanRecipeSchema } from "@/utils/draftWeeklyProductionPlanSchemas";
+import { DraftWeeklyProductionPlanDetailsSchema, DraftWeeklyProductionPlanRecipeSchema, WeeklyProductionDraftsPaginatedSchema } from "@/utils/draftWeeklyProductionPlanSchemas";
 import clienteAxios from "@/config/axios";
 import { DraftWeeklyProductionPlan } from "@/components/modals/ModalCreateDraftPlanProduction";
 import { WeeklyProductionPlanDraft } from "types/draftWeeklyProductionPlanTypes";
@@ -11,6 +11,23 @@ export async function createDraftWeeklyProductionPlan(FormData: DraftWeeklyProdu
         const { data } = await clienteAxios.post<number>(url, FormData);
 
         return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
+export async function getWeeklyProductionPlanDrafts({ paginated, currentPage }: { paginated: string, currentPage: number }) {
+    try {
+        const url = `/api/weekly-production-plans-drafts?paginated=${paginated}&page=${currentPage}`;
+        const { data } = await clienteAxios(url);
+
+        const result = WeeklyProductionDraftsPaginatedSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
@@ -92,6 +109,34 @@ export async function uploadTasksProductionDrafts({ file, id }: { file: File[], 
         formData.append("file", file[0]);
 
         const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+
+        }
+    }
+}
+
+export async function confirmPlan({ id }: { id: WeeklyProductionPlanDraft['id'] }) {
+    try {
+        const url = `/api/weekly-production-plans-drafts/${id}/confirm`;
+        const { data } = await clienteAxios.patch(url);
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+
+        }
+    }
+}
+
+export async function createWeeklyProductionPlanFromDraft(id: WeeklyProductionPlanDraft['id']) {
+    try {
+        const url = `/api/weekly-production-plans-drafts/${id}/create-plan`;
+        const { data } = await clienteAxios.post(url);
+
         return data;
     } catch (error) {
         if (isAxiosError(error)) {

@@ -5,6 +5,7 @@ import { getLinesBySkuId } from "@/api/LineasAPI";
 import { getSkus } from "@/api/SkusAPI";
 import { Control, FieldErrors, UseFormGetValues, UseFormRegister } from "react-hook-form";
 import { getCurrentDate } from "@/helpers";
+import { FiltersSkuInitialValues } from "../sku/IndexSKU";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import Error from "@/components/utilities-components/Error";
@@ -28,7 +29,7 @@ export default function FormProductionTask({ control, errors, register, getValue
 
     const { data: skus } = useQuery({
         queryKey: ['getSkus'],
-        queryFn: () => getSkus({ page: 1, paginated: '' })
+        queryFn: () => getSkus({ page: 1, paginated: '', filters: FiltersSkuInitialValues })
     });
 
     const skuOptions = skus?.data?.map((sku) => ({

@@ -16,6 +16,7 @@ const routes = [
   { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/FinishedTaskProductionDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola', 'exportuser', 'gerencia', 'auxrrhh'] },
 
   { path: "/skus", component: lazy(() => import("@/views/produccion/sku/IndexSKU")), roles: ['admin', 'pcostos'] },
+  { path: "/skus/:id", component: lazy(() => import("@/views/produccion/sku/ShowSku")), roles: ['admin', 'pcostos'] },
   { path: "/skus/crear", component: lazy(() => import("@/views/produccion/sku/CreateSKU")), roles: ['admin', 'pcostos'] },
 
   { path: "/lineas", component: lazy(() => import("@/views/produccion/lineas/IndexLineas")), roles: ['admin', 'pcostos'] },
