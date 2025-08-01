@@ -1,27 +1,38 @@
-import { Dispatch, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { uploadSkus } from "@/api/SkusAPI";
+import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 
 type Props = {
-    modal: boolean;
-    setModal: Dispatch<React.SetStateAction<boolean>>;
     currentPage: number;
 
 }
 
-export default function ModalCargaSku({ modal, setModal, currentPage }: Props) {
+export default function ModalCargaSku({ currentPage }: Props) {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const taskId = queryParams.get('uploadSkus')!;
+    const show = taskId ? true : false;
+
     const [file, setFile] = useState<File[] | null>(null);
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
             setFile(acceptedFiles);
         }
     }, []);
+
+
+    const handleCloseModal = () => {
+        navigate(location.pathname, { replace: true });
+        setFile(null);
+    }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -32,15 +43,11 @@ export default function ModalCargaSku({ modal, setModal, currentPage }: Props) {
         },
         onSuccess: (data) => {
             toast.success(data);
-            setModal(false);
+            handleCloseModal();
             queryClient.invalidateQueries({ queryKey: ['getSkusPaginated', currentPage] });
         }
     });
 
-    const handleCloseModal = () => {
-        setModal(false);
-        setFile(null);
-    }
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -50,7 +57,7 @@ export default function ModalCargaSku({ modal, setModal, currentPage }: Props) {
     };
 
     return (
-        <Modal modal={modal} closeModal={handleCloseModal} title="Carga Masiva de SKU">
+        <Modal modal={show} closeModal={handleCloseModal} title="Carga Masiva de SKU">
             <div className="flex items-center justify-center px-4">
                 <div className="w-full  bg-white shadow-xl rounded-2xl p-8">
                     <form onSubmit={handleSubmit}>

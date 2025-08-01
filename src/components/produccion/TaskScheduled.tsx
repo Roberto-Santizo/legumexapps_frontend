@@ -174,7 +174,7 @@ export default function TaskScheduled({ task }: Props) {
                     </button>
                 )}
 
-                {(task.devolution) && (
+                {(task.devolution && hasPermission('create mp transactions')) && (
                     <button
                         onClick={() => handleDevolutionClick()}
                         className="action-btn"

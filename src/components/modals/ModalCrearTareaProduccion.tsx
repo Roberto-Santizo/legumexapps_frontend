@@ -21,13 +21,21 @@ export default function ModalCrearTareaProduccion() {
     const queryParams = new URLSearchParams(location.search);
     const newTask = queryParams.get('newTask')!;
     const show = newTask ? true : false;
-    
+    const date = queryParams.get('date') ?? '';
+
     const params = useParams();
     const plan_id = params.plan_id!!;
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
+    const filters = useAppStore((state) => state.filtersWithOperationDate);
+
+    const handleCloseModal = () => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.delete("newTask");
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+    }
 
     const {
         handleSubmit,
@@ -44,10 +52,11 @@ export default function ModalCrearTareaProduccion() {
         },
         onSuccess: (data) => {
             toast.success(data);
+            queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
             queryClient.invalidateQueries({ queryKey: ['getLineHoursPerWeek', plan_id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate], });
-            navigate(location.pathname);
+            handleCloseModal();
             reset();
         }
     });
@@ -57,7 +66,7 @@ export default function ModalCrearTareaProduccion() {
     };
 
     return (
-        <Modal modal={show} closeModal={() => navigate(location.pathname)} title="Creación de Tarea Produccion Extraordinaria">
+        <Modal modal={show} closeModal={() => handleCloseModal()} title="Creación de Tarea Produccion Extraordinaria">
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
                 <FormProductionTask register={register} errors={errors} control={control} />

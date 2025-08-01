@@ -1,25 +1,23 @@
-import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { getLinesBySkuId } from "@/api/LineasAPI";
 import { getSkus } from "@/api/SkusAPI";
-import { Control, FieldErrors, UseFormGetValues, UseFormRegister } from "react-hook-form";
-import { getCurrentDate } from "@/helpers";
+import { NewTaskProductionDraft } from "@/components/modals/ModalAddNewDraftProductionTask";
+import { useQuery } from "@tanstack/react-query";
+import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import { Dispatch, SetStateAction } from "react";
 import { FiltersSkuInitialValues } from "../sku/IndexSKU";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import Error from "@/components/utilities-components/Error";
 
 type Props = {
-    control: Control<DraftNewTaskProduction>;
-    errors: FieldErrors<DraftNewTaskProduction>;
-    register: UseFormRegister<DraftNewTaskProduction>;
-    getValues?: UseFormGetValues<DraftNewTaskProduction>;
+    control: Control<NewTaskProductionDraft>;
+    errors: FieldErrors<NewTaskProductionDraft>;
+    register: UseFormRegister<NewTaskProductionDraft>;
+    skuId: string;
+    setSkuId: Dispatch<SetStateAction<string>>;
 }
 
-export default function FormProductionTask({ control, errors, register, getValues }: Props) {
-    const initialSkuId = getValues ? getValues('sku_id') : '';
-    const [skuId, setSkuId] = useState<string>(initialSkuId ?? '');
+export default function FormNewDraftTaskProduction({ register, errors, control, skuId, setSkuId }: Props) {
 
     const { data: lineas } = useQuery({
         queryKey: ['getLinesBySkuId', skuId],
@@ -37,23 +35,23 @@ export default function FormProductionTask({ control, errors, register, getValue
         label: `${sku.code} - ${sku.product_name}`,
     }));
 
-    return (
+    if (skus) return (
         <>
-            <InputSelectSearchComponent<DraftNewTaskProduction>
+            <InputSelectSearchComponent<NewTaskProductionDraft>
                 label="SKU"
-                id="sku_id"
-                name="sku_id"
+                id="stock_keeping_unit_id"
+                name="stock_keeping_unit_id"
                 options={skuOptions ?? []}
                 control={control}
                 rules={{ required: 'Seleccione un SKU' }}
                 errors={errors}
                 onChange={(value) => setSkuId(value ?? '')}
             >
-                {errors.sku_id && <Error>{errors.sku_id?.message?.toString()}</Error>}
+                {errors.stock_keeping_unit_id && <Error>{errors.stock_keeping_unit_id?.message?.toString()}</Error>}
             </InputSelectSearchComponent>
 
 
-            <InputSelectSearchComponent<DraftNewTaskProduction>
+            <InputSelectSearchComponent<NewTaskProductionDraft>
                 label="Linea"
                 id="line_id"
                 name="line_id"
@@ -65,20 +63,20 @@ export default function FormProductionTask({ control, errors, register, getValue
                 {errors.line_id && <Error>{errors.line_id?.message?.toString()}</Error>}
             </InputSelectSearchComponent>
 
-            <InputComponent<DraftNewTaskProduction>
+            <InputComponent<NewTaskProductionDraft>
                 label="Total de Libras"
                 id="total_lbs"
                 name="total_lbs"
                 placeholder="Total de Libras"
                 register={register}
-                validation={{ required: 'Las libras totales son obligatorias' }}
+                validation={{ required: 'El total de libras es requerida' }}
                 errors={errors}
                 type={'number'}
             >
                 {errors.total_lbs && <Error>{errors.total_lbs?.message?.toString()}</Error>}
             </InputComponent>
 
-            <InputComponent<DraftNewTaskProduction>
+            <InputComponent<NewTaskProductionDraft>
                 label="Destino"
                 id="destination"
                 name="destination"
@@ -90,22 +88,6 @@ export default function FormProductionTask({ control, errors, register, getValue
             >
                 {errors.destination && <Error>{errors.destination?.message?.toString()}</Error>}
             </InputComponent>
-
-            <InputComponent<DraftNewTaskProduction>
-                label="Fecha de Operación"
-                id="operation_date"
-                name="operation_date"
-                placeholder=""
-                register={register}
-                validation={{}}
-                errors={errors}
-                type={'date'}
-                min={getCurrentDate()}
-            >
-                {errors.operation_date && <Error>{errors.operation_date?.message?.toString()}</Error>}
-            </InputComponent>
-
-
         </>
     )
 }

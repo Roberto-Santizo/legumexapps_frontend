@@ -1,26 +1,43 @@
-import { PlusIcon } from "lucide-react";
+import { EyeIcon, PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getSkus, SKU } from "@/api/SkusAPI";
+import { usePermissions } from "@/hooks/usePermissions";
+import { Bars3Icon } from "@heroicons/react/16/solid";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalCargaSku from "@/components/modals/ModalCargaSku";
 import ModalCargaRecipeSku from "@/components/modals/ModalCargaRecipeSku";
+import ModalCargaRecipeRawMaterialSku from "@/components/modals/ModalCargaRecipeRawMaterialSku";
+import FiltersSku from "@/components/filters/FiltersSku";
 
+
+export type FiltersSku = {
+  product_name: string;
+  code: string;
+}
+
+export const FiltersSkuInitialValues: FiltersSku = {
+  product_name: '',
+  code: ''
+};
 
 export default function IndexSKU() {
   const [skus, setSkus] = useState<SKU[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [modal, setModal] = useState<boolean>(false);
-  const [modalRecipe, setModalRecipe] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [filters, setFilters] = useState<FiltersSku>(FiltersSkuInitialValues);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
+  const { hasPermission } = usePermissions();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['getSkusPaginated', currentPage],
-    queryFn: () => getSkus({ page: currentPage, paginated: 'true' }),
+    queryKey: ['getSkusPaginated', currentPage, filters],
+    queryFn: () => getSkus({ page: currentPage, paginated: 'true', filters }),
     placeholderData: keepPreviousData
   });
 
@@ -39,6 +56,15 @@ export default function IndexSKU() {
     setCurrentPage(selectedItem.selected + 1);
   };
 
+  useEffect(() => {
+    const filters = {
+      'product_name': searchParams.get('product_name') ?? '',
+      'code': searchParams.get('code') ?? '',
+    }
+
+    setFilters(filters);
+  }, [searchParams]);
+
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />
   return (
@@ -46,29 +72,52 @@ export default function IndexSKU() {
       <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">SKU</h2>
 
       <div className="flex xl:flex-row flex-col justify-end gap-5 flex-wrap mt-5">
-        <Link
-          to="/skus/crear"
-          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
-        >
-          <PlusIcon className="w-5 h-5" />
-          <p>Crear SKU</p>
-        </Link>
+        {hasPermission('create sku') && (
+          <>
+            <Link
+              to="/skus/crear"
+              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+            >
+              <PlusIcon className="w-5 h-5" />
+              <p>Crear SKU</p>
+            </Link>
 
-        <button
-          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
-          onClick={() => setModal(true)}
-        >
-          <PlusIcon className="w-5 h-5" />
-          <p>Carga Masiva de SKU</p>
-        </button>
+            <button
+              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+              onClick={() => navigate(`${location.pathname}?uploadSkus=true`)}
+            >
+              <PlusIcon className="w-5 h-5" />
+              <p>Carga Masiva de SKU</p>
+            </button>
+          </>
+        )}
 
-        <button
-          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
-          onClick={() => setModalRecipe(true)}
-        >
-          <PlusIcon className="w-5 h-5" />
-          <p>Carga Masiva de Recetas</p>
-        </button>
+        {hasPermission('create packing material recipe') && (
+          <button
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+            onClick={() => navigate(`${location.pathname}?uploadPackingMaterialRecipe=true`)}
+          >
+            <PlusIcon className="w-5 h-5" />
+            <p>Carga Masiva de Recetas Material de Empaque</p>
+          </button>
+        )}
+
+
+        {hasPermission('create raw material recipe') && (
+          <button
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex items-center gap-2"
+            onClick={() => navigate(`${location.pathname}?uploadRawMaterialRecipe=true`)}
+          >
+            <PlusIcon className="w-5 h-5" />
+            <p>Carga Masiva de Recetas Materia Prima</p>
+          </button>
+        )}
+
+        <Bars3Icon
+          className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+          onClick={() => setIsOpen(true)}
+        />
+
       </div>
 
 
@@ -80,6 +129,7 @@ export default function IndexSKU() {
               <th scope="col" className="thead-th">Producto</th>
               <th scope="col" className="thead-th">Presentación</th>
               <th scope="col" className="thead-th">Cliente</th>
+              <th scope="col" className="thead-th">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -89,6 +139,11 @@ export default function IndexSKU() {
                 <td className="tbody-td">{sku.product_name}</td>
                 <td className="tbody-td">{sku.presentation}</td>
                 <td className="tbody-td">{sku.client_name}</td>
+                <td className="tbody-td">
+                  <Link to={`/skus/${sku.id}`}>
+                    <EyeIcon className="w-12 hover:text-gray-500" />
+                  </Link>
+                </td>
               </tr>
             ))}
 
@@ -103,8 +158,15 @@ export default function IndexSKU() {
         </div>
       </div>
 
-      <ModalCargaSku modal={modal} setModal={setModal} currentPage={currentPage} />
-      <ModalCargaRecipeSku modal={modalRecipe} setModal={setModalRecipe} currentPage={currentPage} />
+      <ModalCargaSku currentPage={currentPage} />
+      <ModalCargaRecipeSku currentPage={currentPage} />
+      <ModalCargaRecipeRawMaterialSku currentPage={currentPage} />
+
+
+      {isOpen && (
+        <FiltersSku isOpen={isOpen} setIsOpen={setIsOpen} filters={filters} setFilters={setFilters} setSearchParams={setSearchParams} searchParams={searchParams} />
+      )}
+
     </>
   )
 }

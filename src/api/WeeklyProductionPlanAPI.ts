@@ -10,7 +10,7 @@ import { TaskProductionUnscheduledFilters, TasksWithOperationDateFilters } from 
 
 export async function getWeeklyProductionPlans({ page, paginated }: { page: number, paginated: string }) {
     try {
-        const url = `/api/weekly-production-plans?paginated${paginated}&page=${page}`;
+        const url = `/api/weekly-production-plans?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = WeeklyProductionPlansSchema.safeParse(data);
         if (result.success) {

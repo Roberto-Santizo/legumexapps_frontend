@@ -55,6 +55,11 @@ export default function CalendarTasks() {
     navigate(`${location.pathname}?${currentParams.toString()}`);
   }
 
+  const handleCreateNewTask = () => {
+    const currentParams = new URLSearchParams(location.search);
+    currentParams.set("newTask", 'true');
+    navigate(`${location.pathname}?${currentParams.toString()}`);
+  }
   return (
     <div className="space-y-6">
       <div className="flex justify-between w-full">
@@ -63,7 +68,7 @@ export default function CalendarTasks() {
 
       {hasPermission('create new task production') && (
         <div className='flex justify-end'>
-          <button className='button bg-indigo-500 flex gap-2' onClick={() => navigate(`${location.pathname}?newTask=true`)}>
+          <button className='button bg-indigo-500 flex gap-2' onClick={() => handleCreateNewTask()}>
             <PlusIcon />
             Crear Tarea Producción
           </button>

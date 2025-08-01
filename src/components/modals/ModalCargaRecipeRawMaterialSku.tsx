@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { uploadSkusRecipes } from "@/api/SkusAPI";
+import { uploadSkusRecipesRawMaterial } from "@/api/SkusAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
@@ -12,11 +12,11 @@ type Props = {
 
 }
 
-export default function ModalCargaRecipeSku({ currentPage }: Props) {
-     const location = useLocation();
+export default function ModalCargaRecipeRawMaterialSku({ currentPage }: Props) {
+    const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const taskId = queryParams.get('uploadPackingMaterialRecipe')!;
-    const show = taskId ? true : false;
+    const flag = queryParams.get('uploadRawMaterialRecipe')!;
+    const show = flag ? true : false;
 
     const [file, setFile] = useState<File[] | null>(null);
     const queryClient = useQueryClient();
@@ -36,7 +36,7 @@ export default function ModalCargaRecipeSku({ currentPage }: Props) {
     }
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (file: File[]) => uploadSkusRecipes(file),
+        mutationFn: (file: File[]) => uploadSkusRecipesRawMaterial(file),
         onError: (error) => {
             toast.error(error.message);
         },
@@ -57,7 +57,7 @@ export default function ModalCargaRecipeSku({ currentPage }: Props) {
     };
 
     return (
-        <Modal modal={show} closeModal={handleCloseModal} title="Carga Masiva de Recetas">
+        <Modal modal={show} closeModal={handleCloseModal} title="Carga Masiva de Recetas Materia Prima">
             <div className="flex items-center justify-center px-4">
                 <div className="w-full  bg-white shadow-xl rounded-2xl p-8">
                     <form onSubmit={handleSubmit}>

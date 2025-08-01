@@ -26,7 +26,9 @@ export default function ModalReprogramTaskProduction() {
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
 
     const handleCloseModal = () => {
-        navigate(location.pathname)
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.delete("reprogramTask");
+        navigate(`${location.pathname}?${searchParams.toString()}`);
         reset();
         setNewTasks([]);
     }

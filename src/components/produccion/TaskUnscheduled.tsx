@@ -60,6 +60,12 @@ export default function TaskUnscheduled({ task }: Props) {
     navigate(`${location.pathname}?${searchParams.toString()}`);
   };
 
+  const handleDivideTask = (id: TaskProductionNoOperationDate['id']) => {
+    const currentParams = new URLSearchParams(location.search);
+    currentParams.set("reprogramTask", id);
+    navigate(`${location.pathname}?${currentParams.toString()}`);
+  }
+
   return (
     <div className="border border-gray-200 rounded-2xl shadow-sm bg-white overflow-hidden">
       <div className="p-6 space-y-2 text-gray-700 xl:text-base text-xs leading-relaxed">
@@ -83,7 +89,7 @@ export default function TaskUnscheduled({ task }: Props) {
         </button>
 
         <button
-          onClick={() => navigate(`${location.pathname}?reprogramTask=${task.id}`, { replace: true })}
+          onClick={() => handleDivideTask(task.id)}
           className={'inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-xs xl:text-base font-medium transition-all hover:bg-gray-200'}
         >
           <Divide className="w-4 h-4" />

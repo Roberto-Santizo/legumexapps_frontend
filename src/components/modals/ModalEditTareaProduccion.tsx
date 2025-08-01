@@ -18,7 +18,6 @@ export default function ModalEditTareaProduccion() {
     const plan_id = params.plan_id!!;
     const taskId = queryParams.get('editTask')!;
     const show = taskId ? true : false;
-    const isPending = false;
 
     const queryClient = useQueryClient();
 
@@ -39,7 +38,7 @@ export default function ModalEditTareaProduccion() {
         navigate(`${location.pathname}?${searchParams.toString()}`);
     }
 
-    const { mutate } = useMutation({
+    const { mutate, isPending} = useMutation({
         mutationFn: editProductionTask,
         onError: (error) => {
             toast.error(error.message);
@@ -83,7 +82,7 @@ export default function ModalEditTareaProduccion() {
 
                 <FormProductionTask register={register} errors={errors} control={control} getValues={getValues} />
 
-                <button className="button w-full bg-indigo-500 hover:bg-indigo-600">
+                <button disabled={isPending} className="button w-full bg-indigo-500 hover:bg-indigo-600">
                     {isPending ? <Spinner /> : <p>Editar Tarea</p>}
                 </button>
             </form>

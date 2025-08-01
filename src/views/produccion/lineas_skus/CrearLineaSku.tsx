@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { createLineaSku } from "@/api/LineasSkuAPI";
 import { useNavigate } from "react-router-dom";
 import { getLineas } from "@/api/LineasAPI";
+import { FiltersSkuInitialValues } from "../sku/IndexSKU";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputComponent from "@/components/form/InputComponent";
@@ -42,7 +43,7 @@ export default function CrearLineaSku() {
 
     const results = useQueries({
         queries: [
-            { queryKey: ['getAllSkus'], queryFn: () => getSkus({ page: 1, paginated: '' }) },
+            { queryKey: ['getAllSkus'], queryFn: () => getSkus({ page: 1, paginated: '', filters: FiltersSkuInitialValues }) },
             { queryKey: ['getAllLines'], queryFn: () => getLineas({ page: 1, paginated: '' }) },
         ]
     });

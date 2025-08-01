@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { getPackingMaterials, PackingMaterial, updateMaterialStatus } from "@/api/MaterialEmpaqueAPI";
 import { toast } from "react-toastify";
 import { Bars3Icon } from "@heroicons/react/16/solid";
+import { usePermissions } from "@/hooks/usePermissions";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersMaterialEmpaque from "@/components/filters/FiltersMaterialEmpaque";
 import ModalCargaItemsMP from "@/components/modals/ModalCargaItemsMP";
-import { usePermissions } from "@/hooks/usePermissions";
 
 export type FiltersPackingMaterialsType = {
   name: string;
@@ -18,6 +18,11 @@ export type FiltersPackingMaterialsType = {
   status: string;
   supplier: string;
 }
+
+export type ChangeItemStatusEvent = {
+  status: string;
+}
+
 
 export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType = {
   name: '',
@@ -27,7 +32,6 @@ export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType =
 };
 
 export default function IndexMaterialEmpaque() {
-
   const [items, setItems] = useState<PackingMaterial[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -35,7 +39,6 @@ export default function IndexMaterialEmpaque() {
   const [tempFilters, setTempFitlers] = useState<FiltersPackingMaterialsType>(FiltersPackingMaterialsInitialValues);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
-
   const { hasPermission } = usePermissions();
 
   const handlePageChange = (selectedItem: { selected: number }) => {
