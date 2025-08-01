@@ -21,7 +21,6 @@ export async function GetTasksProductionInProgress({ filters }: { filters: filte
   }
 }
 
-
 export async function GetSummaryTasksPerLine() {
   try {
     const url = '/api/dashboard/production/finished-tasks-per-line';
@@ -36,5 +35,5 @@ export async function GetSummaryTasksPerLine() {
       throw new Error(error.response?.data.msg);
     }
   }
-}
+} 
 
