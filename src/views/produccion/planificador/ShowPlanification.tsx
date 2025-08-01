@@ -190,8 +190,8 @@ export default function ShowPlanification() {
                     </div>
 
                     <div>
-                      <p className="text-gray-500">Cajas Totales</p>
-                      <p className="text-gray-800 font-medium">{task.total_boxes}</p>
+                      <p className="text-gray-500">Libras totales</p>
+                      <p className="text-gray-800 font-medium">{task.total_lbs}</p>
                     </div>
 
                     <div>

@@ -3,11 +3,11 @@ import { getSkus } from "@/api/SkusAPI";
 import { NewTaskProductionDraft } from "@/components/modals/ModalAddNewDraftProductionTask";
 import { useQuery } from "@tanstack/react-query";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import { Dispatch, SetStateAction } from "react";
+import { FiltersSkuInitialValues } from "../sku/IndexSKU";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import Error from "@/components/utilities-components/Error";
-import { Dispatch, SetStateAction } from "react";
-import { FiltersSkuInitialValues } from "../sku/IndexSKU";
 
 type Props = {
     control: Control<NewTaskProductionDraft>;
@@ -64,16 +64,16 @@ export default function FormNewDraftTaskProduction({ register, errors, control, 
             </InputSelectSearchComponent>
 
             <InputComponent<NewTaskProductionDraft>
-                label="Total de Cajas"
-                id="total_boxes"
-                name="total_boxes"
-                placeholder="Total de Cajas"
+                label="Total de Libras"
+                id="total_lbs"
+                name="total_lbs"
+                placeholder="Total de Libras"
                 register={register}
-                validation={{ required: 'El total de cajas es requerida' }}
+                validation={{ required: 'El total de libras es requerida' }}
                 errors={errors}
                 type={'number'}
             >
-                {errors.total_boxes && <Error>{errors.total_boxes?.message?.toString()}</Error>}
+                {errors.total_lbs && <Error>{errors.total_lbs?.message?.toString()}</Error>}
             </InputComponent>
 
             <InputComponent<NewTaskProductionDraft>

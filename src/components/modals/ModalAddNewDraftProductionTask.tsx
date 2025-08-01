@@ -12,7 +12,7 @@ export type NewTaskProductionDraft = {
     draft_weekly_production_plan_id: string;
     line_id: string;
     stock_keeping_unit_id: string;
-    total_boxes: number;
+    total_lbs: number;
     destination: string;
 }
 
@@ -60,7 +60,7 @@ export default function ModalAddNewDraftProductionTask() {
         <Modal modal={show} closeModal={() => handleCloseModal()} title="Creación de Draft Tarea Produccion">
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
-                <FormNewDraftTaskProduction register={register} errors={errors} control={control} skuId={skuId} setSkuId={setSkuId}/>
+                <FormNewDraftTaskProduction register={register} errors={errors} control={control} skuId={skuId} setSkuId={setSkuId} />
 
                 <button disabled={isPending} className="button w-full bg-indigo-500 hover:bg-indigo-600">
                     {isPending ? <Spinner /> : <p>Crear Tarea Producción</p>}
