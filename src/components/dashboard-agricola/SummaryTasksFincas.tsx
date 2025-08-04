@@ -36,18 +36,6 @@ export default function SummaryTasksFincas() {
                 text={`${data.finished_tasks}/${data.total_tasks}`}
               />
               <p className="font-bold">{data.finca}</p>
-
-              <CircularProgressbar
-                className="w-32"
-                value={data.percentage}
-                styles={buildStyles({
-                  pathColor: "#3B82F6",
-                  trailColor: "#F5F5F5",
-                  textSize: 15,
-                })}
-                text={`${data.finished_tasks}/${data.total_tasks}`}
-              />
-              <p className="font-bold">{data.finca}</p>
             </div>
           ))}
         </div>
