@@ -1,12 +1,12 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { GetTasksProductionInProgress } from "@/api/DashboardProductionAPI";
 import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
-import { TaskProductionDashboardInProgress } from "types/dashboardProductionTypes";
+import { TaskProductionDashboard } from "types/dashboardProductionTypes";
 import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const columnHelper = createColumnHelper<TaskProductionDashboardInProgress>();
+const columnHelper = createColumnHelper<TaskProductionDashboard>();
 
 const columns = [
   columnHelper.accessor('line', {
@@ -45,7 +45,6 @@ export default function TasksInProgress() {
   const table = useReactTable({
     data: tasks ?? [],
     columns,
-    debugTable: true,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     state: {
@@ -64,7 +63,7 @@ export default function TasksInProgress() {
   if (tasks) return (
     <div className="flex flex-col items-center shadow-xl row-start-4 col-start-1 col-span-12 rounded-xl gap-5">
       <p className="uppercase w-full text-center bg-gradient-to-r from-slate-700 to-slate-600 text-white p-3 font-bold rounded-t-xl text-2xl">
-        CONTROL DE TAREAS EN PROCESO
+        TAREAS EN PROCESO
       </p>
       <div className="w-full">
         <div className="bg-white rounded-b-lg shadow-sm p-5 ">

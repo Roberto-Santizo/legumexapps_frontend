@@ -1,18 +1,17 @@
 import { filtersDashboardTasksInProgress } from "@/components/dashboard-production/TasksInProgress";
 import clienteAxios from "@/config/axios";
-import { SummaryLinesTasksShema, TasksProductionInProgressSchema } from "@/utils/dashboardSchemas";
+import { SummaryLinesTasksShema, TasksProductionDashboardSchema } from "@/utils/dashboardSchemas";
 import { isAxiosError } from "axios";
 
 export async function GetTasksProductionInProgress({ filters }: { filters: filtersDashboardTasksInProgress }) {
   try {
     const url = `/api/dashboard/production/in-progress?line=${filters.line}`;
-    console.log(url);
     const { data } = await clienteAxios(url);
 
-    const result = TasksProductionInProgressSchema.safeParse(data);
+    const result = TasksProductionDashboardSchema.safeParse(data);
 
     if (result.success) {
-      return result.data.data;
+      return result.data;
     }
   } catch (error) {
     if (isAxiosError(error)) {
@@ -35,5 +34,21 @@ export async function GetSummaryTasksPerLine() {
       throw new Error(error.response?.data.msg);
     }
   }
-} 
+}
+
+export async function GetFinishedTasksProduction() {
+  try {
+    const url = '/api/dashboard/production/finished-tasks';
+    const { data } = await clienteAxios(url);
+    const result = TasksProductionDashboardSchema.safeParse(data);
+
+    if (result.success) {
+      return result.data;
+    }
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw new Error(error.response?.data.msg);
+    }
+  }
+}
 

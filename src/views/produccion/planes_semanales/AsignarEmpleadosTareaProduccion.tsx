@@ -165,9 +165,6 @@ export default function ShowTaskProductionDetails() {
         });
     }
 
-    useEffect(() => {
-        console.log(newEmployees);
-    }, [newEmployees]);
     if (isLoading || isLoadingComodines) return <TaskProductionAsignacionSkeleton />;
     if (isError || isErrorComodines) return <Spinner />;
     if (taskDetails && comodines) return (

@@ -1,4 +1,4 @@
-import { TaskProductionInProgressSchema } from "@/utils/dashboardSchemas";
+import { TaskProductionDashboardSchema } from "@/utils/dashboardSchemas";
 import { z } from "zod";
 
-export type TaskProductionDashboardInProgress = z.infer<typeof TaskProductionInProgressSchema>;
+export type TaskProductionDashboard = z.infer<typeof TaskProductionDashboardSchema>;

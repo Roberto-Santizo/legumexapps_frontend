@@ -9,14 +9,13 @@ export const SummaryLineTasksSchema = z.object({
 
 export const SummaryLinesTasksShema = z.array(SummaryLineTasksSchema);
 
-export const TaskProductionInProgressSchema = z.object({
+export const TaskProductionDashboardSchema = z.object({
     id: z.number(),
     line: z.string(),
     sku: z.string(),
     product: z.string(),
+    operation_date: z.string()
 });
 
-export const TasksProductionInProgressSchema = z.object({
-    data: z.array(TaskProductionInProgressSchema)
-});
+export const TasksProductionDashboardSchema = z.array(TaskProductionDashboardSchema);
 

@@ -1,17 +1,12 @@
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { useQuery } from "@tanstack/react-query";
 import { GetSummaryTasksPerLine } from "@/api/DashboardProductionAPI";
-import Spinner from "../utilities-components/Spinner";
-import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 
 export default function TasksControl() {
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ["GetSummaryTasksPerLine"],
     queryFn: GetSummaryTasksPerLine,
   });
-
-  if (isLoading) return <Spinner />;
-  if (isError) return <ShowErrorAPI />;
 
   if (data) return (
     <div className="flex flex-col items-center shadow-xl row-start-1 col-start-1 col-span-12 rounded-xl gap-10">

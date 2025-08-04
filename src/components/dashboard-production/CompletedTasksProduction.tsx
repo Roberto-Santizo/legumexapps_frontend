@@ -1,24 +1,13 @@
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from "@tanstack/react-table";
+import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { GetFinishedTasksProduction } from "@/api/DashboardProductionAPI";
+import { TaskProductionDashboard } from "types/dashboardProductionTypes";
+import { useNavigate } from "react-router-dom";
 
-type TaskProductionDashboardInProgress = {
-  id: number;
-  line: string;
-  product: string;
-  sku: string;
-  fecha: string;
-  "tiempo total": string;
-};
 
-const columnHelper = createColumnHelper<TaskProductionDashboardInProgress>();
+const columnHelper = createColumnHelper<TaskProductionDashboard>();
 
 const columns = [
   columnHelper.accessor("line", {
@@ -33,48 +22,25 @@ const columns = [
     header: () => "SKU",
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor("fecha", {
+  columnHelper.accessor("operation_date", {
     header: () => "FECHA",
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor("tiempo total", {
-    header: () => "TIEMPO TOTAL USADO",
-    cell: (info) => info.getValue(),
-  }),
-];
-
-const mockTasks: TaskProductionDashboardInProgress[] = [
-  {
-    id: 1,
-    line: "Línea 1",
-    product: "Piña Oro",
-    sku: "SKU-001",
-    fecha: "2025-07-29",
-    "tiempo total": "180 min",
-  },
-  {
-    id: 2,
-    line: "Línea 2",
-    product: "Banano Premium",
-    sku: "SKU-002",
-    fecha: "2025-07-30",
-    "tiempo total": "240 min",
-  },
-  {
-    id: 3,
-    line: "Línea 3",
-    product: "Mango Kent",
-    sku: "SKU-003",
-    fecha: "2025-07-31",
-    "tiempo total": "200 min",
-  },
 ];
 
 export default function CompletedTasksProduction() {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const navigate = useNavigate();
+
+  const { data: tasks } = useQuery({
+    queryKey: ["GetFinishedTasksProduction"],
+    queryFn: GetFinishedTasksProduction,
+    placeholderData: keepPreviousData
+  });
+
 
   const table = useReactTable({
-    data: mockTasks,
+    data: tasks ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -87,12 +53,12 @@ export default function CompletedTasksProduction() {
   return (
     <div className="flex flex-col items-center shadow-xl row-start-4 col-start-1 col-span-12 rounded-xl gap-5">
       <p className="uppercase w-full text-center bg-gradient-to-r from-slate-700 to-slate-600 text-white p-3 font-bold rounded-t-xl text-2xl">
-        CONTROL DE TAREAS TERMINADAS
+        TAREAS TERMINADAS
       </p>
 
       <div className="w-full">
         <div className="bg-white rounded-b-lg shadow-sm p-5">
-          <table className="table">
+          <table className="table max-h-96 overflow-y-scroll scrollbar-hide">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="thead-tr">
@@ -123,7 +89,7 @@ export default function CompletedTasksProduction() {
             </thead>
             <tbody>
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="tbody-tr">
+                <tr key={row.id} className="tbody-tr" onClick={() => navigate(`/planes-produccion/tarea-produccion/${row.original.id}`)}>
                   {row.getVisibleCells().map((cel) => (
                     <td key={cel.id} className="tbody-td">
                       {flexRender(cel.column.columnDef.cell, cel.getContext())}

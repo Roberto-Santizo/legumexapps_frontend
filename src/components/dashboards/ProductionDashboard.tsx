@@ -3,7 +3,6 @@ import { useRole } from "@/hooks/useRole";
 import Spinner from "../utilities-components/Spinner";
 import TasksControl from '@/components/dashboard-production/TasksControl';
 import TasksInProgress from '@/components/dashboard-production/TasksInProgress';
-import DownTimeReport from '@/components/dashboard-production/DownTimeReport';
 import CompletedTasksProduction from '@/components/dashboard-production/CompletedTasksProduction';
 
 
@@ -20,8 +19,8 @@ export default function ProductionDashboard() {
 
       <TasksControl />
       <TasksInProgress />
-      <CompletedTasksProduction/>
-      <DownTimeReport/>
+      <CompletedTasksProduction />
+      {/* <DownTimeReport/> */}
     </div>
   );
 }

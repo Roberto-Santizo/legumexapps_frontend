@@ -81,7 +81,6 @@ export default function SummaryItemsRawMaterial() {
     const table = useReactTable({
         data: items ?? [],
         columns,
-        debugTable: true,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         state: {

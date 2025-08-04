@@ -24,6 +24,10 @@ export default function Dashboard() {
     'auxrrhh': (<RecursosDashboard />),
     'logistics': (<ProductionDashboard />),
     'gerencia': (<ProductionDashboard />),
+    'adminprod': (<ProductionDashboard />),
+    'audiproceso': (<ProductionDashboard />),
+    'costosuser': (<ProductionDashboard />),
+    'exportuser': (<ProductionDashboard />),
   };
 
   const { data: role, isLoading } = useRole();
