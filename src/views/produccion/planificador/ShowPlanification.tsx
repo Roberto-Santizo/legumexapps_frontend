@@ -1,11 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useCallback, useMemo, useState } from "react";
-import { EditIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { confirmPlan, createWeeklyProductionPlanFromDraft, getDraftWeeklyPlanById, uploadTasksProductionDrafts } from "@/api/DraftWeeklyProductionPlanAPI";
-import { deleteTaskProductionDraft } from "@/api/DraftTaskProductionDraftAPI";
+import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query";
+import { ChangeEvent, useMemo, useState } from "react";
+import { PlusIcon } from "lucide-react";
+import { confirmPlan, createWeeklyProductionPlanFromDraft, getDraftWeeklyPlanById } from "@/api/DraftWeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
-import { useDropzone } from "react-dropzone";
 import { usePlanificationWebSocket } from "@/lib/echo";
 import ModalAddNewDraftProductionTask from "@/components/modals/ModalAddNewDraftProductionTask";
 import SummaryLines from "./SummaryLines";
@@ -14,20 +12,33 @@ import ModalEditTaskProductionDraft from "@/components/modals/ModalEditTaskProdu
 import SummaryItemsRawMaterial from "./SummaryItemsRawMaterial";
 import Spinner from "@/components/utilities-components/Spinner";
 import Swal from "sweetalert2";
+import TasksList from "./TasksList";
 import "@/lib/echo";
 
+export type FiltersDraftsTasks = {
+  sku: string;
+  product: string;
+  line: string;
+}
+
+const FiltersIntialValues: FiltersDraftsTasks = {
+  sku: '',
+  product: '',
+  line: ''
+}
 
 export default function ShowPlanification() {
   const params = useParams<{ id: string }>();
   const id = params.id!;
-  const [file] = useState<File[] | null>(null);
+  const [filters, setFilters] = useState<FiltersDraftsTasks>(FiltersIntialValues);
 
   const navigate = useNavigate();
 
   const { data: draft } = useQuery({
-    queryKey: ['getDraftWeeklyPlanById', id],
-    queryFn: () => getDraftWeeklyPlanById(id),
-    refetchOnWindowFocus: false
+    queryKey: ['getDraftWeeklyPlanById', id, filters],
+    queryFn: () => getDraftWeeklyPlanById({ id, filters }),
+    refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData
   });
 
   usePlanificationWebSocket(id);
@@ -52,33 +63,12 @@ export default function ShowPlanification() {
     }
   });
 
-  const { mutate } = useMutation({
-    mutationFn: deleteTaskProductionDraft,
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSuccess: (data) => {
-      toast.success(data);
-    }
-  });
-
-  const { mutate: uploadtasks } = useMutation({
-    mutationFn: uploadTasksProductionDrafts,
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSuccess: (data) => {
-      toast.success(data);
-    }
-  });
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles) {
-      uploadtasks({ file: acceptedFiles, id });
-    }
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const handleChangefiltersNoOperationDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setFilters((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value
+    }));
+  }
 
   const flag = useMemo(() => !(draft && draft.logistics_confirmation && draft.bodega_confirmation && draft.production_confirmation), [draft]);
 
@@ -116,92 +106,59 @@ export default function ShowPlanification() {
           )}
         </section>
 
-        <SummaryLines />
-
-        <SummaryItems />
-        <SummaryItemsRawMaterial />
+        <SummaryLines setFilters={setFilters} filters={filters} />
+        <SummaryItems filters={filters} />
+        <SummaryItemsRawMaterial filters={filters} />
       </div>
 
-      <aside className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 lg:col-start-4 h-screen overflow-y-auto scrollbar-hide flex flex-col space-y-6">
-        {!draft.confirmation_date && (
-          <>
-            <button
-              onClick={() => navigate(`${location.pathname}?newTask=true`, { replace: true })}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition"
-            >
-              <PlusIcon className="w-4 h-4" />
-              <span>Crear Tarea</span>
-            </button>
-
-            <div className="bg-gray-50 shadow-inner rounded-xl p-6 text-sm">
-              <form>
-                <div
-                  {...getRootProps()}
-                  className={`transition-all duration-200 border-2 border-dashed rounded-xl p-6 text-center cursor-pointer 
-                ${isDragActive ? 'bg-blue-50 border-blue-400' : 'bg-white border-gray-300 hover:border-blue-400'}
-                ${file ? 'border-green-400 bg-green-50' : ''}`}
-                >
-                  <input {...getInputProps()} disabled={!!file} />
-                  {file ? (
-                    <p className="text-green-700 font-medium truncate">Archivo: {file[0].name}</p>
-                  ) : isDragActive ? (
-                    <p className="text-blue-600 font-semibold uppercase">Suelta el archivo aquí</p>
-                  ) : (
-                    <p className="text-gray-500 font-semibold uppercase">Arrastra o haz clic para subir</p>
-                  )}
-                </div>
-              </form>
-            </div>
-          </>
-        )}
-
-        <h2 className="text-xl font-bold text-gray-800 text-center">Tareas</h2>
-
+      <aside className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 lg:col-start-4 overflow-y-auto scrollbar-hide flex flex-col space-y-6">
         <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
+          <div className="sticky top-0 z-10 bg-white p-6 border-b border-gray-200 space-y-5">
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label htmlFor="sku" className="block text-sm font-semibold text-gray-700">SKU</label>
+                <input
+                  id="sku"
+                  type="text"
+                  placeholder="Ingrese SKU"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => handleChangefiltersNoOperationDate(e)}
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label htmlFor="product" className="block text-sm font-semibold text-gray-700">Producto</label>
+                <input
+                  id="product"
+                  type="text"
+                  placeholder="Ingrese nombre del producto"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => handleChangefiltersNoOperationDate(e)}
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+
+            {!draft.confirmation_date && (
+              <>
+                <button
+                  onClick={() => navigate(`${location.pathname}?newTask=true`, { replace: true })}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition"
+                >
+                  <PlusIcon className="w-4 h-4" />
+                  <span>Crear Tarea</span>
+                </button>
+              </>
+            )}
+          </div>
+
           {draft.tasks.length === 0 ? (
             <p className="text-center text-sm text-gray-500">No existen tareas cargadas</p>
           ) : (
-            <ul className="space-y-4">
-              {draft.tasks.map((task) => (
-                <li
-                  key={task.id}
-                  className="p-4 bg-white rounded-xl border border-gray-200 shadow hover:shadow-md transition"
-                >
-                  {!draft.confirmation_date && (
-                    <div className="flex justify-end gap-2 mb-2">
-                      <EditIcon onClick={() => navigate(`${location.pathname}?editDraftTask=${task.id}`)} className="cursor-pointer hover:text-indigo-500" size={18} />
-                      <TrashIcon
-                        onClick={() => mutate({ id: task.id })}
-                        className="cursor-pointer hover:text-red-500"
-                        size={18}
-                      />
-                    </div>
-                  )}
-
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <p className="text-gray-500">Línea</p>
-                      <p className="text-gray-800 font-medium">{task.line}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-gray-500">SKU</p>
-                      <p className="text-gray-800 font-medium">{task.sku}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-gray-500">Libras totales</p>
-                      <p className="text-gray-800 font-medium">{task.total_lbs}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-gray-500">Destino</p>
-                      <p className="text-gray-800 font-medium">{task.destination}</p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <TasksList draft={draft} />
           )}
         </div>
       </aside>
@@ -210,7 +167,7 @@ export default function ShowPlanification() {
         <button
           onClick={() => createWeeklyProductionPlan(id)}
           disabled={flag || isPending}
-          className={`button col-span-3 text-white font-semibold py-2 px-4 rounded transition duration-300
+          className={`button col-span-4 text-white font-semibold py-2 px-4 rounded transition duration-300
             ${flag
               ? 'bg-indigo-300 cursor-not-allowed'
               : 'bg-indigo-500 hover:bg-indigo-600'}

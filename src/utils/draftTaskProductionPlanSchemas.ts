@@ -5,7 +5,8 @@ export const DraftTaskProductionPlanSchema = z.object({
     total_lbs: z.number(),
     line: z.string(),
     sku: z.string(),
-    destination: z.string()
+    destination: z.string(),
+    product_name: z.string()
 });
 
 export const DraftTaskProductionPlanEditDetailsSchema = z.object({

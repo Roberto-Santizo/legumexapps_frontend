@@ -4,10 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { saveAs } from "file-saver";
 import { ArrowDown, ArrowUp, FileSymlink } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, YAxis, XAxis } from "recharts";
+import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, YAxis, LabelList } from "recharts";
+import { FiltersDraftsTasks } from "./ShowPlanification";
 import * as XLSX from 'xlsx';
+
+type Props = {
+    setFilters: Dispatch<SetStateAction<FiltersDraftsTasks>>;
+    filters: FiltersDraftsTasks;
+}
 
 const columnHelper = createColumnHelper<LineHoursPerWeek>();
 
@@ -22,15 +28,15 @@ const columns = [
     }),
 ];
 
-export default function SummaryLines() {
+export default function SummaryLines({ setFilters, filters }: Props) {
     const params = useParams<{ id: string }>();
     const id = params.id!;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [lineView, setLineView] = useState<string>('A');
 
     const { data: lines } = useQuery({
-        queryKey: ['getSummaryDraftLines', id],
-        queryFn: () => getSummaryDraftLines({ id }),
+        queryKey: ['getSummaryDraftLines', id, filters.line],
+        queryFn: () => getSummaryDraftLines({ id, line: filters.line }),
         refetchOnWindowFocus: false
     });
 
@@ -67,6 +73,20 @@ export default function SummaryLines() {
 
         saveAs(fileData, 'Lineas.xlsx');
     };
+
+    const handleClickLineBar = (id: number) => {
+        if (filters.line === id.toString()) {
+            setFilters((prev) => ({
+                ...prev,
+                line: ''
+            }));
+        } else {
+            setFilters((prev) => ({
+                ...prev,
+                line: id.toString()
+            }));
+        }
+    }
 
     return (
         <section className="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
@@ -109,11 +129,16 @@ export default function SummaryLines() {
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={lines} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="line" />
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="total_hours" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+                            <Bar onClick={(e) => handleClickLineBar(e.line_id)} dataKey="total_hours" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} >
+                                <LabelList
+                                    dataKey="line"
+                                    angle={-90}
+                                    style={{ fill: 'white', fontSize: 12 }}
+                                />
+                            </Bar>
                         </BarChart>
                     </ResponsiveContainer>
                 ) : (

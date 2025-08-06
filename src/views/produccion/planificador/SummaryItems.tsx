@@ -9,6 +9,12 @@ import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, T
 import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { WeeklyProductionPlanDraftSummaryItem } from "types/draftWeeklyProductionPlanTypes";
 import * as XLSX from 'xlsx';
+import { FiltersDraftsTasks } from "./ShowPlanification";
+
+type Props = {
+    filters: FiltersDraftsTasks;
+
+}
 
 const columnHelper = createColumnHelper<WeeklyProductionPlanDraftSummaryItem>();
 
@@ -32,15 +38,15 @@ const columns = [
 ];
 
 
-export default function SummaryItems() {
+export default function SummaryItems({ filters }: Props) {
     const params = useParams<{ id: string }>();
     const id = params.id!;
     const [mpView, setMpView] = useState<string>('A');
     const [sorting, setSorting] = useState<SortingState>([]);
 
     const { data: items } = useQuery({
-        queryKey: ['getSummaryDraftItems', id],
-        queryFn: () => getSummaryDraftItems({ id }),
+        queryKey: ['getSummaryDraftItems', id, filters.line],
+        queryFn: () => getSummaryDraftItems({ id, line: filters.line }),
         refetchOnWindowFocus: false
     });
 

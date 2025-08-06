@@ -1,9 +1,10 @@
 import { isAxiosError } from "axios";
 import { DraftWeeklyProductionPlanDetailsSchema, DraftWeeklyProductionPlanRecipeSchema, WeeklyProductionDraftsPaginatedSchema } from "@/utils/draftWeeklyProductionPlanSchemas";
-import clienteAxios from "@/config/axios";
 import { DraftWeeklyProductionPlan } from "@/components/modals/ModalCreateDraftPlanProduction";
 import { WeeklyProductionPlanDraft } from "types/draftWeeklyProductionPlanTypes";
 import { LinesHoursPerWeekSchema } from "./LineasAPI";
+import { FiltersDraftsTasks } from "@/views/produccion/planificador/ShowPlanification";
+import clienteAxios from "@/config/axios";
 
 export async function createDraftWeeklyProductionPlan(FormData: DraftWeeklyProductionPlan) {
     try {
@@ -35,9 +36,9 @@ export async function getWeeklyProductionPlanDrafts({ paginated, currentPage }: 
     }
 }
 
-export async function getDraftWeeklyPlanById(id: WeeklyProductionPlanDraft['id']) {
+export async function getDraftWeeklyPlanById({ id, filters }: { id: WeeklyProductionPlanDraft['id'], filters: FiltersDraftsTasks }) {
     try {
-        const url = `/api/weekly-production-plans-drafts/${id}`;
+        const url = `/api/weekly-production-plans-drafts/${id}?sku=${filters.sku}&product_name=${filters.product}&line=${filters.line}`;
         const { data } = await clienteAxios(url);
 
         const result = DraftWeeklyProductionPlanDetailsSchema.safeParse(data);
@@ -52,9 +53,9 @@ export async function getDraftWeeklyPlanById(id: WeeklyProductionPlanDraft['id']
     }
 }
 
-export async function getSummaryDraftLines({ id }: { id: WeeklyProductionPlanDraft['id'] }) {
+export async function getSummaryDraftLines({ id, line }: { id: WeeklyProductionPlanDraft['id'], line: FiltersDraftsTasks['line'] }) {
     try {
-        const url = `/api/weekly-production-plans-drafts/${id}/tasks`;
+        const url = `/api/weekly-production-plans-drafts/${id}/tasks?line=${line}`;
         const { data } = await clienteAxios(url);
 
         const result = LinesHoursPerWeekSchema.safeParse(data);
@@ -69,9 +70,9 @@ export async function getSummaryDraftLines({ id }: { id: WeeklyProductionPlanDra
     }
 }
 
-export async function getSummaryDraftItems({ id }: { id: WeeklyProductionPlanDraft['id'] }) {
+export async function getSummaryDraftItems({ id, line }: { id: WeeklyProductionPlanDraft['id'], line: FiltersDraftsTasks['line'] }) {
     try {
-        const url = `/api/weekly-production-plans-drafts/${id}/packing-material-necessity`;
+        const url = `/api/weekly-production-plans-drafts/${id}/packing-material-necessity?line=${line}`;
         const { data } = await clienteAxios(url);
 
         const result = DraftWeeklyProductionPlanRecipeSchema.safeParse(data);
@@ -85,9 +86,9 @@ export async function getSummaryDraftItems({ id }: { id: WeeklyProductionPlanDra
         }
     }
 }
-export async function getSummaryDraftRawMaterial({ id }: { id: WeeklyProductionPlanDraft['id'] }) {
+export async function getSummaryDraftRawMaterial({ id, line }: { id: WeeklyProductionPlanDraft['id'], line: FiltersDraftsTasks['line'] }) {
     try {
-        const url = `/api/weekly-production-plans-drafts/${id}/raw-material-necessity`;
+        const url = `/api/weekly-production-plans-drafts/${id}/raw-material-necessity?line=${line}`;
         const { data } = await clienteAxios(url);
 
         const result = DraftWeeklyProductionPlanRecipeSchema.safeParse(data);
