@@ -86,7 +86,7 @@ export default function ShowPlanification() {
   }
 
   if (draft) return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 min-h-screen gap-6 p-6 bg-gray-50">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 bg-gray-50">
       <div className="lg:col-span-3 space-y-6">
         <section className="bg-white p-6 rounded-2xl shadow-md border border-gray-200 space-y-5">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Información del Plan</h2>
@@ -111,7 +111,7 @@ export default function ShowPlanification() {
         <SummaryItemsRawMaterial filters={filters} />
       </div>
 
-      <aside className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 lg:col-start-4 overflow-y-auto scrollbar-hide flex flex-col space-y-6">
+      <aside className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 lg:col-start-4 overflow-y-auto scrollbar-hide flex flex-col space-y-6 max-h-screen">
         <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
           <div className="sticky top-0 z-10 bg-white p-6 border-b border-gray-200 space-y-5">
             <div className="space-y-4">

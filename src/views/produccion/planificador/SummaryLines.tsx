@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, YAxis, LabelList } from "recharts";
 import { FiltersDraftsTasks } from "./ShowPlanification";
 import * as XLSX from 'xlsx';
+import { CategoricalChartState } from "recharts/types/chart/types";
 
 type Props = {
     setFilters: Dispatch<SetStateAction<FiltersDraftsTasks>>;
@@ -74,17 +75,19 @@ export default function SummaryLines({ setFilters, filters }: Props) {
         saveAs(fileData, 'Lineas.xlsx');
     };
 
-    const handleClickLineBar = (id: number) => {
-        if (filters.line === id.toString()) {
-            setFilters((prev) => ({
-                ...prev,
-                line: ''
-            }));
-        } else {
-            setFilters((prev) => ({
-                ...prev,
-                line: id.toString()
-            }));
+    const handleClickLineBar = (e: CategoricalChartState) => {
+        if (e.activePayload && e.activePayload.length > 0) {
+            if (filters.line === e.activePayload[0].payload.line_id) {
+                setFilters((prev) => ({
+                    ...prev,
+                    line: ''
+                }));
+            } else {
+                setFilters((prev) => ({
+                    ...prev,
+                    line: `${e.activePayload?.[0]?.payload?.line_id ?? ''}`
+                }));
+            }
         }
     }
 
@@ -127,12 +130,12 @@ export default function SummaryLines({ setFilters, filters }: Props) {
             <div className="h-[400px] bg-gray-50 rounded-md p-2">
                 {lineView === 'A' ? (
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={lines} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <BarChart onClick={(e) => handleClickLineBar(e)} data={lines} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <YAxis />
-                            <Tooltip />
+                            <Tooltip key={'line'} />
                             <Legend />
-                            <Bar onClick={(e) => handleClickLineBar(e.line_id)} dataKey="total_hours" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} >
+                            <Bar dataKey="total_hours" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} >
                                 <LabelList
                                     dataKey="line"
                                     angle={-90}
