@@ -10,7 +10,7 @@ export default function IndexMateriaPrima() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data } = useQuery({
-    queryKey: ['getMateriaPrimaItems'],
+    queryKey: ['getMateriaPrimaItems', currentPage],
     queryFn: () => getMateriaPrimaItems({ paginated: 'true', currentPage })
   });
 
