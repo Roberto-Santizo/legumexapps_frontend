@@ -111,6 +111,7 @@ export const HistoryOperationDateSchema = z.object({
 export const TransactionTaskProductionSchema = z.object({
     id: z.string(),
     type: z.number(),
+    transaction: z.string(),
     transaction_date: z.string(),
     items: z.array(z.object({
         id: z.string(),

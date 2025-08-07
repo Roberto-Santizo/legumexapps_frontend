@@ -15,8 +15,10 @@ export default function SalidaBodegaEmpaque({ transaction }: Props) {
             </div>
           </div>
           <div className="align-middle flex flex-col items-center justify-center w-full">
-            <h1 className="uppercase text-center font-bold text-4xl mb-12">
+            <h1 className="uppercase text-center font-bold text-4xl mb-12 flex flex-col">
               Salida de bodega empaque
+              <span className="text-red-500 text-lg">No.{transaction.id}</span>
+              <span className="text-red-500 text-lg">Referencia: {transaction.transaction}</span>
             </h1>
 
           </div>
