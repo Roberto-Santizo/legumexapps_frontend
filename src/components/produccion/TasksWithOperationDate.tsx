@@ -1,4 +1,4 @@
-import { Linea } from "@/api/LineasAPI";
+import { Linea } from "@/api/LinesAPI";
 import { getTasksOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useMemo } from "react";

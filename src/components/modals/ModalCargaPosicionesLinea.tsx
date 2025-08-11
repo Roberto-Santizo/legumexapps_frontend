@@ -1,7 +1,7 @@
 import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updatePositionsLine } from "@/api/LineasAPI";
+import { updatePositionsLine } from "@/api/LinesAPI";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";

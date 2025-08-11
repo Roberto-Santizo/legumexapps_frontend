@@ -1,4 +1,4 @@
-import { LineaSKU, updateLineaSku } from "@/api/LineasSkuAPI";
+import { LineaSKU, updateLineaSku } from "@/api/LinesPerformanceAPI";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

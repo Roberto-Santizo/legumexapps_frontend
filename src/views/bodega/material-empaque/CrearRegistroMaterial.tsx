@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import { createItemPackingMaterial } from "@/api/MaterialEmpaqueAPI";
+import { createItemPackingMaterial } from "@/api/PackingMaterialItemsAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import FormRegistroMaterial from "./FormMaterialEmpaque";
 

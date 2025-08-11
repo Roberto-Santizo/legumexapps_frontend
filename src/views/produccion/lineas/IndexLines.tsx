@@ -2,13 +2,14 @@ import { PlusIcon, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getLineas, Linea } from "@/api/LineasAPI";
+import { getLineas } from "@/api/LinesAPI";
+import { Line } from "types/linesTypes";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
-export default function IndexLineas() {
-  const [lineas, setLineas] = useState<Linea[]>([]);
+export default function IndexLines() {
+  const [lineas, setLineas] = useState<Line[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
 

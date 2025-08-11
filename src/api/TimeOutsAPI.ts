@@ -1,26 +1,14 @@
-import clienteAxios from "@/config/axios";
+import { PaginatedTimeoutsSchema, TimeoutSchema } from "@/utils/timeOutSchema";
 import { isAxiosError } from "axios";
 import { TaskProductionPlan } from "types/taskProductionPlanTypes";
+import { Timeout } from "types/timeoutsTypes";
 import { DraftTiempoMuerto } from "views/produccion/tiempos_muertos/CrearTiempoMuerto";
 import { z } from "zod";
+import clienteAxios from "@/config/axios";
 
-export const TimeoutSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-});
 
-export const PaginatedTimeoutsSchema = z.object({
-    data: z.array(TimeoutSchema),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    }).optional()
-});
 
-export type Timeout = z.infer<typeof TimeoutSchema>;
-export type PaginatedTimeouts = z.infer<typeof PaginatedTimeoutsSchema>;
-
-export async function getTimeOuts({page,paginated} : {page: number,paginated:string}): Promise<PaginatedTimeouts> {
+export async function getTimeOuts({page,paginated} : {page: number,paginated:string}) {
     try {
         const url = `/api/timeouts?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
@@ -41,7 +29,7 @@ export const TimeoutSelectSchema = z.object({
     label: z.string()
 })
 
-export async function getTimeoutById(id: Timeout['id']): Promise<Timeout> {
+export async function getTimeoutById(id: Timeout['id']) {
     try {
         const url = `/api/timeouts/${id}`;
         const { data } = await clienteAxios(url);

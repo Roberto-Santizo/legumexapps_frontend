@@ -2,9 +2,10 @@ import { EyeIcon, PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getSkus, SKU } from "@/api/SkusAPI";
+import { getSkus } from "@/api/SkusAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Bars3Icon } from "@heroicons/react/16/solid";
+import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
@@ -25,7 +26,7 @@ export const FiltersSkuInitialValues: FiltersSku = {
 };
 
 export default function IndexSKU() {
-  const [skus, setSkus] = useState<SKU[]>([]);
+  const [skus, setSkus] = useState<StockKeepingUnit[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -69,7 +70,7 @@ export default function IndexSKU() {
   if (isError) return <ShowErrorAPI />
   return (
     <>
-      <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">SKU</h2>
+      <h2 className="font-bold text-xl text-center xl:text-left xl:text-4xl">Stock Keeping Units</h2>
 
       <div className="flex xl:flex-row flex-col justify-end gap-5 flex-wrap mt-5">
         {hasPermission('create sku') && (

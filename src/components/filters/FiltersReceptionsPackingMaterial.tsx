@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getPackingMaterials } from "@/api/MaterialEmpaqueAPI";
-import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
+import { getPackingMaterials } from "@/api/PackingMaterialItemsAPI";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexPackingMaterialItems";
 
 type Props = {
     isOpen: boolean;

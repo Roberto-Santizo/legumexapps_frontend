@@ -2,10 +2,11 @@ import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getPackingMaterials, PackingMaterial, updateMaterialStatus } from "@/api/MaterialEmpaqueAPI";
+import { getPackingMaterials, updateMaterialStatus } from "@/api/PackingMaterialItemsAPI";
 import { toast } from "react-toastify";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { usePermissions } from "@/hooks/usePermissions";
+import { PackingMaterialItem } from "types/packingMaterialItemTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
@@ -23,7 +24,6 @@ export type ChangeItemStatusEvent = {
   status: string;
 }
 
-
 export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType = {
   name: '',
   code: '',
@@ -32,7 +32,7 @@ export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType =
 };
 
 export default function IndexMaterialEmpaque() {
-  const [items, setItems] = useState<PackingMaterial[]>([]);
+  const [items, setItems] = useState<PackingMaterialItem[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filters, setFilters] = useState<FiltersPackingMaterialsType>(FiltersPackingMaterialsInitialValues);
@@ -62,7 +62,7 @@ export default function IndexMaterialEmpaque() {
     }
   });
 
-  const handleChangeStatus = (id: PackingMaterial['id']) => mutate(id);
+  const handleChangeStatus = (id: PackingMaterialItem['id']) => mutate(id);
 
   useEffect(() => {
     if (data) {

@@ -1,4 +1,4 @@
-import { getPackingMaterialTransactionById, PackingMaterialTransaction } from "@/api/PackingMaterialTransactions";
+import { getPackingMaterialTransactionById, PackingMaterialTransaction } from "@/api/PackingMaterialTransactionsAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom"
 import DevolucionBodega from "@/components/boleta-bodega/DevolucionBodega";

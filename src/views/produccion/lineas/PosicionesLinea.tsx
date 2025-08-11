@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getLineaById } from "@/api/LineasAPI";
+import { getLineaById } from "@/api/LinesAPI";
 import { FileUp } from "lucide-react";
 import { useState } from "react";
 import ModalCargaPosicionesLinea from "@/components/modals/ModalCargaPosicionesLinea";

@@ -1,7 +1,7 @@
 import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getLinesBySkuId } from "@/api/LineasAPI";
+import { getLinesBySkuId } from "@/api/LinesAPI";
 import { getSkus } from "@/api/SkusAPI";
 import { Control, FieldErrors, UseFormGetValues, UseFormRegister } from "react-hook-form";
 import { getCurrentDate } from "@/helpers";

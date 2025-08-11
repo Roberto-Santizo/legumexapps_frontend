@@ -1,9 +1,10 @@
 import { DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
 import { isAxiosError } from "axios";
-import { z } from "zod";
-import clienteAxios from "@/config/axios";
 import { TransactionTaskProductionSchema } from "@/utils/taskProductionPlanSchemas";
 import { FiltersPackingMaterialsTransactionType } from "@/views/bodega/transacciones-matrial-empaque/IndexPackingMaterialTransaction";
+import clienteAxios from "@/config/axios";
+import { PackingMaterialTransactionsSchema } from "@/utils/packingMaterialTransactionSchema";
+import { PackingMaterialTransaction } from "types/packingMaterialTransactionTypes";
 
 export async function createPackingMaterialTransaction(FormData: DraftTransactionPackingMaterial) {
     try {
@@ -22,27 +23,8 @@ export async function createPackingMaterialTransaction(FormData: DraftTransactio
     }
 }
 
-export const PackingMaterialTransactionSchema = z.object({
-    id: z.string(),
-    transaction_date: z.string(),
-    reference: z.string(),
-    responsable: z.string(),
-    user: z.string(),
-    type: z.string()
-});
 
-export const PackingMaterialTransactionsSchema = z.object({
-    data: z.array(PackingMaterialTransactionSchema),
-    meta: z.object({
-        current_page: z.number(),
-        last_page: z.number()
-    }).optional()
-});
-
-export type PackingMaterialTransaction = z.infer<typeof PackingMaterialTransactionSchema>;
-export type PackingMaterialTransactions = z.infer<typeof PackingMaterialTransactionsSchema>;
-
-export async function getPackingMaterialTransactions({ page, paginated, filters }: { page: number, paginated: string, filters: FiltersPackingMaterialsTransactionType }): Promise<PackingMaterialTransactions> {
+export async function getPackingMaterialTransactions({ page, paginated, filters }: { page: number, paginated: string, filters: FiltersPackingMaterialsTransactionType }) {
     try {
         const url = `/api/packing-material-transaction?paginated=${paginated}&page=${page}&transaction=${filters.transaction_id}&responsable=${filters.responsable}&delivered_by=${filters.delivered_by}&delivered_date=${filters.delivered_date}&type=${filters.type}`;
         const { data } = await clienteAxios(url);

@@ -2,12 +2,12 @@ import { Dispatch, SetStateAction } from "react";
 import { DraftItem } from "@/views/bodega/recepcion-material-empaque/CrearRecepcionMaterial";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { getPackingMaterials } from "@/api/MaterialEmpaqueAPI";
+import { getPackingMaterials } from "@/api/PackingMaterialItemsAPI";
 import Modal from "../Modal";
 import Error from "../utilities-components/Error";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import InputComponent from "../form/InputComponent";
-import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexPackingMaterialItems";
 
 type Props = {
   modal: boolean;

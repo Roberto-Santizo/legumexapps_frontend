@@ -1,37 +1,15 @@
 import { DraftEditLineSku } from "@/components/modals/ModalEditLineSkuData";
-import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { DraftLineaSku } from "views/produccion/lineas_skus/CrearLineaSku";
-import { z } from "zod";
+import clienteAxios from "@/config/axios";
+import { PaginatedLinesPerformancesSchema } from "@/utils/linePerformance";
+import { LinePerformance } from "types/linePerformanceTypes";
 
-export const LineaSKUSchema = z.object({
-    id: z.string(),
-    line: z.string(),
-    sku: z.string(),
-    client: z.string(),
-    product: z.string(),
-    shift: z.string(),
-    performance: z.number().nullable(),
-    payment_method: z.number(),
-    accepted_percentage: z.number()
-});
-
-export const PaginatedLineasSKUSchema = z.object({
-    data: z.array(LineaSKUSchema),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    })
-});
-
-export type PaginatedLineasSKU = z.infer<typeof PaginatedLineasSKUSchema>;
-export type LineaSKU = z.infer<typeof LineaSKUSchema>;
-
-export async function getPaginatedLineasSKU(page: number): Promise<PaginatedLineasSKU> {
+export async function getPaginatedLineasSKU(page: number){
     try {
         const url = `/api/lines-skus?page=${page}`;
         const { data } = await clienteAxios(url);
-        const result = PaginatedLineasSKUSchema.safeParse(data);
+        const result = PaginatedLinesPerformancesSchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
@@ -55,7 +33,7 @@ export async function createLineaSku(FormData: DraftLineaSku) {
     }
 }
 
-export async function updateLineaSku({ FormData, id }: { FormData: DraftEditLineSku, id: LineaSKU['id'] }) {
+export async function updateLineaSku({ FormData, id }: { FormData: DraftEditLineSku, id: LinePerformance['id'] }) {
     try {
         const url = `/api/lines-skus/${id}`;
         const { data } = await clienteAxios.patch(url, FormData);

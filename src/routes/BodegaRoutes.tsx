@@ -7,7 +7,7 @@ import ProtectedRoutes from "../components/middlewares/ProtectedRoutes";
 const routes = [
   { path: "/form/entrega-material", component: lazy(() => import("@/views/bodega/formularios/MaterialEmpaqueSalida")), roles: ['admin','adminbodega','auxbodega'] },
 
-  { path: "/material-empaque", component: lazy(() => import("@/views/bodega/material-empaque/IndexMaterialEmpaque")), roles: ['admin','adminbodega','auxbodega'] },
+  { path: "/material-empaque", component: lazy(() => import("@/views/bodega/material-empaque/IndexPackingMaterialItems")), roles: ['admin','adminbodega','auxbodega'] },
   { path: "/material-empaque/crear", component: lazy(() => import("@/views/bodega/material-empaque/CrearRegistroMaterial")), roles: ['admin','adminbodega','auxbodega'] },
 
 

@@ -8,7 +8,7 @@ import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmploy
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { Position } from "@/api/LineasAPI";
+import { Position } from "@/api/LinesAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalChangeEmployee from "@/components/modals/ModalChangeEmployee";
 import Swal from "sweetalert2";

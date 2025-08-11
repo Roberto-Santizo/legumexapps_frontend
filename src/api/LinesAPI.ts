@@ -1,44 +1,18 @@
 import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { DraftLinea } from "views/produccion/lineas/CrearLinea";
-import { z } from "zod";
 import { SKU } from "./SkusAPI";
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { LineDetailSchema, LinePerformanceByDaySchema, LinesHoursPerWeekSchema, LinesPaginatedSchema, LinesSelectSchema } from "@/utils/lineSchemas";
+import { Line } from "recharts";
+import { LinePerformanceByDay } from "types/linesTypes";
 
-export const PositionSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-});
 
-export const LineaSchema = z.object({
-    id: z.string(),
-    code: z.string(),
-    name: z.string(),
-    shift: z.string(),
-    positions: z.array(PositionSchema).optional(),
-});
-
-export const LineaDetailSchema = z.object({
-    data: LineaSchema
-});
-
-export const LineasPaginatedSchema = z.object({
-    data: z.array(LineaSchema),
-    meta: z.object({
-        last_page: z.number(),
-        current_page: z.number()
-    }).optional()
-});
-
-export type LineasPaginated = z.infer<typeof LineasPaginatedSchema>;
-export type Linea = z.infer<typeof LineaSchema>;
-export type Position = z.infer<typeof PositionSchema>;
-
-export async function getLineas({ page, paginated }: { page: number, paginated: string }): Promise<LineasPaginated> {
+export async function getLineas({ page, paginated }: { page: number, paginated: string }) {
     try {
         const url = `/api/lines?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
-        const result = LineasPaginatedSchema.safeParse(data);
+        const result = LinesPaginatedSchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
@@ -50,23 +24,11 @@ export async function getLineas({ page, paginated }: { page: number, paginated: 
     }
 }
 
-export const LineaSelectSchema = z.object({
-    value: z.string(),
-    label: z.string(),
-    performance: z.number().nullable()
-});
-
-export const LineasSelectSchema = z.object({
-    data: z.array(LineaSelectSchema)
-});
-
-export type LineaSelect = z.infer<typeof LineaSelectSchema>
-
-export async function getLinesBySkuId(id: SKU['id']): Promise<LineaSelect[]> {
+export async function getLinesBySkuId(id: SKU['id']) {
     try {
         const url = `/api/lines-by-sku/${id}`;
         const { data } = await clienteAxios(url);
-        const result = LineasSelectSchema.safeParse(data);
+        const result = LinesSelectSchema.safeParse(data);
         if (result.success) {
             return result.data.data
         } else {
@@ -79,11 +41,11 @@ export async function getLinesBySkuId(id: SKU['id']): Promise<LineaSelect[]> {
 }
 
 
-export async function getLineaById(id: Linea['id']): Promise<Linea> {
+export async function getLineaById(id: Line['id'])  {
     try {
         const url = `/api/lines/${id}`;
         const { data } = await clienteAxios(url);
-        const result = LineaDetailSchema.safeParse(data);
+        const result = LineDetailSchema.safeParse(data);
         if (result.success) {
             return result.data.data;
         } else {
@@ -109,7 +71,7 @@ export async function createLinea(FormData: DraftLinea) {
     }
 }
 
-export async function updateLinea(FormData: DraftLinea, id: Linea['id']) {
+export async function updateLinea(FormData: DraftLinea, id: Line['id']) {
     try {
         const url = `/api/lines/${id}`;
         const { data } = await clienteAxios.put<string>(url, FormData);
@@ -121,7 +83,7 @@ export async function updateLinea(FormData: DraftLinea, id: Linea['id']) {
     }
 }
 
-export async function updatePositionsLine({ file, id }: { file: File[], id: Linea['id'] }) {
+export async function updatePositionsLine({ file, id }: { file: File[], id: Line['id'] }) {
     try {
         const url = `/api/lines/update-positions/${id}`;
         const formData = new FormData();
@@ -134,32 +96,11 @@ export async function updatePositionsLine({ file, id }: { file: File[], id: Line
     }
 }
 
-export const SkuByLineShema = z.object({
-    id: z.string(),
-    sku: z.string(),
-    sku_description: z.string(),
-    start_date: z.string(),
-    end_date: z.string(),
-});
-
-export const PeformanceByDaySchema = z.object({
-    max_value: z.number(),
-    details: z.array(SkuByLineShema).nullable(),
-    summary: z.object({
-        HBiometrico: z.number(),
-        HPlan: z.number(),
-        HLinea: z.number(),
-        HRendimiento: z.number(),
-    })
-});
-
-export type LinePerformanceByDay = z.infer<typeof PeformanceByDaySchema>;
-
-export async function getLinePerformanceByDay(line_id: Linea['id'], date: string): Promise<LinePerformanceByDay> {
+export async function getLinePerformanceByDay(line_id: Line['id'], date: string): Promise<LinePerformanceByDay> {
     try {
         const url = `/api/lines/performances-per-day/${line_id}?date=${date}`;
         const { data } = await clienteAxios(url);
-        const result = PeformanceByDaySchema.safeParse(data);
+        const result = LinePerformanceByDaySchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
@@ -170,16 +111,6 @@ export async function getLinePerformanceByDay(line_id: Linea['id'], date: string
         throw error;
     }
 }
-
-export const LineHoursPerWeekSchema = z.object({
-    line_id: z.string(),
-    line: z.string(),
-    total_hours: z.number()
-});
-
-export const LinesHoursPerWeekSchema = z.array(LineHoursPerWeekSchema);
-
-export type LineHoursPerWeek = z.infer<typeof LineHoursPerWeekSchema>;
 
 export async function getLineHoursPerWeek({ weeklyplanId }: { weeklyplanId: WeeklyProductionPlan['id'] }) {
     try {

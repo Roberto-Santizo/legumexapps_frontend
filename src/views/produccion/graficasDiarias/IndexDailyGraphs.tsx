@@ -1,4 +1,4 @@
-import { getLineas, getLinePerformanceByDay } from "@/api/LineasAPI";
+import { getLineas, getLinePerformanceByDay } from "@/api/LinesAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Eye } from "lucide-react";
@@ -27,7 +27,7 @@ type GraphDataType = {
   HRendimiento: number,
 }
 
-export default function DailyGraphs() {
+export default function IndexDailyGraphs() {
   const [graphData, setGraphData] = useState<GraphDataType>(initialValues);
   const [lineId, setLineId] = useState<string>('');
   const [date, setDate] = useState<string>('');

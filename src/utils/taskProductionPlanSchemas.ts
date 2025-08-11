@@ -1,6 +1,6 @@
-import { PositionSchema } from "@/api/LineasAPI";
-import { SKUSchema } from "@/api/SkusAPI";
 import { z } from "zod";
+import { PositionSchema } from "./lineSchemas";
+import { StockKeepingUnitSchema } from "./stockKeepingUnitSchemas";
 
 export const BitacoraTaskProductionEmployeeSchema = z.object({
     id: z.string(),
@@ -63,7 +63,7 @@ export const TaskProductionSchema = z.object({
 });
 
 export const TaskProductionDetailsSchema = TaskProductionSchema.pick({ id: true, line: true, operation_date: true, start_date: true, total_lbs: true }).extend({
-    sku: SKUSchema,
+    sku: StockKeepingUnitSchema,
     filtered_employees: z.array(TaskProductionEmployeeSchema),
     all_employees: z.array(TaskProductionEmployeeSchema),
     positions: z.array(PositionSchema),
@@ -225,7 +225,7 @@ export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateS
     sku_id: z.string()
 });;
 
-export const TaskProductionEditiDetailsSchema = TaskProductionSchema.pick({id: true, total_lbs: true, operation_date: true}).extend({
+export const TaskProductionEditiDetailsSchema = TaskProductionSchema.pick({ id: true, total_lbs: true, operation_date: true }).extend({
     sku_id: z.string(),
     line_id: z.string(),
     destination: z.string()

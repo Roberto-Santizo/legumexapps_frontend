@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { createLinea } from "@/api/LineasAPI";
+import { createLinea } from "@/api/LinesAPI";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";

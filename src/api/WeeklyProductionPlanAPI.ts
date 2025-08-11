@@ -2,10 +2,10 @@ import clienteAxios from "@/config/axios";
 import { WeeklyPlanTasksOperationDateSchema, WeeklyProductionPlanEventsShema, WeeklyProductionPlansSchema, WeeklyProductionPlanSummarySchema, WeeklyProductionPlanTasksSchema } from "@/utils/weeklyProductionPlanSchemas";
 import { isAxiosError } from "axios";
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
-import { Linea } from "./LineasAPI";
 import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
 import { TaskProductionUnscheduledFilters, TasksWithOperationDateFilters } from "@/stores/planificationProductionSlice";
+import { Line } from "recharts";
 
 
 export async function getWeeklyProductionPlans({ page, paginated }: { page: number, paginated: string }) {
@@ -129,7 +129,7 @@ export async function createProductionPlan(file: File[]) {
     }
 }
 
-export async function downloadPlanillaProduction({ plan_id, line_id }: { plan_id: WeeklyProductionPlan['id'], line_id: Linea['id'] }) {
+export async function downloadPlanillaProduction({ plan_id, line_id }: { plan_id: WeeklyProductionPlan['id'], line_id: Line['id'] }) {
     try {
         const url = `/api/report-production/${plan_id}/${line_id}`;
         const { data } = await clienteAxios.get(url);

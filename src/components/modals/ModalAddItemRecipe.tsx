@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { getPackingMaterials } from "@/api/MaterialEmpaqueAPI";
-import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
+import { getPackingMaterials } from "@/api/PackingMaterialItemsAPI";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexPackingMaterialItems";
 import { DraftRecipeSku } from "@/views/produccion/sku/CreateSKU";
 import Modal from "../Modal";
 import Error from "../utilities-components/Error";

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Position } from "@/api/LineasAPI";
+import { Position } from "@/api/LinesAPI";
 import { useForm } from "react-hook-form";
 import { DraftTaskProductionEmployee, TaskProductionEmployee } from "types/taskProductionPlanTypes";
 import Select from "react-select";

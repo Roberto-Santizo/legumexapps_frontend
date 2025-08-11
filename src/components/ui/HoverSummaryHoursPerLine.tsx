@@ -1,4 +1,4 @@
-import { getLineHoursPerWeek } from "@/api/LineasAPI";
+import { getLineHoursPerWeek } from "@/api/LinesAPI";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { useQuery } from "@tanstack/react-query";
 import { BookIcon } from "lucide-react";

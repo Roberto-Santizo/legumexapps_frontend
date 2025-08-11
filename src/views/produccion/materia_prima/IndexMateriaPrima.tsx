@@ -1,9 +1,9 @@
 import { getMateriaPrimaItems } from "@/api/MateriaPrimaAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import Pagination from "@/components/utilities-components/Pagination";
 import { Link } from "react-router-dom";
 import { EditIcon, PlusIcon } from "lucide-react";
+import Pagination from "@/components/utilities-components/Pagination";
 
 export default function IndexMateriaPrima() {
   const [pageCount, setPageCount] = useState<number>(0);

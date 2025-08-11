@@ -2,7 +2,7 @@ import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { uploadRelacionesLineSku } from "@/api/LineasSkuAPI";
+import { uploadRelacionesLineSku } from "@/api/LinesPerformanceAPI";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 

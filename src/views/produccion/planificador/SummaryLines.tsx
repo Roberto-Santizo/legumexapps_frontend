@@ -1,5 +1,5 @@
 import { getSummaryDraftLines } from "@/api/DraftWeeklyProductionPlanAPI";
-import { LineHoursPerWeek } from "@/api/LineasAPI";
+import { LineHoursPerWeek } from "@/api/LinesAPI";
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { saveAs } from "file-saver";

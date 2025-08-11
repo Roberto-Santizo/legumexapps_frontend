@@ -1,8 +1,9 @@
-import { getPaginatedLineasSKU, LineaSKU } from "@/api/LineasSkuAPI";
+import { getPaginatedLineasSKU } from "@/api/LinesPerformanceAPI";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
+import { LinePerformance } from "types/linePerformanceTypes";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -11,11 +12,11 @@ import ModalCargaLineaSku from "@/components/modals/ModalCargaLineaSku";
 
 
 export default function IndexLineasSku() {
-    const [skus, setSkus] = useState<LineaSKU[]>([]);
+    const [skus, setSkus] = useState<LinePerformance[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [modal, setModal] = useState<boolean>(false);
-    const [selectedSku, setSelectedSku] = useState<LineaSKU>({} as LineaSKU);
+    const [selectedSku, setSelectedSku] = useState<LinePerformance>({} as LinePerformance);
     const [uploadModal, setUploadModal] = useState<boolean>(false);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
@@ -35,7 +36,6 @@ export default function IndexLineasSku() {
             setSkus(data.data);
         }
     }, [data])
-
 
     if (isLoading) return <Spinner />;
     if (isError) return <ShowErrorAPI />;

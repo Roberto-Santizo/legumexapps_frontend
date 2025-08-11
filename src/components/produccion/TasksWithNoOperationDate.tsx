@@ -1,4 +1,4 @@
-import { Linea } from "@/api/LineasAPI";
+import { Linea } from "@/api/LinesAPI";
 import { useAppStore } from "@/store";
 import { getTasksNoOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { useParams } from "react-router-dom";

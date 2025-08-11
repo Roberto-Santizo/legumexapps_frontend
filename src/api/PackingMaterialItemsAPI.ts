@@ -1,33 +1,15 @@
 import clienteAxios from "@/config/axios";
+import { PaginatedPackingMaterialItemsSchema } from "@/utils/packingMaterialItemSchema";
 import { DraftMaterialEmpaque } from "@/views/bodega/material-empaque/CrearRegistroMaterial";
-import { FiltersPackingMaterialsType } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
+import { FiltersPackingMaterialsType } from "@/views/bodega/material-empaque/IndexPackingMaterialItems";
 import { isAxiosError } from "axios";
-import { z } from "zod";
+import { PackingMaterialItem } from "types/packingMaterialItemTypes";
 
-export const PackingMaterialSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    code: z.string(),
-    description: z.string(),
-    blocked: z.boolean(),
-});
-
-export const PaginatedPackingMaterialsSchema = z.object({
-    data: z.array(PackingMaterialSchema),
-    meta: z.object({
-        current_page: z.number(),
-        last_page: z.number()
-    }).optional()
-});
-
-export type PackingMaterial = z.infer<typeof PackingMaterialSchema>;
-export type PaginatedPackingMaterials = z.infer<typeof PaginatedPackingMaterialsSchema>;
-
-export async function getPackingMaterials({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersPackingMaterialsType, paginated: string }): Promise<PaginatedPackingMaterials> {
+export async function getPackingMaterials({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersPackingMaterialsType, paginated: string }) {
     try {
         const url = `/api/packing-materials?paginated=${paginated}&page=${currentPage}&name=${filters.name}&code=${filters.code}&status=${filters.status}&supplier=${filters.supplier}`;
         const { data } = await clienteAxios(url);
-        const result = PaginatedPackingMaterialsSchema.safeParse(data);
+        const result = PaginatedPackingMaterialItemsSchema.safeParse(data);
         if (result.success) {
             return result.data
         } else {
@@ -51,7 +33,7 @@ export async function createItemPackingMaterial(FormData: DraftMaterialEmpaque) 
     }
 }
 
-export async function updateMaterialStatus(id: PackingMaterial['id']) {
+export async function updateMaterialStatus(id: PackingMaterialItem['id']) {
     try {
         const url = `/api/packing-materials/${id}`;
         const { data } = await clienteAxios.patch<string>(url);

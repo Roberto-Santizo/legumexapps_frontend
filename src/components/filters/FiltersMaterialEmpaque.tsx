@@ -1,4 +1,4 @@
-import { FiltersPackingMaterialsType } from "@/views/bodega/material-empaque/IndexMaterialEmpaque";
+import { FiltersPackingMaterialsType } from "@/views/bodega/material-empaque/IndexPackingMaterialItems";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";

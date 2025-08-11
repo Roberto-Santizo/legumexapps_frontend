@@ -19,7 +19,7 @@ const routes = [
   { path: "/skus/:id", component: lazy(() => import("@/views/produccion/sku/ShowSku")), roles: ['admin', 'pcostos'] },
   { path: "/skus/crear", component: lazy(() => import("@/views/produccion/sku/CreateSKU")), roles: ['admin', 'pcostos'] },
 
-  { path: "/lineas", component: lazy(() => import("@/views/produccion/lineas/IndexLineas")), roles: ['admin', 'pcostos'] },
+  { path: "/lineas", component: lazy(() => import("@/views/produccion/lineas/IndexLines")), roles: ['admin', 'pcostos'] },
   { path: "/lineas/posiciones/:id", component: lazy(() => import("@/views/produccion/lineas/PosicionesLinea")), roles: ['admin', 'pcostos'] },
   { path: "/lineas/crear", component: lazy(() => import("@/views/produccion/lineas/CrearLinea")), roles: ['admin', 'pcostos'] },
   { path: "/lineas/editar/:id", component: lazy(() => import("@/views/produccion/lineas/EditarLinea")), roles: ['admin', 'pcostos'] },
@@ -31,7 +31,7 @@ const routes = [
   { path: "/tiempos-muertos/crear", component: lazy(() => import("@/views/produccion/tiempos_muertos/CrearTiempoMuerto")), roles: ['admin', 'pcostos'] },
   { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("@/views/produccion/tiempos_muertos/EditarTiempoMuerto")), roles: ['admin', 'pcostos'] },
 
-  { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/graficasDiarias/DailyGraphs")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
+  { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/graficasDiarias/IndexDailyGraphs")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
 
   { path: "/planificador-produccion", component: lazy(() => import("@/views/produccion/planificador/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
   { path: "/planificador-produccion/:id", component: lazy(() => import("@/views/produccion/planificador/ShowPlanification")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
