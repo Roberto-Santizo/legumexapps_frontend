@@ -1,7 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { PaginatedPackingMaterialItemsSchema } from "@/utils/packingMaterialItemSchema";
-import { DraftMaterialEmpaque } from "@/views/bodega/material-empaque/CrearRegistroMaterial";
-import { FiltersPackingMaterialsType } from "@/views/bodega/material-empaque/IndexPackingMaterialItems";
+import { DraftMaterialEmpaque } from "@/views/bodega/packing-material-item/Create";
+import { FiltersPackingMaterialsType } from "@/views/bodega/packing-material-item/Index";
 import { isAxiosError } from "axios";
 import { PackingMaterialItem } from "types/packingMaterialItemTypes";
 

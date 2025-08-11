@@ -6,7 +6,6 @@ import CalidadRoutes from "./routes/CalidadRoutes";
 import ProduccionRoutes from "./routes/ProduccionRoutes";
 import RecursosRoutes from "./routes/RecursosRoutes";
 import BodegaRoutes from "./routes/BodegaRoutes"
-import DocumentRoutes from "./routes/DocumentRoutes";
 
 export default function AppRouter() {
     return (
@@ -19,8 +18,6 @@ export default function AppRouter() {
                 {ProduccionRoutes()}
                 {RecursosRoutes()}
                 {BodegaRoutes()}
-                {DocumentRoutes()}
-
             </Routes>
         </BrowserRouter>
     )

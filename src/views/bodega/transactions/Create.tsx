@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactionsAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DraftPackingMaterialTransactionItem, DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
-import FormPackingMaterialTransaction from "./FormPackingMaterialTransaction";
+import FormPackingMaterialTransaction from "./Form";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "@/components/form/SignatureComponent";
 import Spinner from "@/components/utilities-components/Spinner";

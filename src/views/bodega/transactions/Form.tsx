@@ -10,7 +10,7 @@ type Props = {
   control: Control<DraftTransactionPackingMaterial, any>
 };
 
-export default function FormPackingMaterialTransaction({ errors, register }: Props) {
+export default function Form({ errors, register }: Props) {
 
   const optionsType = [
     { value: "1", label: "ENTREGA" },

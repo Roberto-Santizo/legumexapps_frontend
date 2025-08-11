@@ -26,7 +26,7 @@ export const FiltersPackingMaterialsTransactionInitialValues: FiltersPackingMate
   type: ''
 };
 
-export default function IndexPackingMaterialTransaction() {
+export default function Index() {
 
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);

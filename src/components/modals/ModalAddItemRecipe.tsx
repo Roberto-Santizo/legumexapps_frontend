@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { getPackingMaterials } from "@/api/PackingMaterialItemsAPI";
-import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/material-empaque/IndexPackingMaterialItems";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/packing-material-item/Index";
 import { DraftRecipeSku } from "@/views/produccion/sku/CreateSKU";
 import Modal from "../Modal";
 import Error from "../utilities-components/Error";

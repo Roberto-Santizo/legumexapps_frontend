@@ -5,7 +5,7 @@ import { PackingMaterialTransaction } from "types/packingMaterialTransactionType
 import DevolucionBodega from "@/components/boleta-bodega/DevolucionBodega";
 import SalidaBodegaEmpaque from "@/components/boleta-bodega/SalidaBodegaEmpaque";
 
-export default function PackingMaterialTransactionDetails() {
+export default function Show() {
     const params = useParams<{ id: PackingMaterialTransaction['id'] }>();
     const id = params.id!;
 

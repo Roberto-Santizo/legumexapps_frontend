@@ -1,50 +1,52 @@
-import { createProveedor } from "@/api/BodegaProveedoresAPI";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
+import { createItemPackingMaterial } from "@/api/PackingMaterialItemsAPI";
 import Spinner from "@/components/utilities-components/Spinner";
-import FormularioProveedor from "./FormularioProveedor";
+import Form from "./Form";
 
-export type DraftSuppliers = {
-  code: string;
+export type DraftMaterialEmpaque = {
   name: string;
+  description: string;
+  code: string;
 };
 
-export default function CrearProveedor() {
+export default function Create() {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: createProveedor,
+    mutationFn: createItemPackingMaterial,
     onError: (error) => {
       toast.error(error.message);
     },
     onSuccess: (data) => {
       toast.success(data);
-      navigate('/proveedores');
+      navigate('/material-empaque');
     }
   });
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm<DraftSuppliers>();
+  } = useForm<DraftMaterialEmpaque>();
 
-  const onSubmit = (data: DraftSuppliers) => { mutate(data) };
+  const onSubmit = (data: DraftMaterialEmpaque) => { mutate(data) };
 
   return (
     <>
-      <h2 className="text-4xl font-bold">Proveedor</h2>
+      <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">Crear Item Material de Empaque</h2>
       <form
-        className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5"
+        className="mt-10 xl:w-3/4 mx-auto shadow-xl p-10 space-y-5"
         onSubmit={handleSubmit(onSubmit)}
       >
 
-        <FormularioProveedor register={register} errors={errors} />
+        <Form register={register} errors={errors} control={control}/>
 
         <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-          {isPending ? <Spinner /> : <p>Crear Proveedor</p>}
+          {isPending ? <Spinner /> : <p>Crear</p>}
         </button>
       </form>
     </>

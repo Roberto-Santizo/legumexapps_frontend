@@ -31,7 +31,7 @@ export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType =
   supplier: ''
 };
 
-export default function IndexMaterialEmpaque() {
+export default function Index() {
   const [items, setItems] = useState<PackingMaterialItem[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);

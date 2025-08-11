@@ -1,5 +1,5 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { DraftMaterialEmpaque } from "./CrearRegistroMaterial";
+import { DraftMaterialEmpaque } from "./Create";
 import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";
 
@@ -9,7 +9,7 @@ type Props = {
   control: Control<DraftMaterialEmpaque, any>;
 };
 
-export default function FormRegistroMaterial({ errors, register }: Props) {
+export default function Form({ errors, register }: Props) {
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
 import { isAxiosError } from "axios";
 import { TransactionTaskProductionSchema } from "@/utils/taskProductionPlanSchemas";
-import { FiltersPackingMaterialsTransactionType } from "@/views/bodega/transacciones-matrial-empaque/IndexPackingMaterialTransaction";
+import { FiltersPackingMaterialsTransactionType } from "@/views/bodega/transactions/Index";
 import clienteAxios from "@/config/axios";
 import { PackingMaterialTransactionsSchema } from "@/utils/packingMaterialTransactionSchema";
 import { PackingMaterialTransaction } from "types/packingMaterialTransactionTypes";
