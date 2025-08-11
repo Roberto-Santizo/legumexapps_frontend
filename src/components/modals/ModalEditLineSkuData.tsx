@@ -1,4 +1,4 @@
-import { LineaSKU, updateLineaSku } from "@/api/LinesPerformanceAPI";
+import { updateLineaSku } from "@/api/LinesPerformanceAPI";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,16 +9,17 @@ import Spinner from "../utilities-components/Spinner";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import InputSelectComponent from "../form/InputSelectComponent";
+import { LinePerformance } from "types/linePerformanceTypes";
 
 type Props = {
     modal: boolean;
     setModal: Dispatch<SetStateAction<boolean>>;
-    sku: LineaSKU;
-    setSelectedSku: Dispatch<SetStateAction<LineaSKU>>;
+    sku: LinePerformance;
+    setSelectedSku: Dispatch<SetStateAction<LinePerformance>>;
     currentPage: number;
 }
 
-export type DraftEditLineSku = Pick<LineaSKU, 'accepted_percentage' | 'performance' | 'payment_method'>;
+export type DraftEditLineSku = Pick<LinePerformance, 'accepted_percentage' | 'performance' | 'payment_method'>;
 
 export default function ModalEditLineSkuData({ modal, setModal, sku, setSelectedSku, currentPage }: Props) {
     const queryClient = useQueryClient();
@@ -32,7 +33,7 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
         onSuccess(data) {
             toast.success(data);
             setModal(false);
-            setSelectedSku({} as LineaSKU);
+            setSelectedSku({} as LinePerformance);
             queryClient.invalidateQueries({ queryKey: ['getPaginatedLineasSKU', currentPage] })
         },
     });
@@ -55,7 +56,7 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
 
     const handleCloseModal = () => {
         setModal(false);
-        setSelectedSku({} as LineaSKU);
+        setSelectedSku({} as LinePerformance);
     }
 
     const options = [

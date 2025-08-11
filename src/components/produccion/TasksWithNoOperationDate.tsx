@@ -1,14 +1,14 @@
-import { Linea } from "@/api/LinesAPI";
 import { useAppStore } from "@/store";
 import { getTasksNoOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { Line } from "types/linesTypes";
 import TaskUnscheduled from "./TaskUnscheduled";
 import Spinner from "../utilities-components/Spinner";
 
 type Props = {
-    lines: Linea[];
+    lines: Line[];
 }
 
 export default function TasksWithNoOperationDate({ lines }: Props) {

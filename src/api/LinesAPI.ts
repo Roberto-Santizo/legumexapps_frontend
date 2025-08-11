@@ -1,11 +1,11 @@
 import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { DraftLinea } from "views/produccion/lineas/CrearLinea";
-import { SKU } from "./SkusAPI";
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import { LineDetailSchema, LinePerformanceByDaySchema, LinesHoursPerWeekSchema, LinesPaginatedSchema, LinesSelectSchema } from "@/utils/lineSchemas";
 import { Line } from "recharts";
 import { LinePerformanceByDay } from "types/linesTypes";
+import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
 
 
 export async function getLineas({ page, paginated }: { page: number, paginated: string }) {
@@ -24,7 +24,7 @@ export async function getLineas({ page, paginated }: { page: number, paginated: 
     }
 }
 
-export async function getLinesBySkuId(id: SKU['id']) {
+export async function getLinesBySkuId(id: StockKeepingUnit['id']) {
     try {
         const url = `/api/lines-by-sku/${id}`;
         const { data } = await clienteAxios(url);

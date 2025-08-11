@@ -1,5 +1,4 @@
 import { getSummaryDraftLines } from "@/api/DraftWeeklyProductionPlanAPI";
-import { LineHoursPerWeek } from "@/api/LinesAPI";
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { saveAs } from "file-saver";
@@ -8,8 +7,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, YAxis, LabelList } from "recharts";
 import { FiltersDraftsTasks } from "./ShowPlanification";
-import * as XLSX from 'xlsx';
 import { CategoricalChartState } from "recharts/types/chart/types";
+import { LineHoursPerWeek } from "types/linesTypes";
+import * as XLSX from 'xlsx';
 
 type Props = {
     setFilters: Dispatch<SetStateAction<FiltersDraftsTasks>>;

@@ -1,10 +1,11 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { editSkuRecipeItem, getSkuRecipeItemById, SKU } from "@/api/SkusAPI";
+import { editSkuRecipeItem, getSkuRecipeItemById } from "@/api/SkusAPI";
 import { useForm } from "react-hook-form";
 import { DraftRawMaterialSkuItemRecipe } from "types/skuTypes";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
@@ -16,7 +17,7 @@ export default function ModalRawMaterialRecipe() {
     const rawMaterialId = queryParams.get('rawMaterialId')!;
     const show = (rawMaterialId) ? true : false;
     const navigate = useNavigate();
-    const params = useParams<{ id: SKU['id'] }>();
+    const params = useParams<{ id: StockKeepingUnit['id'] }>();
     const id = params.id!;
 
     const querClient = useQueryClient();

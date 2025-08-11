@@ -1,15 +1,15 @@
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
-import { Linea } from "./LinesAPI";
 import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionEditiDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TaskProductionReprogramDetailsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
 import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionNoOperationDate, TaskProductionOperationDate, TaskProductionPlan } from "types/taskProductionPlanTypes";
 import { isAxiosError } from "axios";
-import clienteAxios from "@/config/axios";
 import { DraftUnassignTaskProduction } from "@/components/modals/ModalUnassignNote";
 import { DraftPerformance } from "@/components/modals/ModalTomaRendimientoProduccion";
 import { DraftCloseTask } from "@/components/modals/ModalCierreTareaProduccion";
 import { DraftNote } from "@/components/modals/ModalNotasProblemas";
 import { DraftChangeOperationDate } from "@/components/modals/ModalChangeOperationDate";
 import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
+import clienteAxios from "@/config/axios";
+import { Line } from "recharts";
 
 export async function getComodines() {
     try {
@@ -27,7 +27,7 @@ export async function getComodines() {
     }
 }
 
-export async function getTasksByLineId(plan_id: WeeklyProductionPlan['id'], line_id: Linea['id']) {
+export async function getTasksByLineId(plan_id: WeeklyProductionPlan['id'], line_id: Line['id']) {
     try {
         const url = `/api/weekly-production-plans/details/${plan_id}/${line_id}`;
         const { data } = await clienteAxios(url);

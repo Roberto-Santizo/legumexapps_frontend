@@ -1,14 +1,15 @@
-import { getSkuById, SKU } from "@/api/SkusAPI";
+import { getSkuById } from "@/api/SkusAPI";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { BoxIcon, CookingPot } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
+import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalRawMaterialRecipe from "@/components/modals/ModalRawMaterialRecipe";
 
 export default function ShowSku() {
-    const params = useParams<{ id: SKU['id'] }>();
+    const params = useParams<{ id: StockKeepingUnit['id'] }>();
     const id = params.id!;
     const navigate = useNavigate();
 

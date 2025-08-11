@@ -8,13 +8,13 @@ import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmploy
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { Position } from "@/api/LinesAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalChangeEmployee from "@/components/modals/ModalChangeEmployee";
 import Swal from "sweetalert2";
 import ModalAddEmployee from "@/components/modals/ModalAddEmployee";
 import TaskProductionAsignacionSkeleton from "@/components/produccion/TaskProductionAsignacionSkeleton";
 import ModalTaskEmployees from "@/components/modals/ModalTaskEmployees";
+import { Position } from "types/linesTypes";
 
 
 export default function ShowTaskProductionDetails() {
