@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
-import { FiltersInsumosType } from "@/views/agricola/insumos/IndexInsumos";
+import { FiltersInsumosType } from "@/views/agricola/supplies/Index";
 import Filters from "../Filters";
 
 type Props = {

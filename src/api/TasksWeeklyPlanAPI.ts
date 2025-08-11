@@ -2,7 +2,7 @@ import clienteAxios from "@/config/axios";
 import { Employee, TaskInsumo } from "@/types";
 import { EmployeesSchema } from "@/utils/employee-schema";
 import { isAxiosError } from "axios";
-import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
+import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
 import { WeeklyPlan } from "types/planificacionFincasType";
 import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema } from "@/utils/taskWeeklyPlanSchemas";

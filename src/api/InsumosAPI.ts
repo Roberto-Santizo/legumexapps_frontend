@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import { FiltersInsumosType } from "@/views/agricola/insumos/IndexInsumos";
+import { FiltersInsumosType } from "@/views/agricola/supplies/Index";
 import { z } from "zod";
 import { DraftInsumo } from "types/insumoTypes";
 import { InsumosSchema } from "@/utils/insumoSchemas";

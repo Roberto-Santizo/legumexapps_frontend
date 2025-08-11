@@ -4,7 +4,7 @@ import { getTasksByDate } from "@/api/WeeklyPlansAPI";
 import { useEffect, useState } from "react";
 import { getLotes } from "@/api/LotesAPI";
 import { getTasks } from "@/api/TasksAPI";
-import { FiltersTasksInitialValues } from "@/views/agricola/tareas/IndexTareas";
+import { FiltersTasksInitialValues } from "@/views/agricola/tasks/Index";
 import { Trash2Icon } from "lucide-react";
 import { TaskGeneral } from "types/taskGeneralType";
 import Modal from "../Modal";

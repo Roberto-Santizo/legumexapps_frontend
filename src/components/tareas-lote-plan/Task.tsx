@@ -5,7 +5,7 @@ import { formatDate, formatearQuetzales } from "@/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cleanTask, closeAssigmentDron, closePartialClosure, closeTask, createPartialClosure, deteleteTask } from "@/api/TasksWeeklyPlanAPI";
 import { usePermissions } from "@/hooks/usePermissions";
-import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
+import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import Swal from "sweetalert2";
 import TaskLabel from "../utilities-components/TaskLabel";
 import DronIcon from "../dashboard-agricola/DronIcon";

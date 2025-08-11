@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getInsumos } from "@/api/InsumosAPI";
 import { useForm } from "react-hook-form";
-import { DraftSelectedInsumo } from "views/agricola/planes-semanales/CreateTareaLote";
+import { DraftSelectedInsumo } from "@/views/agricola/plans/CreateTareaLote";
 import { useQuery } from "@tanstack/react-query";
-import { FiltersInsumosInitialValues } from "@/views/agricola/insumos/IndexInsumos";
+import { FiltersInsumosInitialValues } from "@/views/agricola/supplies/Index";
 import Error from "../utilities-components/Error";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";

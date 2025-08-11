@@ -1,7 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
-import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
+import { FiltersPlanSemanalType } from "@/views/agricola/plans/Index";
 import { z } from "zod";
 import { isAxiosError } from "axios";
 import { SummaryWeeklyPlanSchema, WeeklyPlansSchema } from "@/utils/planificacionFincasSchemas";

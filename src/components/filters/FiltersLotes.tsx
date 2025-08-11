@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { useQuery } from '@tanstack/react-query';
-import { FiltersLotesType } from '@/views/agricola/lotes/IndexLotes';
+import { FiltersLotesType } from '@/views/agricola/lotes/Index';
 import Filters from '../Filters';
 import { getFincas } from '@/api/FincasAPI';
 

@@ -3,7 +3,7 @@ import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeek
 import { EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema, TaskCropWeeklyPlanSchema, TasksCropIncompleteSchema, TasksCropWeeklyPlanSchema } from "@/utils/taskCropWeeklyPlan-schema";
 import { isAxiosError } from "axios";
 import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
-import { DraftTaskCropWeeklyPlan } from "views/agricola/planes-semanales/CreateTareaLoteCosecha";
+import { DraftTaskCropWeeklyPlan } from "@/views/agricola/harvest-tasks/Create";
 
 export async function getTasksCrop(lote_plantation_control_id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']): Promise<TasksCropWeeklyPlan> {
     try {

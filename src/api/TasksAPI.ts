@@ -1,5 +1,5 @@
 import clienteAxios from "@/config/axios";
-import { FiltersTareasType } from "@/views/agricola/tareas/IndexTareas";
+import { FiltersTareasType } from "@/views/agricola/tasks/Index";
 import { isAxiosError } from "axios";
 import { TaskSchema, TasksSchema } from "@/utils/taskGeneralSchemas";
 import { DraftTask, TaskGeneral } from "types/taskGeneralType";

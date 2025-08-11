@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import Filters from "../Filters";
-import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
+import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 
 type Props = {
     isOpen: boolean;

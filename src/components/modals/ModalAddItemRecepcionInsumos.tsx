@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getInsumos } from "@/api/InsumosAPI";
 import { useQuery } from "@tanstack/react-query";
 import { DraftItemRecepcionInsumos } from "@/views/bodega/recepcion-insumos/CrearRecepcionInsumos";
-import { FiltersInsumosInitialValues } from "@/views/agricola/insumos/IndexInsumos";
+import { FiltersInsumosInitialValues } from "@/views/agricola/supplies/Index";
 import { useForm } from "react-hook-form";
 import { Insumo } from "types/insumoTypes";
 import Modal from "../Modal";

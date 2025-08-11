@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FiltersPlanSemanalType } from "@/views/agricola/planes-semanales/IndexPlanSemanal";
+import { FiltersPlanSemanalType } from "@/views/agricola/plans/Index";
 import Filters from "../Filters";
 import { getFincas } from "@/api/FincasAPI";
 

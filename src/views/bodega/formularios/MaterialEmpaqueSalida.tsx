@@ -24,7 +24,7 @@ export default function WarehouseOutput() {
     formState: { errors },
   } = useForm<DraftWarehouseOutput>();
 
-  const onSubmit = () => {}
+  const onSubmit = () => { }
 
   return (
     <div>
@@ -165,7 +165,6 @@ export default function WarehouseOutput() {
         </div>
 
         <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-          {/* <Spinner />  */}
           <p>Registrar entrega de material</p>
         </button>
       </form>

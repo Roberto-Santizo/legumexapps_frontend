@@ -3,7 +3,7 @@ import { TaskInsumo } from "@/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeTask, getTask, registerUsedInsumos } from "@/api/TasksWeeklyPlanAPI";
 import { toast } from "react-toastify";
-import { FiltersTareasLoteType } from "@/views/agricola/tareas-lote/IndexTareasLote";
+import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
