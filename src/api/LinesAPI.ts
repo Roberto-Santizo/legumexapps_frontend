@@ -1,6 +1,6 @@
 import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
-import { DraftLinea } from "views/produccion/lineas/CrearLinea";
+import { DraftLinea } from "@/views/produccion/lines/Create";
 import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
 import { LineDetailSchema, LinePerformanceByDaySchema, LinesHoursPerWeekSchema, LinesPaginatedSchema, LinesSelectSchema } from "@/utils/lineSchemas";
 import { Line } from "recharts";

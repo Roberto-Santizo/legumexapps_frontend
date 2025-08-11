@@ -6,7 +6,7 @@ import { createNewTaskProduction } from "@/api/TaskProductionPlansAPI";
 import { useAppStore } from "@/store";
 import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
-import FormProductionTask from "@/views/produccion/tareas_produccion/FormProductionTask";
+import FormProductionTask from "@/views/produccion/production-tasks/Form";
 
 export type DraftNewTaskProduction = {
     sku_id: string,

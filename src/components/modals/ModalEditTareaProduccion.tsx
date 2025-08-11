@@ -6,7 +6,7 @@ import { editProductionTask, getEditDetailsProductionTask } from "@/api/TaskProd
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useAppStore } from "@/store";
-import FormProductionTask from "@/views/produccion/tareas_produccion/FormProductionTask";
+import FormProductionTask from "@/views/produccion/production-tasks/Form";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 

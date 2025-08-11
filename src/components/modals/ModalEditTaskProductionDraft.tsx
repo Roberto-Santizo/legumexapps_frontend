@@ -6,7 +6,7 @@ import { NewTaskProductionDraft } from "./ModalAddNewDraftProductionTask";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Modal from "../Modal";
-import FormNewDraftTaskProduction from "@/views/produccion/planificador/FormNewDraftTaskProduction";
+import FormNewDraftTaskProduction from "@/views/produccion/production-planner/FormNewDraftTaskProduction";
 import Spinner from "../utilities-components/Spinner";
 
 export default function ModalEditTaskProductionDraft() {

@@ -1,4 +1,4 @@
-import { FiltersSkuInitialValues, type FiltersSku } from "@/views/produccion/sku/IndexSKU";
+import { FiltersSkuInitialValues, type FiltersSku } from "@/views/produccion/stock-keeping-units/Index";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";

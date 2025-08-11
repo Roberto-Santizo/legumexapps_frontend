@@ -5,40 +5,40 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ProtectedRoutes from "@/components/middlewares/ProtectedRoutes";
 
 const routes = [
-  { path: "/planes-produccion/crear", component: lazy(() => import("@/views/produccion/planes_semanales/CreatePlanSemanal")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega'] },
-  { path: "/planes-produccion", component: lazy(() => import("@/views/produccion/planes_semanales/IndexPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola', 'pcalidad', 'gerencia', 'admincalidad'] },
+  { path: "/planes-produccion/crear", component: lazy(() => import("@/views/produccion/plans/Create")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega'] },
+  { path: "/planes-produccion", component: lazy(() => import("@/views/produccion/plans/Index")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola', 'pcalidad', 'gerencia', 'admincalidad'] },
 
-  { path: "/planes-produccion/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowPlanSemanalProduccion")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega', 'adminagricola', 'pcalidad', 'gerencia', 'admincalidad'] },
-  { path: "/planes-produccion/calendario/:plan_id", component: lazy(() => import("@/views/produccion/planes_semanales/PlanificacionTareasProduccion")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola', 'pcalidad', 'gerencia', 'auxrrhh', 'admincalidad'] },
-  { path: "/planes-produccion/:plan_id/:linea_id", component: lazy(() => import("@/views/produccion/planes_semanales/ShowLineaDetalles")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'gerencia'] },
-  { path: "/planes-produccion/asignacion/:plan_id/:linea_id/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/AsignarEmpleadosTareaProduccion")), roles: ['admin', 'audiproceso'] },
-  { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/TaskProductionPlanDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola', 'exportuser', 'gerencia', 'auxrrhh'] },
-  { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("@/views/produccion/planes_semanales/FinishedTaskProductionDetails")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola', 'exportuser', 'gerencia', 'auxrrhh','auxbodega'] },
+  { path: "/planes-produccion/:plan_id", component: lazy(() => import("@/views/produccion/plans/Show")), roles: ['admin', 'audiproceso', 'auxrrhh', 'logistics', 'adminprod', 'adminbodega', 'adminagricola', 'pcalidad', 'gerencia', 'admincalidad'] },
+  { path: "/planes-produccion/calendario/:plan_id", component: lazy(() => import("@/views/produccion/plans/Calendar")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'auxbodega', 'exportuser', 'costosuser', 'adminagricola', 'pcalidad', 'gerencia', 'auxrrhh', 'admincalidad'] },
+  { path: "/planes-produccion/:plan_id/:linea_id", component: lazy(() => import("@/views/produccion/plans/ShowLineaDetalles")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'gerencia'] },
+  { path: "/planes-produccion/asignacion/:plan_id/:linea_id/:task_p_id", component: lazy(() => import("@/views/produccion/plans/AsignarEmpleadosTareaProduccion")), roles: ['admin', 'audiproceso'] },
+  { path: "/planes-produccion/informacion/:task_p_id", component: lazy(() => import("@/views/produccion/production-tasks/Details")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola', 'exportuser', 'gerencia', 'auxrrhh'] },
+  { path: "/planes-produccion/tarea-produccion/:task_p_id", component: lazy(() => import("@/views/produccion/production-tasks/Show")), roles: ['admin', 'audiproceso', 'logistics', 'adminprod', 'adminbodega', 'costosuser', 'adminagricola', 'exportuser', 'gerencia', 'auxrrhh', 'auxbodega'] },
 
-  { path: "/skus", component: lazy(() => import("@/views/produccion/sku/IndexSKU")), roles: ['admin', 'pcostos'] },
-  { path: "/skus/:id", component: lazy(() => import("@/views/produccion/sku/ShowSku")), roles: ['admin', 'pcostos'] },
-  { path: "/skus/crear", component: lazy(() => import("@/views/produccion/sku/CreateSKU")), roles: ['admin', 'pcostos'] },
+  { path: "/skus", component: lazy(() => import("@/views/produccion/stock-keeping-units/Index")), roles: ['admin', 'pcostos'] },
+  { path: "/skus/:id", component: lazy(() => import("@/views/produccion/stock-keeping-units/Show")), roles: ['admin', 'pcostos'] },
+  { path: "/skus/crear", component: lazy(() => import("@/views/produccion/stock-keeping-units/Create")), roles: ['admin', 'pcostos'] },
 
-  { path: "/lineas", component: lazy(() => import("@/views/produccion/lineas/IndexLines")), roles: ['admin', 'pcostos'] },
-  { path: "/lineas/posiciones/:id", component: lazy(() => import("@/views/produccion/lineas/PosicionesLinea")), roles: ['admin', 'pcostos'] },
-  { path: "/lineas/crear", component: lazy(() => import("@/views/produccion/lineas/CrearLinea")), roles: ['admin', 'pcostos'] },
-  { path: "/lineas/editar/:id", component: lazy(() => import("@/views/produccion/lineas/EditarLinea")), roles: ['admin', 'pcostos'] },
+  { path: "/lineas", component: lazy(() => import("@/views/produccion/lines/Index")), roles: ['admin', 'pcostos'] },
+  { path: "/lineas/posiciones/:id", component: lazy(() => import("@/views/produccion/lines/Show")), roles: ['admin', 'pcostos'] },
+  { path: "/lineas/crear", component: lazy(() => import("@/views/produccion/lines/Create")), roles: ['admin', 'pcostos'] },
+  { path: "/lineas/editar/:id", component: lazy(() => import("@/views/produccion/lines/Edit")), roles: ['admin', 'pcostos'] },
 
-  { path: "/lineas-skus", component: lazy(() => import("@/views/produccion/lineas_skus/IndexLineasSku")), roles: ['admin', 'pcostos'] },
-  { path: "/lineas-skus/crear", component: lazy(() => import("@/views/produccion/lineas_skus/CrearLineaSku")), roles: ['admin', 'pcostos'] },
+  { path: "/lineas-skus", component: lazy(() => import("@/views/produccion/lines-performances/Index")), roles: ['admin', 'pcostos'] },
+  { path: "/lineas-skus/crear", component: lazy(() => import("@/views/produccion/lines-performances/Create")), roles: ['admin', 'pcostos'] },
 
-  { path: "/tiempos-muertos", component: lazy(() => import("@/views/produccion/tiempos_muertos/IndexTiemposMuertos")), roles: ['admin', 'pcostos'] },
-  { path: "/tiempos-muertos/crear", component: lazy(() => import("@/views/produccion/tiempos_muertos/CrearTiempoMuerto")), roles: ['admin', 'pcostos'] },
-  { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("@/views/produccion/tiempos_muertos/EditarTiempoMuerto")), roles: ['admin', 'pcostos'] },
+  { path: "/tiempos-muertos", component: lazy(() => import("@/views/produccion/timeouts/Index")), roles: ['admin', 'pcostos'] },
+  { path: "/tiempos-muertos/crear", component: lazy(() => import("@/views/produccion/timeouts/Create")), roles: ['admin', 'pcostos'] },
+  { path: "/tiempos-muertos/editar/:id", component: lazy(() => import("@/views/produccion/timeouts/Edit")), roles: ['admin', 'pcostos'] },
 
-  { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/graficasDiarias/IndexDailyGraphs")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
+  { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/daily-charts/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
 
-  { path: "/planificador-produccion", component: lazy(() => import("@/views/produccion/planificador/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
-  { path: "/planificador-produccion/:id", component: lazy(() => import("@/views/produccion/planificador/ShowPlanification")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
+  { path: "/planificador-produccion", component: lazy(() => import("@/views/produccion/production-planner/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
+  { path: "/planificador-produccion/:id", component: lazy(() => import("@/views/produccion/production-planner/Show")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
 
-  { path: "/materia-prima", component: lazy(() => import("@/views/produccion/materia_prima/IndexMateriaPrima")), roles: ['admin'] },
-  { path: "/materia-prima/crear", component: lazy(() => import("@/views/produccion/materia_prima/CreateMateriaPrima")), roles: ['admin'] },
-  { path: "/materia-prima/:id/editar", component: lazy(() => import("@/views/produccion/materia_prima/EditMateriaPrima")), roles: ['admin'] },
+  { path: "/materia-prima", component: lazy(() => import("@/views/produccion/raw_material/Index")), roles: ['admin'] },
+  { path: "/materia-prima/crear", component: lazy(() => import("@/views/produccion/raw_material/Create")), roles: ['admin'] },
+  { path: "/materia-prima/:id/editar", component: lazy(() => import("@/views/produccion/raw_material/Edit")), roles: ['admin'] },
 ];
 
 export default function ProduccionRoutes() {

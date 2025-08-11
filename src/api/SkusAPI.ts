@@ -1,7 +1,7 @@
-import { FiltersSku } from "@/views/produccion/sku/IndexSKU";
+import { FiltersSku } from "@/views/produccion/stock-keeping-units/Index";
 import { isAxiosError } from "axios";
 import { DraftRawMaterialSkuItemRecipe } from "types/skuTypes";
-import { DraftSku } from "views/produccion/sku/CreateSKU";
+import { DraftSku } from "@/views/produccion/stock-keeping-units/Create";
 import { RawMaterialRecipeItemSchema, SKUDetailsSchema, SkusPaginatedSchema } from "@/utils/stockKeepingUnitSchemas";
 import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
 import clienteAxios from "@/config/axios";

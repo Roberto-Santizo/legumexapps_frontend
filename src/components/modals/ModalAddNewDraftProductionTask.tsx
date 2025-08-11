@@ -6,7 +6,7 @@ import { createNewTaskProductionDraft } from "@/api/DraftTaskProductionDraftAPI"
 import { useState } from "react";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
-import FormNewDraftTaskProduction from "@/views/produccion/planificador/FormNewDraftTaskProduction";
+import FormNewDraftTaskProduction from "@/views/produccion/production-planner/FormNewDraftTaskProduction";
 
 export type NewTaskProductionDraft = {
     draft_weekly_production_plan_id: string;
