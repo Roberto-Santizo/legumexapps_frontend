@@ -550,7 +550,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaRmpAllInfo }> = ({ boleta }) =
               <View style={styles.signatureLine}>
                 <Signature firma={boleta.quality_doc_data?.inspector_pdf_planta_signature} />
               </View>
-              <Text style={styles.signatureLabel}>Firma Inspector de Clidad</Text>
+              <Text style={styles.signatureLabel}>Firma Inspector de Calidad</Text>
             </View>
           </View>
         )}
