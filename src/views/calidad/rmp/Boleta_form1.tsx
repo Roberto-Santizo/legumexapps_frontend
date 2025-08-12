@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Basket, getBaskets } from "@/api/BasketsAPI";
-import { createBoletaRMP, DraftBoletaRMP } from "@/api/ReceptionsDocAPI";
+import { createBoletaRMP } from "@/api/ReceptionsDocAPI";
 import { getProducers, Producer } from "@/api/ProducersAPI";
 import { getProducts, Product } from "@/api/ProductsAPI";
 import { Finca, getFincas } from "@/api/FincasAPI";
@@ -19,6 +19,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { DraftBoletaRMP } from "types/rmpDocTypes";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);

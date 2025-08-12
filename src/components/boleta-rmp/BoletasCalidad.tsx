@@ -1,9 +1,8 @@
-
-import { BoletaInfoAll } from "@/api/ReceptionsDocAPI";
+import { BoletaRmpAllInfo } from "types/rmpDocTypes";
 import LogoLegumex from "../logos/LogoLegumex";
 
 type Props = {
-    boleta: BoletaInfoAll;
+    boleta: BoletaRmpAllInfo;
 }
 
 export default function BoletasCalidad({ boleta }: Props) {

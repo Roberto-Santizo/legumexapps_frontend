@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getAllPlantas, Planta } from '@/api/PlantasAPI';
 import { useQueries } from '@tanstack/react-query';
-import { Boleta, getBoletasRMP } from '@/api/ReceptionsDocAPI';
+import { getBoletasRMP } from '@/api/ReceptionsDocAPI';
 import { getProducts, Product } from '@/api/ProductsAPI';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { createBoletaTransporte, DraftBoletaTransporte, getCondicionesTransporte, TransporteCondition } from '@/api/BoletaTransporteAPI';
 import { FiletrsBoletaRMPInitialValues } from '@/components/filters/FiletrsRMP';
+import { BoletaRMP } from 'types/rmpDocTypes';
 import SignatureCanvas from "react-signature-canvas";
 import Swal from 'sweetalert2';
 import Error from '@/components/utilities-components/Error';
@@ -18,9 +19,9 @@ import InputSelectComponent from '@/components/form/InputSelectComponent';
 
 export default function Create() {
   const [plantas, setPlantas] = useState<Planta[]>([]);
-  const [boletas, setBoletas] = useState<Boleta[]>([]);
+  const [boletas, setBoletas] = useState<BoletaRMP[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedBoletas, setSelectedBoletas] = useState<Boleta[]>([]);
+  const [selectedBoletas, setSelectedBoletas] = useState<BoletaRMP[]>([]);
   const [conditions, setConditions] = useState<TransporteCondition[]>([]);
   const [selectedConditions, setSelectedConditions] = useState<{ [key: string]: boolean }>({});
   const verify_by_signature = useRef({} as SignatureCanvas);

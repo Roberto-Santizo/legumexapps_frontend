@@ -1,10 +1,11 @@
 import { Controller, useForm } from "react-hook-form";
-import { BoletaDetail, createProdData } from "@/api/ReceptionsDocAPI";
+import { createProdData } from "@/api/ReceptionsDocAPI";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { getBaskets } from "@/api/BasketsAPI";
+import { BoletaRmpDetail } from "types/rmpDocTypes";
 import SignatureCanvas from "react-signature-canvas";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -13,7 +14,7 @@ import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 type Props = {
-  boleta: BoletaDetail
+  boleta: BoletaRmpDetail
 }
 
 export type DraftFormProd = {

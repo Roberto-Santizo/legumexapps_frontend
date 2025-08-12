@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Boleta, BoletasPaginate, updateGRN } from "@/api/ReceptionsDocAPI";
+import { updateGRN } from "@/api/ReceptionsDocAPI";
 import { QueryObserverResult, RefetchOptions, useMutation } from "@tanstack/react-query";
+import { BoletaRMP, BoletasRmpPaginate } from "types/rmpDocTypes";
 import Spinner from "../utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "../form/InputComponent";
@@ -10,8 +11,8 @@ import Modal from "../Modal";
 type Props = {
     modal: boolean;
     setModal: React.Dispatch<React.SetStateAction<boolean>>;
-    boleta: Boleta;
-    refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<BoletasPaginate>>;
+    boleta: BoletaRMP;
+    refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<BoletasRmpPaginate>>;
 }
 
 type FormData = {

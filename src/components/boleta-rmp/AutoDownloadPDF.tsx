@@ -1,8 +1,8 @@
+import { BoletaRmpAllInfo } from 'types/rmpDocTypes';
 import { pdf } from '@react-pdf/renderer';
 import PdfBoletaCampoRMP from './PdfBoletaCampoRMP';
-import { BoletaInfoAll } from '@/api/ReceptionsDocAPI';
 
-export async function AutoDownloadPDF(boleta: BoletaInfoAll) {
+export async function AutoDownloadPDF(boleta: BoletaRmpAllInfo) {
   const blob = await pdf(<PdfBoletaCampoRMP boleta={boleta} />).toBlob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

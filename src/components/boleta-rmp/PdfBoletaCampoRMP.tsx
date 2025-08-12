@@ -1,6 +1,6 @@
-import React from 'react';
+import { BoletaRmpAllInfo } from 'types/rmpDocTypes';
 import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
-import { BoletaInfoAll } from '@/api/ReceptionsDocAPI';
+import React from 'react';
 import Signature from '../utilities-components/Signature';
 
 const styles = StyleSheet.create({
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaInfoAll }> = ({ boleta }) => (
+const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaRmpAllInfo }> = ({ boleta }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
       <View style={styles.header}>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { BoletaDetail, getBoletaRMPDetail } from "@/api/ReceptionsDocAPI";
+import { getBoletaRMPDetail } from "@/api/ReceptionsDocAPI";
+import { BoletaRmpDetail } from "types/rmpDocTypes";
 import Boleta_form2 from "./Boleta_form2";
 import Spinner from "@/components/utilities-components/Spinner";
 import Boleta_form3 from "./Boleta_form3";
@@ -12,7 +13,7 @@ import Boleta_form3 from "./Boleta_form3";
 export default function Edit() {
   const { rm_reception_id } = useParams();
   
-  const [boleta, setBoleta] = useState<BoletaDetail>({} as BoletaDetail);
+  const [boleta, setBoleta] = useState<BoletaRmpDetail>({} as BoletaRmpDetail);
   const [loading, setLoading] = useState<boolean>(true);
   
   const forms: { [key: number]: JSX.Element } = {

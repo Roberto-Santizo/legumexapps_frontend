@@ -2,12 +2,13 @@ import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
 import { Defect } from "@/types";
-import { BoletaDetail, createQualityDoc, ResultBoletaCalidad } from "@/api/ReceptionsDocAPI";
+import { createQualityDoc } from "@/api/ReceptionsDocAPI";
 import { useNavigate } from "react-router-dom";
 import { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { getProductById } from "@/api/ProductsAPI";
+import { BoletaRmpDetail, ResultBoletaRmpCalidad } from "types/rmpDocTypes";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
@@ -15,7 +16,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputComponent from "@/components/form/InputComponent";
 
 type Props = {
-  boleta: BoletaDetail
+  boleta: BoletaRmpDetail
 }
 
 export type DraftBoletaControlCalidad = {
@@ -37,7 +38,7 @@ export type DraftBoletaControlCalidad = {
 export default function Boleta_form3({ boleta }: Props) {
   const [defects, setDefects] = useState<DraftDefecto[]>([]);
   const inspector_signature = useRef({} as SignatureCanvas);
-  const [results, setResults] = useState<ResultBoletaCalidad[]>([]);
+  const [results, setResults] = useState<ResultBoletaRmpCalidad[]>([]);
   const navigate = useNavigate();
 
   const total_points = useMemo(() => {

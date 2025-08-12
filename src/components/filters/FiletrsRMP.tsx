@@ -1,9 +1,10 @@
 import { Finca, getFincas } from "@/api/FincasAPI";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getQualityStatuses, QualityStatus } from "@/api/ReceptionsDocAPI";
+import { getQualityStatuses } from "@/api/ReceptionsDocAPI";
 import Filters from "../Filters";
 import { useQueries } from "@tanstack/react-query";
 import Spinner from "../utilities-components/Spinner";
+import { QualityStatus } from "types/rmpDocTypes";
 
 type Props = {
     filters: FiltersBoletaRMP;

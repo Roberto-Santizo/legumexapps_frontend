@@ -1,12 +1,11 @@
-import React from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Download } from 'lucide-react';
-import { BoletaInfoAll } from '@/api/ReceptionsDocAPI';
 import PdfBoletaCampoRMP from './PdfBoletaCampoRMP';
+import { BoletaRmpAllInfo } from 'types/rmpDocTypes';
 import Spinner from '../utilities-components/Spinner';
 
 interface DownloadPDFProps {
-  boleta: BoletaInfoAll;
+  boleta: BoletaRmpAllInfo;
   buttonLabel?: string;
   buttonClassName?: string;
 }
