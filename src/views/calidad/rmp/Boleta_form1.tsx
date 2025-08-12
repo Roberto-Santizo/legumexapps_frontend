@@ -8,22 +8,19 @@ import { getProducers, Producer } from "@/api/ProducersAPI";
 import { getProducts, Product } from "@/api/ProductsAPI";
 import { Finca, getFincas } from "@/api/FincasAPI";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { Piloto } from "@/api/PilotosAPI";
 import { getTransportistaInfoById, getTransportistas, Transportista, } from "@/api/TransportistasAPI";
 import { Placa } from "@/api/PlacasAPI";
 import { getAllProductorCDPS, ProductorCDP, } from "@/api/ProductorPlantationAPI";
 import { useMutation } from "@tanstack/react-query";
-import { AutoDownloadPDF } from "@/components/boleta-rmp/AutoDownloadPDF";
+import { DraftBoletaRMP } from "types/rmpDocTypes";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import { DraftBoletaRMP } from "types/rmpDocTypes";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [pilotos, setPilotos] = useState<Piloto[]>([]);
   const [placas, setPlacas] = useState<Placa[]>([]);
   const [cdps, setCDPS] = useState<ProductorCDP[]>([]);
   const [transportistaId, setTransportistaId] = useState<string>("");
@@ -31,7 +28,9 @@ export default function Boleta_form1() {
   const [baskets, setBaskets] = useState<Basket[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
   const [fincas, setFincas] = useState<Finca[]>([]);
-  const calidad_signature = useRef({} as SignatureCanvas);
+  const driver_signature = useRef({} as SignatureCanvas);
+  const inspector_signature = useRef({} as SignatureCanvas);
+  const prod_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
 
   const results = useQueries({
@@ -77,7 +76,6 @@ export default function Boleta_form1() {
 
   useEffect(() => {
     if (carrierInfo) {
-      setPilotos(carrierInfo.drivers);
       setPlacas(carrierInfo.plates);
     }
   }, [carrierInfo]);
@@ -107,11 +105,6 @@ export default function Boleta_form1() {
     label: `${transportista.code} - ${transportista.name}`,
   }));
 
-  const pilotosOptions = pilotos.map((piloto) => ({
-    value: piloto.id,
-    label: `${piloto.name}`,
-  }));
-
   const placasOptions = placas.map((placa) => ({
     value: placa.id,
     label: `${placa.name}`,
@@ -128,14 +121,7 @@ export default function Boleta_form1() {
       toast.error(error.message);
     },
     onSuccess: (data) => {
-      if (data) {
-        try {
-          AutoDownloadPDF(data);
-        } catch (error) {
-          toast.error('Hubo un error al descargar la boleta, puede descargarla desde el apartado de la vista de la boleta');
-        }
-      }
-      toast.success('Boleta generada correctamente');
+      toast.success(data);
       navigate('/rmp');
     }
   });
@@ -160,23 +146,6 @@ export default function Boleta_form1() {
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
-          <InputComponent<DraftBoletaRMP>
-            label="No. DOC"
-            id="ref_doc"
-            name="ref_doc"
-            placeholder="Número de referencia fisica"
-            register={register}
-            validation={{
-              required: "La referencia del documento es necesaria",
-            }}
-            errors={errors}
-            type={"text"}
-          >
-            {errors.ref_doc && (
-              <Error>{errors.ref_doc?.message?.toString()}</Error>
-            )}
-          </InputComponent>
-
           <InputSelectSearchComponent<DraftBoletaRMP>
             label="Productor"
             id="producer_id"
@@ -219,19 +188,6 @@ export default function Boleta_form1() {
             )}
           </InputSelectSearchComponent>
 
-          <InputComponent<DraftBoletaRMP>
-            label="Fecha de Boleta"
-            id="date"
-            name="date"
-            placeholder=""
-            register={register}
-            validation={{ required: "La fecha es obligatoria" }}
-            errors={errors}
-            type={"date"}
-          >
-            {errors.date && <Error>{errors.date?.message?.toString()}</Error>}
-          </InputComponent>
-
           <InputSelectSearchComponent<DraftBoletaRMP>
             label="Transportista"
             id="carrier_id"
@@ -244,20 +200,6 @@ export default function Boleta_form1() {
           >
             {errors.carrier_id && (
               <Error>{errors.carrier_id?.message?.toString()}</Error>
-            )}
-          </InputSelectSearchComponent>
-
-          <InputSelectSearchComponent<DraftBoletaRMP>
-            label="Pilotos"
-            id="driver_id"
-            name="driver_id"
-            options={pilotosOptions}
-            control={control}
-            rules={{ required: "El piloto es obligatorio" }}
-            errors={errors}
-          >
-            {errors.driver_id && (
-              <Error>{errors.driver_id?.message?.toString()}</Error>
             )}
           </InputSelectSearchComponent>
 
@@ -373,45 +315,120 @@ export default function Boleta_form1() {
               <Error>{errors.quality_percentage?.message?.toString()}</Error>
             )}
           </InputComponent>
-          <div className="space-y-2 text-center">
-            <Controller
-              name="calidad_signature"
-              control={control}
-              rules={{ required: "Asegurese de haber firmado" }}
-              render={({ field }) => (
-                <div className="p-2">
-                  <SignatureCanvas
-                    ref={calidad_signature}
-                    penColor="black"
-                    canvasProps={{ className: "w-full h-40 border" }}
-                    onEnd={() => {
-                      field.onChange(calidad_signature.current.toDataURL());
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
-                    onClick={() => {
-                      calidad_signature.current.clear();
-                      field.onChange("");
-                    }}
-                  >
-                    Limpiar Firma
-                  </button>
-                </div>
-              )}
-            />
-            <label className="block font-medium text-xl">Firma</label>
 
-            {errors.calidad_signature && (
-              <Error>{"Asegurese de haber firmado"}</Error>
-            )}
-          </div>
+          <fieldset>
+            <div className="space-y-2 text-center">
+              <Controller
+                name="driver_signature"
+                control={control}
+                rules={{ required: "Asegurese de haber firmado" }}
+                render={({ field }) => (
+                  <div className="p-2">
+                    <SignatureCanvas
+                      ref={driver_signature}
+                      penColor="black"
+                      canvasProps={{ className: "w-full h-40 border" }}
+                      onEnd={() => {
+                        field.onChange(driver_signature.current.toDataURL());
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                      onClick={() => {
+                        driver_signature.current.clear();
+                        field.onChange("");
+                      }}
+                    >
+                      Limpiar Firma
+                    </button>
+                  </div>
+                )}
+              />
+              <label className="block font-medium text-xl">Firma Piloto</label>
+
+              {errors.driver_signature && (
+                <Error>{"Asegurese de haber firmado"}</Error>
+              )}
+            </div>
+
+            <div className="space-y-2 text-center">
+              <Controller
+                name="inspector_signature"
+                control={control}
+                rules={{ required: "Asegurese de haber firmado" }}
+                render={({ field }) => (
+                  <div className="p-2">
+                    <SignatureCanvas
+                      ref={inspector_signature}
+                      penColor="black"
+                      canvasProps={{ className: "w-full h-40 border" }}
+                      onEnd={() => {
+                        field.onChange(inspector_signature.current.toDataURL());
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                      onClick={() => {
+                        inspector_signature.current.clear();
+                        field.onChange("");
+                      }}
+                    >
+                      Limpiar Firma
+                    </button>
+                  </div>
+                )}
+              />
+              <label className="block font-medium text-xl">Firma Inspector</label>
+
+              {errors.inspector_signature && (
+                <Error>{"Asegurese de haber firmado"}</Error>
+              )}
+            </div>
+
+            <div className="space-y-2 text-center">
+              <Controller
+                name="prod_signature"
+                control={control}
+                rules={{ required: "Asegurese de haber firmado" }}
+                render={({ field }) => (
+                  <div className="p-2">
+                    <SignatureCanvas
+                      ref={prod_signature}
+                      penColor="black"
+                      canvasProps={{ className: "w-full h-40 border" }}
+                      onEnd={() => {
+                        field.onChange(prod_signature.current.toDataURL());
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded uppercase font-bold"
+                      onClick={() => {
+                        prod_signature.current.clear();
+                        field.onChange("");
+                      }}
+                    >
+                      Limpiar Firma
+                    </button>
+                  </div>
+                )}
+              />
+              <label className="block font-medium text-xl">Firma Productor</label>
+
+              {errors.prod_signature && (
+                <Error>{"Asegurese de haber firmado"}</Error>
+              )}
+            </div>
+          </fieldset>
+
+
           <button
             disabled={isPending}
             className="button bg-indigo-500 hover:bg-indigo-600 w-full"
           >
-            {isPending ? <Spinner /> : <p className="text-xs md:text-base">Crear y Descargar Boleta</p>}
+            {isPending ? <Spinner /> : <p className="text-xs md:text-base">Crear Boleta</p>}
           </button>
         </form>
       </div>

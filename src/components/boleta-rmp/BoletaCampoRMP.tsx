@@ -30,7 +30,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
 
           <div className="text-center flex-1 mx-4 md:mx-8">
             <h1 className="text-xl md:text-2xl font-bold">
-              RECIBO DE MATERIA PRIMA*******f******************************
+              RECIBO DE MATERIA PRIMA
             </h1>
             <div className="flex justify-center mb-1">
               <span className="p-1 text-center text-2xl font-bold text-red-600">
@@ -316,9 +316,8 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-25 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${
-                    boleta.prod_data?.receptor_signature
-                  }`}
+                  src={`${import.meta.env.VITE_BASE_URL}storage/${boleta.prod_data?.receptor_signature
+                    }`}
                   alt="Firma Receptor"
                   className="max-h-25 md:max-h-25 object-contain"
                 />
@@ -331,9 +330,8 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${
-                    boleta.quality_doc_data?.inspector_planta_signature
-                  }`}
+                  src={`${import.meta.env.VITE_BASE_URL}storage/${boleta.quality_doc_data?.inspector_planta_signature
+                    }`}
                   alt="Firma Inspector Planta"
                   className="max-h-25 md:max-h-25 object-contain"
                 />
@@ -345,14 +343,37 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_BASE_URL}/storage/${
-                  boleta.field_data.calidad_signature
-                }`}
-                alt="Firma Inspector Agrícola"
+                src={`${import.meta.env.VITE_BASE_URL}storage/${boleta.field_data.driver_signature
+                  }`}
+                alt="Firma Piloto"
                 className="max-h-25 md:max-h-25 object-contain"
               />
             </div>
-            <p className="mt-2">FIRMA DIGITADOR</p>
+            <p className="mt-2">Firma Piloto</p>
+          </div>
+
+          <div className="text-center">
+            <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}storage/${boleta.field_data.inspector_signature
+                  }`}
+                alt="Firma Inspector"
+                className="max-h-25 md:max-h-25 object-contain"
+              />
+            </div>
+            <p className="mt-2">Firma Inspector</p>
+          </div>
+
+          <div className="text-center">
+            <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}storage/${boleta.field_data.producer_signature
+                  }`}
+                alt="Firma Productor"
+                className="max-h-25 md:max-h-25 object-contain"
+              />
+            </div>
+            <p className="mt-2">Firma Productor</p>
           </div>
         </div>
       </div>

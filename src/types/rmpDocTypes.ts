@@ -13,14 +13,13 @@ export type DraftBoletaRMP = {
     weight: number,
     total_baskets: number,
     quality_percentage: number,
-    calidad_signature: string,
+    driver_signature: string,
+    inspector_signature: string,
+    prod_signature: string,
     basket_id: string,
-    date: string,
     carrier_id: string,
     productor_plantation_control_id: string,
-    driver_id: string,
     plate_id: string,
-    ref_doc: string
 }
 
 export type BoletaRmpAllInfo = z.infer<typeof BoletaInfoAllSchema>;

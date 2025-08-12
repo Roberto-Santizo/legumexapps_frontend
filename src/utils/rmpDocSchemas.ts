@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const fieldDataSchema = z.object({
     id: z.string(),
-    ref_doc: z.string(),
+    ref_doc: z.number(),
     producer_id: z.string(),
     producer_code: z.string(),
     product_id: z.string(),
@@ -26,8 +26,12 @@ export const fieldDataSchema = z.object({
     quality_status_id: z.number(),
     minimun_percentage: z.number(),
     total_baskets: z.number(),
-    calidad_signature: z.string(),
-    calidad_pdf_signature: z.string()
+    driver_signature: z.string(),
+    inspector_signature: z.string(),
+    producer_signature: z.string(),
+    driver_pdf_signature: z.string(),
+    inspector_pdf_signature: z.string(),
+    producer_pdf_signature: z.string(),
 });
 
 export const prodDataSchema = z.object({

@@ -10,11 +10,8 @@ import clienteAxios from "@/config/axios";
 export async function createBoletaRMP(FormData: DraftBoletaRMP) {
     try {
         const url = '/api/boleta-rmp';
-        const { data } = await clienteAxios.post(url, FormData);
-        const result = BoletaInfoAllSchema.safeParse(data);
-        if (result.success) {
-            return result.data;
-        }
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        return data;
     } catch (error) {
         if (isAxiosError(error)) {
             throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));

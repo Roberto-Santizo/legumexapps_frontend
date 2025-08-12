@@ -35,7 +35,7 @@ export default function Create() {
     },
     onSuccess: (data) => {
       toast.success(data);
-      navigate('/recepciones-mp');
+      navigate('/productos');
     }
   });
   const { data, isError, isLoading } = useQuery({
