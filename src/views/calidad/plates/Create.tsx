@@ -57,9 +57,9 @@ export default function Create() {
 
   return (
     <>
-      <h1 className="font-bold text-3xl">Crear Placa</h1>
+      <h1 className="font-bold md:text-4xl text-xl text-center md:text-left">Crear Placa</h1>
 
-      <form className="w-2/3 mx-auto mt-10 space-y-5 shadow-xl p-10" onSubmit={handleSubmit(onSubmit)}>
+      <form className="md:w-2/3 mx-auto mt-10 space-y-5 shadow-xl p-10" onSubmit={handleSubmit(onSubmit)}>
 
         <InputComponent<DraftPlaca>
           label="Placa"

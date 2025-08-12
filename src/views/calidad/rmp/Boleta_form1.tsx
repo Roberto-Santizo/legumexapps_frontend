@@ -150,7 +150,7 @@ export default function Boleta_form1() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold">
+      <h2 className="md:text-4xl text-center font-bold">
         Crear Boleta de Recepcion de Materia Prima
       </h2>
       <div>
@@ -410,7 +410,7 @@ export default function Boleta_form1() {
             disabled={isPending}
             className="button bg-indigo-500 hover:bg-indigo-600 w-full"
           >
-            {isPending ? <Spinner /> : <p>Crear y Descargar Boleta</p>}
+            {isPending ? <Spinner /> : <p className="text-xs md:text-base">Crear y Descargar Boleta</p>}
           </button>
         </form>
       </div>

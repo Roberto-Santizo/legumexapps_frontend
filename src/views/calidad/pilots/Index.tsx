@@ -35,7 +35,7 @@ export default function Index() {
   if (isError) return <ShowErrorAPI />;
   return (
     <>
-      <h1 className="font-bold text-3xl">Pilotos</h1>
+      <h1 className="font-bold md:text-4xl text-xl text-center md:text-left">Pilotos</h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
           to="/transportistas/pilotos/crear"
@@ -46,26 +46,29 @@ export default function Index() {
         </Link>
       </div>
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th className="thead-th">Piloto</th>
-            <th className="thead-th">Transportista</th>
-            <th className="thead-th">Licencia</th>
-            <th className="thead-th">DPI</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pilotos.map(piloto => (
-            <tr className="tbody-tr" key={piloto.id}>
-              <td className="tbody-td">{piloto.name}</td>
-              <td className="tbody-td">{piloto.carrier}</td>
-              <td className="tbody-td">{piloto.dpi ?? 'SIN DPI'}</td>
-              <td className="tbody-td">{piloto.license ?? 'SIN LICENCIA'}</td>
+      <div className="table-wrapper">
+
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th className="thead-th">Piloto</th>
+              <th className="thead-th">Transportista</th>
+              <th className="thead-th">Licencia</th>
+              <th className="thead-th">DPI</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {pilotos.map(piloto => (
+              <tr className="tbody-tr" key={piloto.id}>
+                <td className="tbody-td">{piloto.name}</td>
+                <td className="tbody-td">{piloto.carrier}</td>
+                <td className="tbody-td">{piloto.dpi ?? 'SIN DPI'}</td>
+                <td className="tbody-td">{piloto.license ?? 'SIN LICENCIA'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mt-5 mb-10 flex justify-center md:justify-end">
         <Pagination

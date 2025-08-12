@@ -10,12 +10,12 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 export default function Index() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [placas,setPlacas] = useState<Placa[]>([]);
+  const [placas, setPlacas] = useState<Placa[]>([]);
 
 
   const { data, isLoading, isError } = useQuery({
-      queryKey: ['getPlacasPaginated',currentPage],
-      queryFn: () => getPlacas({page: currentPage, paginated: 'true'}),
+    queryKey: ['getPlacasPaginated', currentPage],
+    queryFn: () => getPlacas({ page: currentPage, paginated: 'true' }),
   });
 
   useEffect(() => {
@@ -29,11 +29,11 @@ export default function Index() {
     setCurrentPage(selectedItem.selected + 1);
   };
 
-  if(isLoading) return <Spinner />;
-  if(isError) return <ShowErrorAPI />;
+  if (isLoading) return <Spinner />;
+  if (isError) return <ShowErrorAPI />;
   return (
     <>
-      <h1 className="font-bold text-3xl">Placas</h1>
+      <h1 className="font-bold md:text-4xl text-xl text-center md:text-left">Placas</h1>
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
           to="/transportistas/placas/crear"
@@ -44,22 +44,24 @@ export default function Index() {
         </Link>
       </div>
 
-      <table className="table mt-10">
-        <thead>
-          <tr className="thead-tr">
-            <th className="thead-th">Placa</th>
-            <th className="thead-th">Transportista</th>
-          </tr>
-        </thead>
-        <tbody>
-          {placas.map(placa => (
-            <tr key={placa.id} className="tbody-tr">
-              <td className="tbody-td">{placa.name}</td>
-              <td className="tbody-td">{placa.carrier}</td>
+      <div className="table-wrapper">
+        <table className="table mt-10">
+          <thead>
+            <tr className="thead-tr">
+              <th className="thead-th">Placa</th>
+              <th className="thead-th">Transportista</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {placas.map(placa => (
+              <tr key={placa.id} className="tbody-tr">
+                <td className="tbody-td">{placa.name}</td>
+                <td className="tbody-td">{placa.carrier}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mt-5 mb-10 flex justify-center md:justify-end">
         <Pagination

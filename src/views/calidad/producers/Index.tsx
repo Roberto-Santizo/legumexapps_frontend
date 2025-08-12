@@ -39,12 +39,12 @@ export default function Index() {
 
   return (
     <>
-      <h2 className="font-bold text-4xl">Productores</h2>
+      <h2 className="font-bold md:text-4xl text-xl text-center md:text-left">Productores</h2>
       <div className="flex flex-row justify-end gap-5 mb-5">
         <div className="flex flex-row justify-end gap-5">
           <Link
             to="/productores/crear"
-            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center text-xs md:text-base"
           >
             <PlusIcon className="w-8" />
             <p>Crear Productor</p>

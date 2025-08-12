@@ -34,9 +34,9 @@ export default function Create() {
   const onSubmit = async (data: DraftProducer) => mutate(data);
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear Productor</h2>
+      <h2 className="md:text-4xl text-xl text-center md:text-left font-bold">Crear Productor</h2>
 
-      <form className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <form className="mt-10 md:w-3/4 mx-auto shadow-xl p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
         <InputComponent<DraftProducer>
           label="Nombre del Productor"

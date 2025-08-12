@@ -153,7 +153,7 @@ export default function Create() {
         Inspección de Transporte
       </h2>
 
-      <form className="mt-10 w-2/3 mx-auto bg-gradient-to-b from-white to-gray-50 rounded-xl shadow-xl p-8 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <form className="mt-10 md:w-2/3 mx-auto bg-gradient-to-b from-white to-gray-50 rounded-xl shadow-xl p-8 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
 
         <InputSelectComponent<DraftBoletaTransporte>
           label="Planta"

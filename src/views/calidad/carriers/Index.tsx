@@ -37,12 +37,12 @@ export default function Index() {
 
     return (
         <>
-            <h1 className="text-3xl font-bold">Transportistas</h1>
+            <h1 className="md:text-4xl text-xl text-center md:text-left font-bold">Transportistas</h1>
 
-            <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
+            <div className="flex md:flex-row flex-col justify-end gap-2">
                 <Link
                     to="/transportistas/crear"
-                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-2 uppercase flex justify-center items-center"
                 >
                     <PlusIcon className="w-6 md:w-8" />
                     <p className="text-sm md:text-base">Crear Transportista</p>
@@ -50,14 +50,14 @@ export default function Index() {
 
                 <Link
                     to="/transportistas/pilotos"
-                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-2 uppercase flex justify-center items-center"
                 >
                     <p className="text-sm md:text-base">Pilotos</p>
                 </Link>
 
                 <Link
                     to="/transportistas/placas"
-                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-2 uppercase flex justify-center items-center"
                 >
                     <p className="text-sm md:text-base">Placas</p>
                 </Link>

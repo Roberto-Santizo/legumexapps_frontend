@@ -52,7 +52,7 @@ export default function ModalCrearDefecto({ modal, setModal, setDefects, defects
 
                 <DefectForm register={register} errors={errors} />
 
-                <button disabled={loading} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                <button disabled={loading} className="button bg-indigo-500 hover:bg-indigo-600 w-full text-xs md:text-base">
                   {loading ? <Spinner /> : <p>Relacionar Defecto</p>}
                 </button>
             </form>

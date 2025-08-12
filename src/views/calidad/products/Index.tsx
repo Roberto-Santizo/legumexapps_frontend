@@ -40,25 +40,22 @@ export default function Index() {
     return (
         <>
             <div>
-                <h2 className="font-bold text-4xl">Productos</h2>
-                <div className="flex flex-row justify-end gap-5 mb-5">
-                    <div className="flex flex-row justify-end gap-5">
-                        <Link
-                            to="/productos/crear"
+                <h2 className="font-bold md:text-4xl text-xl text-center md:text-left">Productos</h2>
+                <div className="flex md:flex-row flex-col justify-end md:gap-5">
+                    <Link
+                        to="/productos/crear"
+                        className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                    >
+                        <PlusIcon />
+                        <p>Crear Producto</p>
+                    </Link>
+                    <Link
+                        to="/productos/variedades"
 
-                            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-                        >
-                            <PlusIcon />
-                            <p>Crear Producto</p>
-                        </Link>
-                        <Link
-                            to="/productos/variedades"
-
-                            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
-                        >
-                            <p>Variedades</p>
-                        </Link>
-                    </div>
+                        className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                    >
+                        <p>Variedades</p>
+                    </Link>
                 </div>
                 <div className="p-2 overflow-y-auto mt-10">
                     <table className="table">

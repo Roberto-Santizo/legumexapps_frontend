@@ -56,9 +56,9 @@ export default function Create() {
   if (isError) return <ShowErrorAPI />
   return (
     <div>
-      <h1 className="font-bold text-3xl">Crear Piloto</h1>
+      <h1 className="font-bold md:text-4xl text-xl text-center md:text-left">Crear Piloto</h1>
 
-      <form className="w-3/4 mb-10 shadow-xl p-10 mx-auto mt-10 space-y-10" onSubmit={handleSubmit(onSubmit)}>
+      <form className="md:w-3/4 mb-10 shadow-xl p-10 mx-auto mt-10 space-y-10" onSubmit={handleSubmit(onSubmit)}>
         <InputComponent<DraftPiloto>
           label="Nombre del piloto"
           id="name"

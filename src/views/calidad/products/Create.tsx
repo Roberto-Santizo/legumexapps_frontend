@@ -83,9 +83,9 @@ export default function Create() {
   if (isLoading) return <Spinner />
   return (
     <>
-      <h2 className="text-4xl font-bold">Crear Producto</h2>
+      <h2 className="md:text-4xl text-xl text-center md:text-left font-bold">Crear Producto</h2>
 
-      <form className="mt-10 w-2/3 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <form className="mt-10 md:w-2/3 mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
         <InputComponent<DraftProduct>
           label="Nombre"
@@ -126,9 +126,9 @@ export default function Create() {
         </InputComponent>
 
         <fieldset>
-          <button type="button" className="button bg-indigo-500 flex gap-2 hover:bg-indigo-600" onClick={() => setModal(!modal)}>
+          <button type="button" className="button bg-indigo-500 flex gap-2 hover:bg-indigo-600 items-center" onClick={() => setModal(!modal)}>
             <PlusIcon />
-            <p>Relacionar Defecto</p>
+            <p className="text-xs md:text-base">Relacionar Defecto</p>
           </button>
 
           {defects.length === 0 ? <p className="text-center py-5">No tiene defectos relacionados</p> : (
@@ -157,7 +157,7 @@ export default function Create() {
           )}
         </fieldset>
 
-        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+        <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full text-xs md:text-base">
           {isPending ? <Spinner /> : <p>Crear Producto</p>}
         </button>
       </form>

@@ -31,7 +31,7 @@ const InputComponent = <T extends Record<string, any>>({
 
     return (
         <div className="flex flex-col gap-2">
-            <label className="text-lg font-bold uppercase text-gray-700" htmlFor={id}>
+            <label className="text-xs md:text-lg font-bold uppercase text-gray-700" htmlFor={id}>
                 {label}
             </label>
             <input

@@ -31,9 +31,9 @@ export default function Create() {
   const onSubmit = (data: DraftTransportista) => mutate(data)
   return (
     <>
-      <h1 className="text-3xl font-bold">Crear Transportista</h1>
+      <h1 className="md:text-4xl text-xl text-center md:text-left font-bold">Crear Transportista</h1>
 
-      <form className="w-3/4 shadow-xl p-10 mx-auto mt-10 space-y-10" onSubmit={handleSubmit(onSubmit)}>
+      <form className="md:w-3/4 shadow-xl p-10 mx-auto mt-10 space-y-10" onSubmit={handleSubmit(onSubmit)}>
         <InputComponent<DraftTransportista>
           label="Codigo del Transportista"
           id="code"
