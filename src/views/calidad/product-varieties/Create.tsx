@@ -7,7 +7,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 
-export default function CrearVariedad() {
+export default function Create() {
     const navigate = useNavigate();
 
     const { mutate, isPending } = useMutation({

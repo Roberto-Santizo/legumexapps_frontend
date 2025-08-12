@@ -16,8 +16,7 @@ import Spinner from '@/components/utilities-components/Spinner';
 import InputComponent from '@/components/form/InputComponent';
 import InputSelectComponent from '@/components/form/InputSelectComponent';
 
-const BoletaCamion = () => {
-
+export default function Create() {
   const [plantas, setPlantas] = useState<Planta[]>([]);
   const [boletas, setBoletas] = useState<Boleta[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,7 +37,7 @@ const BoletaCamion = () => {
   const results = useQueries({
     queries: [
       { queryKey: ['getAllPlantas'], queryFn: getAllPlantas },
-      { queryKey: ['getAllBoletasRMP'], queryFn: () => getBoletasRMP({ page: 1, filters: FiletrsBoletaRMPInitialValues, paginated: '', transport_doc_create:'true'}) },
+      { queryKey: ['getAllBoletasRMP'], queryFn: () => getBoletasRMP({ page: 1, filters: FiletrsBoletaRMPInitialValues, paginated: '', transport_doc_create: 'true' }) },
       { queryKey: ['getProducts'], queryFn: () => getProducts({ page: 1, paginated: '' }) },
       { queryKey: ['getTransporteCondiciones'], queryFn: () => getCondicionesTransporte({ page: 1, paginated: '' }) }
     ]
@@ -148,7 +147,6 @@ const BoletaCamion = () => {
 
     mutate(transformedData);
   };
-
   return (
     <>
       <h2 className="text-4xl font-bold flex items-center gap-3">
@@ -352,6 +350,5 @@ const BoletaCamion = () => {
       </form>
     </>
   );
-};
+}
 
-export default BoletaCamion;

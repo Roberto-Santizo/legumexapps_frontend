@@ -20,7 +20,7 @@ export type DraftProduct = {
   variety_product_id: string,
   accepted_percentage: string
 }
-export default function CrearVariedad() {
+export default function Create() {
   const [varieties, setVarieties] = useState<Variety[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const [editModal, setEditModal] = useState<boolean>(false);

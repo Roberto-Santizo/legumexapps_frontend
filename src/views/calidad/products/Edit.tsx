@@ -2,12 +2,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
-import { Edit, PlusIcon } from "lucide-react";
+import { Edit as EditIcon, PlusIcon } from "lucide-react";
 import { getProductById, Product, ProductDetail } from "@/api/ProductsAPI";
 import { editProduct } from "@/api/ProductsAPI";
 import { useQueries } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { DraftProduct } from "./CrearProduct";
+import { DraftProduct } from "./Create";
 import { getVariedades, Variety } from "@/api/VarietiesAPI";
 import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
@@ -15,7 +15,7 @@ import CreateDefectoModal, { DraftDefecto } from "@/components/modals/ModalCrear
 import EditDefectoModal from "@/components/modals/ModalEditarDefecto";
 import Spinner from "@/components/utilities-components/Spinner";
 
-export default function EditProduct() {
+export default function Edit() {
   const params = useParams();
   const product_id = params.product_id!!;
   const [product, setProduct] = useState<ProductDetail>({} as ProductDetail);
@@ -182,7 +182,7 @@ export default function EditProduct() {
                     <td className="tbody-td">{defect.name}</td>
                     <td className="tbody-td">{defect.tolerance_percentage}</td>
                     <td className="tbody-td flex gap-5">
-                      <Edit className="cursor-pointer hover:text-gray-500" onClick={() => handleEditDefect(defect.id)} />
+                      <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleEditDefect(defect.id)} />
                     </td>
                     <td className="tbody-td button">
                       <button type="button" onClick={() => handleChangeStatus(defect)}>

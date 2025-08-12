@@ -7,7 +7,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 
-export default function IndexPilotos() {
+export default function Index() {
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -39,7 +39,7 @@ export default function IndexPilotos() {
       <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
         <Link
           to="/transportistas/pilotos/crear"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
         >
           <PlusIcon className="w-6 md:w-8" />
           <p className="text-sm md:text-base">Crear Piloto</p>

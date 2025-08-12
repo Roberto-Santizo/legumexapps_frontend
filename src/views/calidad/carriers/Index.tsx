@@ -7,7 +7,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 
-export default function IndexTransportistas() {
+export default function Index() {
     const [transportistas, setTransportistas] = useState<Transportista[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -42,7 +42,7 @@ export default function IndexTransportistas() {
             <div className="flex flex-col md:flex-row justify-end items-center gap-3 mt-10">
                 <Link
                     to="/transportistas/crear"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
                 >
                     <PlusIcon className="w-6 md:w-8" />
                     <p className="text-sm md:text-base">Crear Transportista</p>
@@ -50,14 +50,14 @@ export default function IndexTransportistas() {
 
                 <Link
                     to="/transportistas/pilotos"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
                 >
                     <p className="text-sm md:text-base">Pilotos</p>
                 </Link>
 
                 <Link
                     to="/transportistas/placas"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
                 >
                     <p className="text-sm md:text-base">Placas</p>
                 </Link>

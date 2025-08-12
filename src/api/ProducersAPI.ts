@@ -1,5 +1,5 @@
 import clienteAxios from "@/config/axios";
-import { DraftProducer } from "@/views/calidad/productores/CreateProducer";
+import { DraftProducer } from "@/views/calidad/producers/Create";
 import { isAxiosError } from "axios";
 import { z } from "zod";
 

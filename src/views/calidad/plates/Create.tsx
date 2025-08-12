@@ -11,13 +11,13 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
-export default function CrearPlaca() {
+export default function Create() {
   const [transportistas, setTransportistas] = useState<Transportista[]>([]);
   const navigate = useNavigate();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getAllTransportistas'],
-    queryFn: () => getTransportistas({page:1,paginated: ''}),
+    queryFn: () => getTransportistas({ page: 1, paginated: '' }),
   });
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function CrearPlaca() {
     control
   } = useForm<DraftPlaca>();
 
-  const onSubmit = (data : DraftPlaca) => mutate(data);
+  const onSubmit = (data: DraftPlaca) => mutate(data);
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />
@@ -59,20 +59,20 @@ export default function CrearPlaca() {
     <>
       <h1 className="font-bold text-3xl">Crear Placa</h1>
 
-      <form className="w-1/2 mx-auto mt-10 space-y-5" onSubmit={handleSubmit(onSubmit)}>
+      <form className="w-2/3 mx-auto mt-10 space-y-5 shadow-xl p-10" onSubmit={handleSubmit(onSubmit)}>
 
         <InputComponent<DraftPlaca>
-            label="Placa"
-            id="name"
-            name="name"
-            placeholder="Placa, ej; C123ABC"
-            register={register}
-            validation={{required: 'La placa es obligatoria'}}
-            errors={errors}
-            type={'text'}
+          label="Placa"
+          id="name"
+          name="name"
+          placeholder="Placa, ej; C123ABC"
+          register={register}
+          validation={{ required: 'La placa es obligatoria' }}
+          errors={errors}
+          type={'text'}
         >
-            {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
-        </InputComponent>        
+          {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+        </InputComponent>
 
         <InputSelectSearchComponent<DraftPlaca>
           label="Transportista"
@@ -80,10 +80,10 @@ export default function CrearPlaca() {
           name="carrier_id"
           options={transportistasOptions}
           control={control}
-          rules={{required:'Seleccione un transportista'}}
+          rules={{ required: 'Seleccione un transportista' }}
           errors={errors}
         >
-            {errors.carrier_id && <Error>{errors.carrier_id?.message?.toString()}</Error>}
+          {errors.carrier_id && <Error>{errors.carrier_id?.message?.toString()}</Error>}
         </InputSelectSearchComponent>
 
         <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

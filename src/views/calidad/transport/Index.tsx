@@ -7,7 +7,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 
-export default function IndexCamion() {
+export default function Index() {
     const [docs, setDocs] = useState<TransporteInspection[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -40,7 +40,7 @@ export default function IndexCamion() {
             <div className="flex flex-row justify-end gap-5">
                 <Link
                     to="/transporte-boleta/crear"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                 >
                     <PlusIcon className="w-8" />
                     <p>Crear Boleta de Camion</p>
@@ -48,7 +48,7 @@ export default function IndexCamion() {
 
                 <Link
                     to="/transporte-boleta/condiciones"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                 >
                     <p>Condiciones</p>
                 </Link>

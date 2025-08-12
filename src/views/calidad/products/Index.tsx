@@ -8,7 +8,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 
 
-export default function IndexVarieties() {
+export default function Index() {
     const [products, setProducts] = useState<Product[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -23,7 +23,7 @@ export default function IndexVarieties() {
         if (data) {
             setProducts(data.data);
         }
-        if(data && data.meta) {
+        if (data && data.meta) {
             setPageCount(data.meta.last_page);
             setCurrentPage(data.meta.current_page);
         }
@@ -46,7 +46,7 @@ export default function IndexVarieties() {
                         <Link
                             to="/productos/crear"
 
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                         >
                             <PlusIcon />
                             <p>Crear Producto</p>
@@ -54,7 +54,7 @@ export default function IndexVarieties() {
                         <Link
                             to="/productos/variedades"
 
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+                            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
                         >
                             <p>Variedades</p>
                         </Link>

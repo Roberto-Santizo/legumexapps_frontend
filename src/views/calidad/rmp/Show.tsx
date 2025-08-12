@@ -8,7 +8,7 @@ import { getBoletaInfoAll } from "@/api/ReceptionsDocAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
-export default function ShowRMP() {
+export default function Show() {
   const params = useParams();
   const rm_reception_id = params.rm_reception_id!!;
 

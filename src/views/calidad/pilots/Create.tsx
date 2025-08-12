@@ -12,7 +12,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputComponent from "@/components/form/InputComponent";
 
-export default function CrearPiloto() {
+export default function Create() {
 
   const [transportistas, setTransportistas] = useState<Transportista[]>([]);
   const navigate = useNavigate();

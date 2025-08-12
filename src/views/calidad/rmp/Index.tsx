@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 
 
-export default function IndexRMP() {
+export default function Index() {
     const [filters, setFilters] = useState<FiltersBoletaRMP>(FiletrsBoletaRMPInitialValues);
     const { hasPermission } = usePermissions();
 
@@ -99,7 +99,7 @@ export default function IndexRMP() {
                 {hasPermission('create rmp doc') && (
                     <Link
                         to="/rmp/crear"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+                        className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
                     >
                         <PlusIcon className="w-6 md:w-8" />
                         <p className="text-sm md:text-base">Crear Boleta Materia Prima</p>

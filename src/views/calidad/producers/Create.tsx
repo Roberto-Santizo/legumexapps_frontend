@@ -12,7 +12,7 @@ export type DraftProducer = {
   name: string
 }
 
-export default function CreateProducer() {
+export default function Create() {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
@@ -39,29 +39,29 @@ export default function CreateProducer() {
       <form className="mt-10 w-3/4 mx-auto shadow-xl p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
         <InputComponent<DraftProducer>
-            label="Nombre del Productor"
-            id="name"
-            name="name"
-            placeholder="Nombre del Productor"
-            register={register}
-            validation={{required: 'El nombre del productor es obligatorio'}}
-            errors={errors}
-            type={'text'}
+          label="Nombre del Productor"
+          id="name"
+          name="name"
+          placeholder="Nombre del Productor"
+          register={register}
+          validation={{ required: 'El nombre del productor es obligatorio' }}
+          errors={errors}
+          type={'text'}
         >
-            {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
+          {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
         </InputComponent>
 
         <InputComponent<DraftProducer>
-            label="Código"
-            id="code"
-            name="code"
-            placeholder="Código del Productor"
-            register={register}
-            validation={{required: 'El codigo del productor es obligatorio'}}
-            errors={errors}
-            type={'text'}
+          label="Código"
+          id="code"
+          name="code"
+          placeholder="Código del Productor"
+          register={register}
+          validation={{ required: 'El codigo del productor es obligatorio' }}
+          errors={errors}
+          type={'text'}
         >
-            {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
+          {errors.code && <Error>{errors.code?.message?.toString()}</Error>}
         </InputComponent>
 
         <button className="button bg-indigo-500 hover:bg-indigo-600 min-w-full">

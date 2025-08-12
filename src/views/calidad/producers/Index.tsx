@@ -7,7 +7,7 @@ import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
-export default function IndexProducers() {
+export default function Index() {
   const [producers, setProducers] = useState<Producer[]>([]);
 
   const [pageCount, setPageCount] = useState<number>(0);
@@ -44,7 +44,7 @@ export default function IndexProducers() {
         <div className="flex flex-row justify-end gap-5">
           <Link
             to="/productores/crear"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-5 uppercase flex justify-center items-center"
           >
             <PlusIcon className="w-8" />
             <p>Crear Productor</p>

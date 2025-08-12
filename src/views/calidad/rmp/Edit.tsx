@@ -9,7 +9,7 @@ import Boleta_form3 from "./Boleta_form3";
 
 
 
-export default function EditRMP() {
+export default function Edit() {
   const { rm_reception_id } = useParams();
   
   const [boleta, setBoleta] = useState<BoletaDetail>({} as BoletaDetail);
