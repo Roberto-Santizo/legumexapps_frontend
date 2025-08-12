@@ -1,12 +1,12 @@
 import { AlertCircleIcon, CheckCircle, EditIcon, Eye, PlusIcon, RefreshCcwDot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useQueries, useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { getBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { toast } from "react-toastify";
-import { getUserRole } from "@/api/UserAPI";
 import { usePermissions } from "@/hooks/usePermissions";
+import { BoletaRMP } from "types/rmpDocTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersRMP, { FiletrsBoletaRMPInitialValues, FiltersBoletaRMP } from "@/components/filters/FiletrsRMP";
@@ -14,7 +14,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalGRN from "@/components/modals/ModalGRN";
 import Swal from "sweetalert2";
 import StatusComponent from "@/components/boleta-rmp/StatusComponent";
-import { BoletaRMP } from "types/rmpDocTypes";
+import { useRole } from "@/hooks/useRole";
 
 
 export default function Index() {
@@ -23,11 +23,12 @@ export default function Index() {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [boletas, setBoletas] = useState<BoletaRMP[]>([]);
-    const [role, setRole] = useState<string>();
     const [modalGRN, setModalGRN] = useState<boolean>(false);
     const [boletaSelected, setBoletaSelected] = useState<BoletaRMP>();
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const { data: role} = useRole();
 
     const { data, isError, isLoading, refetch } = useQuery({
         queryKey: ['getPaginatedBoletasRMP', currentPage, filters],
@@ -45,12 +46,6 @@ export default function Index() {
         }
     });
 
-    const results = useQueries({
-        queries: [
-            { queryKey: ['getUserRoleByToken'], queryFn: getUserRole }
-        ]
-    })
-
     useEffect(() => {
         if (data) {
             setBoletas(data.data);
@@ -61,10 +56,7 @@ export default function Index() {
             setPageCount(data.meta.last_page);
         }
 
-        if (results) {
-            setRole(results[0].data);
-        }
-    }, [data, results]);
+    }, [data]);
 
 
     const handleOpenModal = async (boleta: BoletaRMP) => {

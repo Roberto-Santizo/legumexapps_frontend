@@ -322,7 +322,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
                   className="max-h-25 md:max-h-25 object-contain"
                 />
               </div>
-              <p className="mt-2">FIRMA RECEPTOR</p>
+              <p className="mt-2">Firma Receptor</p>
             </div>
           )}
 

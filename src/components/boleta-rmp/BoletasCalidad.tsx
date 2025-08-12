@@ -101,14 +101,14 @@ export default function BoletasCalidad({ boleta }: Props) {
             </div>
 
             <div className="text-center">
-              <div className="border-b border-black h-16 md:h-20 flex items-center justify-center my-6 mx-auto w-6/12">
-                <img
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${boleta.quality_doc_data?.inspector_planta_signature}`}
-                  alt="Firma Inspector Planta"
-                  className="max-h-20 md:max-h-20 object-contain"
-                />
-              </div>
-              <p className="mt-2">NOMBRE INSPECTOR PLANTA</p>
+                <div className="border-b border-black h-16 md:h-20 flex items-center justify-center my-6 mx-auto w-6/12">
+                    <img
+                        src={`${import.meta.env.VITE_BASE_URL}storage/${boleta.quality_doc_data?.inspector_planta_signature}`}
+                        alt="Firma Inspector Planta"
+                        className="max-h-20 md:max-h-20 object-contain"
+                    />
+                </div>
+                <p className="mt-2">NOMBRE INSPECTOR PLANTA</p>
             </div>
 
             <div className="mt-6 text-sm text-center text-gray-600">
