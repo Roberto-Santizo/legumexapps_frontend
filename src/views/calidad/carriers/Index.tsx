@@ -49,13 +49,6 @@ export default function Index() {
                 </Link>
 
                 <Link
-                    to="/transportistas/pilotos"
-                    className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-2 uppercase flex justify-center items-center"
-                >
-                    <p className="text-sm md:text-base">Pilotos</p>
-                </Link>
-
-                <Link
                     to="/transportistas/placas"
                     className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-2 uppercase flex justify-center items-center"
                 >

@@ -101,7 +101,7 @@ export default function Navegation() {
       )}
 
       {hasPermission("create carriers") && (
-        <NavLinkComponent url="/transportistas" text="Transportistas y Pilotos">
+        <NavLinkComponent url="/transportistas" text="Transportistas">
           <Users />
         </NavLinkComponent>
       )}
