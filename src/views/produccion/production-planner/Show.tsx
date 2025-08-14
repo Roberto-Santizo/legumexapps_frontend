@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 import TasksList from "./TasksList";
 import "@/lib/echo";
 import { useRole } from "@/hooks/useRole";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export type FiltersDraftsTasks = {
   sku: string;
@@ -36,6 +37,7 @@ export default function Show() {
 
   const navigate = useNavigate();
   const { data: role } = useRole();
+  const { hasPermission } = usePermissions();
 
   const { data: draft } = useQuery({
     queryKey: ['getDraftWeeklyPlanById', id, filters],
@@ -153,7 +155,7 @@ export default function Show() {
               </div>
             </div>
 
-            {!draft.confirmation_date && (
+            {(!draft.confirmation_date && hasPermission('create task production draft')) && (
               <>
                 <button
                   onClick={() => navigate(`${location.pathname}?newTask=true`, { replace: true })}
