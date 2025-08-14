@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { PositionSchema } from "./lineSchemas";
 import { StockKeepingUnitSchema } from "./stockKeepingUnitSchemas";
 
 export const BitacoraTaskProductionEmployeeSchema = z.object({
@@ -14,6 +13,7 @@ export const TaskProductionEmployeeSchema = z.object({
     name: z.string(),
     code: z.string(),
     position: z.string(),
+    flag: z.boolean(),
     bitacoras: z.array(BitacoraTaskProductionEmployeeSchema).optional()
 });
 
@@ -47,6 +47,7 @@ export const TaskProductionSchema = z.object({
     id: z.string(),
     line: z.string(),
     sku: z.string(),
+    client_name: z.string(),
     product: z.string(),
     total_lbs: z.number(),
     operation_date: z.string(),
@@ -64,11 +65,9 @@ export const TaskProductionSchema = z.object({
 
 export const TaskProductionDetailsSchema = TaskProductionSchema.pick({ id: true, line: true, operation_date: true, start_date: true, total_lbs: true }).extend({
     sku: StockKeepingUnitSchema,
-    filtered_employees: z.array(TaskProductionEmployeeSchema),
-    all_employees: z.array(TaskProductionEmployeeSchema),
-    positions: z.array(PositionSchema),
+    employees: z.array(TaskProductionEmployeeSchema),
     exists_previuos_config: z.boolean(),
-    flag: z.boolean()
+    // flag: z.boolean()
 });
 
 export const TasksByLineSchema = z.object({

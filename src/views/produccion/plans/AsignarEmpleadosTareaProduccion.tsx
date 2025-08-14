@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "@/helpers";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { ArrowBigRight, PlusIcon, TrashIcon, User } from "lucide-react";
+import { Apple, ArrowBigRight, BookCheck, Calendar, ChartLine, Info, TrashIcon, UsersIcon } from "lucide-react";
 import { confirmAssignment, createTaskProductionEmployees, getComodines, getTaskProductionDetails } from "@/api/TaskProductionPlansAPI";
 import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmployee } from "types/taskProductionPlanTypes";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,10 +11,9 @@ import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalChangeEmployee from "@/components/modals/ModalChangeEmployee";
 import Swal from "sweetalert2";
-import ModalAddEmployee from "@/components/modals/ModalAddEmployee";
 import TaskProductionAsignacionSkeleton from "@/components/produccion/TaskProductionAsignacionSkeleton";
-import ModalTaskEmployees from "@/components/modals/ModalTaskEmployees";
-import { Position } from "types/linesTypes";
+import CardInfo from "@/components/shared/CardInfo";
+import TableEmployees from "@/components/produccion/TableEmployees";
 
 
 export default function ShowTaskProductionDetails() {
@@ -33,9 +32,7 @@ export default function ShowTaskProductionDetails() {
     const [newEmployees, setNewEmployees] = useState<DraftTaskProductionEmployee[]>([]);
     const [availableEmployees, setAvailableEmployees] = useState<TaskProductionEmployee[]>([]);
     const [comodines, setComodines] = useState<TaskProductionEmployee[]>([]);
-    const [positions, setPositions] = useState<Position[]>([]);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [modalEmployees, setModalEmployees] = useState<boolean>(false);
+    const [counter, setCounter] = useState<number>(0);
     const navigate = useNavigate();
 
     const { data: taskDetails, isLoading, isError } = useQuery({
@@ -44,6 +41,8 @@ export default function ShowTaskProductionDetails() {
         refetchOnWindowFocus: false,
         retry: false
     });
+
+    const validated_employees = useMemo(() => taskDetails?.employees.filter(employee => employee.flag).length, [taskDetails?.employees]);
 
     const { data: comodinesData, isLoading: isLoadingComodines, isError: isErrorComodines } = useQuery({
         queryKey: ['getComodines'],
@@ -55,6 +54,7 @@ export default function ShowTaskProductionDetails() {
     const handleChangeEmployee = (comodin: TaskProductionEmployee) => {
         setSelectedComodin(comodin);
         setModal(true);
+
     }
 
     const handleDeleteEmployee = (index: number) => {
@@ -64,6 +64,7 @@ export default function ShowTaskProductionDetails() {
         setChanges(newChanges);
         setAvailableEmployees((prev) => [...prev, old_employee]);
         setComodines((prev) => [...prev, new_employee]);
+        setCounter(counter - 1);
     }
 
     const handleDeleteNewEmployee = (index: number) => {
@@ -71,13 +72,6 @@ export default function ShowTaskProductionDetails() {
 
         const newEmployeesAux = newEmployees.filter(emp => emp.code !== employeeToRemove.code);
         const comodin = comodinesData?.find(c => c.code === employeeToRemove.code);
-
-        if (employeeToRemove.position_id) {
-            const position = taskDetails?.positions.find(p => p.id === employeeToRemove.position_id);
-            if (position) {
-                setPositions(prev => [...prev, position]);
-            }
-        }
 
         if (comodin) {
             setComodines(prev => [...prev, comodin]);
@@ -88,8 +82,7 @@ export default function ShowTaskProductionDetails() {
 
     useEffect(() => {
         if (taskDetails) {
-            setAvailableEmployees(taskDetails.filtered_employees);
-            setPositions(taskDetails.positions);
+            setAvailableEmployees(taskDetails.employees.filter(employee => !employee.flag));
         }
     }, [taskDetails]);
 
@@ -165,133 +158,156 @@ export default function ShowTaskProductionDetails() {
         });
     }
 
+    const handleSelectOption = (comodin: TaskProductionEmployee) => {
+        Swal.fire({
+            title: `¿Qué desea hacer con ${comodin.name}?`,
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Cambiar Empleado",
+            denyButtonText: `Agregar Empleado`,
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleChangeEmployee(comodin);
+            } else if (result.isDenied) {
+
+                const data: DraftTaskProductionEmployee = {
+                    name: comodin.name,
+                    code: comodin.code,
+                    position_id: '',
+                    new_position: comodin.position,
+                    old_position: comodin.position
+                }
+
+                setComodines(prev => prev.filter(employee => employee.code !== comodin.code));
+                setNewEmployees(prev => [...prev, data]);
+            }
+        });
+    }
+
+
     if (isLoading || isLoadingComodines) return <TaskProductionAsignacionSkeleton />;
     if (isError || isErrorComodines) return <Spinner />;
     if (taskDetails && comodines) return (
-        <div className="space-y-10 mb-10">
-            <h1 className="font-bold text-4xl">Información</h1>
-            <div className="p-5 shadow-xl grid grid-cols-2">
-                <div>
-                    <div className="font-bold">Línea: <span className="font-normal ml-2">{taskDetails.line ?? 'N/A'}</span></div>
-                    <div className="font-bold">Fecha de operación:<span className="font-normal ml-2">{taskDetails.operation_date ? formatDate(taskDetails.operation_date) : 'N/A'}</span></div>
-                    <div className="font-bold">Total de libras:<span className="font-normal ml-2">{taskDetails.total_lbs ?? 0}</span></div>
-                    <div className="font-bold">SKU:<span className="font-normal ml-2">{taskDetails.sku.code ?? 'N/A'}</span></div>
-                    <div className="font-bold">Descripción:<span className="font-normal ml-2">{taskDetails.sku.product_name ?? 'N/A'}</span></div>
-                </div>
-                <div>
-                    <button onClick={() => setIsOpen(true)} className="button bg-indigo-500 hover:bg-indigo-600 flex gap-2" >
-                        <PlusIcon />
-                        <p>Agregar Empleado</p>
-                    </button>
+        <>
+            <h1 className="font-bold text-4xl text-gray-800 tracking-tight">
+                Información y Asignaciones
+            </h1>
+
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-4 gap-6">
+                <CardInfo label="Línea" text={taskDetails.line} child={<BookCheck className="h-10 w-10 text-blue-600" />} />
+                <CardInfo label="Fecha de operación" text={formatDate(taskDetails.operation_date)} child={<Calendar className="h-10 w-10 text-blue-600" />} />
+                <CardInfo label="Libras Programadas" text={`${taskDetails.total_lbs} lbs`} child={<ChartLine className="h-10 w-10 text-blue-600" />} />
+                <CardInfo label="SKU" text={taskDetails.sku.code} child={<Info className="h-10 w-10 text-blue-600" />} />
+                <CardInfo label="Producto" text={taskDetails.sku.product_name} child={<Apple className="h-10 w-10 text-blue-600" />} />
+                <CardInfo label="Total Empleados Validados" text={`${validated_employees} / ${taskDetails.employees.length}`} child={<UsersIcon className="h-10 w-10 text-blue-600" />} />
+                <CardInfo label="Total Comodines Asignados" text={`${newEmployees.length + counter}`} child={<UsersIcon className="h-10 w-10 text-blue-600" />} />
+            </div>
+
+            <section className="mt-10 flex flex-col lg:flex-row gap-8">
+                <TableEmployees employees={taskDetails.employees} onClick={() => { }} />
+                <TableEmployees employees={comodines} onClick={handleSelectOption} />
+            </section>
+
+            <div className="shadow-lg rounded-xl overflow-hidden mt-8 border border-gray-200">
+                <p className="text-center bg-gradient-to-r from-indigo-500 to-purple-500 py-2 text-white font-semibold">
+                    Resumen de Cambios
+                </p>
+
+                <div className="max-h-96 overflow-y-auto scrollbar-hide divide-y divide-gray-100">
+                    {(changes.length === 0 && newEmployees.length === 0) && (
+                        <p className="text-center text-lg text-gray-500 py-8">No existen cambios</p>
+                    )}
+
+                    <AnimatePresence>
+                        {changes.map((change, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.3 }}
+                                className="flex items-center justify-between bg-white px-6 py-4 hover:bg-gray-50 transition-colors"
+                            >
+                                <div className="flex items-center gap-6">
+                                    <div>
+                                        <span className="text-xs text-gray-500">Nuevo</span>
+                                        <p className="text-base font-semibold text-indigo-600">
+                                            {change.new_employee.name} ({change.new_employee.position})
+                                        </p>
+                                    </div>
+
+                                    <ArrowBigRight className="w-6 h-6 text-gray-400" />
+
+                                    <div>
+                                        <span className="text-xs text-gray-500">Anterior</span>
+                                        <p className="text-base font-semibold text-purple-600">
+                                            {change.old_employee.name} ({change.old_employee.position})
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button
+                                    className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 group"
+                                    title="Eliminar cambio"
+                                    onClick={() => handleDeleteEmployee(index)}
+                                >
+                                    <TrashIcon className="w-5 h-5 text-red-500 group-hover:text-red-700" />
+                                </button>
+                            </motion.div>
+                        ))}
+
+                        {newEmployees.map((newEmployee, index) => (
+                            <motion.div
+                                key={newEmployee.code}
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.3 }}
+                                className="flex items-center justify-between bg-white px-6 py-4 hover:bg-gray-50 transition-colors"
+                            >
+                                <div className="flex items-center gap-6">
+                                    <div>
+                                        <span className="text-xs text-gray-500">Empleado</span>
+                                        <p className="text-base font-semibold text-indigo-600">
+                                            {newEmployee.name} ({newEmployee.old_position})
+                                        </p>
+                                    </div>
+
+                                    <ArrowBigRight className="w-6 h-6 text-gray-400" />
+
+                                    <div>
+                                        <span className="text-xs text-gray-500">Posición</span>
+                                        <p className="text-base font-semibold text-purple-600">
+                                            {newEmployee.new_position}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button
+                                    className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 group"
+                                    title="Eliminar cambio"
+                                    onClick={() => handleDeleteNewEmployee(index)}
+                                >
+                                    <TrashIcon className="w-5 h-5 text-red-500 group-hover:text-red-700" />
+                                </button>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
                 </div>
             </div>
 
-            <div className="flex flex-row justify-between gap-2">
-                <button className="button bg-indigo-500 hover:bg-indigo-600 w-full mb-5" onClick={() => setModalEmployees(true)}>
-                    Ver Empleados Asignados
+            <div className=" flex flex-row items-center justify-center gap-5 mt-10">
+                <button onClick={() => handleConfirmAssignment()} disabled={loading} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+                    {loading ? <Spinner /> : <p>Confirmar Asignaciones</p>}
                 </button>
 
-                <button disabled={!taskDetails.exists_previuos_config} className={`${taskDetails.exists_previuos_config ? 'bg-red-500 hover:bg-red-600 cursor-pointer' : 'bg-red-500/40 cursor-not-allowed'} button  w-full mb-5`} onClick={() => handleUsePreviousConfig()}>
+                <button disabled={!taskDetails.exists_previuos_config} className={`${taskDetails.exists_previuos_config ? 'bg-red-500 hover:bg-red-600 cursor-pointer' : 'bg-red-500/40 cursor-not-allowed'} button w-full`} onClick={() => handleUsePreviousConfig()}>
                     Utilizar configuración anterior
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-10">
-                <div>
-                    <p className="text-center bg-indigo-500 p-1 text-white font-bold">Comodines Disponibles</p>
-                    <div className="max-h-96 overflow-y-auto scrollbar-hide space-y-2">
-                        {comodines?.map(comodin => (
-                            <div key={comodin.position} className="flex justify-between items-center gap-3 px-5 py-3 rounded-lg shadow-md border border-gray-300 bg-white text-gray-700 font-medium transition-all cursor-pointer hover:bg-gray-100"
-                                onClick={() => handleChangeEmployee(comodin)}
-                            >
-                                <div className='flex items-center gap-3'>
-                                    <div className="bg-indigo-500 text-white p-2 rounded-full">
-                                        <User size={18} />
-                                    </div>
-                                    <p className="text-sm">{comodin.name}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                </div>
-
-                <div className="shadow">
-                    <p className="text-center bg-indigo-500 p-1 text-white font-bold">Resumen de Cambios</p>
-
-                    <div className="max-h-96 overflow-y-auto scrollbar-hide space-y-2">
-                        {(changes.length === 0 && newEmployees.length === 0) && <p className="text-center text-lg mt-10">No existen cambios</p>}
-                        <AnimatePresence>
-                            {changes.map((change, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 20 }}
-                                    transition={{ duration: 0.4 }}
-                                    className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl px-6 py-4 shadow-sm hover:shadow-md transition-shadow duration-300"
-                                >
-                                    <div className="flex items-center gap-6">
-                                        <div className="flex flex-col items-start">
-                                            <span className="text-xs text-gray-500">Nuevo</span>
-                                            <p className="text-base font-semibold text-indigo-600">{change.new_employee.name} ({change.new_employee.position})</p>
-                                        </div>
-
-                                        <ArrowBigRight className="w-6 h-6 text-gray-400" />
-
-                                        <div className="flex flex-col items-start">
-                                            <span className="text-xs text-gray-500">Anterior</span>
-                                            <p className="text-base font-semibold text-purple-600">{change.old_employee.name} ({change.old_employee.position})</p>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 group"
-                                        title="Eliminar cambio"
-                                        onClick={() => handleDeleteEmployee(index)}
-                                    >
-                                        <TrashIcon className="w-5 h-5 text-red-500 group-hover:text-red-700" />
-                                    </button>
-                                </motion.div>
-                            ))}
-
-                            {newEmployees.map((newEmployee, index) => (
-                                <motion.div
-                                    key={newEmployee.code}
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 20 }}
-                                    transition={{ duration: 0.4 }}
-                                    className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl px-6 py-4 shadow-sm hover:shadow-md transition-shadow duration-300"
-                                >
-                                    <div className="flex items-center gap-6">
-                                        <div className="flex flex-col items-start">
-                                            <span className="text-xs text-gray-500">Empleado</span>
-                                            <p className="text-base font-semibold text-indigo-600">{newEmployee.name} ({newEmployee.old_position})</p>
-                                        </div>
-
-                                        <ArrowBigRight className="w-6 h-6 text-gray-400" />
-
-                                        <div className="flex flex-col items-start">
-                                            <span className="text-xs text-gray-500">Posición</span>
-                                            <p className="text-base font-semibold text-purple-600">{newEmployee.new_position}</p>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        className="p-2 rounded-full hover:bg-red-100 transition-colors duration-200 group"
-                                        title="Eliminar cambio"
-                                        onClick={() => handleDeleteNewEmployee(index)}
-                                    >
-                                        <TrashIcon className="w-5 h-5 text-red-500 group-hover:text-red-700" />
-                                    </button>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
-                    </div>
-                </div>
-            </div>
-
+            {/* Modal */}
             {modal && (
                 <ModalChangeEmployee
                     modal={modal}
@@ -302,25 +318,12 @@ export default function ShowTaskProductionDetails() {
                     setSelectedComodin={setSelectedComodin}
                     setChanges={setChanges}
                     setComodines={setComodines}
+                    setCounter={setCounter}
+                    counter={counter}
                 />
             )}
+        </>
 
-            <ModalAddEmployee
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                comodines={comodines}
-                setComodines={setComodines}
-                positions={positions}
-                setPositions={setPositions}
-                setNewEmployees={setNewEmployees}
-            />
-
-            <ModalTaskEmployees open={modalEmployees} setOpen={setModalEmployees} employees={taskDetails.all_employees} />
-
-            <button onClick={() => handleConfirmAssignment()} disabled={loading} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-                {loading ? <Spinner /> : <p>Confirmar Asignaciones</p>}
-            </button>
-        </div>
     );
 }
 

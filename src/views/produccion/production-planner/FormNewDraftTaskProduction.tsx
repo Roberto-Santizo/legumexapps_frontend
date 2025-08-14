@@ -57,7 +57,7 @@ export default function FormNewDraftTaskProduction({ register, errors, control, 
                 name="line_id"
                 options={lineas || []}
                 control={control}
-                rules={{ required: 'Seleccione una linea' }}
+                rules={{}}
                 errors={errors}
             >
                 {errors.line_id && <Error>{errors.line_id?.message?.toString()}</Error>}

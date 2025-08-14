@@ -11,11 +11,12 @@ type Props = {
     setSelectedComodin: Dispatch<SetStateAction<TaskProductionEmployee>>;
     setChanges: Dispatch<SetStateAction<TaskProductionChange[]>>;
     setComodines: Dispatch<SetStateAction<TaskProductionEmployee[]>>;
-
+    setCounter: Dispatch<SetStateAction<number>>;
+    counter: number;
 }
 
 
-export default function ModalChangeEmployee({ modal, setModal, availableEmployees, setAvailableEmployees, selectedComodin, setComodines, setSelectedComodin, setChanges }: Props) {
+export default function ModalChangeEmployee({ modal, setModal, availableEmployees, setAvailableEmployees, selectedComodin, setComodines, setSelectedComodin, setChanges, setCounter, counter }: Props) {
 
 
     const handleChangeEmployee = (employee: TaskProductionEmployee) => {
@@ -27,6 +28,7 @@ export default function ModalChangeEmployee({ modal, setModal, availableEmployee
         setAvailableEmployees((prev) => prev.filter(auxemployee => auxemployee.code !== employee.code));
         setComodines((prev) => prev.filter(auxcomodin => auxcomodin.code !== selectedComodin.code));
         setChanges((prev) => [...prev, data]);
+        setCounter(counter + 1);
         setModal(false);
     }
 

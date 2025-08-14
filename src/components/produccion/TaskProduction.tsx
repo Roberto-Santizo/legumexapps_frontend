@@ -56,6 +56,7 @@ export default function TaskProduction({ task }: Props) {
     <div className="flex flex-col xl:grid xl:grid-cols-6 gap-8 shadow-xl rounded-2xl bg-white p-10 xl:text-xl text-xs">
       <div className="col-span-6 md:col-span-5">
         <TaskLabel label="SKU" text={task.sku} />
+        <TaskLabel label="Cliente" text={task.client_name} />
         <TaskLabel label="Producto" text={task.product} />
         <TaskLabel label="Total de Libras" text={task.total_lbs.toString()} />
         <TaskLabel label="Fecha de Operación" text={task.operation_date} />

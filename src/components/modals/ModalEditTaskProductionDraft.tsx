@@ -50,7 +50,7 @@ export default function ModalEditTaskProductionDraft() {
     useEffect(() => {
         if (data) {
             setValue('stock_keeping_unit_id', data.stock_keeping_unit_id.toString());
-            setValue('line_id', data.line_id.toString());
+            setValue('line_id', data.line_id ? data.line_id.toString() : '');
             setValue('total_lbs', data.total_lbs);
             setValue('destination', data.destination);
         }

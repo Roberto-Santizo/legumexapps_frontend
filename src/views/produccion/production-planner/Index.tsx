@@ -1,11 +1,11 @@
 import { ClockIcon, Eye, PlusIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import ModalCreateDraftPlanProduction from "@/components/modals/ModalCreateDraftPlanProduction";
 import { getWeeklyProductionPlanDrafts } from "@/api/DraftWeeklyProductionPlanAPI";
 import { useEffect, useState } from "react";
-import Pagination from "@/components/utilities-components/Pagination";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
+import ModalCreateDraftPlanProduction from "@/components/modals/ModalCreateDraftPlanProduction";
+import Pagination from "@/components/utilities-components/Pagination";
 
 export default function Index() {
   const navigate = useNavigate();

@@ -1,10 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query";
 import { ChangeEvent, useMemo, useState } from "react";
-import { PlusIcon } from "lucide-react";
+import { DownloadIcon, PlusIcon } from "lucide-react";
 import { confirmPlan, createWeeklyProductionPlanFromDraft, getDraftWeeklyPlanById } from "@/api/DraftWeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { usePlanificationWebSocket } from "@/lib/echo";
+import { downloadWeeklyProductionDraftTasks } from "@/api/WeeklyProductionPlanAPI";
 import ModalAddNewDraftProductionTask from "@/components/modals/ModalAddNewDraftProductionTask";
 import SummaryLines from "./SummaryLines";
 import SummaryItems from "./SummaryItems";
@@ -62,6 +63,14 @@ export default function Show() {
       toast.success(data);
     }
   });
+
+  const { mutate: dowloadTasks, isPending: dowloadTasksLoading } = useMutation({
+    mutationFn: downloadWeeklyProductionDraftTasks,
+    onError: (error) => {
+      toast.error(error.message);
+    }
+  });
+
 
   const handleChangefiltersNoOperationDate = (e: ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({
@@ -153,6 +162,18 @@ export default function Show() {
                 </button>
               </>
             )}
+
+            <button
+              disabled={dowloadTasksLoading}
+              onClick={() => dowloadTasks({ plan_id: id })}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition"
+            >
+              {dowloadTasksLoading ? <Spinner /> : (
+                <DownloadIcon className="w-4 h-4" />
+
+              )}
+              <span>Descargar Tareas</span>
+            </button>
           </div>
 
           {draft.tasks.length === 0 ? (

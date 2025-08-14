@@ -176,3 +176,20 @@ export async function downloadWeeklyProductionPlan({ plan_id }: { plan_id: Weekl
     }
 }
 
+export async function downloadWeeklyProductionDraftTasks({ plan_id }: { plan_id: string }) {
+    try {
+        const url = `/api/report-production/${plan_id}`;
+        const { data } = await clienteAxios.get(url);
+        const result = ReportSchema.safeParse(data);
+        if (result.success) {
+            downloadBase64File(result.data.file, result.data.fileName)
+        } else {
+            throw new Error('Información no válida');
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+

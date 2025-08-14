@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { WeeklyProductionPlanDraft } from "types/draftWeeklyProductionPlanTypes";
 import Echo from "laravel-echo";
 import Pusher from 'pusher-js';
+import { useEffect } from "react";
 
 declare global {
     interface Window {
@@ -30,13 +31,19 @@ window.Echo = new Echo({
 export const usePlanificationWebSocket = (id: WeeklyProductionPlanDraft['id']) => {
     const queryClient = useQueryClient();
 
-    var channel = window.Echo.private('planification.change');
+    useEffect(() => {
+        const channel = window.Echo.private('planification.change');
 
+        channel.subscribed(() => console.log('suscrito'))
+            .listen('.UpdateProductionPlanification', () => {
+                queryClient.invalidateQueries({ queryKey: ['getSummaryDraftLines', id] });
+                queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlanById', id] });
+                queryClient.invalidateQueries({ queryKey: ['getSummaryDraftItems', id] });
+                queryClient.invalidateQueries({ queryKey: ['getSummaryDraftRawMaterial', id] });
+            });
 
-    channel.subscribed(() => console.log('suscrito')).listen('.UpdateProductionPlanification', function () {
-        queryClient.invalidateQueries({ queryKey: ['getSummaryDraftLines', id] });
-        queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlanById', id] });
-        queryClient.invalidateQueries({ queryKey: ['getSummaryDraftItems', id] });
-        queryClient.invalidateQueries({ queryKey: ['getSummaryDraftRawMaterial', id] });
-    });
-}
+        return () => {
+            window.Echo.leaveChannel(`private-planification.change`);
+        };
+    }, [id]);
+};

@@ -11,7 +11,7 @@ export const DraftTaskProductionPlanSchema = z.object({
 
 export const DraftTaskProductionPlanEditDetailsSchema = z.object({
     id: z.number(),
-    line_id: z.number(),
+    line_id: z.number().nullable(),
     stock_keeping_unit_id: z.number(),
     total_lbs: z.number(),
     destination: z.string()

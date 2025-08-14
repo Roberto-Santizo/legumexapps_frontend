@@ -1,14 +1,12 @@
 import { getSummaryDraftLines } from "@/api/DraftWeeklyProductionPlanAPI";
 import { useQuery } from "@tanstack/react-query";
-import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { saveAs } from "file-saver";
-import { ArrowDown, ArrowUp, FileSymlink } from "lucide-react";
+import { FileSymlink } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, YAxis, LabelList } from "recharts";
 import { FiltersDraftsTasks } from "./Show";
 import { CategoricalChartState } from "recharts/types/chart/types";
-import { LineHoursPerWeek } from "types/linesTypes";
 import * as XLSX from 'xlsx';
 
 type Props = {
@@ -16,40 +14,15 @@ type Props = {
     filters: FiltersDraftsTasks;
 }
 
-const columnHelper = createColumnHelper<LineHoursPerWeek>();
-
-const columns = [
-    columnHelper.accessor('line', {
-        header: () => 'Linea',
-        cell: (info) => info.getValue()
-    }),
-    columnHelper.accessor('total_hours', {
-        header: () => 'Total de Horas',
-        cell: (info) => info.getValue()
-    }),
-];
-
 export default function SummaryLines({ setFilters, filters }: Props) {
     const params = useParams<{ id: string }>();
     const id = params.id!;
-    const [sorting, setSorting] = useState<SortingState>([]);
     const [lineView, setLineView] = useState<string>('A');
 
     const { data: lines } = useQuery({
         queryKey: ['getSummaryDraftLines', id, filters.line],
         queryFn: () => getSummaryDraftLines({ id, line: filters.line }),
         refetchOnWindowFocus: false
-    });
-
-    const table = useReactTable({
-        data: lines ?? [],
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        state: {
-            sorting
-        },
-        onSortingChange: setSorting
     });
 
     const handleExportExcel = () => {
@@ -90,6 +63,21 @@ export default function SummaryLines({ setFilters, filters }: Props) {
             }
         }
     }
+
+    const handleClickRow = (id: string) => {
+        if (filters.line === id) {
+            setFilters((prev) => ({
+                ...prev,
+                line: ''
+            }));
+        } else {
+            setFilters((prev) => ({
+                ...prev,
+                line: id
+            }));
+        }
+    }
+
 
     return (
         <section className="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
@@ -148,28 +136,16 @@ export default function SummaryLines({ setFilters, filters }: Props) {
                     <div className="max-h-96 scrollbar-hide overflow-x-auto">
                         <table className="table">
                             <thead>
-                                {table.getHeaderGroups().map(headerGroup => (
-                                    <tr key={headerGroup.id} className="thead-tr">
-                                        {headerGroup.headers.map(header => (
-                                            <th key={header.id} className="thead-th" >
-                                                <div  {...{ className: header.column.getCanSort() ? 'cursor-pointer select-none flex gap-2' : '', onClick: header.column.getToggleSortingHandler() }}>
-                                                    {flexRender(header.column.columnDef.header, header.getContext())}
-                                                    {{ asc: <ArrowUp className="w-4" />, desc: <ArrowDown className="w-4" /> }[header.column.getIsSorted() as string] ?? null}
-                                                </div>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
+                                <tr className="thead-tr">
+                                    <th className="thead-th">Linea</th>
+                                    <th className="thead-th">Total de horas</th>
+                                </tr>
                             </thead>
-
                             <tbody>
-                                {table.getRowModel().rows.map(row => (
-                                    <tr key={row.id} className="tbody-tr">
-                                        {row.getVisibleCells().map(cel => (
-                                            <td key={cel.id} className="tbody-td">
-                                                {flexRender(cel.column.columnDef.cell, cel.getContext())}
-                                            </td>
-                                        ))}
+                                {lines?.map((line) => (
+                                    <tr key={line.line_id} className="tbody-tr" onClick={() => handleClickRow(line.line_id)}>
+                                        <td className="tbody-td">{line.line}</td>
+                                        <td className="tbody-td">{line.total_hours}</td>
                                     </tr>
                                 ))}
                             </tbody>
