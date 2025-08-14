@@ -15,6 +15,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Swal from "sweetalert2";
 import TasksList from "./TasksList";
 import "@/lib/echo";
+import { useRole } from "@/hooks/useRole";
 
 export type FiltersDraftsTasks = {
   sku: string;
@@ -34,6 +35,7 @@ export default function Show() {
   const [filters, setFilters] = useState<FiltersDraftsTasks>(FiltersIntialValues);
 
   const navigate = useNavigate();
+  const { data: role } = useRole();
 
   const { data: draft } = useQuery({
     queryKey: ['getDraftWeeklyPlanById', id, filters],
@@ -94,7 +96,7 @@ export default function Show() {
     });
   }
 
-  if (draft) return (
+  if (draft && role) return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 bg-gray-50">
       <div className="lg:col-span-3 space-y-6">
         <section className="bg-white p-6 rounded-2xl shadow-md border border-gray-200 space-y-5">
@@ -108,7 +110,7 @@ export default function Show() {
             <p><span className="font-medium">Aprobación logística:</span> {draft.logistics_confirmation ? 'Confirmado' : 'No confirmado'}</p>
           </div>
 
-          {(flag && draft.flag_tasks) && (
+          {(flag && draft.flag_tasks && role === 'admin') && (
             <button className="button bg-orange-500 hover:bg-orange-700 w-full" onClick={() => handleConfirmPlan()}>
               Confirmar
             </button>
@@ -184,7 +186,7 @@ export default function Show() {
         </div>
       </aside>
 
-      {!draft.plan_created && (
+      {(!draft.plan_created && role === 'admin') && (
         <button
           onClick={() => createWeeklyProductionPlan(id)}
           disabled={flag || isPending}
