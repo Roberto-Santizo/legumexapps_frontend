@@ -52,7 +52,7 @@ export default function TaskScheduled({ task }: Props) {
                         </p>
                     </div>
 
-                    <div className="flex xl:justify-end items-start">
+                    <div className="flex justify-end items-start">
                         <MenuTaskProductionActions task={task} setModalEntrega={setModalEntrega} />
                     </div>
                 </div>
