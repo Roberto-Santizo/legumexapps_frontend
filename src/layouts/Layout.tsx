@@ -22,7 +22,7 @@ export default function Layout() {
         <Sidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white scrollbar-hide">
-            <div className="p-10">
+            <div className="p-2 md:p-10">
               <div className="flex items-center gap-4 px-3 py-2 rounded-xl bg-white shadow-sm border border-gray-200">
                 <Menu
                   className="w-10 h-10 text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"

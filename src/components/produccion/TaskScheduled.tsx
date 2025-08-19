@@ -28,7 +28,7 @@ export default function TaskScheduled({ task }: Props) {
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 transition hover:shadow-md">
             <div className="p-6 space-y-5 text-gray-700">
-                <div className="grid xl:grid-cols-2 gap-6 items-start text-sm xl:text-base">
+                <div className="grid md:grid-cols-2 gap-6 items-start text-sm xl:text-base">
                     <div className="space-y-3">
                         <p>
                             <span className="font-semibold text-gray-900">SKU:</span>{" "}
@@ -52,7 +52,7 @@ export default function TaskScheduled({ task }: Props) {
                         </p>
                     </div>
 
-                    <div className="flex justify-end items-start">
+                    <div className="flex justify-end">
                         <MenuTaskProductionActions task={task} setModalEntrega={setModalEntrega} />
                     </div>
                 </div>

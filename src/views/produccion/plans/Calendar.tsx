@@ -103,6 +103,8 @@ export default function Calendar() {
             )}
           </div>
 
+        </div>
+        <div className='shadow-xl p-5'>
           <TasksWithOperationDate lines={lines?.data ?? []} />
         </div>
 
