@@ -383,6 +383,21 @@ export async function editProductionTask({ taskId, formData }: { taskId: TaskPro
     }
 }
 
+export async function updateTaskProductionStatus({ taskId, status }: { taskId: TaskProductionPlan['id'], status: number }) {
+    try {
+        const url = `/api/tasks-production/${taskId}/update-status`;
+
+        const { data } = await clienteAxios.patch<string>(url, {
+            status
+        });
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
 
 
 

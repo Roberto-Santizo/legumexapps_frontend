@@ -3,7 +3,7 @@ import { getSkus } from "@/api/SkusAPI";
 import { NewTaskProductionDraft } from "@/components/modals/ModalAddNewDraftProductionTask";
 import { useQuery } from "@tanstack/react-query";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { FiltersSkuInitialValues } from "../stock-keeping-units/Index";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";

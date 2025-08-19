@@ -6,12 +6,14 @@ import { useAppStore } from "@/store";
 import { Line } from "types/linesTypes";
 import Spinner from "../utilities-components/Spinner";
 import TaskScheduled from "./TaskScheduled";
+import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";
+import ModalChangeTaskProductionStatus from "../modals/ModalChangeTaskProductionStatus";
 
 type Props = {
     lines: Line[];
 }
 
-const statuses = [
+export const statuses = [
     { value: '1', label: 'Pendiente entrega de material de empaque' },
     { value: '2', label: 'Lista para confirmación de asignaciones' },
     { value: '3', label: 'Lista para ejecución' },
@@ -67,7 +69,7 @@ export default function TasksWithOperationDate({ lines }: Props) {
     }));
 
     const isUpdating = useMemo(() => isFetching || isLoading, [isFetching, isLoading])
-    return (
+    if (tasks) return (
         <div className="border-t pt-4">
             <h2 className="xl:text-2xl font-bold">Tareas programadas: {date}</h2>
             <div className='mt-5 flex flex-col gap-5'>
@@ -109,15 +111,15 @@ export default function TasksWithOperationDate({ lines }: Props) {
                     </select>
                 </div>
             </div>
-            
+
             <div className='mt-5 overflow-y-auto scrollbar-hide max-h-96 space-y-6'>
                 {isUpdating && <Spinner />}
 
-                {(!isUpdating && tasks?.length === 0) && <p className='text-center'>No existen tareas programadas para esta fecha</p>}
+                {(!isUpdating && tasks.length === 0) && <p className='text-center'>No existen tareas programadas para esta fecha</p>}
 
-                {(!isUpdating && (tasks?.length ?? 0) > 0) && (
+                {(!isUpdating && (tasks.length ?? 0) > 0) && (
                     <>
-                        {tasks?.map(task => (
+                        {tasks.map(task => (
                             <TaskScheduled key={task.id} task={task} />
                         ))}
                     </>
@@ -125,6 +127,9 @@ export default function TasksWithOperationDate({ lines }: Props) {
 
 
             </div>
+
+            <ModalChangeOperationDate />
+            <ModalChangeTaskProductionStatus />
         </div>
     )
 }

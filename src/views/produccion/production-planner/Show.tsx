@@ -6,6 +6,8 @@ import { confirmPlan, createWeeklyProductionPlanFromDraft, getDraftWeeklyPlanByI
 import { toast } from "react-toastify";
 import { usePlanificationWebSocket } from "@/lib/echo";
 import { downloadWeeklyProductionDraftTasks } from "@/api/WeeklyProductionPlanAPI";
+import { useRole } from "@/hooks/useRole";
+import { usePermissions } from "@/hooks/usePermissions";
 import ModalAddNewDraftProductionTask from "@/components/modals/ModalAddNewDraftProductionTask";
 import SummaryLines from "./SummaryLines";
 import SummaryItems from "./SummaryItems";
@@ -15,8 +17,6 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Swal from "sweetalert2";
 import TasksList from "./TasksList";
 import "@/lib/echo";
-import { useRole } from "@/hooks/useRole";
-import { usePermissions } from "@/hooks/usePermissions";
 
 export type FiltersDraftsTasks = {
   sku: string;
