@@ -76,7 +76,7 @@ export default function Calendar() {
       )}
 
       <div className="flex xl:flex-row flex-col gap-5">
-        <div className='flex flex-col lg:w-3/4 w-full gap-5'>
+        <div className='flex flex-col w-full gap-5'>
           <div className="flex-1 border p-5 rounded-lg bg-white shadow max-h-screen overflow-y-auto scrollbar-hide space-y-6">
             <div className="min-h-[600px] relative">
               {isFetching && (
