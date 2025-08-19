@@ -75,36 +75,37 @@ export default function Calendar() {
         </div>
       )}
 
-      <div className="flex xl:flex-row flex-col gap-5 p-5">
-        <div className="flex-1 border p-5 rounded-lg bg-white shadow max-h-screen overflow-y-auto scrollbar-hide space-y-6">
-          <div className="min-h-[600px] relative">
-            {isFetching && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10 rounded-lg flex-col gap-2">
-                <Spinner />
-                <p className='text-xl text-gray-500'>Cargando calendario...</p>
-              </div>
-            )}
+      <div className="flex xl:flex-row flex-col gap-5">
+        <div className='flex flex-col w-full'>
+          <div className="flex-1 border p-5 rounded-lg bg-white shadow max-h-screen overflow-y-auto scrollbar-hide space-y-6">
+            <div className="min-h-[600px] relative">
+              {isFetching && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10 rounded-lg flex-col gap-2">
+                  <Spinner />
+                  <p className='text-xl text-gray-500'>Cargando calendario...</p>
+                </div>
+              )}
 
-            {!isFetching && (
-              <div className="w-full overflow-x-auto">
-                <FullCalendar
-                  plugins={[dayGridPlugin, interactionPlugin]}
-                  initialView="dayGridMonth"
-                  events={[...(events ?? [])]}
-                  locale={esLocale}
-                  dateClick={handleClickDate}
-                  dayCellClassNames={(arg) =>
-                    arg.date.toISOString().split('T')[0] === (date ?? getCurrentDate())
-                      ? ['bg-indigo-200']
-                      : []
-                  }
-                />
-              </div>
-            )}
+              {!isFetching && (
+                <div className="w-full overflow-x-auto">
+                  <FullCalendar
+                    plugins={[dayGridPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    events={[...(events ?? [])]}
+                    locale={esLocale}
+                    dateClick={handleClickDate}
+                    dayCellClassNames={(arg) =>
+                      arg.date.toISOString().split('T')[0] === (date ?? getCurrentDate())
+                        ? ['bg-indigo-200']
+                        : []
+                    }
+                  />
+                </div>
+              )}
+            </div>
+
           </div>
 
-        </div>
-        <div className='shadow-xl p-5'>
           <TasksWithOperationDate lines={lines?.data ?? []} />
         </div>
 
