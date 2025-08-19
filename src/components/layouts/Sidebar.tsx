@@ -1,16 +1,14 @@
 import { useAuth } from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
-import Navegation from "../Navegation";
+import { useAppStore } from "@/store";
 import { XIcon } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import Navegation from "../Navegation";
 
-type Props = {
-  show: boolean;
-  setShowSidebar: Dispatch<SetStateAction<boolean>>;
-};
 
-export function Sidebar({ show, setShowSidebar}: Props) {
+export function Sidebar() {
   const { logout } = useAuth();
+  const changeSidebar = useAppStore((state) => state.changeSidebarState);
+  const show = useAppStore((state) => state.isSidebarOpen);
 
   return (
     <AnimatePresence>
@@ -29,7 +27,7 @@ export function Sidebar({ show, setShowSidebar}: Props) {
                   LegumexApps <span className="text-indigo-500 font-bold">Web</span>
                 </p>
                 <button className="block xl:hidden">
-                  <XIcon onClick={() => setShowSidebar(false)}/>
+                  <XIcon onClick={() => changeSidebar()} />
                 </button>
               </div>
 

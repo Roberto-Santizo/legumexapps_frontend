@@ -1,12 +1,15 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { createNewTaskProductionDraft } from "@/api/DraftTaskProductionDraftAPI";
 import { useState } from "react";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import FormNewDraftTaskProduction from "@/views/produccion/production-planner/FormNewDraftTaskProduction";
+import { getSkus } from "@/api/SkusAPI";
+import { getLinesBySkuId } from "@/api/LinesAPI";
+import { FiltersSkuInitialValues } from "@/views/produccion/stock-keeping-units/Index";
 
 export type NewTaskProductionDraft = {
     draft_weekly_production_plan_id: string;
@@ -31,6 +34,22 @@ export default function ModalAddNewDraftProductionTask() {
     const handleCloseModal = () => {
         navigate(location.pathname);
     }
+
+    const { data: skus } = useQuery({
+        queryKey: ['getSkus'],
+        queryFn: () => getSkus({ page: 1, paginated: '', filters: FiltersSkuInitialValues })
+    });
+
+    const { data: lineas } = useQuery({
+        queryKey: ['getLinesBySkuId', skuId],
+        queryFn: () => getLinesBySkuId(skuId),
+        enabled: !!skuId
+    });
+
+    const skuOptions = skus?.data?.map((sku) => ({
+        value: sku.id,
+        label: `${sku.code} - ${sku.product_name}`,
+    }));
 
     const {
         handleSubmit,
@@ -60,7 +79,7 @@ export default function ModalAddNewDraftProductionTask() {
         <Modal modal={show} closeModal={() => handleCloseModal()} title="Creación de Draft Tarea Produccion">
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
-                <FormNewDraftTaskProduction register={register} errors={errors} control={control} skuId={skuId} setSkuId={setSkuId} />
+                <FormNewDraftTaskProduction register={register} errors={errors} control={control} setSkuId={setSkuId} skus={skuOptions ?? []} lines={lineas ?? []} disabled={false}/>
 
                 <button disabled={isPending} className="button w-full bg-indigo-500 hover:bg-indigo-600">
                     {isPending ? <Spinner /> : <p>Crear Tarea Producción</p>}

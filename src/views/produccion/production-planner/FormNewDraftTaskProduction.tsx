@@ -1,51 +1,33 @@
-import { getLinesBySkuId } from "@/api/LinesAPI";
-import { getSkus } from "@/api/SkusAPI";
 import { NewTaskProductionDraft } from "@/components/modals/ModalAddNewDraftProductionTask";
-import { useQuery } from "@tanstack/react-query";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
-import { FiltersSkuInitialValues } from "../stock-keeping-units/Index";
 import InputComponent from "@/components/form/InputComponent";
-import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import Error from "@/components/utilities-components/Error";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 type Props = {
     control: Control<NewTaskProductionDraft>;
     errors: FieldErrors<NewTaskProductionDraft>;
     register: UseFormRegister<NewTaskProductionDraft>;
-    skuId: string;
-    setSkuId: Dispatch<SetStateAction<string>>;
+    skus: { value: string; label: string }[];
+    lines: { value: string; label: string }[];
+    disabled?: boolean;
+    setSkuId?: Dispatch<SetStateAction<string>>;
 }
 
-export default function FormNewDraftTaskProduction({ register, errors, control, skuId, setSkuId }: Props) {
-
-    const { data: lineas } = useQuery({
-        queryKey: ['getLinesBySkuId', skuId],
-        queryFn: () => getLinesBySkuId(skuId),
-        enabled: !!skuId
-    });
-
-    const { data: skus } = useQuery({
-        queryKey: ['getSkus'],
-        queryFn: () => getSkus({ page: 1, paginated: '', filters: FiltersSkuInitialValues })
-    });
-
-    const skuOptions = skus?.data?.map((sku) => ({
-        value: sku.id,
-        label: `${sku.code} - ${sku.product_name}`,
-    }));
-
-    if (skus) return (
+export default function FormNewDraftTaskProduction({ register, errors, skus, lines, setSkuId, control, disabled= false }: Props) {
+    return (
         <>
             <InputSelectSearchComponent<NewTaskProductionDraft>
                 label="SKU"
                 id="stock_keeping_unit_id"
                 name="stock_keeping_unit_id"
-                options={skuOptions ?? []}
+                options={skus ?? []}
                 control={control}
                 rules={{ required: 'Seleccione un SKU' }}
                 errors={errors}
-                onChange={(value) => setSkuId(value ?? '')}
+                onChange={(value) => setSkuId && setSkuId(value ?? '')}
+                disabled={disabled}
             >
                 {errors.stock_keeping_unit_id && <Error>{errors.stock_keeping_unit_id?.message?.toString()}</Error>}
             </InputSelectSearchComponent>
@@ -55,7 +37,7 @@ export default function FormNewDraftTaskProduction({ register, errors, control, 
                 label="Linea"
                 id="line_id"
                 name="line_id"
-                options={lineas || []}
+                options={lines ?? []}
                 control={control}
                 rules={{}}
                 errors={errors}

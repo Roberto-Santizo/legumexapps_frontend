@@ -3,8 +3,11 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { editTaskProductionDraft, getTaskProductionDraftEditDetails } from "@/api/DraftTaskProductionDraftAPI";
 import { useForm } from "react-hook-form";
 import { NewTaskProductionDraft } from "./ModalAddNewDraftProductionTask";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { getSkus } from "@/api/SkusAPI";
+import { getLinesBySkuId } from "@/api/LinesAPI";
+import { FiltersSkuInitialValues } from "@/views/produccion/stock-keeping-units/Index";
 import Modal from "../Modal";
 import FormNewDraftTaskProduction from "@/views/produccion/production-planner/FormNewDraftTaskProduction";
 import Spinner from "../utilities-components/Spinner";
@@ -14,7 +17,6 @@ export default function ModalEditTaskProductionDraft() {
     const queryParams = new URLSearchParams(location.search);
     const taskId = queryParams.get('editDraftTask')!;
     const show = taskId ? true : false;
-    const [skuId, setSkuId] = useState<string>('');
 
     const navigate = useNavigate();
 
@@ -27,6 +29,23 @@ export default function ModalEditTaskProductionDraft() {
         queryFn: () => getTaskProductionDraftEditDetails({ id: taskId }),
         enabled: !!taskId
     });
+
+
+    const { data: skus } = useQuery({
+        queryKey: ['getSkus'],
+        queryFn: () => getSkus({ page: 1, paginated: '', filters: FiltersSkuInitialValues })
+    });
+
+    const { data: lineas } = useQuery({
+        queryKey: ['getLinesBySkuId', data?.stock_keeping_unit_id],
+        queryFn: () => getLinesBySkuId(data?.stock_keeping_unit_id.toString()!),
+        enabled: !!data?.stock_keeping_unit_id
+    });
+
+    const skuOptions = skus?.data?.map((sku) => ({
+        value: sku.id,
+        label: `${sku.code} - ${sku.product_name}`,
+    }));
 
     const {
         register,
@@ -48,11 +67,11 @@ export default function ModalEditTaskProductionDraft() {
     });
 
     useEffect(() => {
-        if (data) {
-            setSkuId(data.stock_keeping_unit_id.toString());
+        if (data && data.stock_keeping_unit_id) {
             setValue('stock_keeping_unit_id', data.stock_keeping_unit_id.toString());
             setValue('total_lbs', data.total_lbs);
             setValue('destination', data.destination);
+            setValue('line_id', data.line_id?.toString() ?? '');
         }
     }, [data]);
 
@@ -64,7 +83,7 @@ export default function ModalEditTaskProductionDraft() {
     if (data) return (
         <Modal modal={show} closeModal={() => handleCloseModal()} title="Editar Tarea Producción">
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
-                <FormNewDraftTaskProduction register={register} errors={errors} control={control} skuId={skuId} setSkuId={setSkuId} />
+                <FormNewDraftTaskProduction register={register} errors={errors} control={control} skus={skuOptions ?? []} lines={lineas ?? []} disabled={true}/>
 
                 <button disabled={isPending} className="button w-full bg-indigo-500 hover:bg-indigo-600">
                     {isPending ? <Spinner /> : <p>Guardar Cambios</p>}
