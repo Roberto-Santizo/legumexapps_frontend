@@ -6,6 +6,9 @@ import { editProductionTask, getEditDetailsProductionTask } from "@/api/TaskProd
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useAppStore } from "@/store";
+import { getSkus } from "@/api/SkusAPI";
+import { FiltersSkuInitialValues } from "@/views/produccion/stock-keeping-units/Index";
+import { getLinesBySkuId } from "@/api/LinesAPI";
 import FormProductionTask from "@/views/produccion/production-tasks/Form";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
@@ -32,13 +35,30 @@ export default function ModalEditTareaProduccion() {
         enabled: !!taskId
     });
 
+
+    const { data: skus } = useQuery({
+        queryKey: ['getSkus'],
+        queryFn: () => getSkus({ page: 1, paginated: '', filters: FiltersSkuInitialValues })
+    });
+
+    const { data: lineas } = useQuery({
+        queryKey: ['getLinesBySkuId', data?.sku_id],
+        queryFn: () => getLinesBySkuId(data?.sku_id!),
+        enabled: !!data?.sku_id
+    });
+
+    const skuOptions = skus?.data?.map((sku) => ({
+        value: sku.id,
+        label: `${sku.code} - ${sku.product_name}`,
+    }));
+
     const handleCloseModal = () => {
         const searchParams = new URLSearchParams(location.search);
         searchParams.delete("editTask");
         navigate(`${location.pathname}?${searchParams.toString()}`);
     }
 
-    const { mutate, isPending} = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: editProductionTask,
         onError: (error) => {
             toast.error(error.message);
@@ -59,18 +79,19 @@ export default function ModalEditTareaProduccion() {
         control,
         setValue,
         formState: { errors },
-        getValues,
     } = useForm<DraftNewTaskProduction>();
 
     useEffect(() => {
-        if (data) {
+        if (data && data.sku_id) {
             setValue('destination', data.destination);
             setValue('line_id', data.line_id);
             setValue('sku_id', data.sku_id);
             setValue('total_lbs', data.total_lbs);
             setValue('operation_date', data.operation_date);
         }
+
     }, [data]);
+
 
     const onSubmit = (data: DraftNewTaskProduction) => {
         mutate({ taskId, formData: data });
@@ -80,7 +101,7 @@ export default function ModalEditTareaProduccion() {
         <Modal modal={show} closeModal={() => handleCloseModal()} title="Creación de Tarea Produccion Extraordinaria">
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
-                <FormProductionTask register={register} errors={errors} control={control} getValues={getValues} />
+                <FormProductionTask register={register} errors={errors} control={control} skus={skuOptions ?? []} lines={lineas ?? []} disabled={true} />
 
                 <button disabled={isPending} className="button w-full bg-indigo-500 hover:bg-indigo-600">
                     {isPending ? <Spinner /> : <p>Editar Tarea</p>}

@@ -15,6 +15,7 @@ interface InputSelectSearchComponentProps<T extends Record<string, any>> {
   rules?: object;
   errors?: FieldErrors<T>;
   children?: React.ReactNode;
+  disabled?: boolean;
   onChange?: (value?: string) => void;
 }
 
@@ -28,6 +29,7 @@ const InputSelectSearchComponent = <T extends Record<string, any>>({
   errors,
   children,
   onChange,
+  disabled = false,
 }: InputSelectSearchComponentProps<T>) => {
   const hasError = !!errors?.[name];
 
@@ -57,6 +59,7 @@ const InputSelectSearchComponent = <T extends Record<string, any>>({
         rules={rules}
         render={({ field }) => (
           <Select
+            isDisabled={disabled}
             {...field}
             id={id}
             options={options}

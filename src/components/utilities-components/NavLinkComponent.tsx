@@ -1,3 +1,4 @@
+import { useAppStore } from "@/store";
 import { NavLink } from "react-router-dom";
 
 type Props = {
@@ -7,8 +8,11 @@ type Props = {
 };
 
 export default function NavLinkComponent({ url, children, text }: Props) {
+    const changeSidebarState = useAppStore((state) => state.changeSidebarState);
+
     return (
         <NavLink
+            onClick={() => changeSidebarState()}
             to={url}
             className={({ isActive }) =>
                 `

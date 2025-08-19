@@ -25,6 +25,7 @@ import NavLinkComponent from "./utilities-components/NavLinkComponent";
 
 export default function Navegation() {
   const { hasPermission } = usePermissions();
+
   return (
     <div className="space-y-1.5">
       <NavLinkComponent url="/dashboard" text="Dashboard">
