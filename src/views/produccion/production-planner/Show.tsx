@@ -5,7 +5,7 @@ import { DownloadIcon, PlusIcon } from "lucide-react";
 import { confirmPlan, createWeeklyProductionPlanFromDraft, getDraftWeeklyPlanById } from "@/api/DraftWeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { usePlanificationWebSocket } from "@/lib/echo";
-import { downloadWeeklyProductionDraftTasks } from "@/api/WeeklyProductionPlanAPI";
+import { downloadDraftWeeklyProductionPlanUpdateFile, downloadWeeklyProductionDraftTasks } from "@/api/WeeklyProductionPlanAPI";
 import { useRole } from "@/hooks/useRole";
 import { usePermissions } from "@/hooks/usePermissions";
 import ModalAddNewDraftProductionTask from "@/components/modals/ModalAddNewDraftProductionTask";
@@ -17,6 +17,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Swal from "sweetalert2";
 import TasksList from "./TasksList";
 import "@/lib/echo";
+import ModalUpdateDraftTasks from "@/components/modals/ModalUpdateDraftTasks";
 
 export type FiltersDraftsTasks = {
   sku: string;
@@ -75,6 +76,13 @@ export default function Show() {
     }
   });
 
+  const { mutate: dowloadUpdateFile, isPending: dowloadUpdatePlanLoading } = useMutation({
+    mutationFn: downloadDraftWeeklyProductionPlanUpdateFile,
+    onError: (error) => {
+      toast.error(error.message);
+    }
+  });
+
 
   const handleChangefiltersNoOperationDate = (e: ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({
@@ -113,9 +121,15 @@ export default function Show() {
           </div>
 
           {(flag && draft.flag_tasks && role === 'admin') && (
-            <button className="button bg-orange-500 hover:bg-orange-700 w-full" onClick={() => handleConfirmPlan()}>
-              Confirmar
-            </button>
+            <>
+              <button className="button bg-orange-500 hover:bg-orange-700 w-full" onClick={() => handleConfirmPlan()}>
+                Confirmar
+              </button>
+
+              <button className="button bg-green-500 hover:bg-green-700 w-full" onClick={() => navigate(`${location.pathname}?updateDraftTasks=true`)}>
+                Actualizar Plan
+              </button>
+            </>
           )}
         </section>
 
@@ -178,6 +192,18 @@ export default function Show() {
               )}
               <span>Descargar Tareas</span>
             </button>
+
+            <button
+              disabled={dowloadUpdatePlanLoading}
+              onClick={() => dowloadUpdateFile({ plan_id: id })}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-semibold shadow-sm transition"
+            >
+              {dowloadUpdatePlanLoading ? <Spinner /> : (
+                <DownloadIcon className="w-4 h-4" />
+
+              )}
+              <span>Descargar Plantilla Actualización</span>
+            </button>
           </div>
 
           {draft.tasks.length === 0 ? (
@@ -204,6 +230,7 @@ export default function Show() {
 
       <ModalAddNewDraftProductionTask />
       <ModalEditTaskProductionDraft />
+      <ModalUpdateDraftTasks />
     </div>
   )
 }

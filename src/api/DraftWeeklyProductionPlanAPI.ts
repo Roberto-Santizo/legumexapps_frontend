@@ -103,21 +103,6 @@ export async function getSummaryDraftRawMaterial({ id, line }: { id: WeeklyProdu
     }
 }
 
-export async function uploadTasksProductionDrafts({ file, id }: { file: File[], id: WeeklyProductionPlanDraft['id'] }) {
-    try {
-        const url = `/api/weekly-production-plans-drafts/${id}/upload-tasks`;
-        const formData = new FormData();
-        formData.append("file", file[0]);
-
-        const { data } = await clienteAxios.post<string>(url, formData);
-        return data;
-    } catch (error) {
-        if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
-
-        }
-    }
-}
 
 export async function confirmPlan({ id }: { id: WeeklyProductionPlanDraft['id'] }) {
     try {
@@ -143,6 +128,24 @@ export async function createWeeklyProductionPlanFromDraft(id: WeeklyProductionPl
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
 
+        }
+    }
+}
+
+export async function updateDraftWeeklyProductionPlanTasks(file: File[]) {
+    try {
+        const url = '/api/weekly-production-plans-drafts/update-draft-tasks';
+        const formData = new FormData();
+        formData.append("file", file[0]);
+
+        const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if(error.response?.data){
+                throw new Error(error.response.data.msg);
+                
+            }
         }
     }
 }
