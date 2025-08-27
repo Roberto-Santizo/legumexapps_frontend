@@ -26,7 +26,7 @@ export async function createPackingMaterialTransaction(FormData: DraftTransactio
 
 export async function getPackingMaterialTransactions({ page, paginated, filters }: { page: number, paginated: string, filters: FiltersPackingMaterialsTransactionType }) {
     try {
-        const url = `/api/packing-material-transaction?paginated=${paginated}&page=${page}&transaction=${filters.transaction_id}&responsable=${filters.responsable}&delivered_by=${filters.delivered_by}&delivered_date=${filters.delivered_date}&type=${filters.type}`;
+        const url = `/api/packing-material-transaction?paginated=${paginated}&page=${page}&transaction=${filters.transaction_id}&responsable=${filters.responsable}&delivered_by=${filters.delivered_by}&delivered_date=${filters.delivered_date}&type=${filters.type}&sku=${filters.sku}`;
         const { data } = await clienteAxios(url);
         const result = PackingMaterialTransactionsSchema.safeParse(data);
         if (result.success) {

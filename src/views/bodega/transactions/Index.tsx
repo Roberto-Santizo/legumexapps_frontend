@@ -16,6 +16,7 @@ export type FiltersPackingMaterialsTransactionType = {
   delivered_by: string;
   delivered_date: string;
   type: string;
+  sku: string;
 }
 
 export const FiltersPackingMaterialsTransactionInitialValues: FiltersPackingMaterialsTransactionType = {
@@ -23,7 +24,8 @@ export const FiltersPackingMaterialsTransactionInitialValues: FiltersPackingMate
   responsable: '',
   delivered_by: '',
   delivered_date: '',
-  type: ''
+  type: '',
+  sku: ''
 };
 
 export default function Index() {
