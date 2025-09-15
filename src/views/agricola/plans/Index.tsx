@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { CheckCircle, Download, PlusIcon, XIcon } from "lucide-react";
-import { toast } from "react-toastify";
-import { downloadWeeklyPlanReport, getWeeklyPlans } from "@/api/WeeklyPlansAPI";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { CheckCircle, PlusIcon } from "lucide-react";
+import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
+import { useQuery } from "@tanstack/react-query";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { WeeklyPlan } from "types/planificacionFincasType";
@@ -38,17 +36,6 @@ export default function Index() {
   const [filters, setFilters] = useState<FiltersPlanSemanalType>(FiltersPlanSemanalInitialValues);
   const [tempFilters, setTempFilters] = useState<FiltersPlanSemanalType>(FiltersPlanSemanalInitialValues);
   const { hasPermission } = usePermissions();
-
-  const { mutate: handleDowloadReportMutation, isPending: handleDowloadReportMutationPending } = useMutation({
-    mutationFn: ({ plansId }: { plansId: WeeklyPlan['id'][] }) => downloadWeeklyPlanReport(plansId),
-    onError: () => {
-      toast.error('Hubo un error al descargar')
-    },
-    onSuccess: () => {
-      setSelectingReport(false);
-      setPlansId([]);
-    }
-  });
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getPaginatedPlans', currentPage, filters],
@@ -87,10 +74,6 @@ export default function Index() {
     });
   };
 
-  const handleDowloadReport = async ({ plansId }: { plansId: WeeklyPlan['id'][] }) => {
-    handleDowloadReportMutation({ plansId })
-  };
-
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />;
   return (
@@ -124,42 +107,6 @@ export default function Index() {
             </div>
           )}
         </div>
-      )}
-
-
-      {selectingReport && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="flex justify-end gap-5"
-        >
-          <button
-            className="button bg-green-500 hover:bg-green-700 flex gap-2"
-            onClick={() => handleDowloadReport({ plansId })}
-            disabled={handleDowloadReportMutationPending}
-          >
-            {handleDowloadReportMutationPending ? (
-              <Spinner />
-            ) : (
-              <>
-                <p>Descargar Reportes</p>
-                <Download className="hover:text-gray-400 cursor-pointer" />
-              </>
-            )}
-          </button>
-          <div
-            className="button bg-red-500 hover:bg-red-700 flex gap-2"
-            onClick={() => {
-              setSelectingReport(false);
-              setPlansId([]);
-            }}
-          >
-            <XIcon className="hover:text-red-500 cursor-pointer" />
-            <p>Cancelar</p>
-          </div>
-        </motion.div>
       )}
 
       {weeklyPlans.length === 0 ? <p className="text-center text-xl text-gray-500">No existen planes semanales</p> : (
@@ -201,7 +148,6 @@ export default function Index() {
                 <tr
                   className="tbody-tr"
                   key={plan.id}
-                  onDoubleClick={() => handleDobleClick(plan.id)}
                 >
                   {selectingReport && (
                     <td className="p-5">

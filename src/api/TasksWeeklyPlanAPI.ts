@@ -160,10 +160,8 @@ export async function getTask(id: TaskWeeklyPlan['id']): Promise<TaskWeeklyPlan>
 
 export async function getEmployees(id: TaskWeeklyPlan['finca_id']): Promise<Employee[]> {
     try {
-        const url = `/api/employees`;
-        const { data } = await clienteAxios(url, {
-            params: { id }
-        });
+        const url = `/api/employees/${id}`;
+        const { data } = await clienteAxios(url);
         const result = EmployeesSchema.safeParse(data);
         if (result.success) {
             return result.data.data

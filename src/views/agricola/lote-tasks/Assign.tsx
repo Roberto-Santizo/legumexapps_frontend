@@ -231,7 +231,7 @@ export default function Assign() {
               placeholder="Buscar empleado..."
               className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
-            <div className="flex-1 overflow-y-auto space-y-2">
+            <div className="flex-1 overflow-y-auto space-y-2  max-h-screen scrollbar-hide">
               {results.length === 0 ? (
                 <p className="text-gray-500 text-center">No hay resultados</p>
               ) : (
