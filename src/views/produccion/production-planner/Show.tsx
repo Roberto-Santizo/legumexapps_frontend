@@ -120,7 +120,7 @@ export default function Show() {
             <p><span className="font-medium">Aprobación logística:</span> {draft.logistics_confirmation ? 'Confirmado' : 'No confirmado'}</p>
           </div>
 
-          {(flag && draft.flag_tasks && role === 'admin') && (
+          {(flag && draft.flag_tasks && (role === 'admin' || role === 'logistics')) && (
             <>
               <button className="button bg-orange-500 hover:bg-orange-700 w-full" onClick={() => handleConfirmPlan()}>
                 Confirmar
