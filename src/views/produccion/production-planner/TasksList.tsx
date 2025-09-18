@@ -58,7 +58,7 @@ export default function TasksList({ draft }: Props) {
                         </div>
                     </div>
 
-                    {(!draft.confirmation_date && role === 'admin') && (
+                    {(!draft.confirmation_date && (role === 'admin' || role === 'logistics')) && (
                         <div className="flex flex-col gap-2 mt-2">
                             <button className="flex justify-center items-center gap-5 button bg-indigo-500 hover:bg-indigo-600" onClick={() => navigate(`${location.pathname}?editDraftTask=${task.id}`)}>
                                 <EditIcon className="cursor-pointer hover:text-indigo-500" size={18} />
