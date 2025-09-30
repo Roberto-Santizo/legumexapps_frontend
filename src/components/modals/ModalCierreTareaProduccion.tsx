@@ -4,16 +4,17 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { closeTaskProduction } from "@/api/TaskProductionPlansAPI";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
-import { closeTaskProduction } from "@/api/TaskProductionPlansAPI";
 
 
 export type DraftCloseTask = {
     total_tarimas: number;
     total_lbs_bascula: number;
+    total_boxes_produced: number;
 }
 
 export default function ModalCierreTareaProduccion() {
@@ -75,11 +76,44 @@ export default function ModalCierreTareaProduccion() {
                     name="total_lbs_bascula"
                     placeholder="Total de libras producidas pesadas en báscula"
                     register={register}
-                    validation={{ required: 'El total de libras producidas es obligatoria' }}
+                    validation={{
+                        required: 'El total de libras producidas es obligatoria',
+                        min: {
+                            value: 0,
+                            message: "El valor debe de ser mayor a 0"
+                        },
+                        pattern: {
+                            value: /^-?\d+$/,
+                            message: "Debe ser un número entero"
+                        }
+                    }}
                     errors={errors}
                     type={'number'}
                 >
                     {errors.total_lbs_bascula && <Error>{errors.total_lbs_bascula?.message?.toString()}</Error>}
+                </InputComponent>
+
+                <InputComponent<DraftCloseTask>
+                    label="Total de cajas producidas"
+                    id="total_boxes_produced"
+                    name="total_boxes_produced"
+                    placeholder="Total de cajas producidas"
+                    register={register}
+                    validation={{
+                        required: 'El total de cajas producidas es obligatorio',
+                        min: {
+                            value: 0,
+                            message: "El valor debe de ser mayor a 0"
+                        },
+                        pattern: {
+                            value: /^-?\d+$/,
+                            message: "Debe ser un número entero"
+                        }
+                    }}
+                    errors={errors}
+                    type={'number'}
+                >
+                    {errors.total_boxes_produced && <Error>{errors.total_boxes_produced?.message?.toString()}</Error>}
                 </InputComponent>
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

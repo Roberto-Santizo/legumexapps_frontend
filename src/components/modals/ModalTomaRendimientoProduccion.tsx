@@ -11,6 +11,7 @@ import Error from "../utilities-components/Error";
 export type DraftPerformance = {
     tarimas_produced: number;
     lbs_bascula: number;
+    total_boxes: number;
 }
 
 export default function ModalTomaRendimientoProduccion() {
@@ -77,6 +78,19 @@ export default function ModalTomaRendimientoProduccion() {
                     type={'number'}
                 >
                     {errors.lbs_bascula && <Error>{errors.lbs_bascula?.message?.toString()}</Error>}
+                </InputComponent>
+
+                <InputComponent<DraftPerformance>
+                    label="Total Cajas Producidas"
+                    id="total_boxes"
+                    name="total_boxes"
+                    placeholder="Total de cajas producidas"
+                    register={register}
+                    validation={{ required: 'Las cajas producidas son obligatorias', min: { value: 0, message: 'Las libras basculadas deben ser mayores a 0' } }}
+                    errors={errors}
+                    type={'number'}
+                >
+                    {errors.total_boxes && <Error>{errors.total_boxes?.message?.toString()}</Error>}
                 </InputComponent>
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

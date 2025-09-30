@@ -44,13 +44,14 @@ export default function Details() {
         </div>
 
         <div className="grid gap-10 xl:grid-cols-2">
-          <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 overflow-x-auto">
+          <div className="bg-white rounded-2xl shadow-md p-4 sm:p-7 overflow-x-auto scrollbar-hide">
             <h3 className="text-lg sm:text-xl font-bold mb-4 uppercase">Información de Rendimientos</h3>
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="thead-tr">
                   <th className="thead-th">Fecha de Toma</th>
                   <th className="thead-th">Tarimas Producidas</th>
+                  <th className="thead-th">Cajas Producidas</th>
                   <th className="thead-th">Libras Báscula</th>
                 </tr>
               </thead>
@@ -59,6 +60,7 @@ export default function Details() {
                   <tr key={performance.id} className="tbody-tr">
                     <td className="tbody-td">{performance.take_date}</td>
                     <td className="tbody-td">{performance.tarimas_produced ?? 0}</td>
+                    <td className="tbody-td">{performance.total_boxes}</td>
                     <td className="tbody-td">{performance.lbs_bascula}</td>
                   </tr>
                 ))}

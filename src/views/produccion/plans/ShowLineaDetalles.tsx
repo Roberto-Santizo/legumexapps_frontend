@@ -15,12 +15,12 @@ export default function ShowLineaDetalles() {
     const plan_id = params.plan_id!!;
     const linea_id = params.linea_id!!;
 
-    const { data: tasks, isLoading, isError, isFetching } = useQuery({
+    const { data: tasks, isLoading, isError } = useQuery({
         queryKey: ['getTasksByLineId', plan_id, linea_id],
         queryFn: () => getTasksByLineId(plan_id, linea_id),
     });
 
-    if (isLoading || isFetching) return <TaskProductionSkeleton />;
+    if (isLoading) return <TaskProductionSkeleton />;
     if (isError) return <ShowErrorAPI />;
     if (tasks) return (
         <div>
