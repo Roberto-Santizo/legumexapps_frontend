@@ -33,8 +33,8 @@ const routes = [
 
   { path: "/graficas-diarias", component: lazy(() => import("@/views/produccion/daily-charts/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola'] },
 
-  { path: "/planificador-produccion", component: lazy(() => import("@/views/produccion/production-planner/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola', 'adminbodega'] },
-  { path: "/planificador-produccion/:id", component: lazy(() => import("@/views/produccion/production-planner/Show")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola', 'adminbodega'] },
+  { path: "/planificador-produccion", component: lazy(() => import("@/views/produccion/production-planner/Index")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola', 'adminbodega', 'auxrrhh'] },
+  { path: "/planificador-produccion/:id", component: lazy(() => import("@/views/produccion/production-planner/Show")), roles: ['admin', 'logistics', 'adminprod', 'audiproceso', 'gerencia', 'costosuser', 'adminagricola', 'adminbodega', 'auxrrhh'] },
 
   { path: "/materia-prima", component: lazy(() => import("@/views/produccion/raw_material/Index")), roles: ['admin'] },
   { path: "/materia-prima/crear", component: lazy(() => import("@/views/produccion/raw_material/Create")), roles: ['admin'] },

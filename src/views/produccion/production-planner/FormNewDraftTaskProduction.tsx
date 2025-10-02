@@ -1,6 +1,7 @@
 import { NewTaskProductionDraft } from "@/components/modals/ModalAddNewDraftProductionTask";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
+import { useRole } from "@/hooks/useRole";
 import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
@@ -15,8 +16,9 @@ type Props = {
     setSkuId?: Dispatch<SetStateAction<string>>;
 }
 
-export default function FormNewDraftTaskProduction({ register, errors, skus, lines, setSkuId, control, disabled= false }: Props) {
-    return (
+export default function FormNewDraftTaskProduction({ register, errors, skus, lines, setSkuId, control, disabled = false }: Props) {
+    const { data: role } = useRole();
+    if (role) return (
         <>
             <InputSelectSearchComponent<NewTaskProductionDraft>
                 label="SKU"
@@ -32,6 +34,36 @@ export default function FormNewDraftTaskProduction({ register, errors, skus, lin
                 {errors.stock_keeping_unit_id && <Error>{errors.stock_keeping_unit_id?.message?.toString()}</Error>}
             </InputSelectSearchComponent>
 
+            {(role == 'logistics' || role == 'admin') && (
+                <>
+                    <InputComponent<NewTaskProductionDraft>
+                        label="Total de Libras"
+                        id="total_lbs"
+                        name="total_lbs"
+                        placeholder="Total de Libras"
+                        register={register}
+                        validation={{ required: 'El total de libras es requerida' }}
+                        errors={errors}
+                        type={'number'}
+                    >
+                        {errors.total_lbs && <Error>{errors.total_lbs?.message?.toString()}</Error>}
+                    </InputComponent>
+
+                    <InputComponent<NewTaskProductionDraft>
+                        label="Destino"
+                        id="destination"
+                        name="destination"
+                        placeholder="Nombre del Destino"
+                        register={register}
+                        validation={{ required: 'El destino es requerido' }}
+                        errors={errors}
+                        type={'text'}
+                    >
+                        {errors.destination && <Error>{errors.destination?.message?.toString()}</Error>}
+                    </InputComponent>
+
+                </>
+            )}
 
             <InputSelectSearchComponent<NewTaskProductionDraft>
                 label="Linea"
@@ -44,32 +76,6 @@ export default function FormNewDraftTaskProduction({ register, errors, skus, lin
             >
                 {errors.line_id && <Error>{errors.line_id?.message?.toString()}</Error>}
             </InputSelectSearchComponent>
-
-            <InputComponent<NewTaskProductionDraft>
-                label="Total de Libras"
-                id="total_lbs"
-                name="total_lbs"
-                placeholder="Total de Libras"
-                register={register}
-                validation={{ required: 'El total de libras es requerida' }}
-                errors={errors}
-                type={'number'}
-            >
-                {errors.total_lbs && <Error>{errors.total_lbs?.message?.toString()}</Error>}
-            </InputComponent>
-
-            <InputComponent<NewTaskProductionDraft>
-                label="Destino"
-                id="destination"
-                name="destination"
-                placeholder="Nombre del Destino"
-                register={register}
-                validation={{ required: 'El destino es requerido' }}
-                errors={errors}
-                type={'text'}
-            >
-                {errors.destination && <Error>{errors.destination?.message?.toString()}</Error>}
-            </InputComponent>
         </>
     )
 }
