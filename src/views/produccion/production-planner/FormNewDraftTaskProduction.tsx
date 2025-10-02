@@ -34,7 +34,7 @@ export default function FormNewDraftTaskProduction({ register, errors, skus, lin
                 {errors.stock_keeping_unit_id && <Error>{errors.stock_keeping_unit_id?.message?.toString()}</Error>}
             </InputSelectSearchComponent>
 
-            {(role == 'logistics' || role == 'admin') && (
+            {(role == 'logistics' || role == 'admin' || role == 'adminprod') && (
                 <>
                     <InputComponent<NewTaskProductionDraft>
                         label="Total de Libras"
