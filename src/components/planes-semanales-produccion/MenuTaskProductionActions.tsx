@@ -7,7 +7,7 @@ import { usePermissions } from "@/hooks/usePermissions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppStore } from "@/store";
 import { toast } from "react-toastify";
-import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
+import { TaskProductionOperationDate } from "@/types/taskProductionPlanTypes";
 import { deleteTaskProductionAssignments, UnAssignTaskProduction } from "@/api/TaskProductionPlansAPI";
 
 type Props = {

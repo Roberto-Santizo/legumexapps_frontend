@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import { DraftTask } from "types/taskGeneralType";
+import { DraftTask } from "@/types/taskGeneralType";
 import Spinner from "@/components/utilities-components/Spinner";
 import Form from "./Form";
 

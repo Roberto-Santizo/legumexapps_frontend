@@ -6,7 +6,7 @@ import { getBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { toast } from "react-toastify";
 import { usePermissions } from "@/hooks/usePermissions";
-import { BoletaRMP } from "types/rmpDocTypes";
+import { BoletaRMP } from "@/types/rmpDocTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersRMP, { FiletrsBoletaRMPInitialValues, FiltersBoletaRMP } from "@/components/filters/FiletrsRMP";

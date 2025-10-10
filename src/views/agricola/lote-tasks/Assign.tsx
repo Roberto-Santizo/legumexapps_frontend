@@ -1,11 +1,11 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { Employee } from "@/types";
+import { Employee } from "@/types/index";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "react-toastify";
 import { closeAssigment, getEmployees, getTask } from "@/api/TasksWeeklyPlanAPI";
 import { useMutation, useQueries } from "@tanstack/react-query";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import Swal from "sweetalert2";
 import Fuse from "fuse.js";
 import Spinner from "@/components/utilities-components/Spinner";

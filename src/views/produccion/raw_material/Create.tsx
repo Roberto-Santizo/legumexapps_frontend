@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { DraftMateriaPrimaItem } from "types/materiaPrimaTypes";
+import { DraftMateriaPrimaItem } from "@/types/materiaPrimaTypes";
 import { createMateriaPrimaItem } from "@/api/MateriaPrimaAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";

@@ -1,4 +1,4 @@
-import { BoletaRmpAllInfo } from 'types/rmpDocTypes';
+import { BoletaRmpAllInfo } from '@/types/rmpDocTypes';
 import { pdf } from '@react-pdf/renderer';
 import PdfBoletaCampoRMP from './PdfBoletaCampoRMP';
 

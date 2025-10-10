@@ -4,7 +4,7 @@ import { createTaskTimeout, getTimeOuts } from "@/api/TimeOutsAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { TaskProductionPlan } from "types/taskProductionPlanTypes";
+import { TaskProductionPlan } from "@/types/taskProductionPlanTypes";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import Error from "../utilities-components/Error";

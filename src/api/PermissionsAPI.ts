@@ -1,6 +1,6 @@
 import { PermissionsSchema, PermissionsUserSchema } from "@/utils/permissionsSchemas";
 import { isAxiosError } from "axios";
-import { DraftPermiso } from "types/permissionsType";
+import { DraftPermiso } from "@/types/permissionsType";
 import clienteAxios from "@/config/axios";
 
 export async function createPermission(permission: DraftPermiso) {

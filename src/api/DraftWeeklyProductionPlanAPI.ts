@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios";
 import { DraftWeeklyProductionPlanDetailsSchema, DraftWeeklyProductionPlanRecipeSchema, WeeklyProductionDraftsPaginatedSchema } from "@/utils/draftWeeklyProductionPlanSchemas";
 import { DraftWeeklyProductionPlan } from "@/components/modals/ModalCreateDraftPlanProduction";
-import { WeeklyProductionPlanDraft } from "types/draftWeeklyProductionPlanTypes";
+import { WeeklyProductionPlanDraft } from "@/types/draftWeeklyProductionPlanTypes";
 import { FiltersDraftsTasks } from "@/views/produccion/production-planner/Show";
 import { LinesHoursPerWeekSchema } from "@/utils/lineSchemas";
 import clienteAxios from "@/config/axios";

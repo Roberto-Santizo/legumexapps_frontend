@@ -1,8 +1,8 @@
 import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { NewTaskProductionDraft } from "@/components/modals/ModalAddNewDraftProductionTask";
-import { WeeklyProductionPlanDraft } from "types/draftWeeklyProductionPlanTypes";
-import { TaskProductionPlanDraft } from "types/draftTaskProductionTypes";
+import { WeeklyProductionPlanDraft } from "@/types/draftWeeklyProductionPlanTypes";
+import { TaskProductionPlanDraft } from "@/types/draftTaskProductionTypes";
 import { DraftTaskProductionPlanEditDetailsSchema } from "@/utils/draftTaskProductionPlanSchemas";
 
 export async function createNewTaskProductionDraft({ formData, id }: { formData: NewTaskProductionDraft, id: WeeklyProductionPlanDraft['id'] }) {

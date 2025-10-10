@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createInsumo } from "@/api/InsumosAPI";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { DraftInsumo } from "types/insumoTypes";
+import { DraftInsumo } from "@/types/insumoTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";

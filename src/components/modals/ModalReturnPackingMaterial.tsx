@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { DraftTransactionPackingMaterial } from './ModalEntregaMaterialEmpaque';
 import { createPackingMaterialTransaction } from '@/api/PackingMaterialTransactionsAPI';
 import { toast } from 'react-toastify';
-import { TaskProductionItem } from 'types/taskProductionPlanTypes';
+import { TaskProductionItem } from '@/types/taskProductionPlanTypes';
 import { getTaskReturnPackingMaterialDetails } from '@/api/TaskProductionPlansAPI';
 import { useAppStore } from '@/store';
 import ModalAddWastage, { DraftTaskProductionWastage } from './ModalAddWastage';

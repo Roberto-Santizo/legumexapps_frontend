@@ -6,7 +6,7 @@ import { PlantationsControlSchema } from "@/utils/plantationControlSchemas";
 import { CropsSchema } from "@/utils/cropSchemas";
 import { RecipesSchema } from "@/utils/recipeSchemas";
 import { LoteCDPDetailsSchema } from "@/utils/lotesSchemas";
-import { PlantationControl } from "types/plantationControlTypes";
+import { PlantationControl } from "@/types/plantationControlTypes";
 
 export async function createCDP(cdp: DraftCDP) {
     try {

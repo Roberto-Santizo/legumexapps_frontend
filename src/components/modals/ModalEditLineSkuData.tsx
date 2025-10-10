@@ -9,7 +9,7 @@ import Spinner from "../utilities-components/Spinner";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import InputSelectComponent from "../form/InputSelectComponent";
-import { LinePerformance } from "types/linePerformanceTypes";
+import { LinePerformance } from "@/types/linePerformanceTypes";
 
 type Props = {
     modal: boolean;

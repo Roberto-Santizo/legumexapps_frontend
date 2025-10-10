@@ -4,7 +4,7 @@ import { getQualityStatuses } from "@/api/ReceptionsDocAPI";
 import Filters from "../Filters";
 import { useQueries } from "@tanstack/react-query";
 import Spinner from "../utilities-components/Spinner";
-import { QualityStatus } from "types/rmpDocTypes";
+import { QualityStatus } from "@/types/rmpDocTypes";
 
 type Props = {
     filters: FiltersBoletaRMP;

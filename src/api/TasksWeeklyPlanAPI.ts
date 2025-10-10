@@ -1,14 +1,14 @@
 import clienteAxios from "@/config/axios";
-import { Employee, TaskInsumo } from "@/types";
+import { Employee, TaskInsumo } from "@/types/index";
 import { EmployeesSchema } from "@/utils/employee-schema";
 import { isAxiosError } from "axios";
 import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { WeeklyPlan } from "@/types/planificacionFincasType";
 import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema } from "@/utils/taskWeeklyPlanSchemas";
-import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
-import { TaskGeneral } from "types/taskGeneralType";
-import { Lote } from "types/lotesType";
+import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
+import { TaskGeneral } from "@/types/taskGeneralType";
+import { Lote } from "@/types/lotesType";
 
 export async function getTasks({ cdp, weekly_plan_id, filters }: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {

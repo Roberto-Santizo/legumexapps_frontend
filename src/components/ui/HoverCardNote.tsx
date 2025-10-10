@@ -1,6 +1,6 @@
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { AlertCircleIcon } from "lucide-react";
-import { TaskProductionNotePerformance } from "types/taskProductionPlanTypes";
+import { TaskProductionNotePerformance } from "@/types/taskProductionPlanTypes";
 
 type Props = {
     note: TaskProductionNotePerformance | null;

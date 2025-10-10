@@ -3,7 +3,7 @@ import { getTasksNoOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { Line } from "types/linesTypes";
+import { Line } from "@/types/linesTypes";
 import TaskUnscheduled from "./TaskUnscheduled";
 import Spinner from "../utilities-components/Spinner";
 

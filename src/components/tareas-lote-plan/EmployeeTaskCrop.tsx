@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { EmployeeCrop } from "@/types";
+import { EmployeeCrop } from "@/types/index";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 

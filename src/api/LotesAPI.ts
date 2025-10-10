@@ -1,7 +1,7 @@
 import { DraftLote } from "@/views/agricola/lotes/Create";
 import { isAxiosError } from "axios";
 import { FiltersLotesType } from "@/views/agricola/lotes/Index";
-import { Lote } from "types/lotesType";
+import { Lote } from "@/types/lotesType";
 import { LotesSchema } from "@/utils/lotesSchemas";
 import { PlantationControlsByLoteSchema } from "@/utils/plantationControlSchemas";
 import clienteAxios from "@/config/axios";

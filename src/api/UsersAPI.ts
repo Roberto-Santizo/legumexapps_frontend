@@ -1,6 +1,6 @@
 import { usersSchema, userSchema } from "@/utils/usersSchemas";
 import { isAxiosError } from "axios";
-import { DraftUser, User } from "types/usersTypes";
+import { DraftUser, User } from "@/types/usersTypes";
 import clienteAxios from "@/config/axios";
 
 

@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { GetTasksProductionInProgress } from "@/api/DashboardProductionAPI";
 import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
-import { TaskProductionDashboard } from "types/dashboardProductionTypes";
+import { TaskProductionDashboard } from "@/types/dashboardProductionTypes";
 import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";

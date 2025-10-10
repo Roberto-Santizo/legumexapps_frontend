@@ -1,6 +1,6 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
 import LogoLegumex from "../logos/LogoLegumex";
-import { BoletaRmpAllInfo } from "types/rmpDocTypes";
+import { BoletaRmpAllInfo } from "@/types/rmpDocTypes";
 
 type Props = {
   boleta: BoletaRmpAllInfo;

@@ -1,4 +1,4 @@
-import { DraftMateriaPrimaItem } from "types/materiaPrimaTypes";
+import { DraftMateriaPrimaItem } from "@/types/materiaPrimaTypes";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";

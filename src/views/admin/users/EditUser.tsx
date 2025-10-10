@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { getUserById, updateUser } from "@/api/UsersAPI";
 import { toast } from "react-toastify";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { DraftUser, User } from "types/usersTypes";
+import { DraftUser, User } from "@/types/usersTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import UsersForm from "./UsersForm";
 

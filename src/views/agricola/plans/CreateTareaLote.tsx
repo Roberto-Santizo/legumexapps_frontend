@@ -8,15 +8,15 @@ import { toast } from "react-toastify";
 import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
 import { getCurrentDate } from "@/helpers";
 import { FiltersTasksInitialValues } from "../tasks/Index";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { WeeklyPlan } from "@/types/planificacionFincasType";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
-import { DraftTaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
-import { Lote } from "types/lotesType";
+import { DraftTaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
+import { Lote } from "@/types/lotesType";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;

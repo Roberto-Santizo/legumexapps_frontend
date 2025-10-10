@@ -1,6 +1,6 @@
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { EyeIcon } from "lucide-react";
-import { TaskCDP } from "types/taskWeeklyPlanTypes";
+import { TaskCDP } from "@/types/taskWeeklyPlanTypes";
 
 type Props = {
     task: TaskCDP;

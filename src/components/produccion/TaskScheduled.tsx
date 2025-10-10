@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TaskProductionOperationDate } from "types/taskProductionPlanTypes";
+import { TaskProductionOperationDate } from "@/types/taskProductionPlanTypes";
 import { usePermissions } from "@/hooks/usePermissions";
 import ModalEntregaMaterialEmpaque, { DraftPackingMaterialTransactionItem } from "../modals/ModalEntregaMaterialEmpaque";
 import MenuTaskProductionActions from "../planes-semanales-produccion/MenuTaskProductionActions";

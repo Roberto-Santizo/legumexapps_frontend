@@ -7,7 +7,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { CalendarIcon, DownloadIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { WeeklyPlan } from "@/types/planificacionFincasType";
 import Spinner from "../utilities-components/Spinner";
 
 

@@ -4,7 +4,7 @@ import { Bars3Icon } from "@heroicons/react/16/solid";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getPackingMaterialTransactions } from "@/api/PackingMaterialTransactionsAPI";
-import { PackingMaterialTransaction } from "types/packingMaterialTransactionTypes";
+import { PackingMaterialTransaction } from "@/types/packingMaterialTransactionTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";

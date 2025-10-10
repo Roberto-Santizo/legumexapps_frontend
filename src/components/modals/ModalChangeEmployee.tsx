@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import Modal from "../Modal";
-import { TaskProductionChange, TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { TaskProductionChange, TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 
 type Props = {
     modal: boolean;

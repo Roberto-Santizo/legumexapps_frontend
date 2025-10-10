@@ -6,13 +6,13 @@ import { getLotes } from "@/api/LotesAPI";
 import { getTasks } from "@/api/TasksAPI";
 import { FiltersTasksInitialValues } from "@/views/agricola/tasks/Index";
 import { Trash2Icon } from "lucide-react";
-import { TaskGeneral } from "types/taskGeneralType";
+import { TaskGeneral } from "@/types/taskGeneralType";
 import Modal from "../Modal";
 import TaskByDate from "../tareas-lote-plan/TaskByDate";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 import Select from "react-select";
-import { Lote } from "types/lotesType";
+import { Lote } from "@/types/lotesType";
 
 
 type Props = {

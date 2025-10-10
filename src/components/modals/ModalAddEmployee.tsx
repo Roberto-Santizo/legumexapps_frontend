@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
-import { DraftTaskProductionEmployee, TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { DraftTaskProductionEmployee, TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 import { toast } from "react-toastify";
 import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
-import { Position } from "types/linesTypes";
+import { Position } from "@/types/linesTypes";
 
 type Props = {
     isOpen: boolean;

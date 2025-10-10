@@ -1,7 +1,7 @@
 import { Edit, PlusIcon, XIcon } from "lucide-react";
 import { SetStateAction } from "react";
 import { Link } from "react-router-dom";
-import { TaskWeeklyPlanWithNoOperationDate } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlanWithNoOperationDate } from "@/types/taskWeeklyPlanTypes";
 
 type Props = {
     task: TaskWeeklyPlanWithNoOperationDate;

@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useMemo } from "react";
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { useAppStore } from "@/store";
-import { Line } from "types/linesTypes";
+import { Line } from "@/types/linesTypes";
 import Spinner from "../utilities-components/Spinner";
 import TaskScheduled from "./TaskScheduled";
 import ModalChangeOperationDate from "../modals/ModalChangeOperationDate";

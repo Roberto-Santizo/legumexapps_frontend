@@ -6,7 +6,7 @@ import { getPackingMaterials, updateMaterialStatus } from "@/api/PackingMaterial
 import { toast } from "react-toastify";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { usePermissions } from "@/hooks/usePermissions";
-import { PackingMaterialItem } from "types/packingMaterialItemTypes";
+import { PackingMaterialItem } from "@/types/packingMaterialItemTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";

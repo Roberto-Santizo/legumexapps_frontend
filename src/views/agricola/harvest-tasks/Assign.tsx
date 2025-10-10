@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
-import { Employee, TaskCropWeeklyPlan } from "@/types";
+import { Employee, TaskCropWeeklyPlan } from "@/types/index";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "react-toastify";
 import { getEmployees } from "@/api/TasksWeeklyPlanAPI";

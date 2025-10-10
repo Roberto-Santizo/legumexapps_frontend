@@ -6,7 +6,7 @@ import { closeTask } from "@/api/TasksWeeklyPlanAPI";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { TaskInProgress } from "@/api/DashboardAgricolaAPI";
 import Swal from "sweetalert2";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 
 type Props = {
   task: TaskInProgress;

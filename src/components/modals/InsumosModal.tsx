@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { TaskInsumo } from "@/types";
+import { TaskInsumo } from "@/types/index";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeTask, getTask, registerUsedInsumos } from "@/api/TasksWeeklyPlanAPI";
 import { toast } from "react-toastify";
@@ -8,7 +8,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 import Modal from "../Modal";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 
 type Props = {
   filters: FiltersTareasLoteType;

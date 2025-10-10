@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getCDPS } from "@/api/PlantationControlAPI";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
-import { PlantationControl } from "types/plantationControlTypes";
+import { PlantationControl } from "@/types/plantationControlTypes";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";

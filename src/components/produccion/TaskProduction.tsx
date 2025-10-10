@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeTaskTimeOut } from "@/api/TimeOutsAPI";
 import { toast } from "react-toastify";
-import { TaskProductionPlan } from "types/taskProductionPlanTypes";
+import { TaskProductionPlan } from "@/types/taskProductionPlanTypes";
 import { startTaskProductionPlan } from "@/api/TaskProductionPlansAPI";
 import { useMemo } from "react";
 import { usePermissions } from "@/hooks/usePermissions";

@@ -1,5 +1,5 @@
 import clienteAxios from "@/config/axios";
-import { TaskCrop } from "@/types";
+import { TaskCrop } from "@/types/index";
 import { TasksCropSchema } from "@/utils/taskCropWeeklyPlan-schema";
 
 export async function getAllTasksCrops() : Promise<TaskCrop[]> {

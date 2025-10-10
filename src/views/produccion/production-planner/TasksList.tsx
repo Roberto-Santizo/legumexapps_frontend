@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { EditIcon, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { tWeeklyProductionPlanDraftDetailsSchema } from "types/draftWeeklyProductionPlanTypes";
+import { tWeeklyProductionPlanDraftDetailsSchema } from "@/types/draftWeeklyProductionPlanTypes";
 
 type Props = {
     draft: tWeeklyProductionPlanDraftDetailsSchema;

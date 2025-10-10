@@ -9,7 +9,7 @@ import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import Swal from "sweetalert2";
 import TaskLabel from "../utilities-components/TaskLabel";
 import DronIcon from "../dashboard-agricola/DronIcon";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 
 type TaskProps = {
   task: TaskWeeklyPlan;

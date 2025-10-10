@@ -7,7 +7,7 @@ import { createLote } from "@/api/LotesAPI";
 import { toast } from "react-toastify";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { FiltersCdpInitialValues } from "../cdps/Index";
-import { PlantationControl } from "types/plantationControlTypes";
+import { PlantationControl } from "@/types/plantationControlTypes";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputComponent from "@/components/form/InputComponent";

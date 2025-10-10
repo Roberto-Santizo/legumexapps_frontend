@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { TaskProductionItem } from 'types/taskProductionPlanTypes';
+import { TaskProductionItem } from '@/types/taskProductionPlanTypes';
 import InputComponent from '../form/InputComponent';
 import Error from '../utilities-components/Error';
 import ModalRadixUI from '../ModalRadixUI';

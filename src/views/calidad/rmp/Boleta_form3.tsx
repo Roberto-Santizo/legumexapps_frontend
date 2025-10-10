@@ -1,14 +1,14 @@
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AlertCircle } from "lucide-react";
-import { Defect } from "@/types";
 import { createQualityDoc } from "@/api/ReceptionsDocAPI";
 import { useNavigate } from "react-router-dom";
 import { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { getProductById } from "@/api/ProductsAPI";
-import { BoletaRmpDetail, ResultBoletaRmpCalidad } from "types/rmpDocTypes";
+import { BoletaRmpDetail, ResultBoletaRmpCalidad } from "@/types/rmpDocTypes";
+import { Defect } from "@/types/index";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";

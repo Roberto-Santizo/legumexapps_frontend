@@ -4,7 +4,7 @@ import { formatDate } from "@/helpers";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Apple, ArrowBigRight, BookCheck, Calendar, ChartLine, Info, TrashIcon, UsersIcon } from "lucide-react";
 import { confirmAssignment, createTaskProductionEmployees, getComodines, getTaskProductionDetails } from "@/api/TaskProductionPlansAPI";
-import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";

@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import Modal from "../Modal";
 import SalidaBodegaEmpaque from "../boleta-bodega/SalidaBodegaEmpaque";
 import DevolucionBodega from "../boleta-bodega/DevolucionBodega";
-import { TaskProductionFinished } from "types/taskProductionPlanTypes";
+import { TaskProductionFinished } from "@/types/taskProductionPlanTypes";
 
 type Props = {
   open: boolean;

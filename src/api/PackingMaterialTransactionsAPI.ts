@@ -4,7 +4,7 @@ import { TransactionTaskProductionSchema } from "@/utils/taskProductionPlanSchem
 import { FiltersPackingMaterialsTransactionType } from "@/views/bodega/transactions/Index";
 import clienteAxios from "@/config/axios";
 import { PackingMaterialTransactionsSchema } from "@/utils/packingMaterialTransactionSchema";
-import { PackingMaterialTransaction } from "types/packingMaterialTransactionTypes";
+import { PackingMaterialTransaction } from "@/types/packingMaterialTransactionTypes";
 
 export async function createPackingMaterialTransaction(FormData: DraftTransactionPackingMaterial) {
     try {

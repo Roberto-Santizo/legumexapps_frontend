@@ -1,7 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { WeeklyPlanTasksOperationDateSchema, WeeklyProductionPlanEventsShema, WeeklyProductionPlansSchema, WeeklyProductionPlanSummarySchema, WeeklyProductionPlanTasksSchema } from "@/utils/weeklyProductionPlanSchemas";
 import { isAxiosError } from "axios";
-import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
 import { ReportSchema } from "@/utils/reports-schema";
 import { downloadBase64File } from "@/helpers";
 import { TaskProductionUnscheduledFilters, TasksWithOperationDateFilters } from "@/stores/planificationProductionSlice";

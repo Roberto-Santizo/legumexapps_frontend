@@ -2,7 +2,7 @@ import clienteAxios from "@/config/axios";
 import { FiltersTareasType } from "@/views/agricola/tasks/Index";
 import { isAxiosError } from "axios";
 import { TaskSchema, TasksSchema } from "@/utils/taskGeneralSchemas";
-import { DraftTask, TaskGeneral } from "types/taskGeneralType";
+import { DraftTask, TaskGeneral } from "@/types/taskGeneralType";
 
 export async function createTarea(FormData: DraftTask) {
     try {

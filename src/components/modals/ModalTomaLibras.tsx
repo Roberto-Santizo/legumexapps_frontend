@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, useEffect, useMemo, useState } from "react";
-import { TaskCropIncomplete, TasksCropWeeklyPlan } from "@/types";
+import { TaskCropIncomplete, TasksCropWeeklyPlan } from "@/types/index";
 import { formatDate } from "@/helpers";
 import { toast } from "react-toastify";
 import { completeAssigments, getIncompleteAssigments } from "@/api/TaskCropWeeklyPlanAPI";

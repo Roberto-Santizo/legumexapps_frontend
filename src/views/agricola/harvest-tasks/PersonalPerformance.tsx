@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "@/helpers";
-import { EmployeeCrop } from "@/types";
+import { EmployeeCrop } from "@/types/index";
 import { AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@tanstack/react-query";

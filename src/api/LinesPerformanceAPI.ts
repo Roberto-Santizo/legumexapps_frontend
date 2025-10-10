@@ -3,7 +3,7 @@ import { isAxiosError } from "axios";
 import { DraftLineaSku } from "@/views/produccion/lines-performances/Create";
 import clienteAxios from "@/config/axios";
 import { PaginatedLinesPerformancesSchema } from "@/utils/linePerformance";
-import { LinePerformance } from "types/linePerformanceTypes";
+import { LinePerformance } from "@/types/linePerformanceTypes";
 
 export async function getPaginatedLineasSKU(page: number){
     try {

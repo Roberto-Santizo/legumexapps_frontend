@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createPermission } from "@/api/PermissionsAPI";
 import { useMutation } from "@tanstack/react-query";
-import { DraftPermiso } from "types/permissionsType";
+import { DraftPermiso } from "@/types/permissionsType";
 import Spinner from "@/components/utilities-components/Spinner";
 import PermisosForm from "./PermisosForm";
 

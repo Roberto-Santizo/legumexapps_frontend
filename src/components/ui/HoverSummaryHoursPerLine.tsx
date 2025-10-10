@@ -3,7 +3,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { useQuery } from "@tanstack/react-query";
 import { BookIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
 import { useEffect, useState } from "react";
 import Spinner from "../utilities-components/Spinner";
 

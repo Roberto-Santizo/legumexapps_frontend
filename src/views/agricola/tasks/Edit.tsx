@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { getTareaById, updateTarea } from "@/api/TasksAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { DraftTask } from "types/taskGeneralType";
+import { DraftTask } from "@/types/taskGeneralType";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Form from "./Form";

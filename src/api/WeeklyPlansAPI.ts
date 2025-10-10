@@ -5,7 +5,7 @@ import { FiltersPlanSemanalType } from "@/views/agricola/plans/Index";
 import { z } from "zod";
 import { isAxiosError } from "axios";
 import { SummaryWeeklyPlanSchema, WeeklyPlansSchema } from "@/utils/planificacionFincasSchemas";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { WeeklyPlan } from "@/types/planificacionFincasType";
 import { TaskInsumoSchema } from "@/utils/taskWeeklyPlanSchemas";
 
 export async function createPlan(file: File[]) {

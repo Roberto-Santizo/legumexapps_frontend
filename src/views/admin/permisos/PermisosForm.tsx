@@ -1,7 +1,7 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Error from "@/components/utilities-components/Error";
 import InputTextComponent from "@/components/form/InputComponent";
-import { DraftPermiso } from "types/permissionsType";
+import { DraftPermiso } from "@/types/permissionsType";
 
 type Props = {
     errors: FieldErrors<DraftPermiso>;

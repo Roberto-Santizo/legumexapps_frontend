@@ -3,7 +3,7 @@ import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
 import { getUsers, changeActiveUser } from "@/api/UsersAPI";
 import { toast } from "react-toastify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { User } from "types/usersTypes";
+import { User } from "@/types/usersTypes";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";

@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { downloadPackingMaterialNecessity, downloadWeeklyProductionPlan } from "@/api/WeeklyProductionPlanAPI";
 import { toast } from "react-toastify";
 import { downloadBase64File } from "@/helpers";
-import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
 
 
 export default function MenuOptionsProduction({ plan_id }: { plan_id: WeeklyProductionPlan['id'] }) {

@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { WeeklyProductionPlanDraft } from "types/draftWeeklyProductionPlanTypes";
+import { WeeklyProductionPlanDraft } from "@/types/draftWeeklyProductionPlanTypes";
 import Echo from "laravel-echo";
 import Pusher from 'pusher-js';
 import { useEffect } from "react";

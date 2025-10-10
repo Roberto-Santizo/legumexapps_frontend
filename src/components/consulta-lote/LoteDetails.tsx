@@ -1,7 +1,7 @@
 import { formatDate } from "@/helpers";
 import TaskLabel from "../utilities-components/TaskLabel";
 import HoverCardInsumos from "../ui/HoverCardInsumos";
-import { loteCDPDetails } from "types/lotesType";
+import { loteCDPDetails } from "@/types/lotesType";
 
 type Props = {
     data: loteCDPDetails

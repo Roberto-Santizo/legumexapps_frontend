@@ -49,9 +49,15 @@ export default function Navegation() {
       )}
 
       {hasPermission("see plan semanal finca") && (
-        <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
-          <BookCheck />
-        </NavLinkComponent>
+        <>
+          <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
+            <BookCheck />
+          </NavLinkComponent>
+
+          <NavLinkComponent url="/planificador-fincas" text="Plan de Siembras">
+            <ChartPie />
+          </NavLinkComponent>
+        </>
       )}
 
       {hasPermission("administrate fincas") && (

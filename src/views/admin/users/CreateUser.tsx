@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createUser } from "@/api/UsersAPI";
 import { useMutation } from "@tanstack/react-query";
-import { DraftUser } from "types/usersTypes";
+import { DraftUser } from "@/types/usersTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import UsersForm from "./UsersForm";
 

@@ -12,7 +12,7 @@ import { getTransportistaInfoById, getTransportistas, Transportista, } from "@/a
 import { Placa } from "@/api/PlacasAPI";
 import { getAllProductorCDPS, ProductorCDP, } from "@/api/ProductorPlantationAPI";
 import { useMutation } from "@tanstack/react-query";
-import { DraftBoletaRMP } from "types/rmpDocTypes";
+import { DraftBoletaRMP } from "@/types/rmpDocTypes";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";

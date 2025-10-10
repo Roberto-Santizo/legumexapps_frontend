@@ -6,8 +6,8 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, YAxis, LabelList } from "recharts";
 import { FiltersDraftsTasks } from "./Show";
-import { CategoricalChartState } from "recharts/types/chart/types";
 import * as XLSX from 'xlsx';
+import { CategoricalChartState } from "recharts/types/chart/types";
 
 type Props = {
     setFilters: Dispatch<SetStateAction<FiltersDraftsTasks>>;

@@ -3,7 +3,7 @@ import { PaginatedPackingMaterialItemsSchema } from "@/utils/packingMaterialItem
 import { DraftMaterialEmpaque } from "@/views/bodega/packing-material-item/Create";
 import { FiltersPackingMaterialsType } from "@/views/bodega/packing-material-item/Index";
 import { isAxiosError } from "axios";
-import { PackingMaterialItem } from "types/packingMaterialItemTypes";
+import { PackingMaterialItem } from "@/types/packingMaterialItemTypes";
 
 export async function getPackingMaterials({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersPackingMaterialsType, paginated: string }) {
     try {

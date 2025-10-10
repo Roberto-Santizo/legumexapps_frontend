@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { createBoletaTransporte, DraftBoletaTransporte, getCondicionesTransporte, TransporteCondition } from '@/api/BoletaTransporteAPI';
 import { FiletrsBoletaRMPInitialValues } from '@/components/filters/FiletrsRMP';
-import { BoletaRMP } from 'types/rmpDocTypes';
+import { BoletaRMP } from '@/types/rmpDocTypes';
 import SignatureCanvas from "react-signature-canvas";
 import Swal from 'sweetalert2';
 import Error from '@/components/utilities-components/Error';

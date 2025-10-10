@@ -8,7 +8,7 @@ import Error from "../utilities-components/Error";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import InputComponent from "../form/InputComponent";
-import { Insumo } from "types/insumoTypes";
+import { Insumo } from "@/types/insumoTypes";
 
 type Props = {
     open: boolean,

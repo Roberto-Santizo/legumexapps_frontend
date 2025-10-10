@@ -1,7 +1,7 @@
 import { Calendar, Divide, EditIcon, TrashIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { TaskProductionNoOperationDate } from "types/taskProductionPlanTypes";
+import { TaskProductionNoOperationDate } from "@/types/taskProductionPlanTypes";
 import { assignOperationDate, deleteTaskProduction } from "@/api/TaskProductionPlansAPI";
 import { toast } from "react-toastify";
 import { useAppStore } from "@/store";

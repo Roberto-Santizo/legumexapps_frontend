@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createRole } from "@/api/RolesAPI";
 import { useMutation } from "@tanstack/react-query";
-import { DraftRole } from "types/rolesTypes";
+import { DraftRole } from "@/types/rolesTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import RolesForm from "./RolesForm";
 
