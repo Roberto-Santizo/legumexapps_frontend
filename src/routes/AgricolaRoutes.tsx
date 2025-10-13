@@ -42,8 +42,8 @@ const routes = [
   { path: "/insumos/crear", component: lazy(() => import("@/views/agricola/supplies/Create")), roles: ['admin', 'adminagricola'] },
   { path: "/insumos/carga-masiva", component: lazy(() => import("@/views/agricola/supplies/Upload")), roles: ['admin', 'adminagricola'] },
 
-  { path: "/planificador-fincas", component: lazy(() => import("@/views/agricola/planner/Index")), roles: ['admin'] },
-  { path: "/planificador-fincas/:id", component: lazy(() => import("@/views/agricola/planner/Show")), roles: ['admin'] },
+  { path: "/planificador-fincas", component: lazy(() => import("@/views/agricola/planner/views/Index")), roles: ['admin'] },
+  { path: "/planificador-fincas/:id", component: lazy(() => import("@/views/agricola/planner/views/Show")), roles: ['admin'] },
 ];
 
 export default function AgricolaRoutes() {

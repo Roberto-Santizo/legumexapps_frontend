@@ -5,6 +5,7 @@ import { TaskCropWeeklyPlanSchema, TasksCropWeeklyPlanSchema } from "../utils/ta
 import { DefectsPaginateSchema } from '@/utils/defectos-schema'
 import { DefectSchema } from '@/api/ProductsAPI'
 import { TaskInsumoSchema } from '@/utils/taskWeeklyPlanSchemas'
+import { DraftWeeklyPlanSchema, TaskPlantationControlSchema } from '@/schemas/plannerFincasSchemas'
 
 export type TaskCrop = z.infer<typeof TaskCropSchema>
 
@@ -24,5 +25,9 @@ export type DefectsPaginate = z.infer<typeof DefectsPaginateSchema>
 export type Defect = z.infer<typeof DefectSchema>
 
 export type MaterialOutput = z.infer<typeof DefectSchema>
+
+//PLANIFICADOR FINCAS
+export type DraftWeeklyPlan = z.infer<typeof DraftWeeklyPlanSchema>;
+export type TaskPlantationControl = z.infer<typeof TaskPlantationControlSchema>
 
 

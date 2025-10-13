@@ -8,3 +8,7 @@ export const PaginatedRequestSchema = z.object({
         total: z.number()
     })
 });
+
+export const ApiResponseSchema = z.object({
+    statusCode: z.number()
+});

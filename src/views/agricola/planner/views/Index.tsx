@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { getDraftWeeklyPlans } from "@/api/PlannerFincasAPI";
 import Table from "@/components/shared/Table";
 import Pagination from "@/components/shared/Pagination";
-import getDraftWeeklyPlans from "@/api/PlannerFincasAPI";
 import TableLoader from "@/components/shared/TableLoader";
 
 export default function Index() {
