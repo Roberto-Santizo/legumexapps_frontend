@@ -6,9 +6,10 @@ export const PaginatedRequestSchema = z.object({
         current_page: z.number(),
         last_page: z.number(),
         total: z.number()
-    })
+    }).optional()
 });
 
 export const ApiResponseSchema = z.object({
-    statusCode: z.number()
+    statusCode: z.number(),
+    message: z.string().optional()
 });

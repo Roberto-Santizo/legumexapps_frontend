@@ -12,7 +12,7 @@ export default function Index() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['getDraftWeeklyPlans', page, rowsPerPage],
-    queryFn: () => getDraftWeeklyPlans({ page, limit: rowsPerPage })
+    queryFn: () => getDraftWeeklyPlans({ page: page + 1, limit: rowsPerPage })
   });
 
   const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -25,7 +25,7 @@ export default function Index() {
   }
 
   useEffect(() => {
-    setCount(data?.meta.total ?? 100);
+    setCount(data?.meta?.total ?? 100);
   }, [data]);
 
 

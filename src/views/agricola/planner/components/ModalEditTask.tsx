@@ -1,6 +1,6 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getTaskWeeklyPlanDraftById, UpdateTaskWeeklyPlanDraft } from "@/api/PlannerFincasAPI";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getDraftWeeklyPlans, getTaskWeeklyPlanDraftById, UpdateTaskWeeklyPlanDraft } from "@/api/PlannerFincasAPI";
 import { useForm } from "react-hook-form";
 import { DraftTaskPlantationControl } from "@/types/index";
 import { useEffect } from "react";
@@ -8,15 +8,19 @@ import { useNotification } from "../../../../core/notifications/NotificationCont
 import Modal from "@/components/Modal";
 import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";
+import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 
 export default function ModalEditTask() {
     const location = useLocation();
-    const navigate = useNavigate();
     const notify = useNotification();
+    const params = useParams();
+    const queryClient = useQueryClient();
+    const id = params.id!;
 
     const queryParams = new URLSearchParams(location.search);
     const taskId = queryParams.get('editTask')!;
     const show = taskId ? true : false;
+    const [_, setSearchParams] = useSearchParams();
 
     const { data } = useQuery({
         queryKey: ['getTaskWeeklyPlanDraftById', taskId],
@@ -24,21 +28,36 @@ export default function ModalEditTask() {
         enabled: !!taskId
     });
 
+    const { data: plans } = useQuery({
+        queryKey: ['getDraftWeeklyPlans'],
+        queryFn: () => getDraftWeeklyPlans({}),
+        enabled: !!taskId
+    });
+
     const { mutate } = useMutation({
         mutationFn: UpdateTaskWeeklyPlanDraft,
-        onSuccess: () => {
-            notify.success('En efecto sirvió', { position: "top-right" });
+        onSuccess: (message) => {
+            notify.success(message ?? '');
+            queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlanById', id], });
+            handleCloseModal();
         },
-        onError: () => {
-
+        onError: (error) => {
+            notify.error(error.message);
         }
     });
+
+    const plansOptions = plans?.data.map((plan) => ({
+        value: `${plan.id}`,
+        label: ` ${plan.finca} | S${plan.week} | ${plan.year}`,
+    }));
 
     const {
         register,
         formState: { errors },
         handleSubmit,
-        setValue
+        setValue,
+        control,
+        reset
     } = useForm<DraftTaskPlantationControl>();
 
     const onSubmit = (data: DraftTaskPlantationControl) => {
@@ -55,8 +74,16 @@ export default function ModalEditTask() {
         }
     }, [data]);
 
-    if (data) return (
-        <Modal modal={show} closeModal={() => navigate(location.pathname, { replace: true })} title="Editar Guia de Tarea">
+    const handleCloseModal = () => {
+        setSearchParams(searchParams => {
+            searchParams.delete('editTask');
+            return searchParams;
+        })
+        reset()
+    }
+
+    if (data && plans) return (
+        <Modal modal={show} closeModal={() => handleCloseModal()} title="Editar Guia de Tarea" >
             <div className="p-5">
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
                     <InputComponent<DraftTaskPlantationControl>
@@ -89,7 +116,7 @@ export default function ModalEditTask() {
                         label="Etiquetas"
                         id="tags"
                         name="tags"
-                        placeholder="Etiquetas"
+                        placeholder="Etiquetas separadas por coma. Ej: atrasada, adelantada, nueva"
                         register={register}
                         validation={{}}
                         errors={errors}
@@ -98,13 +125,24 @@ export default function ModalEditTask() {
                         {errors.tags && <Error>{errors.tags?.message?.toString()}</Error>}
                     </InputComponent>
 
+                    <InputSelectSearchComponent<DraftTaskPlantationControl>
+                        label="Plan Semanal"
+                        id="draft_weekly_plan_id"
+                        name="draft_weekly_plan_id"
+                        options={plansOptions ?? []}
+                        control={control}
+                        rules={{ required: 'El plan semanal es requerido' }}
+                        errors={errors}
+                    >
+                        {errors.draft_weekly_plan_id && <Error>{errors.draft_weekly_plan_id?.message?.toString()}</Error>}
+                    </InputSelectSearchComponent>
 
                     <button type="submit" className="button bg-indigo-500 hover:bg-indigo-600 w-full">
                         Guardar Cambios
                     </button>
                 </form>
             </div>
-        </Modal>
+        </Modal >
 
     );
 }

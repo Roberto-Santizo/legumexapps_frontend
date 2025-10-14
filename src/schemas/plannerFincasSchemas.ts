@@ -29,7 +29,7 @@ export const DraftWeeklyPlanSchema = ApiResponseSchema.extend({
         id: z.number(),
         finca: z.string(),
         week: z.number(),
-        tasks: PlantationControlTasksSchema
+        tasks: PlantationControlTasksSchema.optional()
     })
 });
 
