@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { DraftTransactionPackingMaterial } from './ModalEntregaMaterialEmpaque';
 import { createPackingMaterialTransaction } from '@/api/PackingMaterialTransactionsAPI';
-import { toast } from 'react-toastify';
 import { TaskProductionItem } from '@/types/taskProductionPlanTypes';
 import { getTaskReturnPackingMaterialDetails } from '@/api/TaskProductionPlansAPI';
 import { useAppStore } from '@/store';
@@ -15,6 +14,7 @@ import Spinner from "../utilities-components/Spinner";
 import Error from "../utilities-components/Error";
 import SignatureField from "../form/SignatureComponent";
 import SignatureCanvas from "react-signature-canvas";
+import { useNotification } from '../../core/notifications/NotificationContext';
 
 export default function ModalReturnPackingMaterial() {
     const location = useLocation();
@@ -23,7 +23,7 @@ export default function ModalReturnPackingMaterial() {
     const show = (taskId) ? true : false;
     const params = useParams();
     const date = queryParams.get('date') ?? '';
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
     
     const [auxItems, setAuxItems] = useState<TaskProductionItem[]>([]);
     const [wastages, setWastages] = useState<DraftTaskProductionWastage[]>([]);
@@ -34,6 +34,7 @@ export default function ModalReturnPackingMaterial() {
     const responsableSignatureRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const filters = useAppStore((state) => state.filtersWithOperationDate);
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
@@ -59,10 +60,10 @@ export default function ModalReturnPackingMaterial() {
 
     const { mutate, isPending } = useMutation({
         mutationFn: createPackingMaterialTransaction,
-        onError: (error) => toast.error(error.message),
+        onError: (error) => notify.error(error.message),
         onSuccess: (data) => {
             handleCloseModal();
-            toast.success(data);
+            notify.success(data);
             reset();
             setSelectedItem({} as TaskProductionItem);
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
@@ -84,7 +85,7 @@ export default function ModalReturnPackingMaterial() {
         if (data) {
             if (!data.data.available) {
                 handleCloseModal();
-                toast.error('La boleta ya cuenta con registro de devolución');
+                notify.error('La boleta ya cuenta con registro de devolución');
             } else {
                 setAuxItems(data.data.items);
             }

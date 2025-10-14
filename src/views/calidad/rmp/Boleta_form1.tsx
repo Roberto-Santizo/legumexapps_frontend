@@ -1,6 +1,5 @@
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Basket, getBaskets } from "@/api/BasketsAPI";
 import { createBoletaRMP } from "@/api/ReceptionsDocAPI";
@@ -18,6 +17,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -32,6 +32,7 @@ export default function Boleta_form1() {
   const inspector_signature = useRef({} as SignatureCanvas);
   const prod_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const results = useQueries({
     queries: [
@@ -118,10 +119,10 @@ export default function Boleta_form1() {
   const { mutate, isPending } = useMutation({
     mutationFn: createBoletaRMP,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/rmp');
     }
   });

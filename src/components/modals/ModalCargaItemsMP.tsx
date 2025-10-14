@@ -1,10 +1,10 @@
 import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { uploadItemsMP } from "@/api/PackingMaterialItemsAPI";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     modal: boolean;
@@ -16,6 +16,7 @@ type Props = {
 export default function ModalCargaItemsMP({ modal, setModal, currentPage }: Props) {
     const [file, setFile] = useState<File[] | null>(null);
     const queryClient = useQueryClient();
+    const notify = useNotification();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -28,10 +29,10 @@ export default function ModalCargaItemsMP({ modal, setModal, currentPage }: Prop
     const { mutate, isPending } = useMutation({
         mutationFn: (file: File[]) => uploadItemsMP(file),
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             setModal(false);
             queryClient.invalidateQueries({ queryKey: ['getPaginatedPackingMaterials', currentPage] });
         }

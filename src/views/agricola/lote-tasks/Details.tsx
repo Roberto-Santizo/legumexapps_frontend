@@ -8,7 +8,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function Details() {
   const params = useParams();
-  const id = params.id!!;
+  const id = params.id!;
   const { data: taskDetail, isLoading, isError } = useQuery({
     queryKey: ['getTaskDetailsById', id],
     queryFn: () => getTaskDetailsById(id)

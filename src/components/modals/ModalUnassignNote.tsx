@@ -2,13 +2,13 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { createTaskProductionUnassignment, getActiveTaskProductionEmployees } from "@/api/TaskProductionPlansAPI";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftUnassignTaskProduction = {
     reason: string;
@@ -33,6 +33,7 @@ export default function ModalUnassignNote() {
     const modal = queryParams.get('modal')!;
     const show = (taskId && +modal === 5) ? true : false;
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['getTaskProductionDetails', taskId],
@@ -43,10 +44,10 @@ export default function ModalUnassignNote() {
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskProductionUnassignment,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             navigate(location.pathname, { replace: true });
             reset();
             setIds([]);
@@ -64,7 +65,7 @@ export default function ModalUnassignNote() {
 
     const onSubmit = (data: DraftUnassignTaskProduction) => {
         if (ids.length === 0) {
-            toast.error('Debe de seleccionar al menos una persona');
+            notify.error('Debe de seleccionar al menos una persona');
             return;
         }
         data.assignments = ids;

@@ -5,15 +5,15 @@ import { DraftNewTaskProduction } from "./ModalCrearTareaProduccion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNewTasksProduction, deleteTaskProduction, getTaskProductionReprogramDetails } from "@/api/TaskProductionPlansAPI";
 import { getCurrentDate } from "@/helpers";
-import { toast } from "react-toastify";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import { useAppStore } from "@/store";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export default function ModalReprogramTaskProduction() {
     const location = useLocation();
     const params = useParams<{ plan_id: string }>();
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
     const queryParams = new URLSearchParams(location.search);
     const taskId = queryParams.get('reprogramTask')!;
     const show = (taskId) ? true : false;
@@ -22,6 +22,7 @@ export default function ModalReprogramTaskProduction() {
 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const notify = useNotification();
 
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
 
@@ -44,7 +45,7 @@ export default function ModalReprogramTaskProduction() {
     const { mutate: deleteTask } = useMutation({
         mutationFn: deleteTaskProduction,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: () => {
             handleCloseModal();
@@ -57,10 +58,10 @@ export default function ModalReprogramTaskProduction() {
     const { mutate } = useMutation({
         mutationFn: createNewTasksProduction,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
 
             if (task) {
                 deleteTask({ taskId: task.id });
@@ -92,7 +93,7 @@ export default function ModalReprogramTaskProduction() {
         const total_lbs = newTasks.reduce((acc, task) => acc + Number(task.total_lbs), 0);
 
         if (task && total_lbs != task?.total_lbs) {
-            toast.error('Las libras divididas no coinciden con el total de la tarea');
+            notify.error('Las libras divididas no coinciden con el total de la tarea');
             return;
         }
 

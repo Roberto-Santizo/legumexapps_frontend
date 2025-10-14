@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Trash } from 'lucide-react';
 import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
@@ -22,6 +21,7 @@ import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
+import { useNotification } from '../../../core/notifications/NotificationContext';
 
 
 type EventReceiveInfo = {
@@ -34,8 +34,8 @@ type EventReceiveInfo = {
 export default function Calendar() {
     const queryClient = useQueryClient();
     const params = useParams();
-    const id = params.plan_id!!;
-    const fincaId = params.finca_id!!;
+    const id = params.plan_id!;
+    const fincaId = params.finca_id!;
 
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
@@ -50,7 +50,7 @@ export default function Calendar() {
 
     const calendarRef = useRef<FullCalendar | null>(null);
     const navigate = useNavigate();
-
+    const notify = useNotification();
 
     const results = useQueries({
         queries: [
@@ -88,13 +88,13 @@ export default function Calendar() {
     const { mutate } = useMutation({
         mutationFn: changeOperationDate,
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             setModal(false);
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
         },
         onError: (error) => {
-            toast.error(error.message)
+            notify.error(error.message)
         },
     });
 

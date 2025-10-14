@@ -1,7 +1,6 @@
 import { TaskCropWeeklyPlan, TasksCropWeeklyPlan } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { BadgeCheck, FileText, Grid2X2Plus, ListPlus, SquarePlusIcon } from "lucide-react";
-import { toast } from "react-toastify";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { closeWeekAssignment } from "@/api/TaskCropWeeklyPlanAPI";
 import { Dispatch } from "react";
@@ -9,6 +8,7 @@ import { useRole } from "@/hooks/useRole";
 import TaskLabel from "../utilities-components/TaskLabel";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type TaskCropProps = {
   task: TaskCropWeeklyPlan;
@@ -19,17 +19,18 @@ type TaskCropProps = {
 
 export default function TaskCrop({ task, refetch, setId, setIsOpen }: TaskCropProps) {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { data: role, isLoading, isError } = useRole();
 
   const { mutate, isPending } = useMutation({
     mutationFn: closeWeekAssignment,
     onError: () => {
-      toast.error('Hubo un error al cerrar la tarea');
+      notify.error('Hubo un error al cerrar la tarea');
     },
     onSuccess: () => {
       refetch();
-      toast.success("Tarea cerrada semanalmente");
+      notify.success("Tarea cerrada semanalmente");
     }
   });
 

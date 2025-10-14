@@ -7,7 +7,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function Show() {
   const params = useParams();
-  const task_crop_id = params.task_crop_id!!;
+  const task_crop_id = params.task_crop_id!;
 
   const { data: employeesCrop, isLoading, isError } = useQuery({
     queryKey: ['getCropDailyEmployees', task_crop_id],

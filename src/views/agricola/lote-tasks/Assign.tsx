@@ -2,7 +2,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Employee } from "@/types/index";
 import { Trash2Icon } from "lucide-react";
-import { toast } from "react-toastify";
 import { closeAssigment, getEmployees, getTask } from "@/api/TasksWeeklyPlanAPI";
 import { useMutation, useQueries } from "@tanstack/react-query";
 import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
@@ -10,11 +9,12 @@ import Swal from "sweetalert2";
 import Fuse from "fuse.js";
 import Spinner from "@/components/utilities-components/Spinner";
 import Worker from "@/components/tareas-lote-plan/Worker";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Assign() {
   const params = useParams();
-  const finca_id = params.finca_id!!;
-  const task_id = params.task_id!!;
+  const finca_id = params.finca_id!;
+  const task_id = params.task_id!;
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
 
@@ -25,14 +25,15 @@ export default function Assign() {
   const [results, setResults] = useState<Employee[]>(employees);
   const isTaskInitialized = useRef(false);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: closeAssigment,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate(previousUrl);
     },
   });
@@ -105,7 +106,7 @@ export default function Assign() {
 
   const handleAddEmployee = (employee: Employee) => {
     if (task.slots === 0) {
-      toast.error("No puedes asignar más empleados a esta tarea");
+      notify.error("No puedes asignar más empleados a esta tarea");
       return;
     }
 
@@ -124,7 +125,7 @@ export default function Assign() {
 
   const handleCloseAssignment = () => {
     if (assignedEmployees.length === 0) {
-      toast.error("No hay empleados asignados a la tarea");
+      notify.error("No hay empleados asignados a la tarea");
       return;
     }
     if (!necesarySlots) {
@@ -150,7 +151,7 @@ export default function Assign() {
   useEffect(() => {
     if (isValidTask()) {
       navigate("/planes-semanales");
-      toast.error("La tarea ya cuenta con asignación");
+      notify.error("La tarea ya cuenta con asignación");
     }
   }, []);
 

@@ -5,7 +5,6 @@ import { createQualityDoc } from "@/api/ReceptionsDocAPI";
 import { useNavigate } from "react-router-dom";
 import { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { getProductById } from "@/api/ProductsAPI";
 import { BoletaRmpDetail, ResultBoletaRmpCalidad } from "@/types/rmpDocTypes";
 import { Defect } from "@/types/index";
@@ -14,6 +13,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputComponent from "@/components/form/InputComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 type Props = {
   boleta: BoletaRmpDetail
@@ -40,6 +40,7 @@ export default function Boleta_form3({ boleta }: Props) {
   const inspector_signature = useRef({} as SignatureCanvas);
   const [results, setResults] = useState<ResultBoletaRmpCalidad[]>([]);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const total_points = useMemo(() => {
     const total = results.reduce((acc, item) =>
@@ -64,10 +65,10 @@ export default function Boleta_form3({ boleta }: Props) {
   const { mutate, isPending } = useMutation({
     mutationFn: createQualityDoc,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/rmp');
     }
   });

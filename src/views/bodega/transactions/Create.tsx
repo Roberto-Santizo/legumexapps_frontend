@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { EditIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactionsAPI";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,6 +10,7 @@ import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "@/components/form/SignatureComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalAddItemPackingMaterialDispatch from "@/components/modals/ModalAddItemPackingMaterialDispatch";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function CreateBodegaSalidaEmpaque() {
   const location = useLocation();
@@ -25,15 +25,16 @@ export default function CreateBodegaSalidaEmpaque() {
   const responsable_signature = useRef({} as SignatureCanvas);
   const user_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
+  const notify = useNotification();
 
 
   const { mutate, isPending } = useMutation({
     mutationFn: createPackingMaterialTransaction,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data);
       if (url) {
         navigate(url, { replace: true });
       } else {
@@ -67,7 +68,7 @@ export default function CreateBodegaSalidaEmpaque() {
 
   const onSubmit = (data: DraftTransactionPackingMaterial) => {
     if (items.length === 0) {
-      toast.error('Debe seleccionar al menos 1 item');
+      notify.error('Debe seleccionar al menos 1 item');
       return;
     }
 

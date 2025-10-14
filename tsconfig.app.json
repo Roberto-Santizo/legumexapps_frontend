@@ -20,7 +20,8 @@
       "@/dashboards/*": ["./src/components/dashboards/*"],
       "@/schemas/*": ["./src/schemas/*"],
       "@/store": ["./src/store.ts"],
-      "@/types/*": ["./src/types/*"]
+      "@/types/*": ["./src/types/*"],
+      "@/interfaces": ["./src/interfaces/index.ts"],
     },
 
     "moduleResolution": "bundler",

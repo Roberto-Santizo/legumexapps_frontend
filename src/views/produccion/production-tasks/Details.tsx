@@ -10,7 +10,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function Details() {
   const params = useParams();
-  const task_p_id = params.task_p_id!!;
+  const task_p_id = params.task_p_id!;
   const [graphData, setGraphData] = useState<graphDataType>({} as graphDataType);
 
   const { data: task, isLoading, isError, } = useQuery({

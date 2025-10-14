@@ -26,7 +26,7 @@ export default function TasksWithOperationDate({ lines }: Props) {
     const queryParams = new URLSearchParams(location.search);
     const date = queryParams.get('date') ?? '';
     const params = useParams();
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
 
     const [searchParams, setSearchParams] = useSearchParams();
 

@@ -1,15 +1,15 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { createNewTaskProductionDraft } from "@/api/DraftTaskProductionDraftAPI";
 import { useState } from "react";
-import Modal from "../Modal";
-import Spinner from "../utilities-components/Spinner";
-import FormNewDraftTaskProduction from "@/views/produccion/production-planner/FormNewDraftTaskProduction";
 import { getSkus } from "@/api/SkusAPI";
 import { getLinesBySkuId } from "@/api/LinesAPI";
 import { FiltersSkuInitialValues } from "@/views/produccion/stock-keeping-units/Index";
+import Modal from "../Modal";
+import Spinner from "../utilities-components/Spinner";
+import FormNewDraftTaskProduction from "@/views/produccion/production-planner/FormNewDraftTaskProduction";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type NewTaskProductionDraft = {
     draft_weekly_production_plan_id: string;
@@ -30,6 +30,7 @@ export default function ModalAddNewDraftProductionTask() {
     const id = params.id!;
 
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const handleCloseModal = () => {
         navigate(location.pathname);
@@ -62,10 +63,10 @@ export default function ModalAddNewDraftProductionTask() {
     const { mutate, isPending } = useMutation({
         mutationFn: createNewTaskProductionDraft,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             setSkuId('');
             reset();
             handleCloseModal();

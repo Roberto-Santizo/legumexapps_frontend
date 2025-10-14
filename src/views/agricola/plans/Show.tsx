@@ -7,7 +7,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function Show() {
   const params = useParams();
-  const id = params.id!!;
+  const id = params.id!;
   const navigate = useNavigate();
   const { hasPermission } = usePermissions();
 

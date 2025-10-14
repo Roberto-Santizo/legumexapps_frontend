@@ -1,7 +1,6 @@
 import { getSkus } from "@/api/SkusAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { createLineaSku } from "@/api/LinesPerformanceAPI";
 import { useNavigate } from "react-router-dom";
 import { getLineas } from "@/api/LinesAPI";
@@ -11,6 +10,7 @@ import InputSelectSearchComponent from "@/components/form/InputSelectSearchCompo
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftLineaSku = {
     sku_id: string;
@@ -22,15 +22,16 @@ export type DraftLineaSku = {
 
 export default function Create() {
     const navigate = useNavigate();
+    const notify = useNotification();
     const paymentMethodsOptions = [{ value: '0', label: 'Horas Rendimiento' }, { value: '1', label: 'Horas Linea' }];
 
     const { mutate, isPending } = useMutation({
         mutationFn: createLineaSku,
         onError: (error) => {
-            toast.error(error.message)
+            notify.error(error.message)
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             navigate('/lineas-skus');
         }
     });
@@ -62,7 +63,7 @@ export default function Create() {
 
     const onSubmit = (data: DraftLineaSku) => {
         if (!data.lbs_performance && data.payment_method.toString() === '0') {
-            toast.error('El metodo de pago no coincide con el rendimiento asociado');
+            notify.error('El metodo de pago no coincide con el rendimiento asociado');
             return;
         }
 

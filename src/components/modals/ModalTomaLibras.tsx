@@ -1,12 +1,12 @@
 import { ChangeEvent, Dispatch, useEffect, useMemo, useState } from "react";
 import { TaskCropIncomplete, TasksCropWeeklyPlan } from "@/types/index";
 import { formatDate } from "@/helpers";
-import { toast } from "react-toastify";
 import { completeAssigments, getIncompleteAssigments } from "@/api/TaskCropWeeklyPlanAPI";
 import { QueryObserverResult, useQuery, useMutation } from "@tanstack/react-query";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 import Modal from "../Modal";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 
 type Props = {
@@ -18,14 +18,15 @@ type Props = {
 
 export default function ModalTomaLibras({ isOpen, setIsOpen, id, refetch }: Props) {
   const [incompleteAssigments, setIncompleteAssigments] = useState<TaskCropIncomplete[]>([]);
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: completeAssigments,
     onError: () => {
-      toast.error('Hubo un error al registrar las libras, intentelo de nuevo más tarde');
+      notify.error('Hubo un error al registrar las libras, intentelo de nuevo más tarde');
     },
     onSuccess: () => {
-      toast.success("Registro Guardado Correctamente");
+      notify.success("Registro Guardado Correctamente");
       refetch();
     }
   });
@@ -56,7 +57,7 @@ export default function ModalTomaLibras({ isOpen, setIsOpen, id, refetch }: Prop
   ) => {
     const value = parseFloat(e.target.value);
     if (value <= 0) {
-      toast.error("Las libras ingresdasadas deben ser mayor a 0");
+      notify.error("Las libras ingresdasadas deben ser mayor a 0");
       return;
     }
     setIncompleteAssigments((prev) =>

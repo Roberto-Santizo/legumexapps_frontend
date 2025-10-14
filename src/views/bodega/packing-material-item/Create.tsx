@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { createItemPackingMaterial } from "@/api/PackingMaterialItemsAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Form from "./Form";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftMaterialEmpaque = {
   name: string;
@@ -14,14 +14,15 @@ export type DraftMaterialEmpaque = {
 
 export default function Create() {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createItemPackingMaterial,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/material-empaque');
     }
   });

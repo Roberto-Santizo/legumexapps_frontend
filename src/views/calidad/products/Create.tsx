@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { DeleteIcon, Edit, PlusIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { createProduct } from "@/api/ProductsAPI";
@@ -14,6 +13,7 @@ import ModalCrearDefecto, { DraftDefecto } from "@/components/modals/ModalCrearD
 import ModalEditarDefecto from "@/components/modals/ModalEditarDefecto";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftProduct = {
   name: string,
@@ -27,14 +27,15 @@ export default function Create() {
   const [defects, setDefects] = useState<DraftDefecto[]>([]);
   const [editingId, setEditingId] = useState<number>(0);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createProduct,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/productos');
     }
   });
@@ -73,7 +74,7 @@ export default function Create() {
 
   const onSubmit = async (data: DraftProduct) => {
     if (defects.length === 0) {
-      toast.error('Debe relacionar al menos un defecto al producto');
+      notify.error('Debe relacionar al menos un defecto al producto');
       return;
     }
     mutate({ FormData: data, defects });

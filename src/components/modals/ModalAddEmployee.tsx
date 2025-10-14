@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { DraftTaskProductionEmployee, TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
-import { toast } from "react-toastify";
 import Select from "react-select";
 import Error from "@/components/utilities-components/Error";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import { Position } from "@/types/linesTypes";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     isOpen: boolean;
@@ -19,7 +19,8 @@ type Props = {
 }
 
 export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, positions, setNewEmployees, setComodines, setPositions }: Props) {
-
+    const notify = useNotification();
+    
     const employeeOptions = comodines.map((employee) => ({
         value: employee.id,
         label: `${employee.name} - ${employee.code} - ${employee.position}`,
@@ -40,7 +41,7 @@ export default function ModalAddEmployee({ isOpen, setIsOpen, comodines, positio
 
     const onSubmit = (FormData: DraftTaskProductionEmployee) => {
         if (!FormData.name) {
-            toast.error('Debe seleccionar un empleado');
+            notify.error('Debe seleccionar un empleado');
             return;
         }
         const position = positions.find(position => position.id === FormData.position_id);

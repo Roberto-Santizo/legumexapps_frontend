@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { createTimeOut } from "@/api/TimeOutsAPI";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import FormTiempoMuerto from "./Form";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftTiempoMuerto = {
   name: string;
@@ -13,14 +13,15 @@ export type DraftTiempoMuerto = {
 
 export default function Create() {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createTimeOut,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/tiempos-muertos');
     }
   });

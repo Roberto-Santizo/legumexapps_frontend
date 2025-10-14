@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import { Edit as EditIcon, PlusIcon } from "lucide-react";
 import { getProductById, Product, ProductDetail } from "@/api/ProductsAPI";
@@ -14,10 +13,11 @@ import Error from "@/components/utilities-components/Error";
 import CreateDefectoModal, { DraftDefecto } from "@/components/modals/ModalCrearDefecto";
 import EditDefectoModal from "@/components/modals/ModalEditarDefecto";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Edit() {
   const params = useParams();
-  const product_id = params.product_id!!;
+  const product_id = params.product_id!;
   const [product, setProduct] = useState<ProductDetail>({} as ProductDetail);
   const [varieties, setVarieties] = useState<Variety[]>([]);
   const [defects, setDefects] = useState<DraftDefecto[]>([]);
@@ -25,14 +25,15 @@ export default function Edit() {
   const [editingId, setEditingId] = useState<number>(0);
   const [editModal, setEditModal] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  const notify = useNotification();
+  
   const { mutate, isPending } = useMutation({
     mutationFn: ({ product_id, data, defects }: { product_id: Product['id'], data: DraftProduct, defects: DraftDefecto[] }) => editProduct(product_id, data, defects),
     onError: () => {
-      toast.error('Hubo un error al actualizar el producto, intentelo de nuevo más tarde');
+      notify.error('Hubo un error al actualizar el producto, intentelo de nuevo más tarde');
     },
     onSuccess: () => {
-      toast.success('Producto actualizado correctamente');
+      notify.success('Producto actualizado correctamente');
       navigate('/productos');
     }
   });

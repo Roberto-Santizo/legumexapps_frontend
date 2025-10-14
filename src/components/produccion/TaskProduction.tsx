@@ -2,7 +2,6 @@ import { AlarmClockPlus, CheckCircle, Eye, NotebookPen, SquarePlay, UserRoundX }
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeTaskTimeOut } from "@/api/TimeOutsAPI";
-import { toast } from "react-toastify";
 import { TaskProductionPlan } from "@/types/taskProductionPlanTypes";
 import { startTaskProductionPlan } from "@/api/TaskProductionPlansAPI";
 import { useMemo } from "react";
@@ -10,6 +9,7 @@ import { usePermissions } from "@/hooks/usePermissions";
 import TaskLabel from "@/components/utilities-components/TaskLabel";
 import Spinner from "../utilities-components/Spinner";
 import { PaperClipIcon } from "@heroicons/react/16/solid";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
   task: TaskProductionPlan;
@@ -17,20 +17,21 @@ type Props = {
 
 export default function TaskProduction({ task }: Props) {
   const params = useParams();
-  const plan_id = params.plan_id!!;
-  const linea_id = params.linea_id!!;
+  const plan_id = params.plan_id!;
+  const linea_id = params.linea_id!;
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { hasPermission } = usePermissions();
 
   const { mutate, isPending: closeTaskTimeOutPending } = useMutation({
     mutationFn: closeTaskTimeOut,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({
         queryKey: ["getTasksByLineId", plan_id, linea_id],
       });
@@ -40,10 +41,10 @@ export default function TaskProduction({ task }: Props) {
   const { mutate: startTask, isPending: startTaskPending } = useMutation({
     mutationFn: startTaskProductionPlan,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({
         queryKey: ["getTasksByLineId", plan_id, linea_id],
       });

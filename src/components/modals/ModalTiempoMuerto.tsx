@@ -2,13 +2,13 @@ import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { createTaskTimeout, getTimeOuts } from "@/api/TimeOutsAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { TaskProductionPlan } from "@/types/taskProductionPlanTypes";
 import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftTaskTimeout = {
     timeout_id: string,
@@ -17,8 +17,8 @@ export type DraftTaskTimeout = {
 
 export default function ModalTiempoMuerto() {
     const params = useParams();
-    const plan_id = params.plan_id!!;
-    const linea_id = params.linea_id!!;
+    const plan_id = params.plan_id!;
+    const linea_id = params.linea_id!;
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -26,6 +26,7 @@ export default function ModalTiempoMuerto() {
     const modal = queryParams.get('modal')!;
     const show = (taskId && +modal === 3) ? true : false;
     const navigate = useNavigate();
+    const notify = useNotification();
 
 
     const queryClient = useQueryClient();
@@ -40,10 +41,10 @@ export default function ModalTiempoMuerto() {
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskTimeout,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: () => {
-            toast.success('Tiempo muerto agregado correctamente');
+            notify.success('Tiempo muerto agregado correctamente');
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] })
             navigate(location.pathname, { replace: true });
             reset();

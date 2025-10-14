@@ -5,13 +5,13 @@ import { getCrops } from "@/api/PlantationControlAPI";
 import { getRecipes } from "@/api/PlantationControlAPI";
 import { createCDP } from "@/api/PlantationControlAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { Crop } from "@/types/cropTypes";
 import { Recipe } from "@/types/recipeTypes";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 
 export type DraftCDP = {
@@ -29,14 +29,15 @@ export default function Create() {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createCDP,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/cdps');
     }
   });

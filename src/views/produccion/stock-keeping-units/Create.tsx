@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { createSKU } from "@/api/SkusAPI";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
@@ -9,6 +8,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import ModalAddItemRecipe from "@/components/modals/ModalAddItemRecipe";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftRecipeSku = {
   packing_material_id: string;
@@ -31,14 +31,15 @@ export default function Create() {
   const [items, setItems] = useState<DraftRecipeSku[]>([]);
   const [modal, setModal] = useState<boolean>(false);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createSKU,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/skus');
     }
   });

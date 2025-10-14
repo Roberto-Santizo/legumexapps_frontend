@@ -26,7 +26,7 @@ export default function ModalInsumosPrepared({ id }: Props) {
     const date = queryParams.get('date')!;
     const show = date ? true : false;
     const params = useParams();
-    const fincaId = params.finca_id!!;
+    const fincaId = params.finca_id!;
 
     const [lotes, setLotes] = useState<Lote[]>([]);
     const [tareas, setTareas] = useState<TaskGeneral[]>([]);

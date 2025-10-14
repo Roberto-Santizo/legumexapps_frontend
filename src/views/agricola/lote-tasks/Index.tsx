@@ -23,8 +23,8 @@ const initialValues = {
 
 export default function Index() {
   const params = useParams();
-  const lote_plantation_control_id = params.lote_plantation_control_id!!;
-  const weekly_plan_id = params.weekly_plan_id!!;
+  const lote_plantation_control_id = params.lote_plantation_control_id!;
+  const weekly_plan_id = params.weekly_plan_id!;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState<FiltersTareasLoteType>(initialValues);
   const [tempFilters, setTempFilters] = useState<FiltersTareasLoteType>(initialValues);

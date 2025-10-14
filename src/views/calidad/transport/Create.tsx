@@ -5,7 +5,6 @@ import { getBoletasRMP } from '@/api/ReceptionsDocAPI';
 import { getProducts, Product } from '@/api/ProductsAPI';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { createBoletaTransporte, DraftBoletaTransporte, getCondicionesTransporte, TransporteCondition } from '@/api/BoletaTransporteAPI';
 import { FiletrsBoletaRMPInitialValues } from '@/components/filters/FiletrsRMP';
@@ -16,6 +15,7 @@ import Error from '@/components/utilities-components/Error';
 import Spinner from '@/components/utilities-components/Spinner';
 import InputComponent from '@/components/form/InputComponent';
 import InputSelectComponent from '@/components/form/InputSelectComponent';
+import { useNotification } from '../../../core/notifications/NotificationContext';
 
 export default function Create() {
   const [plantas, setPlantas] = useState<Planta[]>([]);
@@ -26,6 +26,7 @@ export default function Create() {
   const [selectedConditions, setSelectedConditions] = useState<{ [key: string]: boolean }>({});
   const verify_by_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const {
     register,
@@ -47,10 +48,10 @@ export default function Create() {
   const { mutate, isPending } = useMutation({
     mutationFn: createBoletaTransporte,
     onError: () => {
-      toast.error('Hubo un error al crear la boleta');
+      notify.error('Hubo un error al crear la boleta');
     },
     onSuccess: () => {
-      toast.success('Boleta creada correctamente');
+      notify.success('Boleta creada correctamente');
       navigate('/transporte-boleta');
 
     }

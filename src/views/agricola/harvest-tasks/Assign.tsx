@@ -2,7 +2,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Employee, TaskCropWeeklyPlan } from "@/types/index";
 import { Trash2Icon } from "lucide-react";
-import { toast } from "react-toastify";
 import { getEmployees } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { closeCropAssigment, getTaskCrop } from "@/api/TaskCropWeeklyPlanAPI";
@@ -10,13 +9,14 @@ import Spinner from "@/components/utilities-components/Spinner";
 import TaskLabel from "@/components/utilities-components/TaskLabel";
 import Fuse from "fuse.js";
 import Worker from "@/components/tareas-lote-plan/Worker";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Assign() {
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
   const params = useParams();
-  const task_crop_id = params.task_crop_id!!;
-  const finca_id = params.finca_id!!;
+  const task_crop_id = params.task_crop_id!;
+  const finca_id = params.finca_id!;
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [taskCrop, setTaskCrop] = useState<TaskCropWeeklyPlan>({} as TaskCropWeeklyPlan);
 
@@ -25,14 +25,15 @@ export default function Assign() {
 
   const [results, setResults] = useState<Employee[]>(employees);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ assignedEmployees, id }: { assignedEmployees: Employee[], id: TaskCropWeeklyPlan['id'] }) => closeCropAssigment(assignedEmployees, id),
     onError: () => {
-      toast.error("Hubo un error al cerrar la asignación");
+      notify.error("Hubo un error al cerrar la asignación");
     },
     onSuccess: () => {
-      toast.success("Asignación cerrada correctamente");
+      notify.success("Asignación cerrada correctamente");
       navigate(previousUrl);
     }
   });

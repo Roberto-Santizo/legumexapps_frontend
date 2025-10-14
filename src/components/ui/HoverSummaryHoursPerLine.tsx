@@ -9,7 +9,7 @@ import Spinner from "../utilities-components/Spinner";
 
 export default function HoverSummaryHoursPerLine() {
     const params = useParams<{ plan_id: WeeklyProductionPlan['id'] }>();
-    const weeklyplanId = params.plan_id!!;
+    const weeklyplanId = params.plan_id!;
     const [animate, setAnimate] = useState<boolean>(false);
 
     const { data, isLoading, isFetching } = useQuery({

@@ -70,7 +70,7 @@ export async function getCropEmployees(id: TaskCropWeeklyPlan['finca_id']): Prom
     }
 }
 
-export async function closeDailyAssignment(id: TaskCropWeeklyPlan['id'], data: EmployeeCrop[], plants: Number) {
+export async function closeDailyAssignment(id: TaskCropWeeklyPlan['id'], data: EmployeeCrop[], plants: number) {
     try {
         const totalLbs = data.reduce((accumulator, currentValue) => { return accumulator + (currentValue.lbs || 0) }, 0);
         const url = `/api/tasks-crops-lotes/close-daily-assigment/${id}`

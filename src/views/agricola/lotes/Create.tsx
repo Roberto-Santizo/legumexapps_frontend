@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { getCDPS } from "@/api/PlantationControlAPI";
 import { Finca, getFincas } from "@/api/FincasAPI";
 import { createLote } from "@/api/LotesAPI";
-import { toast } from "react-toastify";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { FiltersCdpInitialValues } from "../cdps/Index";
 import { PlantationControl } from "@/types/plantationControlTypes";
@@ -12,6 +11,7 @@ import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftLote = {
   name: string;
@@ -23,6 +23,7 @@ export default function Create() {
   const [fincas, setFincas] = useState<Finca[]>([]);
   const [cdps, setCdps] = useState<PlantationControl[]>([]); 
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const results = useQueries({
     queries: [
@@ -34,10 +35,10 @@ export default function Create() {
   const { mutate, isPending } = useMutation({
     mutationFn: createLote,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/lotes');
     }
   });

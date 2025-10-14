@@ -3,16 +3,17 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getTareaById, updateTarea } from "@/api/TasksAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { DraftTask } from "@/types/taskGeneralType";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Form from "./Form";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Edit() {
   const params = useParams();
-  const id = params.id!!;
+  const id = params.id!;
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { data: editingTarea, isLoading, isError } = useQuery({
     queryKey: ['getTareaById', id],
@@ -22,10 +23,10 @@ export default function Edit() {
   const { mutate, isPending } = useMutation({
     mutationFn: updateTarea,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/tareas');
     }
   });

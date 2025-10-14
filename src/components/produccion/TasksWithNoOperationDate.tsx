@@ -13,7 +13,7 @@ type Props = {
 
 export default function TasksWithNoOperationDate({ lines }: Props) {
     const params = useParams();
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
 
     const linesOptions = lines?.map((line) => ({
         value: line.id,

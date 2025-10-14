@@ -10,8 +10,8 @@ import ModalTomaLibras from "@/components/modals/ModalTomaLibras";
 
 export default function Index() {
   const params = useParams();
-  const lote_plantation_control_id = params.lote_plantation_control_id!!;
-  const weekly_plan_id = params.weekly_plan_id!!;
+  const lote_plantation_control_id = params.lote_plantation_control_id!;
+  const weekly_plan_id = params.weekly_plan_id!;
 
   const [id, setId] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);

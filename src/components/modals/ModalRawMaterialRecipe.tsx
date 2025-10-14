@@ -4,12 +4,12 @@ import { editSkuRecipeItem, getSkuRecipeItemById } from "@/api/SkusAPI";
 import { useForm } from "react-hook-form";
 import { DraftRawMaterialSkuItemRecipe } from "@/types/skuTypes";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import { StockKeepingUnit } from "@/types/stockKeepingUnitTypes";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export default function ModalRawMaterialRecipe() {
     const location = useLocation();
@@ -21,6 +21,7 @@ export default function ModalRawMaterialRecipe() {
     const id = params.id!;
 
     const querClient = useQueryClient();
+    const notify = useNotification();
 
     const handleCloseModal = () => {
         navigate(location.pathname)
@@ -35,10 +36,10 @@ export default function ModalRawMaterialRecipe() {
     const { mutate } = useMutation({
         mutationFn: editSkuRecipeItem,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             handleCloseModal();
             querClient.invalidateQueries({ queryKey: ['getSkuById', id] });
         }

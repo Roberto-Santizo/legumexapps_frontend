@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { uploadTareas } from "@/api/TasksAPI";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Upload() {
   const [file, setFile] = useState<File[] | null>(null);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles) {
@@ -21,10 +22,10 @@ export default function Upload() {
   const { mutate, isPending } = useMutation({
     mutationFn: uploadTareas,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/tareas');
     }
   });

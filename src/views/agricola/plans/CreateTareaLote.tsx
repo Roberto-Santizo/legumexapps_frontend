@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { getTasks } from "@/api/TasksAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Delete, PlusIcon } from "lucide-react";
-import { toast } from "react-toastify";
 import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
 import { getCurrentDate } from "@/helpers";
 import { FiltersTasksInitialValues } from "../tasks/Index";
@@ -17,6 +16,7 @@ import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
 import { DraftTaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import { Lote } from "@/types/lotesType";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;
@@ -33,14 +33,15 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
   const [selectedInsumos, setSelectedInsumos] = useState<DraftSelectedInsumo[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createTaskWeeklyPlan,
     onError: (error) => {
-      toast.error(error.message)
+      notify.error(error.message)
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/planes-semanales');
     }
   });

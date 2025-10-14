@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createNewTaskProduction } from "@/api/TaskProductionPlansAPI";
 import { useAppStore } from "@/store";
@@ -11,6 +10,7 @@ import { useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
 import FormProductionTask from "@/views/produccion/production-tasks/Form";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftNewTaskProduction = {
     sku_id: string,
@@ -28,9 +28,10 @@ export default function ModalCrearTareaProduccion() {
     const date = queryParams.get('date') ?? '';
 
     const params = useParams();
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
     const filters = useAppStore((state) => state.filtersWithOperationDate);
@@ -70,10 +71,10 @@ export default function ModalCrearTareaProduccion() {
     const { mutate, isPending } = useMutation({
         mutationFn: createNewTaskProduction,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
             queryClient.invalidateQueries({ queryKey: ['getLineHoursPerWeek', plan_id] });

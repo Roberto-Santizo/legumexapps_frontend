@@ -1,11 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { updateDraftWeeklyProductionPlanTasks } from "@/api/DraftWeeklyProductionPlanAPI";
-import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import { useCallback, useState } from "react";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftWeeklyProductionPlan = {
     week: number;
@@ -18,6 +18,7 @@ export default function ModalUpdateDraftTasks() {
     const modal = queryParams.get('updateDraftTasks')!;
     const show = modal ? true : false;
     const navigate = useNavigate();
+    const notify = useNotification();
     const [file, setFile] = useState<File[] | null>(null);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -32,11 +33,11 @@ export default function ModalUpdateDraftTasks() {
     const { mutate, isPending } = useMutation({
         mutationFn: updateDraftWeeklyProductionPlanTasks,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
             handleCloseModal();
-            toast.success(data);
+            notify.success(data ?? '');
         }
     });
 

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getBoletasRMP, rejectBoleta } from "@/api/ReceptionsDocAPI";
 import { Bars3Icon } from "@heroicons/react/16/solid";
-import { toast } from "react-toastify";
 import { usePermissions } from "@/hooks/usePermissions";
 import { BoletaRMP } from "@/types/rmpDocTypes";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -15,11 +14,13 @@ import ModalGRN from "@/components/modals/ModalGRN";
 import Swal from "sweetalert2";
 import StatusComponent from "@/components/boleta-rmp/StatusComponent";
 import { useRole } from "@/hooks/useRole";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 
 export default function Index() {
     const [filters, setFilters] = useState<FiltersBoletaRMP>(FiletrsBoletaRMPInitialValues);
     const { hasPermission } = usePermissions();
+    const notify = useNotification();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [boletas, setBoletas] = useState<BoletaRMP[]>([]);
@@ -38,10 +39,10 @@ export default function Index() {
     const { mutate } = useMutation({
         mutationFn: rejectBoleta,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             refetch();
         }
     });

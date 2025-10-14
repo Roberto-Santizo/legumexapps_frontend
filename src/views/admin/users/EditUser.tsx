@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { getUserById, updateUser } from "@/api/UsersAPI";
-import { toast } from "react-toastify";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { DraftUser, User } from "@/types/usersTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import UsersForm from "./UsersForm";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function EditUser() {
   const params = useParams();
-  const id = params.id!!;
+  const id = params.id!;
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const [userEditing, setUserEditing] = useState<User>({} as User);
 
@@ -30,10 +31,10 @@ export default function EditUser() {
   const { mutate, isPending } = useMutation({
     mutationFn: updateUser,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/usuarios');
     }
   });

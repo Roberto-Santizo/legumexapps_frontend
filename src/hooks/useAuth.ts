@@ -2,7 +2,6 @@ import { getUser } from "@/api/AuthAPI";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 export const useAuth = () => {
     const navigate = useNavigate();
@@ -19,7 +18,6 @@ export const useAuth = () => {
     useEffect(() => {
         if (isError) {
             localStorage.removeItem('AUTH_TOKEN');
-            toast.error('Tu sesión ha expirado');
             navigate('/login');
         }
     }, [isError]);
@@ -39,7 +37,6 @@ export const useAuth = () => {
 
     const logout = () => {
         localStorage.removeItem('AUTH_TOKEN');
-        toast.success('Sesión Cerrada Correctamente');
         navigate('/login');
     };
 

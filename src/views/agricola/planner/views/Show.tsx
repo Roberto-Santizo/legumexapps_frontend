@@ -1,12 +1,12 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getDraftWeeklyPlanById } from "@/api/PlannerFincasAPI";
 import { useQuery } from "@tanstack/react-query";
-import Table from "@/components/shared/Table";
 import ModalEditTask from "../components/ModalEditTask";
 
 export default function Show() {
   const params = useParams();
-  const id = params.id!!;
+  const navigate = useNavigate();
+  const id = params.id!;
 
   const { data, isLoading } = useQuery({
     queryKey: ['getDraftWeeklyPlanById', id],
@@ -16,7 +16,7 @@ export default function Show() {
   if (isLoading) return <SkeletonLoading />;
   if (data) return (
     <>
-      <section className="">
+      <section>
         <p className="font-bold text-2xl">{data.finca}</p>
         <p className="font-semibold text-xl">Semana: {data.week}</p>
       </section>
@@ -24,13 +24,59 @@ export default function Show() {
       <section className="flex flex-col gap-5 mt-5">
         {Object.entries(data.tasks).map(([cdp, tasks]) => (
           <div key={cdp} className="p-5">
-            <h1
-              className="font-bold text-center uppercase text-xl mb-5"
-            >
-              {cdp}
-            </h1>
+            <h1 className="font-bold text-center uppercase text-xl mb-5">{cdp}</h1>
 
-            <Table data={tasks} columns={['task', 'recipe', 'budget', 'hours', 'lote']} navigateCol="id" navigateModalUrl="editTask" />
+            <table className="table mt-10">
+              <thead>
+                <tr className="thead-tr">
+                  <th scope="col" className="thead-th">
+                    Tarea
+                  </th>
+                  <th scope="col" className="thead-th">
+                    Receta
+                  </th>
+                  <th scope="col" className="thead-th">
+                    Presupuesto
+                  </th>
+                  <th scope="col" className="thead-th">
+                    Horas
+                  </th>
+                  <th scope="col" className="thead-th">
+                    Cupos
+                  </th>
+                  <th scope="col" className="thead-th">
+                    Etiquetas
+                  </th>
+
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr className="tbody-tr" key={task.id} onClick={() => navigate(`${location.pathname}?editTask=${task.id}`)}>
+                    <td className="tbody-td">
+                      <p>{task.task}</p>
+                    </td>
+                    <td className="tbody-td">
+                      <p>{task.recipe}</p>
+                    </td>
+                    <td className="tbody-td">
+                      <p>{task.budget}</p>
+                    </td>
+                    <td className="tbody-td">
+                      <p>{task.hours}</p>
+                    </td>
+                    <td className="tbody-td">
+                      <p>{task.slots}</p>
+                    </td>
+                    <td className="tbody-td">
+                      {task.tags?.split(',').map((tag,index) => (
+                        <p key={index} className="bg-red-500 text-white font-bold text-center uppercase text-xs m-1 rounded p-0.5">{tag}</p>
+                      ))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ))}
       </section>

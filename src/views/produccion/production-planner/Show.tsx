@@ -3,7 +3,6 @@ import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query";
 import { ChangeEvent, useMemo, useState } from "react";
 import { DownloadIcon, PlusIcon } from "lucide-react";
 import { confirmPlan, createWeeklyProductionPlanFromDraft, getDraftWeeklyPlanById } from "@/api/DraftWeeklyProductionPlanAPI";
-import { toast } from "react-toastify";
 import { usePlanificationWebSocket } from "@/lib/echo";
 import { downloadDraftWeeklyProductionPlanUpdateFile, downloadWeeklyProductionDraftTasks } from "@/api/WeeklyProductionPlanAPI";
 import { useRole } from "@/hooks/useRole";
@@ -18,6 +17,7 @@ import Swal from "sweetalert2";
 import TasksList from "./TasksList";
 import "@/lib/echo";
 import ModalUpdateDraftTasks from "@/components/modals/ModalUpdateDraftTasks";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type FiltersDraftsTasks = {
   sku: string;
@@ -39,6 +39,7 @@ export default function Show() {
   const navigate = useNavigate();
   const { data: role } = useRole();
   const { hasPermission } = usePermissions();
+  const notify = useNotification();
 
   const { data: draft } = useQuery({
     queryKey: ['getDraftWeeklyPlanById', id, filters],
@@ -52,34 +53,34 @@ export default function Show() {
   const { mutate: confirmPlanMutation } = useMutation({
     mutationFn: confirmPlan,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data);
     }
   });
 
   const { mutate: createWeeklyProductionPlan, isPending } = useMutation({
     mutationFn: createWeeklyProductionPlanFromDraft,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data);
     }
   });
 
   const { mutate: dowloadTasks, isPending: dowloadTasksLoading } = useMutation({
     mutationFn: downloadWeeklyProductionDraftTasks,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     }
   });
 
   const { mutate: dowloadUpdateFile, isPending: dowloadUpdatePlanLoading } = useMutation({
     mutationFn: downloadDraftWeeklyProductionPlanUpdateFile,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     }
   });
 

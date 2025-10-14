@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import { Lote } from "@/types/lotesType";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftTaskCropWeeklyPlan = {
   weekly_plan_id: string;
@@ -24,14 +24,15 @@ type Props = {
 
 export default function CreateTareaLoteCosecha({ plans, lotes }: Props) {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createTaskCropWeeklyPlan,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate("/planes-semanales");
     }
   });

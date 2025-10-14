@@ -1,23 +1,24 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { createPermission } from "@/api/PermissionsAPI";
 import { useMutation } from "@tanstack/react-query";
 import { DraftPermiso } from "@/types/permissionsType";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 import Spinner from "@/components/utilities-components/Spinner";
 import PermisosForm from "./PermisosForm";
 
 
 export default function CreatePermiso() {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createPermission,
     onError: (error) => {
-      toast.error(error.message)
+      notify.error(error.message)
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate("/permisos");
     }
   });

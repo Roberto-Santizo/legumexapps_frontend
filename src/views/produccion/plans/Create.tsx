@@ -1,18 +1,18 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { createProductionPlan } from "@/api/WeeklyProductionPlanAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalErrorsTable from "@/components/modals/ModalErrorsTable";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
   const [file, setFile] = useState<File[] | null>(null);
   const [errores, setErrores] = useState<string[]>([]);
   const [modalErrors, setModalErrors] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  const notify = useNotification();
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles) {
       setFile(acceptedFiles);
@@ -29,7 +29,7 @@ export default function Create() {
       setModalErrors(true);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/planes-produccion');
     }
   });
@@ -38,7 +38,7 @@ export default function Create() {
     if (file) {
       mutate(file)
     } else {
-      toast.error('Debe cargar un archivo')
+      notify.error('Debe cargar un archivo')
     }
   }
 
@@ -89,7 +89,7 @@ export default function Create() {
         </form>
       </div>
 
-      <ModalErrorsTable modal={modalErrors} setModal={setModalErrors} errors={errores}/>
+      <ModalErrorsTable modal={modalErrors} setModal={setModalErrors} errors={errores} />
     </div>
   );
 }

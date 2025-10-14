@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { TaskProductionItem } from '@/types/taskProductionPlanTypes';
 import InputComponent from '../form/InputComponent';
 import Error from '../utilities-components/Error';
 import ModalRadixUI from '../ModalRadixUI';
+import { useNotification } from '../../core/notifications/NotificationContext';
 
 export type DraftTaskProductionWastage = {
     packing_material_id: string;
@@ -23,6 +23,7 @@ type Props = {
 
 
 export default function ModalAddWastage({ modal, setModal, selectedItem, setAuxItems, setWastages, SetSelectedItem }: Props) {
+    const notify = useNotification();
     const {
         handleSubmit,
         register,
@@ -38,7 +39,7 @@ export default function ModalAddWastage({ modal, setModal, selectedItem, setAuxI
 
     const onSubmit = (data: DraftTaskProductionWastage) => {
         if (data.quantity > selectedItem.quantity) {
-            toast.error('La cantidad no puede ser mayor');
+            notify.error('La cantidad no puede ser mayor');
             return;
         }
 

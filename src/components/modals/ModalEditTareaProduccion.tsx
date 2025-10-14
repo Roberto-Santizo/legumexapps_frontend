@@ -4,7 +4,6 @@ import { DraftNewTaskProduction } from "./ModalCrearTareaProduccion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { editProductionTask, getEditDetailsProductionTask } from "@/api/TaskProductionPlansAPI";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import { useAppStore } from "@/store";
 import { getSkus } from "@/api/SkusAPI";
 import { FiltersSkuInitialValues } from "@/views/produccion/stock-keeping-units/Index";
@@ -12,13 +11,14 @@ import { getLinesBySkuId } from "@/api/LinesAPI";
 import FormProductionTask from "@/views/produccion/production-tasks/Form";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export default function ModalEditTareaProduccion() {
     const params = useParams();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const date = queryParams.get('date') ?? '';
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
     const taskId = queryParams.get('editTask')!;
     const show = taskId ? true : false;
 
@@ -28,6 +28,7 @@ export default function ModalEditTareaProduccion() {
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
 
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const { data } = useQuery({
         queryKey: ['getEditDetailsProductionTask', taskId],
@@ -61,10 +62,10 @@ export default function ModalEditTareaProduccion() {
     const { mutate, isPending } = useMutation({
         mutationFn: editProductionTask,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate] });
             queryClient.invalidateQueries({ queryKey: ['getLineHoursPerWeek', plan_id] });

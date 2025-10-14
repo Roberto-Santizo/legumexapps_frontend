@@ -1,24 +1,25 @@
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { logout } from "@/api/AuthAPI";
 import { useMutation } from "@tanstack/react-query";
+import { useNotification } from "../../core/notifications/NotificationContext";
 import Logo from "../logos/Logo";
 import Spinner from "../utilities-components/Spinner";
 
 export default function PublicHeader() {
   const navigate = useNavigate();
   const logedIn = localStorage.getItem('AUTH_TOKEN') ? true : false;
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: logout,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
       localStorage.removeItem('AUTH_TOKEN');
       localStorage.removeItem('AUTH_USER');
       navigate("/login");
-      toast.success(data);
+      notify.success(data ?? '');
     },
   });
   return (

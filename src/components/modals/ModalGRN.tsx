@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { updateGRN } from "@/api/ReceptionsDocAPI";
 import { QueryObserverResult, RefetchOptions, useMutation } from "@tanstack/react-query";
 import { BoletaRMP, BoletasRmpPaginate } from "@/types/rmpDocTypes";
@@ -7,6 +6,7 @@ import Spinner from "../utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "../form/InputComponent";
 import Modal from "../Modal";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     modal: boolean;
@@ -20,6 +20,7 @@ type FormData = {
 }
 
 export default function ModalGRN({ modal, boleta, setModal, refetch }: Props) {
+    const notify = useNotification();
 
     const {
         register,
@@ -30,10 +31,10 @@ export default function ModalGRN({ modal, boleta, setModal, refetch }: Props) {
     const { mutate, isPending } = useMutation({
         mutationFn: updateGRN,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             setModal(false);
             refetch();
         }

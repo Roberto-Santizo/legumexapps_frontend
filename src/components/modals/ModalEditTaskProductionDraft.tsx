@@ -4,13 +4,13 @@ import { editTaskProductionDraft, getTaskProductionDraftEditDetails } from "@/ap
 import { useForm } from "react-hook-form";
 import { NewTaskProductionDraft } from "./ModalAddNewDraftProductionTask";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import { getSkus } from "@/api/SkusAPI";
 import { getLinesBySkuId } from "@/api/LinesAPI";
 import { FiltersSkuInitialValues } from "@/views/produccion/stock-keeping-units/Index";
 import Modal from "../Modal";
 import FormNewDraftTaskProduction from "@/views/produccion/production-planner/FormNewDraftTaskProduction";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export default function ModalEditTaskProductionDraft() {
     const location = useLocation();
@@ -19,6 +19,7 @@ export default function ModalEditTaskProductionDraft() {
     const show = taskId ? true : false;
 
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const handleCloseModal = () => {
         navigate(location.pathname, { replace: true });
@@ -58,10 +59,10 @@ export default function ModalEditTaskProductionDraft() {
     const { mutate, isPending } = useMutation({
         mutationFn: editTaskProductionDraft,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             handleCloseModal();
         }
     });

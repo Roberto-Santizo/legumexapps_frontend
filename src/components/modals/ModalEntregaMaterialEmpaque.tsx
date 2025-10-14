@@ -1,6 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { BoxIcon } from "lucide-react";
-import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactionsAPI";
@@ -12,6 +11,7 @@ import Spinner from "../utilities-components/Spinner";
 import Error from "../utilities-components/Error";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "../form/SignatureComponent";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftPackingMaterialTransactionItem = {
     packing_material_id: string;
@@ -46,15 +46,16 @@ type Props = {
 export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, setItems, items }: Props) {
     const responsableSignatureRef = useRef({} as SignatureCanvas);
     const userRef = useRef({} as SignatureCanvas);
+    const notify = useNotification();
 
     const [error, setError] = useState<boolean>(false);
 
     const { mutate, isPending } = useMutation({
         mutationFn: createPackingMaterialTransaction,
-        onError: (error) => toast.error(error.message),
+        onError: (error) => notify.error(error.message),
         onSuccess: (data) => {
             setModal(false);
-            toast.success(data);
+            notify.success(data);
             task.status_id = '3';
             task.status = 'Lista para ejecución';
             task.color = 'bg-blue-500';
@@ -85,7 +86,7 @@ export default function ModalEntregaMaterialEmpaque({ modal, setModal, task, set
 
     const onSubmit = (data: DraftTransactionPackingMaterial) => {
         if (items.some(item => item.lote === '')) {
-            toast.error('Todos los lotes son requeridos');
+            notify.error('Todos los lotes son requeridos');
             setError(true)
             return;
         } else {

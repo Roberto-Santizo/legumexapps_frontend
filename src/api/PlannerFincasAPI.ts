@@ -1,6 +1,6 @@
-import { DraftWeeklyPlanSchema, DraftWeeklyPlansSchema } from "@/schemas/plannerFincasSchemas";
+import { DraftWeeklyPlanSchema, DraftWeeklyPlansSchema, TaskPlantationControlEditSchema } from "@/schemas/plannerFincasSchemas";
+import { DraftTaskPlantationControl, DraftWeeklyPlan, TaskPlantationControl } from "../types";
 import clienteAxios from "@/config/axios";
-import { DraftWeeklyPlan } from "../types";
 
 export async function getDraftWeeklyPlans({ page, limit }: { page: number, limit: number }) {
     try {
@@ -28,10 +28,36 @@ export async function getDraftWeeklyPlanById(id: DraftWeeklyPlan['data']['id']) 
         const result = DraftWeeklyPlanSchema.safeParse(response.data);
         if (result.success) {
             return result.data.data;
-        }else{
+        } else {
             throw new Error('Hubo un error con el tipado');
         }
-    } catch (error : unknown) {
+    } catch (error: unknown) {
         throw error;
+    }
+}
+
+export async function getTaskWeeklyPlanDraftById(id: TaskPlantationControl['id']) {
+    try {
+        const url = `/api/draft-task-weekly-plans/${id}`;
+        const response = await clienteAxios(url);
+        const result = TaskPlantationControlEditSchema.safeParse(response.data);
+
+        if (result.success) {
+            return result.data.data;
+        } else {
+            throw new Error("Hubo un error");
+        }
+    } catch (error: unknown) {
+        throw error;
+    }
+}
+
+export async function UpdateTaskWeeklyPlanDraft({ id, data }: { id: TaskPlantationControl['id'], data: DraftTaskPlantationControl }) {
+    try {
+        const url = `/api/draft-task-weekly-plans/${id}`;
+        const response = await clienteAxios.put(url, data);
+        console.log(response);
+    } catch (error) {
+        
     }
 }

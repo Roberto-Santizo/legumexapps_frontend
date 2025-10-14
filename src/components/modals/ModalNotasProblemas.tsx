@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createTaskProductionNote } from "@/api/TaskProductionPlansAPI";
 import Error from "@/components/utilities-components/Error";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftNote = {
     reason: string;
@@ -15,8 +15,8 @@ export type DraftNote = {
 export default function ModalNotasProblemas() {
     const queryClient = useQueryClient();
     const params = useParams();
-    const plan_id = params.plan_id!!;
-    const linea_id = params.linea_id!!;
+    const plan_id = params.plan_id!;
+    const linea_id = params.linea_id!;
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -24,15 +24,16 @@ export default function ModalNotasProblemas() {
     const modal = queryParams.get('modal')!;
     const show = (taskId && +modal === 4) ? true : false;
     const navigate = useNavigate();
+    const notify = useNotification();
 
 
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskProductionNote,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
             navigate(location.pathname, { replace: true });
         }

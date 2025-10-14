@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
 import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
 import { getUsers, changeActiveUser } from "@/api/UsersAPI";
-import { toast } from "react-toastify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { User } from "@/types/usersTypes";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function IndexUsers() {
   const queryClient = useQueryClient();
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const notify = useNotification();
 
   const { data: users, isLoading } = useQuery({
     queryKey: ['getUsers', currentPage],
@@ -28,10 +29,10 @@ export default function IndexUsers() {
   const { mutate, isPending } = useMutation({
     mutationFn: (id: User['id']) => changeActiveUser(id),
     onError: (error) => {
-      toast.error(error.message)
+      notify.error(error.message)
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getUsers', currentPage] });
     }
   });

@@ -5,18 +5,18 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { DownloadIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { downloadPackingMaterialNecessity, downloadWeeklyProductionPlan } from "@/api/WeeklyProductionPlanAPI";
-import { toast } from "react-toastify";
 import { downloadBase64File } from "@/helpers";
 import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 
 export default function MenuOptionsProduction({ plan_id }: { plan_id: WeeklyProductionPlan['id'] }) {
     const { hasPermission } = usePermissions();
-
+    const notify = useNotification();
     const { mutate } = useMutation({
         mutationFn: downloadPackingMaterialNecessity,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
             if (data) {
@@ -28,7 +28,7 @@ export default function MenuOptionsProduction({ plan_id }: { plan_id: WeeklyProd
     const { mutate: mutateProductionPlan } = useMutation({
         mutationFn: downloadWeeklyProductionPlan,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
             if (data) {

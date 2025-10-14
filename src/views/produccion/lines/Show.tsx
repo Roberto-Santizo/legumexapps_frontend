@@ -9,7 +9,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function Show() {
     const params = useParams();
-    const line_id = params.id!!;
+    const line_id = params.id!;
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
 

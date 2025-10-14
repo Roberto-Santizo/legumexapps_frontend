@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/AuthAPI";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useEffect } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type LoginType = {
   username: string,
@@ -15,6 +15,7 @@ export type LoginType = {
 export default function Login() {
   const navigate = useNavigate();
   const logedIn = localStorage.getItem('AUTH_TOKEN') ? true : false;
+  const notify = useNotification();
 
   const {
     handleSubmit,
@@ -25,7 +26,7 @@ export default function Login() {
   const { mutate, isPending } = useMutation({
     mutationFn: login,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
       localStorage.setItem('AUTH_TOKEN', data);

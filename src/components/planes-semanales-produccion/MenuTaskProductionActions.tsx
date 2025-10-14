@@ -6,9 +6,9 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { usePermissions } from "@/hooks/usePermissions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppStore } from "@/store";
-import { toast } from "react-toastify";
 import { TaskProductionOperationDate } from "@/types/taskProductionPlanTypes";
 import { deleteTaskProductionAssignments, UnAssignTaskProduction } from "@/api/TaskProductionPlansAPI";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     task: TaskProductionOperationDate;
@@ -20,11 +20,12 @@ export default function MenuTaskProductionActions({ task, setModalEntrega }: Pro
 
     const location = useLocation();
     const params = useParams();
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
     const queryParams = new URLSearchParams(location.search);
     queryParams.set('changeOperationTask', task.id);
     const date = queryParams.get('date') ?? '';
     const queryClient = useQueryClient();
+    const notify = useNotification();
     const filters = useAppStore((state) => state.filtersWithOperationDate);
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
 
@@ -33,10 +34,10 @@ export default function MenuTaskProductionActions({ task, setModalEntrega }: Pro
     const { mutate } = useMutation({
         mutationFn: UnAssignTaskProduction,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate], });
         }
@@ -45,10 +46,10 @@ export default function MenuTaskProductionActions({ task, setModalEntrega }: Pro
     const { mutate: deleteAssigments } = useMutation({
         mutationFn: deleteTaskProductionAssignments,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
         }
     });

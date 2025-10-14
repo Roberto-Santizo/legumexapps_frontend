@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getPackingMaterials, updateMaterialStatus } from "@/api/PackingMaterialItemsAPI";
-import { toast } from "react-toastify";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { usePermissions } from "@/hooks/usePermissions";
 import { PackingMaterialItem } from "@/types/packingMaterialItemTypes";
@@ -12,6 +11,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import FiltersMaterialEmpaque from "@/components/filters/FiltersMaterialEmpaque";
 import ModalCargaItemsMP from "@/components/modals/ModalCargaItemsMP";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type FiltersPackingMaterialsType = {
   name: string;
@@ -40,6 +40,7 @@ export default function Index() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const { hasPermission } = usePermissions();
+  const notify = useNotification();
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
@@ -54,10 +55,10 @@ export default function Index() {
   const { mutate } = useMutation({
     mutationFn: updateMaterialStatus,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       refetch();
     }
   });

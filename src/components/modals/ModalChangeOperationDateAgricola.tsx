@@ -1,10 +1,10 @@
 import { SetStateAction, useRef } from "react";
 import { getCurrentDate } from "@/helpers";
-import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { changeOperationDate } from "@/api/TasksWeeklyPlanAPI";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     show: boolean;
@@ -17,14 +17,15 @@ type Props = {
 export default function ModalChangeOperationDateAgricola({ show, setModal, ids, id, setIds }: Props) {
     const operationDateRef = useRef<HTMLInputElement>(null);
     const queryClient = useQueryClient();
+    const notify = useNotification();
 
     const { mutate, isPending } = useMutation({
         mutationFn: changeOperationDate,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             setModal(false);
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
@@ -37,7 +38,7 @@ export default function ModalChangeOperationDateAgricola({ show, setModal, ids, 
         if (operationDateRef.current && operationDateRef.current.value) {
             mutate({date: operationDateRef.current.value, ids: ids});
         } else {
-            toast.error('Seleccione una fecha de operación válida');
+            notify.error('Seleccione una fecha de operación válida');
         }
     }
     return (

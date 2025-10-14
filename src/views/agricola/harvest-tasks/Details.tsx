@@ -7,7 +7,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function Details() {
   const params = useParams();
-  const task_crop_id = params.task_crop_id!!;
+  const task_crop_id = params.task_crop_id!;
 
   const { data : taskCropDetail, isError, isLoading } = useQuery({
     queryKey: ['getTaskCropDetails', task_crop_id],

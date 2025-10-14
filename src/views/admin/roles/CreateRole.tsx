@@ -1,22 +1,23 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { createRole } from "@/api/RolesAPI";
 import { useMutation } from "@tanstack/react-query";
 import { DraftRole } from "@/types/rolesTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import RolesForm from "./RolesForm";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function CreateRole() {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createRole,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate("/roles");
     }
   });
