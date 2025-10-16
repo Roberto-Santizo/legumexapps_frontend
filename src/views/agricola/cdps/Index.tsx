@@ -1,5 +1,3 @@
-import { PlusIcon } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCDPS } from "@/api/PlantationControlAPI";
 import { useQuery } from "@tanstack/react-query";
