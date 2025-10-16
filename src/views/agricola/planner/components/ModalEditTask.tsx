@@ -94,7 +94,7 @@ export default function ModalEditTask() {
                         register={register}
                         validation={{ required: 'Las horas son requeridas' }}
                         errors={errors}
-                        type={'text'}
+                        type={'number'}
                     >
                         {errors.hours && <Error>{errors.hours?.message?.toString()}</Error>}
                     </InputComponent>
@@ -107,9 +107,22 @@ export default function ModalEditTask() {
                         register={register}
                         validation={{ required: 'El presupuesto es requerido' }}
                         errors={errors}
-                        type={'text'}
+                        type={'number'}
                     >
                         {errors.budget && <Error>{errors.budget?.message?.toString()}</Error>}
+                    </InputComponent>
+
+                    <InputComponent<DraftTaskPlantationControl>
+                        label="Cupos"
+                        id="slots"
+                        name="slots"
+                        placeholder="Cupos de la tarea"
+                        register={register}
+                        validation={{ required: 'Los cupos son requeridos' }}
+                        errors={errors}
+                        type={'number'}
+                    >
+                        {errors.slots && <Error>{errors.slots?.message?.toString()}</Error>}
                     </InputComponent>
 
                     <InputComponent<DraftTaskPlantationControl>

@@ -15,7 +15,7 @@ export async function createCDP(cdp: DraftCDP) {
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            throw new Error(error.response?.data.message);
         }
     }
 }

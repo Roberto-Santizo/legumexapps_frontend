@@ -57,21 +57,6 @@ export default function Index() {
       <h2 className="font-bold text-center text-xl xl:text-left xl:text-4xl">Control de Plantaciones</h2>
 
       <div className="flex xl:flex-row flex-col justify-end gap-2 mt-5">
-        <Link
-          to="/cdps/crear"
-          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
-        >
-          <PlusIcon className="w-8" />
-          <p>Crear CDP</p>
-        </Link>
-
-        <Link
-          to="/cdps/carga-masiva"
-          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
-        >
-          <p>Carga Masiva</p>
-        </Link>
-
         <div className="flex justify-end">
           <Bars3Icon
             className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
@@ -85,22 +70,10 @@ export default function Index() {
           <thead>
             <tr className="thead-tr">
               <th scope="col" className="thead-th">
-                ID
-              </th>
-              <th scope="col" className="thead-th">
                 CDP
               </th>
               <th scope="col" className="thead-th">
-                Cultivo
-              </th>
-              <th scope="col" className="thead-th">
-                Receta
-              </th>
-              <th scope="col" className="thead-th">
-                Densidad
-              </th>
-              <th scope="col" className="thead-th">
-                Tamaño
+                Lote
               </th>
               <th scope="col" className="thead-th">
                 Fecha de Inicio
@@ -108,55 +81,22 @@ export default function Index() {
               <th scope="col" className="thead-th">
                 Fecha Final
               </th>
-              <th scope="col" className="thead-th">
-                Semanas de Aplicación
-              </th>
-              <th scope="col" className="thead-th">
-                Estado
-              </th>
             </tr>
           </thead>
           <tbody>
             {cdps.map((cdp) => (
               <tr className="tbody-tr" key={cdp.id}>
                 <td className="tbody-td">
-                  <p>{cdp.id}</p>
-                </td>
-                <td className="tbody-td">
                   <p>{cdp.name}</p>
                 </td>
                 <td className="tbody-td">
-                  <p>{cdp.crop}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.recipe}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.density}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>{cdp.size}</p>
+                  <p>{cdp.lote}</p>
                 </td>
                 <td className="tbody-td">
                   <p>{cdp.start_date}</p>
                 </td>
                 <td className="tbody-td">
                   <p>{cdp.end_date}</p>
-                </td>
-                <td className="tbody-td">
-                  <p>
-                    {cdp.aplication_week > 0
-                      ? cdp.aplication_week
-                      : "SIN INCIO"}
-                  </p>
-                </td>
-                <td className="tbody-td">
-                  <p
-                    className={`button text-center ${cdp.status ? "bg-red-500" : " bg-green-500"
-                      }`}
-                  >
-                    {cdp.status ? "CERRADO" : "ACTIVO"}
-                  </p>
                 </td>
               </tr>
             ))}

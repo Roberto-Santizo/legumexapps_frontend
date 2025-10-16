@@ -1,34 +1,28 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { getCDPS } from "@/api/PlantationControlAPI";
 import { Finca, getFincas } from "@/api/FincasAPI";
 import { createLote } from "@/api/LotesAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import { FiltersCdpInitialValues } from "../cdps/Index";
-import { PlantationControl } from "@/types/plantationControlTypes";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftLote = {
   name: string;
-  cdp_id: string;
   finca_id: string;
 }
 
 export default function Create() {
   const [fincas, setFincas] = useState<Finca[]>([]);
-  const [cdps, setCdps] = useState<PlantationControl[]>([]); 
   const navigate = useNavigate();
   const notify = useNotification();
 
   const results = useQueries({
     queries: [
       { queryKey: ['getAllFincas'], queryFn: getFincas },
-      { queryKey: ['handleGetCDPS'], queryFn: () => getCDPS({page:1,filters : FiltersCdpInitialValues, paginated : ''}) }
     ]
   });
 
@@ -46,14 +40,9 @@ export default function Create() {
   useEffect(() => {
     if (results) {
       if (results[0].data) setFincas(results[0].data);
-      if (results[1].data) setCdps(results[1].data.data);
     }
   }, [results]);
 
-  const cdpsOptions = cdps.map((cdp) => ({
-    value: cdp.id,
-    label: cdp.name,
-  }));
 
   const fincasOptions = fincas.map((finca) => ({
     value: finca.id,
@@ -102,18 +91,6 @@ export default function Create() {
           errors={errors}
         >
           {errors.finca_id && <Error>{errors.finca_id?.message?.toString()}</Error>}
-        </InputSelectSearchComponent>
-
-        <InputSelectSearchComponent<DraftLote>
-          label="CDP"
-          id="cdp_id"
-          name="cdp_id"
-          options={cdpsOptions}
-          control={control}
-          rules={{ required: 'El CDP es obligatorio' }}
-          errors={errors}
-        >
-          {errors.cdp_id && <Error>{errors.cdp_id?.message?.toString()}</Error>}
         </InputSelectSearchComponent>
 
         <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

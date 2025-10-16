@@ -33,22 +33,27 @@ export default function Show() {
   if (isLoading) return <SkeletonLoading />;
   if (data) return (
     <>
-      <section className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 bg-white p-4 rounded-2xl shadow-md border border-gray-200">
+      <section className="sticky top-10 mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all hover:shadow-xl">
         <div>
-          <p className="text-2xl font-bold text-gray-800">{data.finca}</p>
-          <p className="text-lg font-semibold text-gray-600">Semana {data.week}</p>
+          <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{data.finca}</p>
+          <p className="text-lg font-medium text-gray-500 mt-1">Semana <span className="font-semibold text-gray-700">{data.week}</span></p>
         </div>
-
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
           <input
             type="text"
             value={filter}
-            placeholder="Filtrar cdp"
+            placeholder="Filtrar CDP..."
             onChange={handleChange}
-            className="px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all w-60"
+            className="px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all w-full sm:w-64 text-gray-700 placeholder-gray-400"
           />
+          <button
+            className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all shadow-md"
+          >
+            Confirmar Plan
+          </button>
         </div>
       </section>
+
 
 
       <section className="flex flex-col gap-5 mt-5">
@@ -113,11 +118,6 @@ export default function Show() {
           </div>
         ))}
       </section>
-
-      <button className="button bg-indigo-500 w-full mt-5 hover:bg-indigo-600">
-        Confirmar Plan
-      </button>
-
       <ModalEditTask />
     </>
   )

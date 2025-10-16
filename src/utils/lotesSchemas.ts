@@ -8,7 +8,6 @@ export const LoteSchema = z.object({
     id: z.string(),
     name: z.string(),
     finca: z.string(),
-    cdp: z.string()
 });
 
 export const DataLoteSchema = z.object({

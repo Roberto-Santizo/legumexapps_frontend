@@ -95,9 +95,6 @@ export default function Index() {
               <th scope="col" className="thead-th">
                 Finca
               </th>
-              <th scope="col" className="thead-th">
-                CDP Activo
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +103,6 @@ export default function Index() {
                 <td className="tbody-td">{lote.id}</td>
                 <td className="tbody-td">{lote.name}</td>
                 <td className="tbody-td">{lote.finca}</td>
-                <td className="tbody-td">{lote.cdp}</td>
               </tr>
             ))}
           </tbody>

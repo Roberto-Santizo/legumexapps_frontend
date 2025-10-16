@@ -1,20 +1,22 @@
-import { useSearchParams } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { useNotification } from "../../../../core/notifications/NotificationContext";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { uploadTasksGuidelines } from "../api/TasksMasterAPI";
+import { useNotification } from "../../../../core/notifications/NotificationContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPlan } from "../api/PlannerAPI";
 import Modal from "@/components/Modal";
 import Spinner from "@/components/utilities-components/Spinner";
 
-export default function ModalUploadTasksGuidelines() {
+export default function ModalUpload() {
+    const location = useLocation();
+    const notify = useNotification();
+    const queryClient = useQueryClient();
+
     const queryParams = new URLSearchParams(location.search);
     const flag = queryParams.get('upload')!;
     const show = flag ? true : false;
-    const [_, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [file, setFile] = useState<File[] | null>(null);
-    const notify = useNotification();
-
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -24,17 +26,6 @@ export default function ModalUploadTasksGuidelines() {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: uploadTasksGuidelines,
-        onError: (error) => {
-            notify.error(error.message);
-        },
-        onSuccess: (data) => {
-            notify.success(data!);
-            setFile([]);
-            handleCloseModal();
-        }
-    });
 
     const handleCloseModal = () => {
         setSearchParams((searchParams) => {
@@ -43,6 +34,19 @@ export default function ModalUploadTasksGuidelines() {
         })
     }
 
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: createPlan,
+        onError: (error) => {
+            notify.error(error.message);
+        },
+        onSuccess: (data) => {
+            notify.success(data!);
+            queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlans', searchParams.get('page'), searchParams.get('rowsPerPage')] })
+            handleCloseModal();
+        }
+
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -56,7 +60,7 @@ export default function ModalUploadTasksGuidelines() {
     };
 
     return (
-        <Modal modal={show} closeModal={() => handleCloseModal()} title="Carga de Maestro de Tareas" >
+        <Modal modal={show} closeModal={() => handleCloseModal()} title="Cargar Plan de Siembras" >
             <div className="p-5">
                 <form className="space-y-5" onSubmit={handleSubmit}>
                     <div
@@ -93,5 +97,6 @@ export default function ModalUploadTasksGuidelines() {
                 </form>
             </div>
         </Modal >
-    )
+
+    );
 }
