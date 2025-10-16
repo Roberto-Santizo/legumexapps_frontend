@@ -44,6 +44,8 @@ const routes = [
 
   { path: "/planificador-fincas", component: lazy(() => import("@/views/agricola/planner/views/Index")), roles: ['admin'] },
   { path: "/planificador-fincas/:id", component: lazy(() => import("@/views/agricola/planner/views/Show")), roles: ['admin'] },
+  
+  { path: "/maestro-tareas-fincas", component: lazy(() => import("@/views/agricola/tasks-master/views/Index")), roles: ['admin'] },
 ];
 
 export default function AgricolaRoutes() {
