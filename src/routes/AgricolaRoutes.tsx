@@ -44,8 +44,12 @@ const routes = [
 
   { path: "/planificador-fincas", component: lazy(() => import("@/views/agricola/planner/views/Index")), roles: ['admin'] },
   { path: "/planificador-fincas/:id", component: lazy(() => import("@/views/agricola/planner/views/Show")), roles: ['admin'] },
-  
+
   { path: "/maestro-tareas-fincas", component: lazy(() => import("@/views/agricola/tasks-master/views/Index")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/recetas", component: lazy(() => import("@/views/agricola/tasks-master/views/Recipes")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/recetas/crear", component: lazy(() => import("@/views/agricola/tasks-master/views/CreateRecipe")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/cultivos", component: lazy(() => import("@/views/agricola/tasks-master/views/Crops")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/cultivos/crear", component: lazy(() => import("@/views/agricola/tasks-master/views/CreateCrop")), roles: ['admin'] },
 ];
 
 export default function AgricolaRoutes() {

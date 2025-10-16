@@ -2,10 +2,6 @@
 export default function SkeletonLoading() {
   return (
     <div>
-      <h2 className="text-4xl font-bold mb-6">Maestro de Tareas</h2>
-      <button className="animate-pulse button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2">
-      </button>
-
       <div className="animate-pulse">
         <table className="table mt-10 w-full border-collapse">
           <thead>

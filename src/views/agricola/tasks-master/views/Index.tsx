@@ -1,7 +1,7 @@
 import { SkeletonLoading, IndexFilters, ModalUploadTasksGuidelines } from "@/views/agricola/tasks-master/components/components";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query"
-import { getTasksGuidelines } from "../api/TasksMasterAPI";
+import { getTasksGuidelines } from "../api/api";
 import { useEffect, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { Bars3Icon } from "@heroicons/react/16/solid";
@@ -51,16 +51,25 @@ export default function Index() {
         <div>
             <h2 className="text-4xl font-bold">Maestro de Tareas</h2>
 
-            <div className="flex justify-between items-center">
-                <button className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2" onClick={() => handleOpenModal()}>
-                    <PlusIcon />
-                    <p>Cargar Tareas</p>
-                </button>
+            <section className="flex justify-between items-center">
+                <div className="flex gap-5">
+                    <button className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2" onClick={() => handleOpenModal()}>
+                        <PlusIcon />
+                        <p>Cargar Tareas</p>
+                    </button>
+
+                    <Link to={`${location.pathname}/recetas`} className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2">
+                        <p>Recetas</p>
+                    </Link>
+                    <Link to={`${location.pathname}/cultivos`} className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2">
+                        <p>Cultivos</p>
+                    </Link>
+                </div>
                 <Bars3Icon
                     className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
                     onClick={() => setIsOpen(true)}
                 />
-            </div>
+            </section>
 
             <table className="table mt-10">
                 <thead>
