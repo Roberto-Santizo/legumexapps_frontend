@@ -154,6 +154,32 @@ export default function ModalEditTask() {
                         Guardar Cambios
                     </button>
                 </form>
+
+                <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                    {data.insumos.map((insumo, index) => (
+                        <div
+                            key={index}
+                            className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-4 flex flex-col justify-between"
+                        >
+                            <div>
+                                <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                                    {insumo.insumo}
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                    <span className="font-medium text-gray-700">Medida:</span> {insumo.measure}
+                                </p>
+                            </div>
+                            <div className="mt-3 flex items-center justify-between">
+                                <p className="text-sm text-gray-600">
+                                    <span className="font-medium text-gray-700">Cantidad:</span> {insumo.quantity} {insumo.measure}
+                                </p>
+                                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                                    #{index + 1}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </section>
             </div>
         </Modal >
 

@@ -22,6 +22,12 @@ export const TaskPlantationControlSchema = z.object({
     draft_weekly_plan_id: z.number()
 });
 
+export const TaskInsumoRecipeSchema = z.object({
+    insumo: z.string(),
+    measure: z.string(),
+    quantity: z.number()
+});
+
 export const PlantationControlTasksSchema = z.record(z.string(), z.array(TaskPlantationControlSchema));
 
 export const DraftWeeklyPlanSchema = ApiResponseSchema.extend({
@@ -35,6 +41,7 @@ export const DraftWeeklyPlanSchema = ApiResponseSchema.extend({
 
 export const TaskPlantationControlEditSchema = ApiResponseSchema.extend({
     data: TaskPlantationControlSchema.pick({ hours: true, budget: true, slots: true, tags: true }).extend({
-        draft_weekly_plan_id: z.number()
+        draft_weekly_plan_id: z.number(),
+        insumos: z.array(TaskInsumoRecipeSchema)
     })
 })

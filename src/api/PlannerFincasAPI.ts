@@ -24,7 +24,6 @@ export async function getDraftWeeklyPlanById( {id, filter}: {id: DraftWeeklyPlan
         const url = `/api/seeding-plan/${id}?cdp=${filter}`;
         const response = await clienteAxios(url);
         const result = DraftWeeklyPlanSchema.safeParse(response.data);
-        console.log(response.data);
         if (result.success) {
             return result.data.data;
         } else {
