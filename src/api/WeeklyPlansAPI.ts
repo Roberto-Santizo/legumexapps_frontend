@@ -4,7 +4,7 @@ import { downloadBase64File } from "@/helpers";
 import { FiltersPlanSemanalType } from "@/views/agricola/plans/Index";
 import { z } from "zod";
 import { isAxiosError } from "axios";
-import { SummaryWeeklyPlanSchema, WeeklyPlansSchema } from "@/utils/planificacionFincasSchemas";
+import { SummaryTasksCropWeeklyPlanSchema, SummaryWeeklyPlanSchema, WeeklyPlansSchema } from "@/utils/planificacionFincasSchemas";
 import { WeeklyPlan } from "@/types/planificacionFincasType";
 import { TaskInsumoSchema } from "@/utils/taskWeeklyPlanSchemas";
 
@@ -44,11 +44,28 @@ export async function getWeeklyPlans({ page, filters, paginated }: { page: numbe
     }
 }
 
-export async function getPlanById(id: WeeklyPlan['id']) {
+export async function getSummaryTasksLote(id: WeeklyPlan['id']) {
     try {
-        const url = `/api/plans/${id}`;
+        const url = `/api/plans/summary-tasks/${id}`;
         const { data } = await clienteAxios(url);
         const result = SummaryWeeklyPlanSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data
+        } else {
+            throw new Error('Los datos no son validos');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export async function getSummaryTasksCropLote(id: WeeklyPlan['id']) {
+    try {
+        const url = `/api/plans/summary-tasks-crops/${id}`;
+        const { data } = await clienteAxios(url);
+        const result = SummaryTasksCropWeeklyPlanSchema.safeParse(data);
 
         if (result.success) {
             return result.data

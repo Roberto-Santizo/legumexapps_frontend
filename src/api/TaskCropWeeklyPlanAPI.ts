@@ -1,12 +1,11 @@
 import clienteAxios from "@/config/axios";
-// import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan } from "@/types";
 import { EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema, TaskCropWeeklyPlanSchema, TasksCropIncompleteSchema, TasksCropWeeklyPlanSchema } from "@/utils/taskCropWeeklyPlan-schema";
 import { isAxiosError } from "axios";
 import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import { DraftTaskCropWeeklyPlan } from "@/views/agricola/harvest-tasks/Create";
 import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan } from "@/types/index";
 
-export async function getTasksCrop(lote_plantation_control_id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']): Promise<TasksCropWeeklyPlan> {
+export async function getTasksCrop(lote_plantation_control_id: TaskWeeklyPlan['lote'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']): Promise<TasksCropWeeklyPlan> {
     try {
         const url = `/api/tasks-crops-lotes`;
         const { data } = await clienteAxios(url, {

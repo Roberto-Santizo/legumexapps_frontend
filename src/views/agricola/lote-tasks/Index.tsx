@@ -33,7 +33,7 @@ export default function Index() {
 
   const { data: tasks, isLoading } = useQuery({
     queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters],
-    queryFn: () => getTasks({ cdp: lote_plantation_control_id, weekly_plan_id, filters })
+    queryFn: () => getTasks({ lote: lote_plantation_control_id, weekly_plan_id, filters })
   });
 
   const isAdmin = useMemo(() => role === 'admin' || role === 'adminagricola', [role]);

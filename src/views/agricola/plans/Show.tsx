@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { getPlanById } from "@/api/WeeklyPlansAPI";
+import { getSummaryTasksCropLote, getSummaryTasksLote } from "@/api/WeeklyPlansAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -13,24 +13,24 @@ export default function Show() {
 
   const { data: summaryPlan, isLoading, isError } = useQuery({
     queryKey: ['getPlanById', id],
-    queryFn: () => getPlanById(id)
+    queryFn: () => getSummaryTasksLote(id)
+  });
+  const { data: summaryPlanCrop } = useQuery({
+    queryKey: ['getSummaryTasksCropLote', id],
+    queryFn: () => getSummaryTasksCropLote(id)
   });
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />
 
-  if (summaryPlan) return (
+  if (summaryPlan && summaryPlanCrop) return (
     <>
       <div className="space-y-10">
-        <h2 className="text-xl text-center xl:text-left xl:text-4xl font-bold">
-          Plan Semanal {summaryPlan.data.finca} Semana {summaryPlan.data.week} -{" "}
-          {summaryPlan.data.year}
-        </h2>
-
-        {summaryPlan.data.summary_tasks.length === 0 ? (
+        {summaryPlan.data.length === 0 ? (
           <p className="text-center text-xl">No existen tareas programadas el día de hoy</p>
         ) : (
           <div className="table-wrapper">
+            <h1 className="font-bold text-4xl">Tareas Generales</h1>
             <table className="table mt-10">
               <thead>
                 <tr className="thead-tr">
@@ -58,7 +58,7 @@ export default function Show() {
                 </tr>
               </thead>
               <tbody>
-                {summaryPlan.data.summary_tasks.map((task, index) => (
+                {summaryPlan.data.map((task, index) => (
                   <tr className="tbody-tr" key={index}>
                     <td className="tbody-td">{task.lote}</td>
                     <td className="tbody-td">{task.total_workers}</td>
@@ -69,11 +69,7 @@ export default function Show() {
                     <td className="tbody-td">{`${task.finished_tasks}/${task.total_tasks}`}</td>
                     <td className="tbody-td w-1/6">
                       <button
-                        onClick={() =>
-                          navigate(
-                            `/planes-semanales/tareas-lote/${id}/${task.lote_plantation_control_id}`
-                          )
-                        }
+                        onClick={() => navigate(`/planes-semanales/tareas-lote/${id}/${task.lote}`)}
                         className="button bg-indigo-500 hover:bg-indigo-600"
                       >
                         <p>Ver Tareas de Lote</p>
@@ -86,11 +82,11 @@ export default function Show() {
           </div>
         )}
 
-        {summaryPlan.data.summary_crops.length > 0 && (
-          <div>
-            <h2 className="text-xl font-bold uppercase">
-              Cosechas Asignadas
-            </h2>
+        {summaryPlanCrop.data.length === 0 ? (
+          <p className="text-center text-xl">No existen cosechas</p>
+        ) : (
+          <div className="table-wrapper">
+            <h1 className="font-bold text-4xl">Cosechas</h1>
             <table className="table mt-10">
               <thead>
                 <tr className="thead-tr">
@@ -98,22 +94,18 @@ export default function Show() {
                     Lote
                   </th>
                   <th scope="col" className="thead-th">
-                    Accion
+                    Acción
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {summaryPlan.data.summary_crops.map((task, index) => (
+                {summaryPlanCrop.data.map((task, index) => (
                   <tr className="tbody-tr" key={index}>
                     <td className="tbody-td">{task.lote}</td>
                     <td className="tbody-td w-1/6">
                       <button
-                        onClick={() =>
-                          navigate(
-                            `/planes-semanales/tareas-cosecha-lote/${id}/${task.lote_plantation_control_id}`
-                          )
-                        }
-                        className="button bg-gray-400 hover:bg-gray-500"
+                        onClick={() => navigate(`/planes-semanales/tareas-cosecha-lote/${id}/${task.lote_id}`)}
+                        className="button bg-indigo-500 hover:bg-indigo-600"
                       >
                         <p>Ver Cosecha Lote</p>
                       </button>
@@ -124,6 +116,7 @@ export default function Show() {
             </table>
           </div>
         )}
+
       </div>
     </>
   );

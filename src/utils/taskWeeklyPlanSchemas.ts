@@ -16,7 +16,7 @@ export const TaskWeeklyPlanSchema = z.object({
     hours: z.number(),
     budget: z.number(),
     finca_id: z.string(),
-    lote_plantation_control_id: z.string(),
+    cdp_id: z.string(),
     active_closure: z.boolean(),
     weekly_plan_id: z.string(),
     slots: z.number(),

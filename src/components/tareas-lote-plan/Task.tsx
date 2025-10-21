@@ -205,6 +205,7 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
       <div className="col-span-5">
         <TaskLabel label={"ID"} text={task.id} />
         <TaskLabel label={"Lote"} text={task.lote} />
+        <TaskLabel label={"Cdp"} text={task.cdp} />
         <TaskLabel label={"Semana"} text={task.week.toString()} />
         <TaskLabel label={"Horas Teoricas"} text={`${task.hours.toString()} horas`} />
         <TaskLabel label={"Tarea"} text={task.task} />

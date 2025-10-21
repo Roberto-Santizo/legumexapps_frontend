@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { paginatedSchema } from "./schemas";
+import { PaginatedRequestSchema } from "@/schemas/httpRequestsSchemas";
 
 export const WeeklyPlanSchema = z.object({
     id: z.string(),
@@ -18,24 +19,30 @@ export const WeeklyPlanSchema = z.object({
     finished_total_tasks_crops: z.number()
 });
 
-export const SummaryWeeklyPlanSchema = z.object({
-    data: WeeklyPlanSchema.pick({ id: true, year: true, week: true, finca: true }).extend({
-        summary_tasks: z.array(z.object({
-            lote: z.string(),
-            total_budget: z.number(),
-            lote_plantation_control_id: z.string(),
-            total_workers: z.number(),
-            total_hours: z.number(),
-            total_tasks: z.number(),
-            finished_tasks: z.number()
+export const SummaryTasksSchema = z.array(z.object({
+    lote: z.string(),
+    total_budget: z.number(),
+    lote_id: z.number(),
+    total_workers: z.number(),
+    total_hours: z.number(),
+    total_tasks: z.number(),
+    finished_tasks: z.number()
 
-        })),
-        summary_crops: z.array(z.object({
-            id: z.string(),
-            lote_plantation_control_id: z.string(),
-            lote: z.string()
-        }))
-    })
+}));
+
+export const SummaryTasksCropSchema = z.array(z.object({
+    id: z.number(),
+    lote_id: z.number(),
+    lote: z.string()
+}))
+
+export const SummaryWeeklyPlanSchema = PaginatedRequestSchema.extend({
+    data: SummaryTasksSchema
+});
+
+export const SummaryTasksCropWeeklyPlanSchema = PaginatedRequestSchema.extend({
+    statusCode: z.number(),
+    data: SummaryTasksCropSchema
 });
 
 export const WeeklyPlansSchema = z.object({
