@@ -3,6 +3,7 @@ import { TasksGuideLineSchema } from "../schemas";
 import { TasksMasterFilters } from "../hooks/useTasksMasterFilters";
 import { ApiResponseSchema } from "@/schemas/httpRequestsSchemas";
 import { isAxiosError } from "axios";
+import { DraftMasterTask } from "../types";
 
 export async function getTasksGuidelines({ page, limit, filters }: { page?: number, limit?: number, filters: TasksMasterFilters }) {
     try {
@@ -44,5 +45,24 @@ export async function uploadTasksGuidelines(file: File) {
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.message);
         }
+    }
+}
+
+export async function createTaskGuideline(data: DraftMasterTask) {
+    try {
+        const url = '/api/task-guidelines';
+        const response = await clienteAxios.post(url, data);
+        const result = ApiResponseSchema.safeParse(response.data);
+
+        if (result.success) {
+            return result.data.message;
+        } else {
+            throw new Error('Hubo un error');
+        }
+    } catch (error : unknown) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error('');
     }
 }

@@ -58,6 +58,11 @@ export default function Index() {
                         <p>Cargar Tareas</p>
                     </button>
 
+                    <Link to={`${location.pathname}/crear`} className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2">
+                        <PlusIcon />
+                        <p>Crear Tarea Maestra</p>
+                    </Link>
+
                     <Link to={`${location.pathname}/recetas`} className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2">
                         <p>Recetas</p>
                     </Link>
