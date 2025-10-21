@@ -10,27 +10,26 @@ import ModalTomaLibras from "@/components/modals/ModalTomaLibras";
 
 export default function Index() {
   const params = useParams();
-  const lote_plantation_control_id = params.lote_plantation_control_id!;
+  const cdp_id = params.cdp_id!;
   const weekly_plan_id = params.weekly_plan_id!;
 
   const [id, setId] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { data: tasksCrops, isLoading, isError, refetch } = useQuery({
-    queryKey: ['getTasksCrop', lote_plantation_control_id, weekly_plan_id], queryFn: () => getTasksCrop(lote_plantation_control_id, weekly_plan_id)
+    queryKey: ['getTasksCrop', cdp_id, weekly_plan_id], queryFn: () => getTasksCrop(cdp_id, weekly_plan_id)
   });
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />
   if (tasksCrops) return (
     <>
-      <h2 className="font-bold text-3xl">Plan Semanal Semana {tasksCrops.week} - FINCA {tasksCrops.finca} - LOTE {tasksCrops.lote}</h2>
       <div className="flex flex-col gap-10 mt-10">
-        {tasksCrops.tasks.map(task => <TaskCrop key={task.id} task={task} refetch={refetch} setId={setId} setIsOpen={setIsOpen}/>)}
+        {tasksCrops.data.map(task => <TaskCrop key={task.id} task={task} refetch={refetch} setId={setId} setIsOpen={setIsOpen} />)}
       </div>
 
       {isOpen && (
-        <ModalTomaLibras isOpen={isOpen} setIsOpen={setIsOpen} id={id} refetch={refetch}/>
+        <ModalTomaLibras isOpen={isOpen} setIsOpen={setIsOpen} id={id} refetch={refetch} />
       )}
     </>
   )

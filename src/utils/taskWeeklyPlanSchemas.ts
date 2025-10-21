@@ -41,7 +41,6 @@ export const DraftTaskWeeklyPlanSchema = TaskWeeklyPlanSchema.pick({ weekly_plan
 
 export const TaskWeeklyPlanDetailsSchema = TaskWeeklyPlanSchema.pick({ task: true, lote: true, week: true }).extend({
     finca: z.string(),
-    aplication_week: z.number(),
     start_date: z.union([z.string(), z.null()]),
     end_date: z.union([z.string(), z.null()]),
     hours: z.number(),

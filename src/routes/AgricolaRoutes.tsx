@@ -32,7 +32,7 @@ const routes = [
   { path: "/planes-semanales/tareas-lote/editar/:id", component: lazy(() => import("@/views/agricola/lote-tasks/Edit")), roles: ['admin', 'adminagricola'] },
   { path: "/planes-semanales/tareas-lote/crear", component: lazy(() => import("@/views/agricola/lote-tasks/Create")), roles: ['admin', 'adminagricola'] },
 
-  { path: "/planes-semanales/tareas-cosecha-lote/:weekly_plan_id/:lote_plantation_control_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Index")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
+  { path: "/planes-semanales/tareas-cosecha-lote/:weekly_plan_id/:cdp_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Index")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-cosecha-lote/asignar/:task_crop_id/:finca_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Assign")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-cosecha-lote/toma-rendimiento/:task_crop_id", component: lazy(() => import("@/views/agricola/harvest-tasks/PersonalPerformance")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-cosecha-lote/resumen/:task_crop_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Details")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },

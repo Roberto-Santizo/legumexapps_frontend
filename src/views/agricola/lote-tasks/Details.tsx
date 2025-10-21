@@ -19,7 +19,7 @@ export default function Details() {
 
   if (taskDetail) return (
     <>
-      <div className="text-xl space-y-10 mt-5"> 
+      <div className="text-xl space-y-10 mt-5">
         <div className="shadow p-5">
           <h2 className="font-bold text-3xl text-center">
             Información de la tarea
@@ -38,10 +38,6 @@ export default function Details() {
               <p className="p-5 shadow bg-gray-200">
                 <span className="font-bold">Semana Calendario: </span>
                 {taskDetail.week}
-              </p>
-              <p className="p-5 shadow bg-gray-200">
-                <span className="font-bold">Semana de Aplicación: </span>
-                {taskDetail.aplication_week}
               </p>
               <p className="p-5 shadow bg-gray-200">
                 <span className="font-bold">Fecha de Inicio: </span>

@@ -104,7 +104,7 @@ export default function Show() {
                     <td className="tbody-td">{task.lote}</td>
                     <td className="tbody-td w-1/6">
                       <button
-                        onClick={() => navigate(`/planes-semanales/tareas-cosecha-lote/${id}/${task.lote_id}`)}
+                        onClick={() => navigate(`/planes-semanales/tareas-cosecha-lote/${id}/${task.cdp_id}`)}
                         className="button bg-indigo-500 hover:bg-indigo-600"
                       >
                         <p>Ver Cosecha Lote</p>

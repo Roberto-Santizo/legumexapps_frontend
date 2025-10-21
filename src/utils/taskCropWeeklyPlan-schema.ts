@@ -1,3 +1,4 @@
+import { PaginatedRequestSchema } from "@/schemas/httpRequestsSchemas";
 import { z } from "zod";
 
 export const TaskCropIncompleteSchema = z.object({
@@ -48,12 +49,9 @@ export const TaskCropWeeklyPlanDetailSchema = z.object({
     )
 });
 
-export const TasksCropWeeklyPlanSchema = z.object({
-    week: z.number(),
-    finca: z.string(),
-    lote: z.string(),
-    tasks: z.array(TaskCropWeeklyPlanSchema),
-});
+export const TasksCropWeeklyPlanSchema = PaginatedRequestSchema.extend({
+    data: z.array(TaskCropWeeklyPlanSchema),
+})
 
 export const EmployeeTaskCropPlanSchema = z.object({
     id: z.string(),

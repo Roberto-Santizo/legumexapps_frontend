@@ -32,7 +32,7 @@ export const SummaryTasksSchema = z.array(z.object({
 
 export const SummaryTasksCropSchema = z.array(z.object({
     id: z.number(),
-    lote_id: z.number(),
+    cdp_id: z.number(),
     lote: z.string()
 }))
 

@@ -3,13 +3,13 @@ import { EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema, TaskCropWe
 import { isAxiosError } from "axios";
 import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import { DraftTaskCropWeeklyPlan } from "@/views/agricola/harvest-tasks/Create";
-import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan } from "@/types/index";
+import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail } from "@/types/index";
 
-export async function getTasksCrop(lote_plantation_control_id: TaskWeeklyPlan['lote'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']): Promise<TasksCropWeeklyPlan> {
+export async function getTasksCrop(cdp: TaskWeeklyPlan['cdp_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) {
     try {
         const url = `/api/tasks-crops-lotes`;
         const { data } = await clienteAxios(url, {
-            params: { lote_plantation_control_id, weekly_plan_id }
+            params: { cdp, weekly_plan_id }
         });
         const result = TasksCropWeeklyPlanSchema.safeParse(data);
         if (result.success) {
