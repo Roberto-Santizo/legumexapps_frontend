@@ -1,9 +1,10 @@
 import clienteAxios from "@/config/axios";
 import { TasksGuideLineSchema } from "../schemas";
 import { TasksMasterFilters } from "../hooks/useTasksMasterFilters";
-import { ApiResponseSchema } from "@/schemas/httpRequestsSchemas";
+import { ApiResponseSchema, FileResponseSchema } from "@/schemas/httpRequestsSchemas";
 import { isAxiosError } from "axios";
 import { DraftMasterTask } from "../types";
+import { downloadBase64File } from "@/helpers";
 
 export async function getTasksGuidelines({ page, limit, filters }: { page?: number, limit?: number, filters: TasksMasterFilters }) {
     try {
@@ -59,7 +60,26 @@ export async function createTaskGuideline(data: DraftMasterTask) {
         } else {
             throw new Error('Hubo un error');
         }
-    } catch (error : unknown) {
+    } catch (error: unknown) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error('');
+    }
+}
+
+export async function exportTaskGuideline() {
+    try {
+        const url = '/api/task-guidelines/export';
+        const response = await clienteAxios.post(url);
+        const result = FileResponseSchema.safeParse(response.data);
+
+        if (result.success) {
+            downloadBase64File(result.data.file, result.data.fileName)
+        } else {
+            throw new Error('Información no válida');
+        }
+    } catch (error: unknown) {
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.message);
         }

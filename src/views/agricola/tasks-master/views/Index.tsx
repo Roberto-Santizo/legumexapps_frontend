@@ -1,12 +1,14 @@
 import { SkeletonLoading, IndexFilters, ModalUploadTasksGuidelines } from "@/views/agricola/tasks-master/components/components";
 import { Link, useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { getTasksGuidelines } from "../api/api";
 import { useEffect, useState } from "react";
-import { PlusIcon } from "lucide-react";
+import { Download, PlusIcon } from "lucide-react";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { useTasksMasterFilters } from "../hooks/useTasksMasterFilters";
+import { exportTaskGuideline } from "../api/TasksMasterAPI";
 import Pagination from "@/components/shared/Pagination";
+import Spinner from "@/components/utilities-components/Spinner";
 
 export default function Index() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -19,6 +21,13 @@ export default function Index() {
     const { data, isLoading } = useQuery({
         queryKey: ['getTasksGuidelines', page, rowsPerPage, filters],
         queryFn: () => getTasksGuidelines({ page, limit: rowsPerPage, filters })
+    });
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: exportTaskGuideline,
+        onSuccess: () => {
+
+        }
     });
 
     const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -58,6 +67,7 @@ export default function Index() {
                         <p>Cargar Tareas</p>
                     </button>
 
+
                     <Link to={`${location.pathname}/crear`} className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2">
                         <PlusIcon />
                         <p>Crear Tarea Maestra</p>
@@ -70,10 +80,18 @@ export default function Index() {
                         <p>Cultivos</p>
                     </Link>
                 </div>
-                <Bars3Icon
-                    className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
-                    onClick={() => setIsOpen(true)}
-                />
+
+                <div className="flex justify-center items-center gap-5">
+                    <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2" onClick={() => mutate()}>
+                        {isPending ? <Spinner /> : <Download />}
+                        <p>Descargar</p>
+                    </button>
+
+                    <Bars3Icon
+                        className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+                        onClick={() => setIsOpen(true)}
+                    />
+                </div>
             </section>
 
             <table className="table mt-10">

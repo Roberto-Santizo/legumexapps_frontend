@@ -13,3 +13,8 @@ export const ApiResponseSchema = z.object({
     statusCode: z.number(),
     message: z.string().optional()
 });
+
+export const FileResponseSchema = z.object({
+    fileName: z.string(),
+    file: z.string()
+});
