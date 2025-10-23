@@ -1,9 +1,12 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { getDraftWeeklyPlanById } from "@/api/PlannerFincasAPI";
-import { useQuery } from "@tanstack/react-query";
+import { confirmDraftWeeklyPlan, getDraftWeeklyPlanById } from "@/api/PlannerFincasAPI";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, useCallback, useState } from "react";
+import { CheckBadgeIcon } from "@heroicons/react/16/solid";
+import { useNotification } from "../../../../core/notifications/NotificationContext";
 import ModalEditTask from "../components/ModalEditTask";
 import debounce from "debounce";
+import Swal from "sweetalert2";
 
 
 
@@ -12,10 +15,23 @@ export default function Show() {
   const id = params.id!;
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState<string>(searchParams.get('cdp') ?? '');
+  const notify = useNotification();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ['getDraftWeeklyPlanById', id, searchParams.get('cdp')],
     queryFn: () => getDraftWeeklyPlanById({ id: parseInt(id), filter: searchParams.get('cdp') ?? '' })
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: confirmDraftWeeklyPlan,
+    onSuccess: (data) => {
+      notify.success(data!);
+      queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlanById', id, searchParams.get('cdp')] });
+    },
+    onError: (error) => {
+      notify.error(error.message);
+    }
   });
 
   const debouncedChange = useCallback(
@@ -29,6 +45,20 @@ export default function Show() {
     setFilter(e.target.value);
     debouncedChange(e.target.value);
   };
+
+  const handleConfirmPlan = () => {
+    Swal.fire({
+      title: "¿Deseas confirmar el plan?",
+      text: "Una vez confirmado, no podrás hacer más cambios.",
+      showDenyButton: true,
+      confirmButtonText: "Confirmar",
+      denyButtonText: `Cancelar`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutate(+id);
+      }
+    });
+  }
 
   if (isLoading) return <SkeletonLoading />;
   if (data) return (
@@ -46,11 +76,24 @@ export default function Show() {
             onChange={handleChange}
             className="px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all w-full sm:w-64 text-gray-700 placeholder-gray-400"
           />
-          <button
-            className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all shadow-md"
-          >
-            Confirmar Plan
-          </button>
+
+          {data.status ? (
+            <div
+              className="flex gap-2 w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl focus:ring-4 focus:ring-indigo-300 transition-all shadow-md"
+            >
+              <CheckBadgeIcon className="w-5" />
+              Plan Confirmado
+            </div>
+          ) : (
+            <button
+              disabled={isPending}
+              onClick={() => handleConfirmPlan()}
+              className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all shadow-md"
+            >
+              Confirmar Plan
+            </button>
+
+          )}
         </div>
       </section>
 
@@ -88,6 +131,7 @@ export default function Show() {
               <tbody>
                 {tasks.map((task) => (
                   <tr className="tbody-tr" key={task.id} onClick={() => setSearchParams(searchParams => {
+                    if (data.status) return searchParams;
                     searchParams.set('editTask', task.id.toString());
                     return searchParams;
                   })}>

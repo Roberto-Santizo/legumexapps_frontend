@@ -86,3 +86,25 @@ export async function exportTaskGuideline() {
         throw new Error('');
     }
 }
+
+export async function uploadTasksGuidelinesInsumosRecipe(file: File) {
+    try {
+        const url = '/api/task-guidelines/upload/insumos-recipes';
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await clienteAxios.post(url, formData);
+
+        const result = ApiResponseSchema.safeParse(response.data);
+
+        if (result.success) {
+            return result.data.message
+        } else {
+            throw new Error("Hubo un error");
+        }
+
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+    }
+}

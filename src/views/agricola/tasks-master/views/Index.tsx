@@ -1,4 +1,4 @@
-import { SkeletonLoading, IndexFilters, ModalUploadTasksGuidelines } from "@/views/agricola/tasks-master/components/components";
+import { SkeletonLoading, IndexFilters, ModalUploadTasksGuidelines, ModalUploadInsumosRecipe } from "@/views/agricola/tasks-master/components/components";
 import { Link, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { getTasksGuidelines } from "../api/api";
@@ -51,6 +51,13 @@ export default function Index() {
         });
     }
 
+    const handleOpenInsumosModal = () => {
+        setSearchParams((searchParams) => {
+            searchParams.set('uploadInsumosRecipe', "true");
+            return searchParams;
+        });
+    }
+
     useEffect(() => {
         setCount(data?.meta?.total ?? 100);
     }, [data]);
@@ -65,6 +72,10 @@ export default function Index() {
                     <button className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2" onClick={() => handleOpenModal()}>
                         <PlusIcon />
                         <p>Cargar Tareas</p>
+                    </button>
+                    <button className="button bg-indigo-500 hover:bg-indigo-600 mt-5 flex justify-center items-center gap-2" onClick={() => handleOpenInsumosModal()}>
+                        <PlusIcon />
+                        <p>Cargar de Recetas</p>
                     </button>
 
 
@@ -138,6 +149,7 @@ export default function Index() {
             <Pagination count={count} page={page} rowsPerPage={rowsPerPage} handleOnPageChange={handleChangePage} handleOnRowsPerPageChange={handleOnRowsPerPageChange} />
             <IndexFilters isOpen={isOpen} setIsOpen={setIsOpen} currentFilters={filters} onApply={setFilters} resetFilters={resetFilters} />
             <ModalUploadTasksGuidelines />
+            <ModalUploadInsumosRecipe />
         </div>
     )
 }

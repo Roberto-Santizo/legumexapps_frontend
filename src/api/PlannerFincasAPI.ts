@@ -19,7 +19,7 @@ export async function getDraftWeeklyPlans({ page, limit }: { page?: number, limi
     }
 }
 
-export async function getDraftWeeklyPlanById( {id, filter}: {id: DraftWeeklyPlan['data']['id'], filter: string}) {
+export async function getDraftWeeklyPlanById({ id, filter }: { id: DraftWeeklyPlan['data']['id'], filter: string }) {
     try {
         const url = `/api/seeding-plan/${id}?cdp=${filter}`;
         const response = await clienteAxios(url);
@@ -31,6 +31,25 @@ export async function getDraftWeeklyPlanById( {id, filter}: {id: DraftWeeklyPlan
         }
     } catch (error: unknown) {
         throw error;
+    }
+}
+
+export async function confirmDraftWeeklyPlan(id: DraftWeeklyPlan['data']['id']) {
+    try {
+        const url = `/api/seeding-plan/${id}`;
+        const response = await clienteAxios.patch(url);
+        const result = ApiResponseSchema.safeParse(response.data);
+        if (result.success) {
+            return result.data.message;
+        } else {
+            throw new Error('Hubo un error con el tipado');
+        }
+    } catch (error: unknown) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+
+        throw new Error("Error no controlado");
     }
 }
 

@@ -6,7 +6,8 @@ export const DraftWeeklyPlansSchema = PaginatedRequestSchema.extend({
         id: z.number(),
         finca: z.string(),
         week: z.number(),
-        year: z.number()
+        year: z.number(),
+        status: z.number()
     }))
 });
 
@@ -35,6 +36,7 @@ export const DraftWeeklyPlanSchema = ApiResponseSchema.extend({
         id: z.number(),
         finca: z.string(),
         week: z.number(),
+        status: z.number(),
         tasks: PlantationControlTasksSchema.optional()
     })
 });
