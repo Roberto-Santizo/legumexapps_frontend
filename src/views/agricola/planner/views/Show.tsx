@@ -1,9 +1,10 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { confirmDraftWeeklyPlan, getDraftWeeklyPlanById } from "@/api/PlannerFincasAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, useCallback, useState } from "react";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { useNotification } from "../../../../core/notifications/NotificationContext";
+import { deleteDraftWeeklyPlan } from "../api/PlannerAPI";
 import ModalEditTask from "../components/ModalEditTask";
 import debounce from "debounce";
 import Swal from "sweetalert2";
@@ -17,6 +18,7 @@ export default function Show() {
   const [filter, setFilter] = useState<string>(searchParams.get('cdp') ?? '');
   const notify = useNotification();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
     queryKey: ['getDraftWeeklyPlanById', id, searchParams.get('cdp')],
@@ -28,6 +30,17 @@ export default function Show() {
     onSuccess: (data) => {
       notify.success(data!);
       queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlanById', id, searchParams.get('cdp')] });
+    },
+    onError: (error) => {
+      notify.error(error.message);
+    }
+  });
+
+  const { mutate: mutate2, isPending: isPending2 } = useMutation({
+    mutationFn: deleteDraftWeeklyPlan,
+    onSuccess: (data) => {
+      notify.success(data!);
+      navigate('/planificador-fincas');
     },
     onError: (error) => {
       notify.error(error.message);
@@ -60,6 +73,20 @@ export default function Show() {
     });
   }
 
+  const handleDeletePlan = () => {
+    Swal.fire({
+      title: "¿Deseas eliminar el plan?",
+      text: "Una vez eliminado, no se podrá recuperar.",
+      showDenyButton: true,
+      confirmButtonText: "Eliminar",
+      denyButtonText: `Cancelar`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutate2(+id);
+      }
+    });
+  }
+
   if (isLoading) return <SkeletonLoading />;
   if (data) return (
     <>
@@ -85,19 +112,26 @@ export default function Show() {
               Plan Confirmado
             </div>
           ) : (
-            <button
-              disabled={isPending}
-              onClick={() => handleConfirmPlan()}
-              className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all shadow-md"
-            >
-              Confirmar Plan
-            </button>
+            <>
+              <button
+                disabled={isPending}
+                onClick={() => handleConfirmPlan()}
+                className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all shadow-md"
+              >
+                Confirmar Plan
+              </button>
 
+              <button
+                disabled={isPending2}
+                onClick={() => handleDeletePlan()}
+                className="w-full sm:w-auto px-5 py-2.5 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-all shadow-md"
+              >
+                Eliminar Plan
+              </button>
+            </>
           )}
         </div>
       </section>
-
-
 
       <section className="flex flex-col gap-5 mt-5">
         {Object.entries(data.tasks ?? []).map(([cdp, tasks]) => (

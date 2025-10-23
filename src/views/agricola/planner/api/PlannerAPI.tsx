@@ -2,6 +2,7 @@ import { ApiResponseSchema } from "@/schemas/httpRequestsSchemas";
 import { isAxiosError } from "axios";
 import { DraftWeeklyPlansSchema } from "@/schemas/plannerFincasSchemas";
 import clienteAxios from "@/config/axios";
+import { DraftWeeklyPlan } from "@/types/index";
 
 export async function createPlan(file: File) {
     try {
@@ -40,5 +41,23 @@ export async function getDraftWeeklyPlans({ page, limit, filters }: { page?: num
         }
     } catch (error: unknown) {
         throw error;
+    }
+}
+
+export async function deleteDraftWeeklyPlan(id: DraftWeeklyPlan['data']['id']) {
+    try {
+        const url = `/api/seeding-plan/${id}`;
+        const response = await clienteAxios.delete(url);
+
+        const result = ApiResponseSchema.safeParse(response.data);
+        if (result.success) {
+            return result.data.message;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+
+        throw new Error("Error no controlado");
     }
 }
