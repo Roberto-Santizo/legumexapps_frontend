@@ -112,9 +112,6 @@ export default function Index() {
                             Tarea
                         </th>
                         <th scope="col" className="thead-th">
-                            Presupuesto
-                        </th>
-                        <th scope="col" className="thead-th">
                             Horas
                         </th>
                         <th scope="col" className="thead-th">
@@ -135,7 +132,6 @@ export default function Index() {
                     {data.data.map((item) => (
                         <tr className="tbody-tr" key={item.id}>
                             <td className="tbody-td">{item.task}</td>
-                            <td className="tbody-td">{item.budget}</td>
                             <td className="tbody-td">{item.hours}</td>
                             <td className="tbody-td">{item.recipe}</td>
                             <td className="tbody-td">{item.crop}</td>

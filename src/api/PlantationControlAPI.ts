@@ -1,6 +1,6 @@
 import clienteAxios from "@/config/axios";
-import { DraftCDP } from "@/views/agricola/cdps/Create";
-import { FiltersCDPType } from "@/views/agricola/cdps/Index";
+import { DraftCDP } from "@/views/agricola/cdps/views/Create";
+import { FiltersCDPType } from "@/views/agricola/cdps/views/Index";
 import { isAxiosError } from "axios";
 import { PlantationsControlSchema } from "@/utils/plantationControlSchemas";
 import { CropsSchema } from "@/utils/cropSchemas";

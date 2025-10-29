@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import Filters from "../Filters";
-import { FiltersCDPType } from "@/views/agricola/cdps/Index";
+import { FiltersCDPType } from "@/views/agricola/cdps/views/Index";
 
 type Props = {
     setIsOpen: Dispatch<SetStateAction<boolean>>;

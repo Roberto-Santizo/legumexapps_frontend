@@ -2,7 +2,6 @@ import { PaginatedRequestSchema } from "@/schemas/httpRequestsSchemas";
 import { z } from "zod";
 
 export const TaskGuidelineSchema = z.object({
-    budget: z.number(),
     crop: z.string(),
     finca: z.string(),
     hours: z.number(),
