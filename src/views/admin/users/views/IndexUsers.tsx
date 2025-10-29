@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { PlusIcon, PencilIcon } from "@heroicons/react/16/solid";
-import { getUsers, changeActiveUser } from "@/api/UsersAPI";
+import { getUsers, changeActiveUser } from "@/views/admin/users/api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { User } from "@/types/usersTypes";
+import { User } from "@/views/admin/users/types";
 import { useEffect, useState } from "react";
+import { useNotification } from "../../../../core/notifications/NotificationContext";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
-import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function IndexUsers() {
   const queryClient = useQueryClient();

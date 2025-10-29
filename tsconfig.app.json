@@ -22,6 +22,7 @@
       "@/store": ["./src/store.ts"],
       "@/types/*": ["./src/types/*"],
       "@/interfaces": ["./src/interfaces/index.ts"],
+      "@/core/notifications/NotificationContext" : ["./src/core/notifications/NotificationContext.tsx"]
     },
 
     "moduleResolution": "bundler",

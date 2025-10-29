@@ -1,5 +1,5 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { DraftRole } from "@/types/rolesTypes";
+import { DraftRole } from "@/views/admin/roles/types";
 import Error from "@/components/utilities-components/Error";
 import InputTextComponent from "@/components/form/InputComponent";
 

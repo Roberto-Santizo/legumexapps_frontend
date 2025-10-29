@@ -1,11 +1,11 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
-import { getRoles } from "@/api/RolesAPI";
-import { getPermissions } from "@/api/PermissionsAPI";
-import { DraftUser } from "@/types/usersTypes";
-import { Role } from "@/types/rolesTypes";
-import { Permission } from "@/types/permissionsType";
+import { getRoles } from "@/views/admin/roles/api/api";
+import { getPermissions } from "@/views/admin/permisos/api/api";
+import { DraftUser } from "@/views/admin/users/types";
+import { Role } from "@/views/admin/roles/types";
+import { Permission } from "@/views/admin/permisos/types";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputSelectComponent from "@/components/form/InputSelectComponent";

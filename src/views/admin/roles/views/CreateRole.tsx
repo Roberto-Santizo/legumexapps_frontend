@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { createRole } from "@/api/RolesAPI";
+import { createRole } from "@/views/admin/roles/api/api";
 import { useMutation } from "@tanstack/react-query";
-import { DraftRole } from "@/types/rolesTypes";
+import { DraftRole } from "@/views/admin/roles/types";
+import { useNotification } from "@/core/notifications/NotificationContext";
 import Spinner from "@/components/utilities-components/Spinner";
-import RolesForm from "./RolesForm";
-import { useNotification } from "../../../core/notifications/NotificationContext";
+import RolesForm from "../components/RolesForm";
 
 export default function CreateRole() {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { createPermission } from "@/api/PermissionsAPI";
+import { createPermission } from "@/views/admin/permisos/api/api";
 import { useMutation } from "@tanstack/react-query";
-import { DraftPermiso } from "@/types/permissionsType";
-import { useNotification } from "../../../core/notifications/NotificationContext";
+import { DraftPermiso } from "@/views/admin/permisos/types";
+import { useNotification } from "@/core/notifications/NotificationContext";
 import Spinner from "@/components/utilities-components/Spinner";
 import PermisosForm from "./PermisosForm";
 

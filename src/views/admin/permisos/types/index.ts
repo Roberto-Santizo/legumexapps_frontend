@@ -1,4 +1,4 @@
-import { PermissionSchema } from "@/utils/permissionsSchemas";
+import { PermissionSchema } from "@/views/admin/permisos/schemas/permissionsSchemas";
 import { z } from "zod";
 
 export type Permission = z.infer<typeof PermissionSchema>;

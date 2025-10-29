@@ -1,6 +1,6 @@
-import { PermissionsSchema, PermissionsUserSchema } from "@/utils/permissionsSchemas";
+import { PermissionsSchema, PermissionsUserSchema } from "@/views/admin/permisos/schemas/permissionsSchemas";
 import { isAxiosError } from "axios";
-import { DraftPermiso } from "@/types/permissionsType";
+import { DraftPermiso } from "@/views/admin/permisos/types";
 import clienteAxios from "@/config/axios";
 
 export async function createPermission(permission: DraftPermiso) {
@@ -8,7 +8,7 @@ export async function createPermission(permission: DraftPermiso) {
         const url = '/api/permissions';
         const { data } = await clienteAxios.post<string>(url, permission);
         return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (isAxiosError(error)) {
             throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
@@ -41,7 +41,9 @@ export async function getPermissionsByUser() {
             throw new Error("Información no valida");
         }
     } catch (error) {
-        console.log(error);
-        throw error;
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.msg);
+        }
+        throw new Error("Error no controlado");
     }
 }

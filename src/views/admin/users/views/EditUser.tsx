@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { getUserById, updateUser } from "@/api/UsersAPI";
+import { getUserById, updateUser } from "@/views/admin/users/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { DraftUser, User } from "@/types/usersTypes";
+import { DraftUser, User } from "@/views/admin/users/types";
+import { useNotification } from "@/core/notifications/NotificationContext";
 import Spinner from "@/components/utilities-components/Spinner";
-import UsersForm from "./UsersForm";
-import { useNotification } from "../../../core/notifications/NotificationContext";
+import UsersForm from "../components/UsersForm";
 
 export default function EditUser() {
   const params = useParams();

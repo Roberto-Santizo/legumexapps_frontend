@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { paginatedSchema } from "./schemas";
+import { paginatedSchema } from "../../../../utils/schemas";
 
 export const userSchema = z.object({
     id: z.string(),

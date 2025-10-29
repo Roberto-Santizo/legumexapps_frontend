@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getPermissionsByUser } from '@/api/PermissionsAPI';
+import { getPermissionsByUser } from '@/views/admin/permisos/api/api';
 
 export function usePermissions() {
   const { data } = useQuery({

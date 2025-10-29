@@ -1,7 +1,7 @@
 import clienteAxios from "@/config/axios";
-import { rolesSchema } from "@/utils/rolesSchemas";
+import { rolesSchema } from "@/views/admin/roles/schemas";
 import { isAxiosError } from "axios";
-import { DraftRole } from "@/types/rolesTypes";
+import { DraftRole } from "@/views/admin/roles/types";
 
 export async function getRoles({ paginated, currentPage }: { paginated: string, currentPage: number }) {
     try {

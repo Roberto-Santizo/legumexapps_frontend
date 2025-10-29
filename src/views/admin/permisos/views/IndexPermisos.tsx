@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
-import { getPermissions } from "@/api/PermissionsAPI";
+import { getPermissions } from "@/views/admin/permisos/api/api";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";

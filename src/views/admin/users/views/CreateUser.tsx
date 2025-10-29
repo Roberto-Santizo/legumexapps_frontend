@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "@/api/UsersAPI";
+import { createUser } from "@/views/admin/users/api";
 import { useMutation } from "@tanstack/react-query";
-import { DraftUser } from "@/types/usersTypes";
+import { DraftUser } from "@/views/admin/users/types";
+import { useNotification } from "@/core/notifications/NotificationContext";
 import Spinner from "@/components/utilities-components/Spinner";
-import UsersForm from "./UsersForm";
-import { useNotification } from "../../../core/notifications/NotificationContext";
+import UsersForm from "../components/UsersForm";
 
 
 export default function CreateUser() {
