@@ -4,7 +4,7 @@ import { z } from "zod";
 export const TaskGuidelineSchema = z.object({
     crop: z.string(),
     finca: z.string(),
-    hours: z.number(),
+    hours_per_size: z.number(),
     id: z.number(),
     recipe: z.string(),
     task: z.string(),

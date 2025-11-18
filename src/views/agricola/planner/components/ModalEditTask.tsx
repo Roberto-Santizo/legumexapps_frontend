@@ -171,7 +171,7 @@ export default function ModalEditTask() {
                             </div>
                             <div className="mt-3 flex items-center justify-between">
                                 <p className="text-sm text-gray-600">
-                                    <span className="font-medium text-gray-700">Cantidad:</span> {insumo.quantity} {insumo.measure}
+                                    <span className="font-medium text-gray-700">Cantidad:</span> ({insumo.quantity} x Manzana) {insumo.measure}
                                 </p>
                                 <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                                     #{index + 1}

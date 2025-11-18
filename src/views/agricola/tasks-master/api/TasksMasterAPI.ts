@@ -44,7 +44,7 @@ export async function uploadTasksGuidelines(file: File) {
 
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.message);
+            throw new Error(error.response?.data.msg);
         }
     }
 }

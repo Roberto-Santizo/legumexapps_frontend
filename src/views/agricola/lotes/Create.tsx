@@ -13,6 +13,8 @@ import InputSelectSearchComponent from "@/components/form/InputSelectSearchCompo
 export type DraftLote = {
   name: string;
   finca_id: string;
+  size: number;
+  total_plants: number;
 }
 
 export default function Create() {
@@ -65,6 +67,7 @@ export default function Create() {
       <form
         className="xl:w-1/2 mx-auto p-5 space-y-5"
         onSubmit={handleSubmit(onSubmit)}
+        noValidate
       >
 
         <InputComponent<DraftLote>
@@ -80,6 +83,31 @@ export default function Create() {
           {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
         </InputComponent>
 
+        <InputComponent<DraftLote>
+          label="Tamaño del lote"
+          id="size"
+          name="size"
+          placeholder="Tamaño del lote"
+          register={register}
+          validation={{ required: 'El tamaño del lote es obligatorio' }}
+          errors={errors}
+          type={'number'}
+        >
+          {errors.size && <Error>{errors.size?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <InputComponent<DraftLote>
+          label="Total de plantas de lote"
+          id="total_plants"
+          name="total_plants"
+          placeholder="Total de plantas del lote"
+          register={register}
+          validation={{ required: 'El total de plantas del lote es requerido' }}
+          errors={errors}
+          type={'number'}
+        >
+          {errors.total_plants && <Error>{errors.total_plants?.message?.toString()}</Error>}
+        </InputComponent>
 
         <InputSelectSearchComponent<DraftLote>
           label="Finca"

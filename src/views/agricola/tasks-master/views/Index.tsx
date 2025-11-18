@@ -112,7 +112,7 @@ export default function Index() {
                             Tarea
                         </th>
                         <th scope="col" className="thead-th">
-                            Horas
+                            Horas Por Manzana
                         </th>
                         <th scope="col" className="thead-th">
                             Receta
@@ -132,7 +132,7 @@ export default function Index() {
                     {data.data.map((item) => (
                         <tr className="tbody-tr" key={item.id}>
                             <td className="tbody-td">{item.task}</td>
-                            <td className="tbody-td">{item.hours}</td>
+                            <td className="tbody-td">{item.hours_per_size}</td>
                             <td className="tbody-td">{item.recipe}</td>
                             <td className="tbody-td">{item.crop}</td>
                             <td className="tbody-td">{item.finca}</td>
