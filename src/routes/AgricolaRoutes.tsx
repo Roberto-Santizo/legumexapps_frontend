@@ -16,7 +16,7 @@ const routes = [
   { path: "/tareas/edit/:id", component: lazy(() => import("@/views/agricola/tasks/Edit")), roles: ['admin', 'adminagricola'] },
 
   { path: "/cdps", component: lazy(() => import("@/views/agricola/cdps/views/Index")), roles: ['admin', 'adminagricola'] },
-  { path: "/cdps/editar/:id", component: lazy(() => import("@/views/agricola/cdps/views/Show")), roles: ['admin', 'adminagricola'] },
+  { path: "/cdps/editar/:id", component: lazy(() => import("@/views/agricola/cdps/views/Edit")), roles: ['admin', 'adminagricola'] },
   { path: "/cdps/crear", component: lazy(() => import("@/views/agricola/cdps/views/Create")), roles: ['admin', 'adminagricola'] },
 
 

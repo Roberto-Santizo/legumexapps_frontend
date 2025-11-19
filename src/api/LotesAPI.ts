@@ -3,7 +3,7 @@ import { isAxiosError } from "axios";
 import { FiltersLotesType } from "@/views/agricola/lotes/Index";
 import { Lote } from "@/types/lotesType";
 import { LotesSchema } from "@/utils/lotesSchemas";
-import { PlantationControlsByLoteSchema } from "@/utils/plantationControlSchemas";
+import { PlantationsControlSchema } from "@/views/agricola/cdps/schemas/schemas";
 import clienteAxios from "@/config/axios";
 
 export async function createLote(draftlote: DraftLote) {
@@ -39,7 +39,7 @@ export async function getAllCdpsByLoteId(id: Lote['id']) {
     try {
         const url = `/api/lotes/${id}`;
         const { data } = await clienteAxios(url);
-        const result = PlantationControlsByLoteSchema.safeParse(data);
+        const result = PlantationsControlSchema.safeParse(data);
         if (result.success) {
             return result.data.data
         } else {

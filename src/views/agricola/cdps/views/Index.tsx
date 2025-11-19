@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
-import { getCDPS } from "@/api/PlantationControlAPI";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
-import { PlantationControl } from "@/types/plantationControlTypes";
 import { EditIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { FiltersCDPType, PlantationControl } from "../types/types";
+import { getCDPS } from "../api/api";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import FiltersCDP from "@/components/filters/FiltersCDP";
+import FiltersCDP from "@/views/agricola/cdps/components/FiltersCDP";
 
-export type FiltersCDPType = {
-  cdp: string;
-  start_date: string;
-  end_date: string;
-}
 
 export const FiltersCdpInitialValues: FiltersCDPType = {
   cdp: "",
