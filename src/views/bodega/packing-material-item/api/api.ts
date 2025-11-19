@@ -1,9 +1,7 @@
-import clienteAxios from "@/config/axios";
-import { PaginatedPackingMaterialItemsSchema } from "@/utils/packingMaterialItemSchema";
-import { DraftMaterialEmpaque } from "@/views/bodega/packing-material-item/Create";
-import { FiltersPackingMaterialsType } from "@/views/bodega/packing-material-item/Index";
 import { isAxiosError } from "axios";
-import { PackingMaterialItem } from "@/types/packingMaterialItemTypes";
+import { DraftMaterialEmpaque, FiltersPackingMaterialsType, PackingMaterialItem } from "@/views/bodega/packing-material-item/types/types";
+import { PaginatedPackingMaterialItemsSchema } from "../schemas/schemas";
+import clienteAxios from "@/config/axios";
 
 export async function getPackingMaterials({ currentPage, filters, paginated }: { currentPage: number, filters: FiltersPackingMaterialsType, paginated: string }) {
     try {
@@ -16,7 +14,10 @@ export async function getPackingMaterials({ currentPage, filters, paginated }: {
             throw new Error("Información no valida");
         }
     } catch (error) {
-        console.log(error);
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.msg);
+        }
+        
         throw error;
     }
 }

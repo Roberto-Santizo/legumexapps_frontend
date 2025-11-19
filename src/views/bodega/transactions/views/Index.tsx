@@ -3,21 +3,14 @@ import { Link } from "react-router-dom";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getPackingMaterialTransactions } from "@/api/PackingMaterialTransactionsAPI";
-import { PackingMaterialTransaction } from "@/types/packingMaterialTransactionTypes";
+
+import { FiltersPackingMaterialsTransactionType, PackingMaterialTransaction } from "../types/types";
+import { getPackingMaterialTransactions } from "../api/api";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
-import FiltersPackingMaterialTransactions from "@/components/filters/FiltersPackingMaterialTransactions";
+import FiltersPackingMaterialTransactions from "../components/FiltersPackingMaterialTransactions";
 
-export type FiltersPackingMaterialsTransactionType = {
-  transaction_id: string;
-  responsable: string;
-  delivered_by: string;
-  delivered_date: string;
-  type: string;
-  sku: string;
-}
 
 export const FiltersPackingMaterialsTransactionInitialValues: FiltersPackingMaterialsTransactionType = {
   transaction_id: '',

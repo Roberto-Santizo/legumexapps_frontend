@@ -1,8 +1,9 @@
-import { FiltersPackingMaterialsTransactionInitialValues, FiltersPackingMaterialsTransactionType } from "@/views/bodega/transactions/Index";
+import { FiltersPackingMaterialsTransactionInitialValues } from "@/views/bodega/transactions/views/Index";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { FiltersPackingMaterialsTransactionType } from "../types/types";
 
 type Props = {
     isOpen: boolean;

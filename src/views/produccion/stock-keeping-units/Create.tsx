@@ -7,7 +7,7 @@ import { useState } from "react";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
-import ModalAddItemRecipe from "@/components/modals/ModalAddItemRecipe";
+import ModalAddItemRecipe from "@/views/bodega/transactions/components/ModalAddItemRecipe";
 import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftRecipeSku = {

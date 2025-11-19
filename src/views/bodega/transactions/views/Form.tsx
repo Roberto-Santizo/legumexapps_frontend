@@ -1,5 +1,5 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
+import { DraftTransactionPackingMaterial } from "../types/types";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
 import Error from "@/components/utilities-components/Error";

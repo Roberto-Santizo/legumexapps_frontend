@@ -1,14 +1,14 @@
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import { getPackingMaterials } from "@/api/PackingMaterialItemsAPI";
-import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/packing-material-item/Index";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import Modal from "../Modal";
-import Error from "../utilities-components/Error";
-import InputComponent from "../form/InputComponent";
-import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
-import Spinner from "../utilities-components/Spinner";
-import { DraftPackingMaterialTransactionItem } from "./ModalEntregaMaterialEmpaque";
+import { getPackingMaterials } from "@/views/bodega/packing-material-item/api/api";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/packing-material-item/views/Index";
+import Modal from "../../../../components/Modal";
+import Error from "../../../../components/utilities-components/Error";
+import InputComponent from "../../../../components/form/InputComponent";
+import InputSelectSearchComponent from "../../../../components/form/InputSelectSearchComponent";
+import Spinner from "../../../../components/utilities-components/Spinner";
+import { DraftPackingMaterialTransactionItem } from "../types/types";
 
 type Props = {
   modal: boolean;

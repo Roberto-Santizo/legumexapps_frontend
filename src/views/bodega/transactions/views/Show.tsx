@@ -1,9 +1,9 @@
-import { getPackingMaterialTransactionById } from "@/api/PackingMaterialTransactionsAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom"
-import { PackingMaterialTransaction } from "@/types/packingMaterialTransactionTypes";
+import { PackingMaterialTransaction } from "../types/types";
 import DevolucionBodega from "@/components/boleta-bodega/DevolucionBodega";
 import SalidaBodegaEmpaque from "@/components/boleta-bodega/SalidaBodegaEmpaque";
+import { getPackingMaterialTransactionById } from "../api/api";
 
 export default function Show() {
     const params = useParams<{ id: PackingMaterialTransaction['id'] }>();

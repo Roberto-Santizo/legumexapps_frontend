@@ -1,10 +1,10 @@
 import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadItemsMP } from "@/api/PackingMaterialItemsAPI";
-import Modal from "../Modal";
-import Spinner from "../utilities-components/Spinner";
-import { useNotification } from "../../core/notifications/NotificationContext";
+import { useNotification } from "@/core/notifications/NotificationContext";
+import { uploadItemsMP } from "../api/api";
+import Modal from "@/components/Modal";
+import Spinner from "@/components/utilities-components/Spinner";
 
 type Props = {
     modal: boolean;

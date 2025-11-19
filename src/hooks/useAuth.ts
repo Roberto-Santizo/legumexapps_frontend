@@ -1,4 +1,4 @@
-import { getUser } from "@/api/AuthAPI";
+import { getUser } from "@/views/auth/api/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";

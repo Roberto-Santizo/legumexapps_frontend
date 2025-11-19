@@ -1,10 +1,8 @@
-import { DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
 import { isAxiosError } from "axios";
 import { TransactionTaskProductionSchema } from "@/utils/taskProductionPlanSchemas";
-import { FiltersPackingMaterialsTransactionType } from "@/views/bodega/transactions/Index";
-import clienteAxios from "@/config/axios";
 import { PackingMaterialTransactionsSchema } from "@/utils/packingMaterialTransactionSchema";
-import { PackingMaterialTransaction } from "@/types/packingMaterialTransactionTypes";
+import { DraftTransactionPackingMaterial, FiltersPackingMaterialsTransactionType, PackingMaterialTransaction } from "../types/types";
+import clienteAxios from "@/config/axios";
 
 export async function createPackingMaterialTransaction(FormData: DraftTransactionPackingMaterial) {
     try {

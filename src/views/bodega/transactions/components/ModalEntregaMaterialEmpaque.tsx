@@ -2,37 +2,18 @@ import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { BoxIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactionsAPI";
-import { DraftTaskProductionWastage } from "./ModalAddWastage";
 import { TaskProductionOperationDate } from "@/types/taskProductionPlanTypes";
-import InputComponent from "../form/InputComponent";
-import Modal from "../Modal";
-import Spinner from "../utilities-components/Spinner";
-import Error from "../utilities-components/Error";
+import { useNotification } from "@/core/notifications/NotificationContext";
+import { createPackingMaterialTransaction } from "../api/api";
+import { DraftPackingMaterialTransactionItem, DraftTransactionPackingMaterial } from "../types/types";
 import SignatureCanvas from "react-signature-canvas";
-import SignatureField from "../form/SignatureComponent";
-import { useNotification } from "../../core/notifications/NotificationContext";
+import Modal from "@/components/Modal";
+import InputComponent from "@/components/form/InputComponent";
+import Error from "@/components/utilities-components/Error";
+import SignatureField from "@/components/form/SignatureComponent";
+import Spinner from "@/components/utilities-components/Spinner";
 
-export type DraftPackingMaterialTransactionItem = {
-    packing_material_id: string;
-    name: string;
-    quantity: number;
-    lote: string;
-    destination: string | null;
-    code: string;
-}
 
-export type DraftTransactionPackingMaterial = {
-    task_production_plan_id: string;
-    reference: string;
-    responsable: string;
-    responsable_signature: string;
-    user_signature: string;
-    observations: string;
-    items: DraftPackingMaterialTransactionItem[];
-    wastages: DraftTaskProductionWastage[];
-    type: string;
-}
 
 type Props = {
     modal: boolean;

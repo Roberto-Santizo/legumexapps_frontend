@@ -2,15 +2,15 @@ import { useForm } from "react-hook-form";
 import { EditIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { createPackingMaterialTransaction } from "@/api/PackingMaterialTransactionsAPI";
 import { useLocation, useNavigate } from "react-router-dom";
-import { DraftPackingMaterialTransactionItem, DraftTransactionPackingMaterial } from "@/components/modals/ModalEntregaMaterialEmpaque";
+import { useNotification } from "@/core/notifications/NotificationContext";
+import { createPackingMaterialTransaction } from "../api/api";
+import { DraftPackingMaterialTransactionItem, DraftTransactionPackingMaterial } from "../types/types";
 import FormPackingMaterialTransaction from "./Form";
 import SignatureCanvas from "react-signature-canvas";
 import SignatureField from "@/components/form/SignatureComponent";
 import Spinner from "@/components/utilities-components/Spinner";
-import ModalAddItemPackingMaterialDispatch from "@/components/modals/ModalAddItemPackingMaterialDispatch";
-import { useNotification } from "../../../core/notifications/NotificationContext";
+import ModalAddItemPackingMaterialDispatch from "@/views/bodega/transactions/components/ModalAddItemPackingMaterialDispatch";
 
 export default function CreateBodegaSalidaEmpaque() {
   const location = useLocation();

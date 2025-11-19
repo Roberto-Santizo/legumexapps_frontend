@@ -4,6 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { useNotification } from "../../../../core/notifications/NotificationContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPlan } from "../api/PlannerAPI";
+import { usePlannerFincasFilters } from "../hooks/usePlannerFincasFilters";
 import Modal from "@/components/Modal";
 import Spinner from "@/components/utilities-components/Spinner";
 
@@ -17,6 +18,7 @@ export default function ModalUpload() {
     const show = flag ? true : false;
     const [searchParams, setSearchParams] = useSearchParams();
     const [file, setFile] = useState<File[] | null>(null);
+    const { filters } = usePlannerFincasFilters();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -42,7 +44,7 @@ export default function ModalUpload() {
         },
         onSuccess: (data) => {
             notify.success(data!);
-            queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlans', searchParams.get('page'), searchParams.get('rowsPerPage')] })
+            queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlans', searchParams.get('page'), searchParams.get('rowsPerPage'), filters] })
             handleCloseModal();
         }
 

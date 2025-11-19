@@ -1,16 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { createItemPackingMaterial } from "@/api/PackingMaterialItemsAPI";
+import { useNotification } from "@/core/notifications/NotificationContext";
+import { createItemPackingMaterial } from "../api/api";
+import { DraftMaterialEmpaque } from "../types/types";
 import Spinner from "@/components/utilities-components/Spinner";
 import Form from "./Form";
-import { useNotification } from "../../../core/notifications/NotificationContext";
 
-export type DraftMaterialEmpaque = {
-  name: string;
-  description: string;
-  code: string;
-};
+
 
 export default function Create() {
   const navigate = useNavigate();

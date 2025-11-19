@@ -1,7 +1,7 @@
-import { FiltersPackingMaterialsType } from "@/views/bodega/packing-material-item/Index";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { FiltersPackingMaterialsType } from "../types/types";
 
 type Props = {
     isOpen: boolean;

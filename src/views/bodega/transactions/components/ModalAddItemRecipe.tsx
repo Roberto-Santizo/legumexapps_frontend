@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { getPackingMaterials } from "@/api/PackingMaterialItemsAPI";
-import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/packing-material-item/Index";
 import { DraftRecipeSku } from "@/views/produccion/stock-keeping-units/Create";
-import Modal from "../Modal";
-import Error from "../utilities-components/Error";
-import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
-import InputComponent from "../form/InputComponent";
+import { getPackingMaterials } from "@/views/bodega/packing-material-item/api/api";
+import { FiltersPackingMaterialsInitialValues } from "@/views/bodega/packing-material-item/views/Index";
+import Modal from "../../../../components/Modal";
+import Error from "../../../../components/utilities-components/Error";
+import InputSelectSearchComponent from "../../../../components/form/InputSelectSearchComponent";
+import InputComponent from "../../../../components/form/InputComponent";
 
 type Props = {
     modal: boolean;

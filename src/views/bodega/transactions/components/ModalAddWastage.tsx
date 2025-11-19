@@ -1,16 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
 import { TaskProductionItem } from '@/types/taskProductionPlanTypes';
-import InputComponent from '../form/InputComponent';
-import Error from '../utilities-components/Error';
-import ModalRadixUI from '../ModalRadixUI';
-import { useNotification } from '../../core/notifications/NotificationContext';
+import { DraftTaskProductionWastage } from '../types/types';
+import { useNotification } from '@/core/notifications/NotificationContext';
+import ModalRadixUI from '@/components/ModalRadixUI';
+import InputComponent from '@/components/form/InputComponent';
+import Error from '@/components/utilities-components/Error';
 
-export type DraftTaskProductionWastage = {
-    packing_material_id: string;
-    quantity: number;
-    lote: string;
-}
 
 type Props = {
     modal: boolean;

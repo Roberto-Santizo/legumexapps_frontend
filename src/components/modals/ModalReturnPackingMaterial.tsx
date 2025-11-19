@@ -2,19 +2,19 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { DraftTransactionPackingMaterial } from './ModalEntregaMaterialEmpaque';
-import { createPackingMaterialTransaction } from '@/api/PackingMaterialTransactionsAPI';
 import { TaskProductionItem } from '@/types/taskProductionPlanTypes';
 import { getTaskReturnPackingMaterialDetails } from '@/api/TaskProductionPlansAPI';
 import { useAppStore } from '@/store';
-import ModalAddWastage, { DraftTaskProductionWastage } from './ModalAddWastage';
+import { useNotification } from '../../core/notifications/NotificationContext';
+import { DraftTaskProductionWastage, DraftTransactionPackingMaterial } from '@/views/bodega/transactions/types/types';
+import { createPackingMaterialTransaction } from '@/views/bodega/transactions/api/api';
 import Modal from '../Modal';
 import InputComponent from "../form/InputComponent";
 import Spinner from "../utilities-components/Spinner";
 import Error from "../utilities-components/Error";
 import SignatureField from "../form/SignatureComponent";
 import SignatureCanvas from "react-signature-canvas";
-import { useNotification } from '../../core/notifications/NotificationContext';
+import ModalAddWastage from '@/views/bodega/transactions/components/ModalAddWastage';
 
 export default function ModalReturnPackingMaterial() {
     const location = useLocation();

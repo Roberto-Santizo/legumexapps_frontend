@@ -2,27 +2,16 @@ import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getPackingMaterials, updateMaterialStatus } from "@/api/PackingMaterialItemsAPI";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { usePermissions } from "@/hooks/usePermissions";
-import { PackingMaterialItem } from "@/types/packingMaterialItemTypes";
+import { useNotification } from "@/core/notifications/NotificationContext";
+import { FiltersPackingMaterialsType, PackingMaterialItem } from "../types/types";
+import { getPackingMaterials, updateMaterialStatus } from "../api/api";
+import { FiltersMaterialEmpaque, ModalCargaItemsMP } from "../components";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
-import FiltersMaterialEmpaque from "@/components/filters/FiltersMaterialEmpaque";
-import ModalCargaItemsMP from "@/components/modals/ModalCargaItemsMP";
-import { useNotification } from "../../../core/notifications/NotificationContext";
 
-export type FiltersPackingMaterialsType = {
-  name: string;
-  code: string;
-  status: string;
-  supplier: string;
-}
-
-export type ChangeItemStatusEvent = {
-  status: string;
-}
 
 export const FiltersPackingMaterialsInitialValues: FiltersPackingMaterialsType = {
   name: '',

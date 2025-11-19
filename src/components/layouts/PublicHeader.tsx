@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { logout } from "@/api/AuthAPI";
 import { useMutation } from "@tanstack/react-query";
 import { useNotification } from "../../core/notifications/NotificationContext";
+import { logout } from "@/views/auth/api/api";
 import Logo from "../logos/Logo";
 import Spinner from "../utilities-components/Spinner";
 

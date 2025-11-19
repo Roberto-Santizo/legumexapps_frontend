@@ -1,6 +1,6 @@
-import { LoginType } from "@/views/auth/Login";
+import { LoginType } from "../types/types";
 import { isAxiosError } from "axios";
-import { authenticatedUser } from "@/utils/authSchemas";
+import { AuthenticatedUser } from "../schemas/schemas";
 import clienteAxios from "@/config/axios";
 
 export async function login(FormData: LoginType) {
@@ -36,7 +36,7 @@ export async function logout() {
 export async function getUser() {
     try {
         const { data } = await clienteAxios('/api/user');
-        const result = authenticatedUser.safeParse(data);
+        const result = AuthenticatedUser.safeParse(data);
         if (result.success) {
             return result.data;
         }
