@@ -33,7 +33,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             </h1>
             <div className="flex justify-center mb-1">
               <span className="p-1 text-center text-2xl font-bold text-red-600">
-                No.{boleta.field_data.ref_doc}
+                LX2-{boleta.field_data.ref_doc}
               </span>
             </div>
           </div>
@@ -315,7 +315,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-25 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.prod_data?.receptor_signature
+                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.prod_data?.receptor_signature
                     }`}
                   alt="Firma Receptor"
                   className="max-h-25 md:max-h-25 object-contain"
@@ -329,7 +329,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.quality_doc_data?.inspector_planta_signature
+                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.quality_doc_data?.inspector_planta_signature
                     }`}
                   alt="Firma Inspector Planta"
                   className="max-h-25 md:max-h-25 object-contain"
@@ -342,7 +342,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.field_data.driver_signature
+                src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.field_data.driver_signature
                   }`}
                 alt="Firma Piloto"
                 className="max-h-25 md:max-h-25 object-contain"
@@ -354,7 +354,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.field_data.inspector_signature
+                src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.field_data.inspector_signature
                   }`}
                 alt="Firma Inspector"
                 className="max-h-25 md:max-h-25 object-contain"
@@ -366,7 +366,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.field_data.producer_signature
+                src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.field_data.producer_signature
                   }`}
                 alt="Firma Productor"
                 className="max-h-25 md:max-h-25 object-contain"
