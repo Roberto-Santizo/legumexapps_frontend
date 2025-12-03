@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
-import LogoLegumex from "../logos/LogoLegumex";
 import { BoletaRmpAllInfo } from "types/rmpDocTypes";
+import LogoLegumex from "../logos/LogoLegumex";
+import DownloadPDF from "./DownloadPDF";
 
 type Props = {
   boleta: BoletaRmpAllInfo;
@@ -9,11 +10,11 @@ type Props = {
 const BoletaCampoRMP = ({ boleta }: Props) => {
   return (
     <div>
-      {/* <div className="flex justify-end">
+      <div className="flex justify-end">
         <div className="p-4 inline-block bg-indigo-500 hover:bg-indigo-600 button">
           <DownloadPDF boleta={boleta} buttonClassName="text-white" />
         </div>
-      </div> */}
+      </div>
       <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 bg-yellow-100 border border-gray-300 mt-4 md:mt-8 lg:mt-10 ">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-start space-x-4">
