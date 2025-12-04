@@ -20,6 +20,7 @@ export type DraftBoletaRMP = {
     carrier_id: string,
     productor_plantation_control_id: string,
     plate_id: string,
+    doc_date: string;
 }
 
 export type BoletaRmpAllInfo = z.infer<typeof BoletaInfoAllSchema>;
