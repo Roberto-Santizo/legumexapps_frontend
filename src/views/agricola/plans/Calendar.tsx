@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
-import { Trash } from 'lucide-react';
-import { changeOperationDate, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
+import { Trash, UploadIcon, UserIcon, XIcon } from 'lucide-react';
+import { changeOperationDate, deleteEmployeeAssignment, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes } from '@/api/LotesAPI';
@@ -22,7 +22,7 @@ import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
-
+import ModalUploadAgricolaAssignments from '@/components/modals/ModalUploadAgricolaAssignments';
 
 type EventReceiveInfo = {
     event: {
@@ -39,6 +39,7 @@ export default function Calendar() {
 
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
+    const [seePersonal, setSeePersonal] = useState(false);
     const [modal, setModal] = useState(false);
     const [modalInfoTarea, setModalInfoTarea] = useState(false);
     const [selectedTask, setSelectedTask] = useState<TaskWeeklyPlanForCalendar>({} as TaskWeeklyPlanForCalendar);
@@ -50,7 +51,6 @@ export default function Calendar() {
 
     const calendarRef = useRef<FullCalendar | null>(null);
     const navigate = useNavigate();
-
 
     const results = useQueries({
         queries: [
@@ -80,6 +80,11 @@ export default function Calendar() {
         queryFn: () => getTasksNoPlanificationDate({ id, loteId, taskId }),
     });
 
+    const { data: employees, isLoading: isLoadingEmployees } = useQuery({
+        queryKey: ['getPlanificationEmployee', id, loteId],
+        queryFn: () => getPlanificationEmployee({ id, loteId }),
+    });
+
     const { data: tasksForCalendar } = useQuery({
         queryKey: ['getTasksForCalendar', id],
         queryFn: () => getTasksForCalendar(id),
@@ -92,6 +97,17 @@ export default function Calendar() {
             setModal(false);
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
+        },
+        onError: (error) => {
+            toast.error(error.message)
+        },
+    });
+
+    const { mutate: deleteEmployee, isPending } = useMutation({
+        mutationFn: deleteEmployeeAssignment,
+        onSuccess: (data) => {
+            toast.success(data);
+            queryClient.invalidateQueries({ queryKey: ['getPlanificationEmployee', id, loteId] });
         },
         onError: (error) => {
             toast.error(error.message)
@@ -125,8 +141,13 @@ export default function Calendar() {
             <div className="flex flex-col w-full">
                 <h1 className="font-bold text-4xl">Planificación Fincas</h1>
                 {hasPermission('administrate plans production') && (
-                    <div className="flex justify-end items-center gap-5 mb-4">
-                        <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
+                    <div className='flex justify-end gap-5'>
+                        <div className="flex justify-end items-center gap-5 mb-4">
+                            <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
+                        </div>
+                        <div className="flex justify-end items-center gap-5 mb-4">
+                            <UserIcon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeePersonal(!seePersonal)} />
+                        </div>
                     </div>
                 )}
 
@@ -157,9 +178,7 @@ export default function Calendar() {
                 </div>
 
                 <div className={`flex flex-col w-2/5 space-y-5 ${!seeTasks ? 'hidden' : ''}`}>
-                    <aside
-                        className={`bg-white rounded-lg border border-gray-200 shadow-md max-h-screen overflow-y-auto scrollbar-hide`}
-                    >
+                    <aside className={`bg-white rounded-lg border border-gray-200 shadow-md max-h-screen overflow-y-auto scrollbar-hide`} >
                         <div className='sticky top-0 bg-white z-10 p-4'>
                             <h2 className="text-lg font-semibold text-gray-700 border-b mb-4">
                                 Tareas sin fecha de operación
@@ -222,12 +241,61 @@ export default function Calendar() {
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <div className={`flex flex-col w-3/5 space-y-5 ${!seePersonal ? 'hidden' : ''}`}>
+                    <aside className={`bg-white rounded-lg border border-gray-200 shadow-md max-h-screen overflow-y-auto scrollbar-hide pb-5`} >
+                        <div className='sticky top-0 bg-white z-10 p-4'>
+                            <h2 className="text-lg font-semibold text-gray-700 border-b mb-4">
+                                Asignación de Personal
+                            </h2>
+                            <div className='flex flex-col justify-between mt-4 gap-5 text-xs'>
+                                <Select
+                                    options={lotesOptions}
+                                    className="react-select-container flex-1"
+                                    classNamePrefix="react-select"
+                                    onChange={(selected => {
+                                        if (selected?.value) {
+                                            setLoteId(selected?.value)
+                                        }
+                                    })}
+                                    placeholder="--SELECCIONE UN LOTE--"
+                                />
+
+                                <button className='button bg-indigo-500 hover:bg-indigo-600 flex justify-center gap-5' onClick={() => navigate('?upload=true')}>
+                                    <UploadIcon />
+                                    CARGAR ASIGNACIONES
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className='p-5 grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-5'>
+                            {isLoadingEmployees && <Spinner />}
+                            {employees?.length == 0 && <p>No existe asignación de empleados</p>}
+                            {employees?.map(employee => (
+                                <div key={employee.id} className="grid grid-cols-3 rounded-xl p-4 bg-white shadow-md w-full max-w-xs">
+                                    <button disabled={isPending} className="col-start-4 col-span-3 w-4">
+                                        <XIcon className='cursor-pointer hover:text-red-500 transition-colors w-4' onClick={() => deleteEmployee({ id: employee.id })} />
+                                    </button>
+                                    <div className="col-start-2 col-span-3 flex items-center justify-center w-14 h-14 bg-gray-100 rounded-full mb-3">
+                                        <UserIcon className="w-8 h-8 text-gray-600" />
+                                    </div>
+
+                                    <div className="col-start-1 col-span-3 flex justify-center flex-col items-center">
+                                        <p className="text-sm font-semibold text-gray-700">{employee.code}</p>
+                                        <p className="text-sm text-gray-600">{employee.lote}</p>
+                                        <p className="text-base text-center font-medium text-gray-800 mt-1">{employee.name}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </aside>
+                </div>
+            </div>
 
             <ModalChangeOperationDateAgricola show={modal} setModal={setModal} ids={ids} id={id} setIds={setIds} />
             <ModalInfoTareaLote show={modalInfoTarea} setModal={setModalInfoTarea} task={selectedTask} setSelectedTask={setSelectedTask} />
             <ModalInsumosPrepared id={id} />
+            <ModalUploadAgricolaAssignments lote_id={loteId} />
         </div>
     );
 }

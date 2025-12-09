@@ -88,7 +88,21 @@ export const TasksWeeklyPlanForCalendarSchema = z.object({
 
 export const TasksWeeklyPlanWithNoOperationDateSchema = z.object({
     data: z.array(TaskWeeklyPlanWithNoOperationDateSchema)
-})
+});
+
+export const WeeklyEmployeeAssignmentSchema = z.object({
+    id: z.number(),
+    code: z.string(),
+    name: z.string(),
+    lote: z.string(),
+    lote_id: z.number()
+});
+
+export const WeeklyEmployeeAssignmentsSchema = z.object({
+    statusCode: z.number(),
+    data: z.array(WeeklyEmployeeAssignmentSchema)
+});
+
 
 export const TasksWeeklyPlanSchema = z.object({
     finca: z.string(),
