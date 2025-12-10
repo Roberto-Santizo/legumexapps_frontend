@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
@@ -24,6 +24,7 @@ import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
 import ModalUploadAgricolaAssignments from '@/components/modals/ModalUploadAgricolaAssignments';
 import ModalCreateFincaGroup from '@/components/modals/ModalCreateFincaGroup';
+import ModalAssignGroup from '@/components/modals/ModalAssignGroup';
 
 type EventReceiveInfo = {
     event: {
@@ -54,6 +55,7 @@ export default function Calendar() {
     const [view, setView] = useState(1);
     const [tareas, setTareas] = useState<TaskGeneral[]>([]);
     const { hasPermission } = usePermissions();
+    const [assignmentIds, setAssignmentIds] = useState<number[]>([]);
 
     const calendarRef = useRef<FullCalendar | null>(null);
     const navigate = useNavigate();
@@ -143,6 +145,18 @@ export default function Calendar() {
     const handleOpenDate = (info: DateClickInfo) => {
         navigate(`${location.pathname}?date=${info.dateStr}`);
     };
+
+    const handleAddId = (id: number) => {
+        const exists = assignmentIds.filter((assign) => assign === id);
+
+        if (exists.length > 0) {
+            setAssignmentIds(assignmentIds.filter((assign) => assign != id));
+        } else {
+            setAssignmentIds((prev) => [
+                ...prev, id
+            ]);
+        }
+    }
 
     return (
         <div className="flex flex-col gap-6">
@@ -325,14 +339,23 @@ export default function Calendar() {
                                         placeholder="--SELECCIONE UN LOTE--"
                                         onChange={(selected) => selected?.value && setLoteId(selected.value)}
                                     />
+                                    <div className='flex justify-between'>
+                                        <button
+                                            className="button bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg flex justify-center gap-2 items-center"
+                                            onClick={() => navigate("?upload=true")}
+                                        >
+                                            <UploadIcon />
+                                            Cargar Asignaciones
+                                        </button>
 
-                                    <button
-                                        className="button bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg flex justify-center gap-2 items-center"
-                                        onClick={() => navigate("?upload=true")}
-                                    >
-                                        <UploadIcon />
-                                        Cargar Asignaciones
-                                    </button>
+                                        <button
+                                            className={`button text-white py-2 rounded-lg flex justify-center gap-2 items-center ${assignmentIds.length == 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                                            onClick={() => navigate("?assignGroup=true")}
+                                            disabled={assignmentIds.length == 0}
+                                        >
+                                            Asignar a grupo
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {isLoadingEmployees && <Spinner />}
@@ -346,7 +369,8 @@ export default function Calendar() {
                                     {employees?.map((employee) => (
                                         <div
                                             key={employee.id}
-                                            className="rounded-xl p-4 bg-white shadow-md border hover:shadow-lg transition"
+                                            className={`rounded-xl p-4 shadow-md border hover:shadow-lg transition ${assignmentIds.includes(employee.id) ? 'bg-indigo-200' : 'bg-white'}`}
+                                            onClick={() => handleAddId(employee.id)}
                                         >
                                             <div className="flex justify-end">
                                                 <XIcon
@@ -366,6 +390,9 @@ export default function Calendar() {
                                                     {employee.code}
                                                 </p>
                                                 <p className="text-sm text-gray-500">{employee.lote}</p>
+                                                <p className="text-base font-bold text-indigo-500 mt-1">
+                                                    {employee.group}
+                                                </p>
                                                 <p className="text-base font-medium text-gray-800 mt-1">
                                                     {employee.name}
                                                 </p>
@@ -428,15 +455,18 @@ export default function Calendar() {
                 id={id}
                 setIds={setIds}
             />
+
             <ModalInfoTareaLote
                 show={modalInfoTarea}
                 setModal={setModalInfoTarea}
                 task={selectedTask}
                 setSelectedTask={setSelectedTask}
             />
+
             <ModalInsumosPrepared id={id} />
             <ModalUploadAgricolaAssignments lote_id={loteId} />
             <ModalCreateFincaGroup lotes={lotesOptions} />
+            <ModalAssignGroup />
         </div>
     );
 }

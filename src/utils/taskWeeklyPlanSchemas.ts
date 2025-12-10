@@ -96,7 +96,8 @@ export const WeeklyEmployeeAssignmentSchema = z.object({
     code: z.string(),
     name: z.string(),
     lote: z.string(),
-    lote_id: z.number()
+    lote_id: z.number(),
+    group: z.string()
 });
 
 export const WeeklyEmployeeAssignmentsSchema = z.object({
