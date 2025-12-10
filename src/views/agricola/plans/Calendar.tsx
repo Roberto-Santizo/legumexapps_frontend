@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
-import { Trash, UploadIcon, UserIcon, XIcon } from 'lucide-react';
-import { changeOperationDate, deleteEmployeeAssignment, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
+import { Archive, PlusIcon, Trash, UploadIcon, UserIcon, XIcon } from 'lucide-react';
+import { changeOperationDate, deleteEmployeeAssignment, getFincaGroups, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes } from '@/api/LotesAPI';
@@ -23,12 +23,17 @@ import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
 import ModalUploadAgricolaAssignments from '@/components/modals/ModalUploadAgricolaAssignments';
+import ModalCreateFincaGroup from '@/components/modals/ModalCreateFincaGroup';
 
 type EventReceiveInfo = {
     event: {
         id: string;
         startStr: string;
     };
+}
+
+interface DateClickInfo {
+    dateStr: string;
 }
 
 export default function Calendar() {
@@ -46,6 +51,7 @@ export default function Calendar() {
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
     const [lotes, setLotes] = useState<Lote[]>([]);
+    const [view, setView] = useState(1);
     const [tareas, setTareas] = useState<TaskGeneral[]>([]);
     const { hasPermission } = usePermissions();
 
@@ -85,6 +91,11 @@ export default function Calendar() {
         queryFn: () => getPlanificationEmployee({ id, loteId }),
     });
 
+    const { data: groups, isLoading: isLoadingGroups } = useQuery({
+        queryKey: ['getFincaGroups', fincaId],
+        queryFn: () => getFincaGroups(fincaId),
+    });
+
     const { data: tasksForCalendar } = useQuery({
         queryKey: ['getTasksForCalendar', id],
         queryFn: () => getTasksForCalendar(id),
@@ -103,7 +114,7 @@ export default function Calendar() {
         },
     });
 
-    const { mutate: deleteEmployee, isPending } = useMutation({
+    const { mutate: deleteEmployee } = useMutation({
         mutationFn: deleteEmployeeAssignment,
         onSuccess: (data) => {
             toast.success(data);
@@ -128,33 +139,39 @@ export default function Calendar() {
         mutate({ date: info.event.startStr, ids: [info.event.id] });
     };
 
-    interface DateClickInfo {
-        dateStr: string;
-    }
 
     const handleOpenDate = (info: DateClickInfo) => {
         navigate(`${location.pathname}?date=${info.dateStr}`);
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex flex-col w-full">
-                <h1 className="font-bold text-4xl">Planificación Fincas</h1>
+        <div className="flex flex-col gap-6">
+            <div className="flex flex-col w-full mb-2">
+                <h1 className="font-bold text-4xl text-gray-800 tracking-tight">
+                    Planificación Fincas
+                </h1>
+
                 {hasPermission('administrate plans production') && (
-                    <div className='flex justify-end gap-5'>
-                        <div className="flex justify-end items-center gap-5 mb-4">
-                            <Bars3Icon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeeTasks(!seeTasks)} />
-                        </div>
-                        <div className="flex justify-end items-center gap-5 mb-4">
-                            <UserIcon className="hover:text-gray-300 cursor-pointer block w-6" onClick={() => setSeePersonal(!seePersonal)} />
-                        </div>
+                    <div className="flex justify-end gap-4 mt-4">
+                        <button
+                            className="p-2 rounded-lg hover:bg-gray-100 transition"
+                            onClick={() => setSeeTasks(!seeTasks)}
+                        >
+                            <Bars3Icon className="w-6 text-gray-700 hover:text-gray-900" />
+                        </button>
+
+                        <button
+                            className="p-2 rounded-lg hover:bg-gray-100 transition"
+                            onClick={() => setSeePersonal(!seePersonal)}
+                        >
+                            <UserIcon className="w-6 text-gray-700 hover:text-gray-900" />
+                        </button>
                     </div>
                 )}
-
             </div>
 
-            <div className="flex gap-4">
-                <div className="bg-white rounded-lg shadow-md p-4 border border-gray-100 flex-1">
+            <div className="flex gap-6">
+                <div className="bg-white rounded-xl shadow-lg p-4 border border-gray-200 flex-1">
                     <FullCalendar
                         ref={calendarRef}
                         plugins={[dayGridPlugin, interactionPlugin]}
@@ -167,7 +184,9 @@ export default function Calendar() {
                         dateClick={handleOpenDate}
                         eventDrop={handleEventDrop}
                         eventClick={(info) => {
-                            const task = tasksForCalendar?.data.find((task) => task.id === info.event.id);
+                            const task = tasksForCalendar?.data.find(
+                                (task) => task.id === info.event.id
+                            );
                             if (task) {
                                 setSelectedTask(task);
                                 setModalInfoTarea(true);
@@ -178,124 +197,246 @@ export default function Calendar() {
                 </div>
 
                 <div className={`flex flex-col w-2/5 space-y-5 ${!seeTasks ? 'hidden' : ''}`}>
-                    <aside className={`bg-white rounded-lg border border-gray-200 shadow-md max-h-screen overflow-y-auto scrollbar-hide`} >
-                        <div className='sticky top-0 bg-white z-10 p-4'>
-                            <h2 className="text-lg font-semibold text-gray-700 border-b mb-4">
+                    <aside className="bg-white rounded-xl border border-gray-200 shadow-lg max-h-screen overflow-y-auto scrollbar-hide">
+                        <div className="sticky top-0 bg-white z-10 p-5 border-b">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-3">
                                 Tareas sin fecha de operación
                             </h2>
-                            <div className='flex justify-between items-center mb-2'>
-                                <p className='text-gray-700 font-bold mb-2'>Tareas seleccionadas: {ids.length}</p>
-                                <Trash className='w-4 h-4 cursor-pointer hover:text-gray-400' onClick={() => setIds([])} />
+
+                            <div className="flex justify-between items-center mb-4">
+                                <p className="text-gray-700 font-semibold">
+                                    Tareas seleccionadas: {ids.length}
+                                </p>
+                                <Trash
+                                    className="w-5 h-5 cursor-pointer hover:text-red-500"
+                                    onClick={() => setIds([])}
+                                />
                             </div>
-                            <button disabled={ids.length === 0} className={`button ${ids.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-600 cursor-pointer'} w-full`} onClick={() => setModal(true)}>
+
+                            <button
+                                disabled={ids.length === 0}
+                                className={`button w-full py-2 rounded-lg transition ${ids.length === 0
+                                    ? "bg-gray-300 cursor-not-allowed"
+                                    : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    }`}
+                                onClick={() => setModal(true)}
+                            >
                                 Cambiar Fecha de Operación
                             </button>
 
-                            <div className='flex flex-col justify-between mt-4 gap-5 text-xs'>
+                            <div className="flex flex-col mt-5 gap-4 text-xs">
                                 <Select
                                     options={lotesOptions}
-                                    className="react-select-container flex-1"
+                                    className="react-select-container"
                                     classNamePrefix="react-select"
-                                    onChange={(selected => {
-                                        if (selected?.value) {
-                                            setLoteId(selected?.value)
-                                        }
-                                    })}
                                     placeholder="--SELECCIONE UN LOTE--"
+                                    onChange={(selected) => selected?.value && setLoteId(selected.value)}
                                 />
 
                                 <Select
                                     options={tareasOptions}
-                                    className="react-select-container flex-1"
+                                    className="react-select-container"
                                     classNamePrefix="react-select"
-                                    onChange={(selected => {
-                                        if (selected?.value) {
-                                            setTaskId(selected?.value)
-                                        }
-                                    })}
                                     placeholder="--SELECCIONE UNA TAREA--"
+                                    onChange={(selected) => selected?.value && setTaskId(selected.value)}
                                 />
                             </div>
                         </div>
 
                         {isLoading && <Spinner />}
-                        <div className="space-y-3 mt-2 p-4">
-                            {tasks?.length === 0 ? (
-                                <p className='text-gray-400 text-sm text-center'>No existen tareas</p>
-                            ) : (
-                                <>
-                                    {tasks?.map((task) => (
-                                        <TaskCalendarFincaComponent key={task.id} ids={ids} setIds={setIds} task={task} />
-                                    ))}
-                                </>
-                            )}
 
+                        <div className="space-y-4 p-5">
+                            {tasks?.length === 0 ? (
+                                <p className="text-gray-400 text-sm text-center">No existen tareas</p>
+                            ) : (
+                                tasks?.map((task) => (
+                                    <TaskCalendarFincaComponent
+                                        key={task.id}
+                                        ids={ids}
+                                        setIds={setIds}
+                                        task={task}
+                                    />
+                                ))
+                            )}
                         </div>
                     </aside>
 
-                    <div className="bg-white p-4 rounded-lg shadow-sm border text-sm ">
-                        <h2 className="text-lg font-semibold mb-2 text-gray-700">Resumen de Tareas</h2>
+                    <div className="bg-white p-5 rounded-xl shadow-md border text-sm">
+                        <h2 className="text-lg font-semibold mb-2 text-gray-800">
+                            Resumen de Tareas
+                        </h2>
                         <div className="space-y-1 text-gray-600">
-                            <p><span className="font-medium text-gray-800">Tareas con fecha de operación:</span> {tasksForCalendar?.tasks_with_operation_date}</p>
-                            <p><span className="font-medium text-gray-800">Tareas sin fecha de operación:</span> {tasksForCalendar?.tasks_without_operation_date}</p>
+                            <p>
+                                <span className="font-medium text-gray-800">
+                                    Tareas con fecha de operación:
+                                </span>{" "}
+                                {tasksForCalendar?.tasks_with_operation_date}
+                            </p>
+
+                            <p>
+                                <span className="font-medium text-gray-800">
+                                    Tareas sin fecha de operación:
+                                </span>{" "}
+                                {tasksForCalendar?.tasks_without_operation_date}
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 <div className={`flex flex-col w-3/5 space-y-5 ${!seePersonal ? 'hidden' : ''}`}>
-                    <aside className={`bg-white rounded-lg border border-gray-200 shadow-md max-h-screen overflow-y-auto scrollbar-hide pb-5`} >
-                        <div className='sticky top-0 bg-white z-10 p-4'>
-                            <h2 className="text-lg font-semibold text-gray-700 border-b mb-4">
-                                Asignación de Personal
-                            </h2>
-                            <div className='flex flex-col justify-between mt-4 gap-5 text-xs'>
-                                <Select
-                                    options={lotesOptions}
-                                    className="react-select-container flex-1"
-                                    classNamePrefix="react-select"
-                                    onChange={(selected => {
-                                        if (selected?.value) {
-                                            setLoteId(selected?.value)
-                                        }
-                                    })}
-                                    placeholder="--SELECCIONE UN LOTE--"
-                                />
+                    <aside className="bg-white rounded-xl border border-gray-200 shadow-lg max-h-screen overflow-y-auto scrollbar-hide pb-6">
+                        <div className="sticky top-0 bg-white z-10 p-5 border-b mb-4">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-semibold text-gray-800">
+                                    Asignación de Personal
+                                </h2>
 
-                                <button className='button bg-indigo-500 hover:bg-indigo-600 flex justify-center gap-5' onClick={() => navigate('?upload=true')}>
-                                    <UploadIcon />
-                                    CARGAR ASIGNACIONES
-                                </button>
+                                <div className="flex gap-3">
+                                    <button
+                                        className={`button px-4 py-2 rounded-lg transition ${view === 1
+                                            ? "bg-indigo-700 text-white"
+                                            : "bg-indigo-500 hover:bg-indigo-600 text-white"
+                                            }`}
+                                        onClick={() => setView(1)}
+                                    >
+                                        Personal
+                                    </button>
+
+                                    <button
+                                        className={`button px-4 py-2 rounded-lg transition ${view === 2
+                                            ? "bg-indigo-700 text-white"
+                                            : "bg-indigo-500 hover:bg-indigo-600 text-white"
+                                            }`}
+                                        onClick={() => setView(2)}
+                                    >
+                                        Grupos
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <div className='p-5 grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-5'>
-                            {isLoadingEmployees && <Spinner />}
-                            {employees?.length == 0 && <p>No existe asignación de empleados</p>}
-                            {employees?.map(employee => (
-                                <div key={employee.id} className="grid grid-cols-3 rounded-xl p-4 bg-white shadow-md w-full max-w-xs">
-                                    <button disabled={isPending} className="col-start-4 col-span-3 w-4">
-                                        <XIcon className='cursor-pointer hover:text-red-500 transition-colors w-4' onClick={() => deleteEmployee({ id: employee.id })} />
-                                    </button>
-                                    <div className="col-start-2 col-span-3 flex items-center justify-center w-14 h-14 bg-gray-100 rounded-full mb-3">
-                                        <UserIcon className="w-8 h-8 text-gray-600" />
-                                    </div>
+                        {view === 1 ? (
+                            <div className="space-y-6 p-6">
+                                <div className="flex flex-col gap-4 text-xs">
+                                    <Select
+                                        options={lotesOptions}
+                                        className="react-select-container"
+                                        classNamePrefix="react-select"
+                                        placeholder="--SELECCIONE UN LOTE--"
+                                        onChange={(selected) => selected?.value && setLoteId(selected.value)}
+                                    />
 
-                                    <div className="col-start-1 col-span-3 flex justify-center flex-col items-center">
-                                        <p className="text-sm font-semibold text-gray-700">{employee.code}</p>
-                                        <p className="text-sm text-gray-600">{employee.lote}</p>
-                                        <p className="text-base text-center font-medium text-gray-800 mt-1">{employee.name}</p>
-                                    </div>
+                                    <button
+                                        className="button bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg flex justify-center gap-2 items-center"
+                                        onClick={() => navigate("?upload=true")}
+                                    >
+                                        <UploadIcon />
+                                        Cargar Asignaciones
+                                    </button>
                                 </div>
-                            ))}
-                        </div>
+
+                                {isLoadingEmployees && <Spinner />}
+                                {employees?.length === 0 && (
+                                    <p className="text-center text-gray-500">
+                                        No existe asignación de empleados
+                                    </p>
+                                )}
+
+                                <div className="grid xl:grid-cols-4 md:grid-cols-3 gap-6">
+                                    {employees?.map((employee) => (
+                                        <div
+                                            key={employee.id}
+                                            className="rounded-xl p-4 bg-white shadow-md border hover:shadow-lg transition"
+                                        >
+                                            <div className="flex justify-end">
+                                                <XIcon
+                                                    className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                                                    onClick={() => deleteEmployee({ id: employee.id })}
+                                                />
+                                            </div>
+
+                                            <div className="flex justify-center">
+                                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                                    <UserIcon className="w-8 h-8 text-gray-600" />
+                                                </div>
+                                            </div>
+
+                                            <div className="text-center">
+                                                <p className="text-sm font-semibold text-gray-700">
+                                                    {employee.code}
+                                                </p>
+                                                <p className="text-sm text-gray-500">{employee.lote}</p>
+                                                <p className="text-base font-medium text-gray-800 mt-1">
+                                                    {employee.name}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-6 p-6">
+                                <button
+                                    className="button bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg flex justify-center gap-2 items-center"
+                                    onClick={() => navigate("?createGroup=true")}
+                                >
+                                    <PlusIcon />
+                                    Crear Grupo
+                                </button>
+
+                                {isLoadingGroups && <Spinner />}
+                                {groups?.length === 0 && (
+                                    <p className="text-center text-gray-500">
+                                        No existe grupos de fincas
+                                    </p>
+                                )}
+
+                                <div className="grid xl:grid-cols-4 md:grid-cols-3 gap-6">
+                                    {groups?.map((group) => (
+                                        <div
+                                            key={group.id}
+                                            className="rounded-xl p-4 bg-white shadow-md border hover:shadow-lg transition"
+                                        >
+                                            <div className="flex justify-center">
+                                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                                    <Archive className="w-8 h-8 text-gray-600" />
+                                                </div>
+                                            </div>
+
+                                            <div className="text-center">
+                                                <p className="text-sm font-semibold text-gray-700">
+                                                    {group.code}
+                                                </p>
+                                                <p className="text-sm text-gray-500">{group.lote}</p>
+                                                <p className="text-base font-medium text-gray-800 mt-1">
+                                                    {group.finca}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </aside>
                 </div>
             </div>
 
-            <ModalChangeOperationDateAgricola show={modal} setModal={setModal} ids={ids} id={id} setIds={setIds} />
-            <ModalInfoTareaLote show={modalInfoTarea} setModal={setModalInfoTarea} task={selectedTask} setSelectedTask={setSelectedTask} />
+            <ModalChangeOperationDateAgricola
+                show={modal}
+                setModal={setModal}
+                ids={ids}
+                id={id}
+                setIds={setIds}
+            />
+            <ModalInfoTareaLote
+                show={modalInfoTarea}
+                setModal={setModalInfoTarea}
+                task={selectedTask}
+                setSelectedTask={setSelectedTask}
+            />
             <ModalInsumosPrepared id={id} />
             <ModalUploadAgricolaAssignments lote_id={loteId} />
+            <ModalCreateFincaGroup lotes={lotesOptions} />
         </div>
     );
 }

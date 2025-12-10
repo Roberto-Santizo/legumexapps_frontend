@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ApiResponseSchema } from "./httpRequestsSchemas";
 
 export const TaskInsumoSchema = z.object({
     id: z.string(),
@@ -124,3 +125,13 @@ export const TaskWeeklyPlanSummarySchema = z.object({
     insumos: z.array(TaskInsumoSchema),
 });
 
+export const FincaGroupSchema = z.object({
+    id: z.number(),
+    code: z.string(),
+    lote: z.string(),
+    finca: z.string()
+});
+
+export const FincaGroupsSchema = ApiResponseSchema.extend({
+    data: z.array(FincaGroupSchema)
+});
