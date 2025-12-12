@@ -1,7 +1,7 @@
 import { CircleCheck, CirclePause, Edit, Eraser, Info, PlayCircleIcon, TrashIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import { formatDate, formatearQuetzales } from "@/helpers";
+import { formatearQuetzales } from "@/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cleanTask, closeAssigment, closeAssigmentDron, closePartialClosure, closeTask, createPartialClosure, deteleteTask } from "@/api/TasksWeeklyPlanAPI";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -230,11 +230,11 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
 
         <TaskLabel
           label={"Fecha de Asignación"}
-          text={task.start_date ? formatDate(task.start_date) : "Sin asignación"}
+          text={task.start_date ?? "Sin asignación"}
         />
         <TaskLabel
           label={"Fecha de Cierre"}
-          text={task.end_date ? formatDate(task.end_date) : "Sin cierre"}
+          text={task.end_date ?? "Sin cierre"}
         />
         <div className="flex gap-3">
           {task.use_dron && <DronIcon width={30} height={30} className="bg-orange-500 text-white inline-block p-2 rounded mt-4" />}

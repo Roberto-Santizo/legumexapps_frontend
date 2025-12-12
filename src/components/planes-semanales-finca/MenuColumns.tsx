@@ -1,4 +1,4 @@
-import { downloadReportInsumos, downloadReportPlanilla } from "@/api/WeeklyPlansAPI";
+import { downloadReportInsumos, downloadReportPersonalDetails, downloadReportPlanilla, downloadWeeklyPlanReport } from "@/api/WeeklyPlansAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -25,15 +25,32 @@ export default function MenuColumns({ plan }: { plan: WeeklyPlan }) {
         mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadReportPlanilla(planId),
         onError: (error) => {
             toast.error(error.message)
-        }
+        },
     });
 
+    const { mutate: downloadPlanReport, isPending: isPending3 } = useMutation({
+        mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadWeeklyPlanReport(planId),
+        onError: (error) => {
+            toast.error(error.message)
+        },
+    });
+
+    const { mutate: downloadPersonalDetails, isPending: isPending4 } = useMutation({
+        mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadReportPersonalDetails(planId),
+        onError: (error) => {
+            toast.error(error.message)
+        },
+    });
+
+
     const handleDownloadInsumosReport = async (planId: WeeklyPlan['id']) => { mutate({ planId }) };
+    const handleDownloadPlanificationReport = async (planId: WeeklyPlan['id']) => { downloadPlanReport({ planId }) };
+    const handleDownloadPersonalDetailsReport = async (planId: WeeklyPlan['id']) => { downloadPersonalDetails({ planId }) };
     const handleDownloadPlanillaReport = async (planId: WeeklyPlan['id']) => { downloadPlanilla({ planId }) };
 
     return (
         <td className="tbody-td flex gap-10 m-3">
-            {(isPending || isPending2) ? <Spinner /> : (
+            {(isPending || isPending2 || isPending3 || isPending4) ? <Spinner /> : (
                 <Menu as="div" className="relative flex-none">
                     <Menu.Button className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
                         <span className="sr-only">opciones</span>
@@ -44,15 +61,31 @@ export default function MenuColumns({ plan }: { plan: WeeklyPlan }) {
                         leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95">
                         <Menu.Items
-                            className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none space-y-2"
+                            className="absolute right-0 z-10 mt-2 w-96 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none space-y-2"
                         >
                             {hasPermission('download planilla report') && (
-                                <Menu.Item>
-                                    <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPlanillaReport(plan.id)}>
-                                        <DownloadIcon className="w-4 h-4" />
-                                        Descargar Planilla
-                                    </button>
-                                </Menu.Item>
+                                <>
+                                    <Menu.Item>
+                                        <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPlanillaReport(plan.id)}>
+                                            <DownloadIcon className="w-4 h-4" />
+                                            Descargar Planilla
+                                        </button>
+                                    </Menu.Item>
+
+                                    <Menu.Item>
+                                        <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPlanificationReport(plan.id)}>
+                                            <DownloadIcon className="w-4 h-4" />
+                                            Descargar Reporte Planificación
+                                        </button>
+                                    </Menu.Item>
+
+                                    <Menu.Item>
+                                        <button className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400' onClick={() => handleDownloadPersonalDetailsReport(plan.id)}>
+                                            <DownloadIcon className="w-4 h-4" />
+                                            Descargar Reporte Detalle Personal
+                                        </button>
+                                    </Menu.Item>
+                                </>
                             )}
 
                             <Menu.Item>
@@ -63,7 +96,7 @@ export default function MenuColumns({ plan }: { plan: WeeklyPlan }) {
                             </Menu.Item>
 
                             <Menu.Item>
-                                <Link to={`/planes-semanales/planificacion-tareas/${plan.id}/${plan.finca_id}`} className='flex justify-center items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400 '>
+                                <Link to={`/planes-semanales/planificacion-tareas/${plan.id}/${plan.finca_id}`} className='flex items-center gap-2 px-3 py-1 text-sm leading-6 hover:text-gray-400 '>
                                     <CalendarIcon className="w-4 h-4" />
                                     Calendario de Planificación
                                 </Link>

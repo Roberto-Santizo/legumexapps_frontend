@@ -28,7 +28,8 @@ export default function FiltersPackingMaterialTransactions({ isOpen, setIsOpen, 
             'responsable': searchParams.get('responsable') ?? '',
             'delivered_by': searchParams.get('delivered_by') ?? '',
             'delivered_date': searchParams.get('delivered_date') ?? '',
-            'type': searchParams.get('type') ?? ''
+            'type': searchParams.get('type') ?? '',
+            'sku': searchParams.get('sku') ?? '',
         }
 
         setFilters(filters);
@@ -76,6 +77,13 @@ export default function FiltersPackingMaterialTransactions({ isOpen, setIsOpen, 
                         <label className="block text-sm font-medium">Entregado Por</label>
                         <input type="text" name="delivered_by" className="w-full border p-2 rounded" placeholder="Nombre del responsable bodega"
                             onChange={handleFiltroChange} value={filters.delivered_by || ""} autoComplete="off"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium">SKU</label>
+                        <input type="text" name="sku" className="w-full border p-2 rounded" placeholder="Código del sku"
+                            onChange={handleFiltroChange} value={filters.sku || ""} autoComplete="off"
                         />
                     </div>
 

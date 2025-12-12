@@ -120,17 +120,18 @@ export default function Show() {
             <p><span className="font-medium">Aprobación logística:</span> {draft.logistics_confirmation ? 'Confirmado' : 'No confirmado'}</p>
           </div>
 
-          {(flag && draft.flag_tasks && role === 'admin') && (
-            <>
-              <button className="button bg-orange-500 hover:bg-orange-700 w-full" onClick={() => handleConfirmPlan()}>
-                Confirmar
-              </button>
-
-              <button className="button bg-green-500 hover:bg-green-700 w-full" onClick={() => navigate(`${location.pathname}?updateDraftTasks=true`)}>
-                Actualizar Plan
-              </button>
-            </>
+          {(flag && draft.flag_tasks && (role === 'admin' || role === 'auxrrhh')) && (
+            <button className="button bg-orange-500 hover:bg-orange-700 w-full" onClick={() => handleConfirmPlan()}>
+              Confirmar
+            </button>
           )}
+
+          {(flag && draft.flag_tasks && (role === 'admin' || role === 'logistics')) && (
+            <button className="button bg-green-500 hover:bg-green-700 w-full" onClick={() => navigate(`${location.pathname}?updateDraftTasks=true`)}>
+              Actualizar Plan
+            </button>
+          )}
+
         </section>
 
         <SummaryLines setFilters={setFilters} filters={filters} />
@@ -214,7 +215,7 @@ export default function Show() {
         </div>
       </aside>
 
-      {(!draft.plan_created && role === 'admin') && (
+      {(!draft.plan_created && (role === 'admin' || role == 'auxrrhh')) && (
         <button
           onClick={() => createWeeklyProductionPlan(id)}
           disabled={flag || isPending}

@@ -97,7 +97,7 @@ export default function DevolucionBodega({ transaction }: Props) {
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
                 <img
                   className="h-16 print:h-12"
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${transaction.delivered_by_signature}`}
+                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}${transaction.delivered_by_signature}`}
                   alt="Firma Entregado Por"
                 />
               </div>
@@ -115,7 +115,7 @@ export default function DevolucionBodega({ transaction }: Props) {
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center">
                 <img
                   className="h-16 print:h-12"
-                  src={`${import.meta.env.VITE_BASE_URL}/storage/${transaction.responsable_signature}`}
+                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}${transaction.responsable_signature}`}
                   alt="Firma Receptor Cajas"
                 />
               </div>

@@ -283,7 +283,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaRmpAllInfo }> = ({ boleta }) =
 
         <View style={styles.centerTitle}>
           <Text style={styles.title}>RECIBO DE MATERIA PRIMA</Text>
-          <Text style={styles.receiptNumber}>No.{boleta.field_data.ref_doc}</Text>
+          <Text style={styles.receiptNumber}>No. LX2-{boleta.field_data.id}</Text>
         </View>
 
         <View style={styles.headerRight}>

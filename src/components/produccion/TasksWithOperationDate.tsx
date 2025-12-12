@@ -38,7 +38,7 @@ export default function TasksWithOperationDate({ lines }: Props) {
     const filters = useAppStore((state) => state.filtersWithOperationDate);
     const handleChangefiltersOperationDate = useAppStore((state) => state.handleChangefiltersOperationDate);
 
-    const { data: tasks, isLoading, isFetching } = useQuery({
+    const { data: tasks, isLoading } = useQuery({
         queryKey: ['getTasksOperationDate', plan_id, date, filters],
         queryFn: () => getTasksOperationDate({ id: plan_id, date, filters }),
         enabled: !!date,
@@ -68,7 +68,7 @@ export default function TasksWithOperationDate({ lines }: Props) {
         label: `${line.name}`,
     }));
 
-    const isUpdating = useMemo(() => isFetching || isLoading, [isFetching, isLoading])
+    const isUpdating = useMemo(() => isLoading, [isLoading])
     if (tasks) return (
         <div className="pt-4 shadow-xl p-5">
             <h2 className="xl:text-2xl font-bold">Tareas programadas: {date}</h2>

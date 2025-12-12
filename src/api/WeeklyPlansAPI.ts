@@ -91,12 +91,10 @@ export async function getTasksByDate({ id, date, loteId, taskId }: { id: WeeklyP
     }
 }
 
-export async function downloadWeeklyPlanReport(weekly_plans_ids: WeeklyPlan['id'][]): Promise<void> {
+export async function downloadWeeklyPlanReport(weekly_plan_id: WeeklyPlan['id']) {
     try {
-        const url = '/api/report/plans';
-        const { data } = await clienteAxios.post(url, {
-            data: weekly_plans_ids
-        });
+        const url = `/api/report/agricola/planification/${weekly_plan_id}`;
+        const { data } = await clienteAxios.post(url);
 
         const result = ReportSchema.safeParse(data);
         if (result.success) {
@@ -132,10 +130,28 @@ export async function downloadReportInsumos(weekly_plan_id: WeeklyPlan['id']): P
     }
 }
 
-export async function downloadReportPlanilla(weekly_plan_id: WeeklyPlan['id']): Promise<void> {
+export async function downloadReportPlanilla(weekly_plan_id: WeeklyPlan['id']) {
     try {
-        const url = `/api/report/planilla/${weekly_plan_id}`;
-        const { data } = await clienteAxios(url);
+        const url = `/api/report/agricola/planilla/${weekly_plan_id}`;
+        const { data } = await clienteAxios.post(url);
+        const result = ReportSchema.safeParse(data);
+        if (result.success) {
+            downloadBase64File(result.data.file, result.data.fileName)
+        } else {
+            throw new Error('Información no válida');
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.msg);
+        }
+    }
+}
+
+
+export async function downloadReportPersonalDetails(weekly_plan_id: WeeklyPlan['id']) {
+    try {
+        const url = `/api/report/agricola/personal-details/${weekly_plan_id}`;
+        const { data } = await clienteAxios.post(url);
         const result = ReportSchema.safeParse(data);
         if (result.success) {
             downloadBase64File(result.data.file, result.data.fileName)
