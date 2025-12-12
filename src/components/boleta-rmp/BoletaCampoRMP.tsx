@@ -1,5 +1,5 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
-import { BoletaRmpAllInfo } from "types/rmpDocTypes";
+import { BoletaRmpAllInfo } from "@/types/rmpDocTypes";
 import LogoLegumex from "../logos/LogoLegumex";
 import DownloadPDF from "./DownloadPDF";
 

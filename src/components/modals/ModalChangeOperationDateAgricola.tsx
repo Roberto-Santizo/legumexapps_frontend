@@ -1,12 +1,11 @@
-import { SetStateAction, useRef } from "react";
-import { getCurrentDate } from "@/helpers";
-import { toast } from "react-toastify";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { changeOperationDate } from "@/api/TasksWeeklyPlanAPI";
-import Modal from "../Modal";
-import Spinner from "../utilities-components/Spinner";
+import { SetStateAction } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { changeOperationDate, getFincaGroups } from "@/api/TasksWeeklyPlanAPI";
 import { useNotification } from "../../core/notifications/NotificationContext";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import Modal from "../Modal";
+import Spinner from "../utilities-components/Spinner";
 import InputSelectComponent from "../form/InputSelectComponent";
 import Error from "../utilities-components/Error";
 import InputComponent from "../form/InputComponent";
