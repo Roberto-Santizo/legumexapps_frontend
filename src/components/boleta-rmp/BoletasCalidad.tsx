@@ -17,6 +17,9 @@ export default function BoletasCalidad({ boleta }: Props) {
                 </div>
                 <div className="text-center">
                     <h1 className="text-xl uppercase font-bold">Formato</h1>
+                    <span className="p-1 text-center text-2xl font-bold text-red-600">
+                        LXC-{boleta.quality_doc_data?.id}
+                    </span>
                     <h2 className="text-lg uppercase">Recepción Materia Prima</h2>
                 </div>
                 <div className="text-right">

@@ -1,10 +1,15 @@
 import { SetStateAction, useRef } from "react";
 import { getCurrentDate } from "@/helpers";
+import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { changeOperationDate } from "@/api/TasksWeeklyPlanAPI";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import { useNotification } from "../../core/notifications/NotificationContext";
+import { useForm } from "react-hook-form";
+import InputSelectComponent from "../form/InputSelectComponent";
+import Error from "../utilities-components/Error";
+import InputComponent from "../form/InputComponent";
 
 type Props = {
     show: boolean;
@@ -15,9 +20,22 @@ type Props = {
 }
 
 export default function ModalChangeOperationDateAgricola({ show, setModal, ids, id, setIds }: Props) {
-    const operationDateRef = useRef<HTMLInputElement>(null);
     const queryClient = useQueryClient();
     const notify = useNotification();
+    const params = useParams();
+    const fincaId = params.finca_id!!;
+
+    const { data: groups } = useQuery({
+        queryKey: ['getFincaGroups', fincaId],
+        queryFn: () => getFincaGroups(fincaId),
+    });
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset
+    } = useForm<{ group_id: string, date: string }>();
 
     const { mutate, isPending } = useMutation({
         mutationFn: changeOperationDate,
@@ -30,28 +48,50 @@ export default function ModalChangeOperationDateAgricola({ show, setModal, ids, 
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
             setIds([]);
+            reset();
         },
     });
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (operationDateRef.current && operationDateRef.current.value) {
-            mutate({date: operationDateRef.current.value, ids: ids});
-        } else {
-            notify.error('Seleccione una fecha de operación válida');
-        }
-    }
-    return (
-        <Modal modal={show} closeModal={() => setModal(false)} title="Cambio de Fecha de Operación">
-            <form className="p-10 space-y-6" noValidate onSubmit={(e) => handleSubmit(e)}>
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="operation_date" className="font-bold uppercase">Fecha de Operación</label>
-                    <input ref={operationDateRef} type="date" name="operation_date" className="border p-2 border-black" min={getCurrentDate()} />
+    const groupsOptions = groups?.map((group) => ({
+        value: `${group.id}`,
+        label: `${group.code}`,
+    }));
 
-                    <button disabled={isPending || ids.length === 0} className={`button ${ids.length === 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-600'}  w-full`}>
-                        {isPending ? <Spinner /> : <p>Guardar Fecha de Operación</p>}
-                    </button>
-                </div>
+
+    const onSubmit = (data: { group_id: string, date: string }) => {
+        mutate({ date: data.date, group_id: data.group_id, ids })
+    }
+
+    if (groupsOptions) return (
+        <Modal modal={show} closeModal={() => setModal(false)} title="Cambio de Fecha de Operación">
+            <form className="p-10 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
+                <InputSelectComponent<{ group_id: string, date: string }>
+                    label="Grupo"
+                    id="group_id"
+                    name="group_id"
+                    options={groupsOptions}
+                    register={register}
+                    validation={{ required: 'El grupo es obligatario' }}
+                    errors={errors}
+                >
+                    {errors.group_id && <Error>{errors.group_id?.message?.toString()}</Error>}
+                </InputSelectComponent>
+
+                <InputComponent<{ group_id: string, date: string }>
+                    label="Fecha de operación"
+                    id="date"
+                    name="date"
+                    register={register}
+                    validation={{ required: 'La fecha es requerida' }}
+                    errors={errors}
+                    type={'date'}
+                >
+                    {errors.date && <Error>{errors.date?.message?.toString()}</Error>}
+                </InputComponent>
+
+                <button disabled={isPending || ids.length === 0} className={`button ${ids.length === 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-indigo-500 hover:bg-indigo-600'}  w-full`}>
+                    {isPending ? <Spinner /> : <p>Guardar Fecha de Operación</p>}
+                </button>
             </form>
         </Modal>
     )

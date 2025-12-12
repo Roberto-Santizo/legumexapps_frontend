@@ -4,11 +4,14 @@ import { EmployeesSchema } from "@/utils/employee-schema";
 import { isAxiosError } from "axios";
 import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
-import { WeeklyPlan } from "@/types/planificacionFincasType";
-import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema } from "@/utils/taskWeeklyPlanSchemas";
+import { WeeklyEmployeeAssignment, WeeklyPlan } from "@/types/planificacionFincasType";
+import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema, WeeklyEmployeeAssignmentsSchema, FincaGroupsSchema } from "@/utils/taskWeeklyPlanSchemas";
 import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import { TaskGeneral } from "@/types/taskGeneralType";
 import { Lote } from "@/types/lotesType";
+import { ApiResponseSchema } from "@/utils/httpRequestsSchemas";
+import { DraftFincaGroup } from "@/components/modals/ModalCreateFincaGroup";
+import { Finca } from "./FincasAPI";
 
 export async function getTasks({ lote, weekly_plan_id, filters }: { lote: TaskWeeklyPlan['lote'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {
@@ -76,13 +79,19 @@ export async function closePartialClosure(id: TaskWeeklyPlan['id']) {
 
 export async function closeAssigmentDron(task_id: TaskWeeklyPlan['id']) {
     try {
-        const url = `/api/tasks-lotes/close-assignment/${task_id}`
+        const url = `/api/tasks-lotes/close-assignment/${task_id}?dron=true`
         const { data } = await clienteAxios.post<string>(url);
-        return data;
+
+        const response = ApiResponseSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.message;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            throw new Error(error.response?.data.message);
         }
+        throw new Error("Error no controlado");
     }
 }
 
@@ -130,15 +139,19 @@ export async function getTaskDetailsById(id: TaskWeeklyPlan['id']) {
     }
 }
 
-export async function closeAssigment({ Employees, task_id }: { Employees: Employee[], task_id: TaskWeeklyPlan['id'] }) {
+export async function closeAssigment(task_id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/close-assignment/${task_id}`
-        const { data } = await clienteAxios.post<string>(url, { data: Employees });
-        return data;
+        const { data } = await clienteAxios.post<string>(url);
+        const response = ApiResponseSchema.safeParse(data);
+        if (response.success) {
+            return response.data.message;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            throw new Error(error.response?.data.message);
         }
+        throw new Error("Error no controlado");
     }
 }
 
@@ -224,8 +237,56 @@ export async function getTasksNoPlanificationDate({ id, loteId, taskId }: { id: 
             throw new Error("Información no válida");
         }
     } catch (error) {
-        console.log(error);
         throw error;
+    }
+}
+
+export async function uploadAssignments({ file, id }: { file: File, id: WeeklyPlan['id'], }) {
+    try {
+        const url = `/api/weekly-assignment-employee/upload/${id}`;
+        const formData = new FormData();
+        formData.append("file", file);
+        const { data } = await clienteAxios.post(url, formData);
+        const result = ApiResponseSchema.safeParse(data);
+        if (result.success) {
+            return result.data.message;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
+    }
+}
+
+export async function getPlanificationEmployee({ id, loteId, filterEmployee }: { id: WeeklyPlan['id'], loteId: Lote['id'], filterEmployee: string }) {
+    try {
+        const url = `/api/weekly-assignment-employee/${id}?lote=${loteId}&name=${filterEmployee}`;
+        const { data } = await clienteAxios(url);
+        const response = WeeklyEmployeeAssignmentsSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.data;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function deleteEmployeeAssignment({ id }: { id: WeeklyEmployeeAssignment['id'] }) {
+    try {
+        const url = `/api/weekly-assignment-employee/${id}`;
+        const { data } = await clienteAxios.delete(url);
+        const response = ApiResponseSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.message;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
     }
 }
 
@@ -246,6 +307,62 @@ export async function getTasksForCalendar(id: WeeklyPlan['id']) {
     }
 }
 
+export async function createFincaGroup(formData: DraftFincaGroup) {
+    try {
+        const url = `/api/finca-groups`;
+        const { data } = await clienteAxios.post(url, formData);
+        const result = ApiResponseSchema.safeParse(data);
+        if (result.success) {
+            return result.data.message;
+        } else {
+            throw new Error("Información no válida");
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
+    }
+}
+
+export async function getFincaGroups(fincaId: Finca['id']) {
+    try {
+        const url = `/api/finca-groups?fincaId=${fincaId}`;
+        const { data } = await clienteAxios(url);
+        const response = FincaGroupsSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+
+        throw new Error("Error no controlado");
+    }
+}
+
+export async function assignEmployeesToGroup({ ids, groupId }: { ids: { assign_id: number }[], groupId: string }) {
+    try {
+        const url = `/api/weekly-assignment-employee/group/${groupId}`;
+        const { data } = await clienteAxios.post(url, {
+            data: ids
+        });
+        const response = ApiResponseSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.message;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+
+        throw new Error("Error no controlado");
+    }
+}
+
 export async function changePreparedInsumosState(id: TaskWeeklyPlanByDate['id']) {
     try {
         const url = `/api/tasks-lotes/prepared-insumos/${id}`;
@@ -258,21 +375,24 @@ export async function changePreparedInsumosState(id: TaskWeeklyPlanByDate['id'])
     }
 }
 
-export async function changeOperationDate({ date, ids }: { date: string, ids: string[] }) {
+export async function changeOperationDate({ date, ids, group_id }: { date: string, ids: string[], group_id: string }) {
     try {
         const url = '/api/tasks-lotes/change-operation-date/update';
         const { data } = await clienteAxios.patch<string>(url, {
-            date: date,
+            date,
+            group_id,
             tasks: ids
         });
-        return data;
+
+        const response = ApiResponseSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.message;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
-            if (error.response?.data.errors) {
-                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
-            } else if (error.response?.data.msg) {
-                throw new Error(error.response?.data.msg);
-            }
+            throw new Error(error.response?.data.message);
         }
+        throw new Error("Error no controlado");
     }
 }

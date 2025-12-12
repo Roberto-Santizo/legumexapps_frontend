@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ApiResponseSchema } from "./httpRequestsSchemas";
 
 export const TaskInsumoSchema = z.object({
     id: z.string(),
@@ -66,7 +67,8 @@ export const TaskWeeklyPlanDetailsSchema = TaskWeeklyPlanSchema.pick({ task: tru
 
 export const TaskWeeklyPlanWithNoOperationDateSchema = TaskWeeklyPlanSchema.pick({ id: true, task: true, lote: true }).extend({
     finca: z.string(),
-    bg_color: z.string()
+    bg_color: z.string(),
+    group: z.string()
 });
 
 export const TaskWeeklyPlanForCalendarSchema = TaskWeeklyPlanSchema.pick({ id: true, task: true, lote: true, cdp: true }).extend({
@@ -87,7 +89,20 @@ export const TasksWeeklyPlanForCalendarSchema = z.object({
 
 export const TasksWeeklyPlanWithNoOperationDateSchema = z.object({
     data: z.array(TaskWeeklyPlanWithNoOperationDateSchema)
-})
+});
+
+export const WeeklyEmployeeAssignmentSchema = z.object({
+    id: z.number(),
+    code: z.string(),
+    name: z.string(),
+    group: z.string()
+});
+
+export const WeeklyEmployeeAssignmentsSchema = z.object({
+    statusCode: z.number(),
+    data: z.array(WeeklyEmployeeAssignmentSchema)
+});
+
 
 export const TasksWeeklyPlanSchema = z.object({
     finca: z.string(),
@@ -109,3 +124,13 @@ export const TaskWeeklyPlanSummarySchema = z.object({
     insumos: z.array(TaskInsumoSchema),
 });
 
+export const FincaGroupSchema = z.object({
+    id: z.number(),
+    code: z.string(),
+    lote: z.string(),
+    finca: z.string()
+});
+
+export const FincaGroupsSchema = ApiResponseSchema.extend({
+    data: z.array(FincaGroupSchema)
+});

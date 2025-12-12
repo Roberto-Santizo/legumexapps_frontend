@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
+import { BoletaRmpAllInfo } from "types/rmpDocTypes";
 import LogoLegumex from "../logos/LogoLegumex";
-import { BoletaRmpAllInfo } from "@/types/rmpDocTypes";
+import DownloadPDF from "./DownloadPDF";
 
 type Props = {
   boleta: BoletaRmpAllInfo;
@@ -9,11 +10,11 @@ type Props = {
 const BoletaCampoRMP = ({ boleta }: Props) => {
   return (
     <div>
-      {/* <div className="flex justify-end">
+      <div className="flex justify-end">
         <div className="p-4 inline-block bg-indigo-500 hover:bg-indigo-600 button">
           <DownloadPDF boleta={boleta} buttonClassName="text-white" />
         </div>
-      </div> */}
+      </div>
       <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 bg-yellow-100 border border-gray-300 mt-4 md:mt-8 lg:mt-10 ">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-start space-x-4">
@@ -33,7 +34,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             </h1>
             <div className="flex justify-center mb-1">
               <span className="p-1 text-center text-2xl font-bold text-red-600">
-                No.{boleta.field_data.ref_doc}
+                LX2-{boleta.field_data.ref_doc}
               </span>
             </div>
           </div>
@@ -315,7 +316,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-25 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.prod_data?.receptor_signature
+                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.prod_data?.receptor_signature
                     }`}
                   alt="Firma Receptor"
                   className="max-h-25 md:max-h-25 object-contain"
@@ -329,7 +330,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
             <div className="text-center">
               <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
                 <img
-                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.quality_doc_data?.inspector_planta_signature
+                  src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.quality_doc_data?.inspector_planta_signature
                     }`}
                   alt="Firma Inspector Planta"
                   className="max-h-25 md:max-h-25 object-contain"
@@ -342,7 +343,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.field_data.driver_signature
+                src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.field_data.driver_signature
                   }`}
                 alt="Firma Piloto"
                 className="max-h-25 md:max-h-25 object-contain"
@@ -354,7 +355,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.field_data.inspector_signature
+                src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.field_data.inspector_signature
                   }`}
                 alt="Firma Inspector"
                 className="max-h-25 md:max-h-25 object-contain"
@@ -366,7 +367,7 @@ const BoletaCampoRMP = ({ boleta }: Props) => {
           <div className="text-center">
             <div className="border-b border-black h-16 md:h-20 flex items-center justify-center max-w-96">
               <img
-                src={`${import.meta.env.VITE_AWS_BUCKET_URL}/${boleta.field_data.producer_signature
+                src={`${import.meta.env.VITE_AWS_BUCKET_URL}${boleta.field_data.producer_signature
                   }`}
                 alt="Firma Productor"
                 className="max-h-25 md:max-h-25 object-contain"

@@ -29,7 +29,7 @@ export default function Index() {
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const { data: role} = useRole();
+    const { data: role } = useRole();
 
     const { data, isError, isLoading, refetch } = useQuery({
         queryKey: ['getPaginatedBoletasRMP', currentPage, filters],
@@ -140,19 +140,19 @@ export default function Index() {
                                 </td>
                                 <td className="tbody-td flex gap-3">
                                     <>
-                                        {(boleta.quality_status_id === 1 && role === 'admin') && (
+                                        {(boleta.quality_status_id === 1 && (role === 'admin' || role === 'pprod')) && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {(boleta.quality_status_id === 2 && role === 'admin') && (
+                                        {(boleta.quality_status_id === 2 && (role === 'admin' || role === 'pcalidad')) && (
                                             <Link to={`/rmp/editar/${boleta.id}`}>
                                                 <EditIcon />
                                             </Link>
                                         )}
 
-                                        {(boleta.quality_status_id === 3 && role === 'admin') && (
+                                        {(boleta.quality_status_id === 3 && (role === 'admin' || role === 'pprod')) && (
                                             <EditIcon className="cursor-pointer hover:text-gray-500" onClick={() => handleOpenModal(boleta)} />
                                         )}
 

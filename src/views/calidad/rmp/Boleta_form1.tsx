@@ -18,6 +18,7 @@ import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import { useNotification } from "../../../core/notifications/NotificationContext";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -33,6 +34,7 @@ export default function Boleta_form1() {
   const prod_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
   const notify = useNotification();
+  const { hasPermission } = usePermissions();
 
   const results = useQueries({
     queries: [
@@ -249,6 +251,24 @@ export default function Boleta_form1() {
             )}
           </InputComponent>
 
+          {hasPermission('add pilot name') && (
+            <InputComponent<DraftBoletaRMP>
+              label="Nombre del Piloto"
+              id="pilot_name"
+              name="pilot_name"
+              placeholder="Nombre del piloto"
+              register={register}
+              validation={{}}
+              errors={errors}
+              type={"text"}
+            >
+              {errors.pilot_name && (
+                <Error>{errors.pilot_name?.message?.toString()}</Error>
+              )}
+            </InputComponent>
+          )}
+
+
           <InputComponent<DraftBoletaRMP>
             label="Peso Bruto"
             id="weight"
@@ -316,6 +336,23 @@ export default function Boleta_form1() {
               <Error>{errors.quality_percentage?.message?.toString()}</Error>
             )}
           </InputComponent>
+
+          {hasPermission('add doc date') && (
+            <InputComponent<DraftBoletaRMP>
+              label="Fecha del Documento"
+              id="doc_date"
+              name="doc_date"
+              placeholder="Fecha del documento"
+              register={register}
+              validation={{}}
+              errors={errors}
+              type={"date"}
+            >
+              {errors.doc_date && (
+                <Error>{errors.doc_date?.message?.toString()}</Error>
+              )}
+            </InputComponent>
+          )}
 
           <fieldset>
             <div className="space-y-2 text-center">

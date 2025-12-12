@@ -27,7 +27,6 @@ const routes = [
   { path: "/lotes/historial/:lote_id", component: lazy(() => import("@/views/agricola/lotes/History")), roles: ['admin', 'adminagricola'] },
 
   { path: "/planes-semanales/tareas-lote/:weekly_plan_id/:lote_plantation_control_id", component: lazy(() => import("@/views/agricola/lote-tasks/Index")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
-  { path: "/planes-semanales/tareas-lote/asignar/:finca_id/:task_id", component: lazy(() => import("@/views/agricola/lote-tasks/Assign")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-lote/informacion/:id", component: lazy(() => import("@/views/agricola/lote-tasks/Details")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-lote/editar/:id", component: lazy(() => import("@/views/agricola/lote-tasks/Edit")), roles: ['admin', 'adminagricola'] },
   { path: "/planes-semanales/tareas-lote/crear", component: lazy(() => import("@/views/agricola/lote-tasks/Create")), roles: ['admin', 'adminagricola'] },

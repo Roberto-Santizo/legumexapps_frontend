@@ -23,6 +23,7 @@ export default function TaskCalendarFincaComponent({ task, setIds, ids }: Props)
                 <p className="text-indigo-700 font-semibold text-sm">{task.task}</p>
                 <p className="text-gray-600 text-xs">{task.finca}</p>
                 <p className="text-gray-600 text-xs">{task.lote}</p>
+                <p className="text-gray-600 text-xs">{task.group}</p>
             </div>
 
             <div className="flex flex-col justify-between">

@@ -17,7 +17,7 @@ const DownloadPDF: React.FC<DownloadPDFProps> = ({
   return (
     <PDFDownloadLink
       document={<PdfBoletaCampoRMP boleta={boleta} />}
-      fileName={`BOLETA-${boleta.field_data.doc_date}-${boleta.field_data.id}.pdf`}
+      fileName={`BOLETA.pdf`}
       className={buttonClassName || "text-blue-600 hover:text-blue-800 underline text-sm"}
     >
       {({ loading }) => (
