@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Archive, PlusIcon, Trash, UploadIcon, UserIcon, XIcon } from 'lucide-react';
-import { changeOperationDate, deleteEmployeeAssignment, getFincaGroups, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
+import { deleteEmployeeAssignment, getFincaGroups, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes } from '@/api/LotesAPI';
@@ -25,13 +25,7 @@ import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/Task
 import ModalUploadAgricolaAssignments from '@/components/modals/ModalUploadAgricolaAssignments';
 import ModalCreateFincaGroup from '@/components/modals/ModalCreateFincaGroup';
 import ModalAssignGroup from '@/components/modals/ModalAssignGroup';
-
-type EventReceiveInfo = {
-    event: {
-        id: string;
-        startStr: string;
-    };
-}
+import debounce from "debounce";
 
 interface DateClickInfo {
     dateStr: string;
@@ -56,6 +50,8 @@ export default function Calendar() {
     const [tareas, setTareas] = useState<TaskGeneral[]>([]);
     const { hasPermission } = usePermissions();
     const [assignmentIds, setAssignmentIds] = useState<number[]>([]);
+    const [filterEmployee, setFilterEmployee] = useState<string>('');
+    const [queryEmployee, setQueryEmployee] = useState<string>('');
 
     const calendarRef = useRef<FullCalendar | null>(null);
     const navigate = useNavigate();
@@ -65,8 +61,19 @@ export default function Calendar() {
             { queryKey: ['getLotes'], queryFn: () => getLotes({ page: 1, filters: { name: "", cdp: "", finca_id: fincaId }, paginated: '' }) },
             { queryKey: ['getTasks'], queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }) },
         ]
-    })
+    });
 
+    const debouncedChange = useCallback(
+        debounce((value: string) => {
+            setFilterEmployee(value);
+        }, 750),
+        []
+    );
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setQueryEmployee(e.target.value);
+        debouncedChange(e.target.value);
+    };
 
     useEffect(() => {
         if (results[0].data) setLotes(results[0].data.data)
@@ -89,8 +96,8 @@ export default function Calendar() {
     });
 
     const { data: employees, isLoading: isLoadingEmployees } = useQuery({
-        queryKey: ['getPlanificationEmployee', id, loteId],
-        queryFn: () => getPlanificationEmployee({ id, loteId }),
+        queryKey: ['getPlanificationEmployee', id, loteId, filterEmployee],
+        queryFn: () => getPlanificationEmployee({ id, loteId, filterEmployee }),
     });
 
     const { data: groups, isLoading: isLoadingGroups } = useQuery({
@@ -101,19 +108,6 @@ export default function Calendar() {
     const { data: tasksForCalendar } = useQuery({
         queryKey: ['getTasksForCalendar', id],
         queryFn: () => getTasksForCalendar(id),
-    });
-
-    const { mutate } = useMutation({
-        mutationFn: changeOperationDate,
-        onSuccess: (data) => {
-            toast.success(data);
-            setModal(false);
-            queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
-            queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
-        },
-        onError: (error) => {
-            toast.error(error.message)
-        },
     });
 
     const { mutate: deleteEmployee } = useMutation({
@@ -136,10 +130,6 @@ export default function Calendar() {
         }
     }, [tasksForCalendar]);
 
-
-    const handleEventDrop = (info: EventReceiveInfo) => {
-        mutate({ date: info.event.startStr, ids: [info.event.id] });
-    };
 
 
     const handleOpenDate = (info: DateClickInfo) => {
@@ -196,7 +186,6 @@ export default function Calendar() {
                         events={tasksForCalendar?.data}
                         initialDate={tasksForCalendar?.initial_date}
                         dateClick={handleOpenDate}
-                        eventDrop={handleEventDrop}
                         eventClick={(info) => {
                             const task = tasksForCalendar?.data.find(
                                 (task) => task.id === info.event.id
@@ -235,7 +224,7 @@ export default function Calendar() {
                                     }`}
                                 onClick={() => setModal(true)}
                             >
-                                Cambiar Fecha de Operación
+                                Actualizar Tareas
                             </button>
 
                             <div className="flex flex-col mt-5 gap-4 text-xs">
@@ -274,27 +263,6 @@ export default function Calendar() {
                             )}
                         </div>
                     </aside>
-
-                    <div className="bg-white p-5 rounded-xl shadow-md border text-sm">
-                        <h2 className="text-lg font-semibold mb-2 text-gray-800">
-                            Resumen de Tareas
-                        </h2>
-                        <div className="space-y-1 text-gray-600">
-                            <p>
-                                <span className="font-medium text-gray-800">
-                                    Tareas con fecha de operación:
-                                </span>{" "}
-                                {tasksForCalendar?.tasks_with_operation_date}
-                            </p>
-
-                            <p>
-                                <span className="font-medium text-gray-800">
-                                    Tareas sin fecha de operación:
-                                </span>{" "}
-                                {tasksForCalendar?.tasks_without_operation_date}
-                            </p>
-                        </div>
-                    </div>
                 </div>
 
                 <div className={`flex flex-col w-3/5 space-y-5 ${!seePersonal ? 'hidden' : ''}`}>
@@ -332,6 +300,7 @@ export default function Calendar() {
                         {view === 1 ? (
                             <div className="space-y-6 p-6">
                                 <div className="flex flex-col gap-4 text-xs">
+
                                     <Select
                                         options={lotesOptions}
                                         className="react-select-container"
@@ -339,9 +308,19 @@ export default function Calendar() {
                                         placeholder="--SELECCIONE UN LOTE--"
                                         onChange={(selected) => selected?.value && setLoteId(selected.value)}
                                     />
-                                    <div className='flex justify-between'>
+
+                                    <input
+                                        type="text"
+                                        value={queryEmployee}
+                                        placeholder="Buscar empleado..."
+                                        className="w-full px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        onChange={handleChange}
+                                    />
+
+                                    <div className="flex justify-between gap-4">
+
                                         <button
-                                            className="button bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg flex justify-center gap-2 items-center"
+                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl shadow flex justify-center gap-2 items-center transition-all"
                                             onClick={() => navigate("?upload=true")}
                                         >
                                             <UploadIcon />
@@ -349,14 +328,16 @@ export default function Calendar() {
                                         </button>
 
                                         <button
-                                            className={`button text-white py-2 rounded-lg flex justify-center gap-2 items-center ${assignmentIds.length == 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                                            className={`w-full text-white py-2 rounded-xl shadow flex justify-center gap-2 items-center transition-all ${assignmentIds.length == 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                                             onClick={() => navigate("?assignGroup=true")}
                                             disabled={assignmentIds.length == 0}
                                         >
                                             Asignar a grupo
                                         </button>
+
                                     </div>
                                 </div>
+
 
                                 {isLoadingEmployees && <Spinner />}
                                 {employees?.length === 0 && (
@@ -370,12 +351,15 @@ export default function Calendar() {
                                         <div
                                             key={employee.id}
                                             className={`rounded-xl p-4 shadow-md border hover:shadow-lg transition ${assignmentIds.includes(employee.id) ? 'bg-indigo-200' : 'bg-white'}`}
-                                            onClick={() => handleAddId(employee.id)}
                                         >
-                                            <div className="flex justify-end">
+                                            <div className="flex justify-between">
                                                 <XIcon
                                                     className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                                                     onClick={() => deleteEmployee({ id: employee.id })}
+                                                />
+                                                <PlusIcon
+                                                    className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                                                    onClick={() => handleAddId(employee.id)}
                                                 />
                                             </div>
 
@@ -389,7 +373,6 @@ export default function Calendar() {
                                                 <p className="text-sm font-semibold text-gray-700">
                                                     {employee.code}
                                                 </p>
-                                                <p className="text-sm text-gray-500">{employee.lote}</p>
                                                 <p className="text-base font-bold text-indigo-500 mt-1">
                                                     {employee.group}
                                                 </p>
@@ -466,7 +449,7 @@ export default function Calendar() {
             <ModalInsumosPrepared id={id} />
             <ModalUploadAgricolaAssignments lote_id={loteId} />
             <ModalCreateFincaGroup lotes={lotesOptions} />
-            <ModalAssignGroup />
+            <ModalAssignGroup ids={assignmentIds} loteId={loteId} setAssignmentIds={setAssignmentIds} />
         </div>
     );
 }

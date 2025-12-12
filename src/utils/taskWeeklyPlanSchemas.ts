@@ -68,7 +68,8 @@ export const TaskWeeklyPlanDetailsSchema = TaskWeeklyPlanSchema.pick({ task: tru
 
 export const TaskWeeklyPlanWithNoOperationDateSchema = TaskWeeklyPlanSchema.pick({ id: true, task: true, lote: true }).extend({
     finca: z.string(),
-    bg_color: z.string()
+    bg_color: z.string(),
+    group: z.string()
 });
 
 export const TaskWeeklyPlanForCalendarSchema = TaskWeeklyPlanSchema.pick({ id: true, task: true, lote: true, cdp: true }).extend({
@@ -95,8 +96,6 @@ export const WeeklyEmployeeAssignmentSchema = z.object({
     id: z.number(),
     code: z.string(),
     name: z.string(),
-    lote: z.string(),
-    lote_id: z.number(),
     group: z.string()
 });
 
