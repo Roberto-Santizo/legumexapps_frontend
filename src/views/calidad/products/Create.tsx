@@ -40,7 +40,7 @@ export default function Create() {
   });
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getAllVarieties'],
-    queryFn: () => getVariedades({ page: 1, paginated: 'true' }),
+    queryFn: () => getVariedades({ page: 1, paginated: '' }),
   });
 
   useEffect(() => {
