@@ -28,12 +28,18 @@ export default function Index() {
       setCurrentPage(data.meta.current_page);
       setPageCount(data.meta.last_page);
     }
+
+    console.log(data);
   }, [data]);
 
 
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
+
+  useEffect(()=>{
+    console.log(currentPage);
+  }, [currentPage]);
 
   if (isLoading) return <Spinner />
   if (isError) return <ShowErrorAPI />

@@ -41,11 +41,12 @@ export async function createVariety(FormData: DraftVariety) {
     }
 }
 
-export async function getVariedades({ page, paginated }: { page: number, paginated: string }): Promise<VarietiesPaginate> {
+export async function getVariedades({ page, paginated }: { page: number, paginated: string }) {
     try {
-        const url = `/api/variety-products?paginated=${paginated}page=${page}`;
+        const url = `/api/variety-products?paginated=${paginated}&page=${page}`;
         const { data } = await clienteAxios(url);
         const result = VarietiesPaginateSchema.safeParse(data);
+
         if (result.success) {
             return result.data
         } else {
