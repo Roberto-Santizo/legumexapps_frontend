@@ -97,8 +97,8 @@ export default function Calendar() {
     });
 
     const { data: employees, isLoading: isLoadingEmployees } = useQuery({
-        queryKey: ['getPlanificationEmployee', id, loteId, filterEmployee],
-        queryFn: () => getPlanificationEmployee({ id, loteId, filterEmployee }),
+        queryKey: ['getPlanificationEmployee', id, filterEmployee],
+        queryFn: () => getPlanificationEmployee({ id, filterEmployee }),
     });
 
     const { data: groups, isLoading: isLoadingGroups } = useQuery({

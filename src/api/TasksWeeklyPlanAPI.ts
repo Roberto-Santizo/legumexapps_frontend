@@ -259,9 +259,9 @@ export async function uploadAssignments({ file, id }: { file: File, id: WeeklyPl
     }
 }
 
-export async function getPlanificationEmployee({ id, loteId, filterEmployee }: { id: WeeklyPlan['id'], loteId: Lote['id'], filterEmployee: string }) {
+export async function getPlanificationEmployee({ id, filterEmployee }: { id: WeeklyPlan['id'], filterEmployee: string }) {
     try {
-        const url = `/api/weekly-assignment-employee/${id}?lote=${loteId}&name=${filterEmployee}`;
+        const url = `/api/weekly-assignment-employee/${id}?name=${filterEmployee}`;
         const { data } = await clienteAxios(url);
         const response = WeeklyEmployeeAssignmentsSchema.safeParse(data);
 
