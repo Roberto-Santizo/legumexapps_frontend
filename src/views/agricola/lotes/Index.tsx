@@ -67,13 +67,6 @@ export default function Index() {
           <p>Consulta de Información de Lote</p>
         </Link>
 
-        <Link
-          to="/lotes/actualizacion"
-          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
-        >
-          <p>Actualización masiva de lotes</p>
-        </Link>
-
         <div className="flex justify-end">
           <Bars3Icon
             className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
@@ -96,7 +89,10 @@ export default function Index() {
                 Finca
               </th>
               <th scope="col" className="thead-th">
-                CDP Activo
+                Tamaño en Manzanas
+              </th>
+              <th scope="col" className="thead-th">
+                Total de Plantas
               </th>
             </tr>
           </thead>
@@ -106,7 +102,8 @@ export default function Index() {
                 <td className="tbody-td">{lote.id}</td>
                 <td className="tbody-td">{lote.name}</td>
                 <td className="tbody-td">{lote.finca}</td>
-                <td className="tbody-td">{lote.cdp}</td>
+                <td className="tbody-td">{lote.size}</td>
+                <td className="tbody-td">{lote.total_plants}</td>
               </tr>
             ))}
           </tbody>

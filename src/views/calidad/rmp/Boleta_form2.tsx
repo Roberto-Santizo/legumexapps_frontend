@@ -3,15 +3,15 @@ import { createProdData } from "@/api/ReceptionsDocAPI";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { getBaskets } from "@/api/BasketsAPI";
-import { BoletaRmpDetail } from "types/rmpDocTypes";
+import { BoletaRmpDetail } from "@/types/rmpDocTypes";
 import SignatureCanvas from "react-signature-canvas";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 type Props = {
   boleta: BoletaRmpDetail
@@ -27,6 +27,7 @@ export type DraftFormProd = {
 export default function Boleta_form2({ boleta }: Props) {
   const receptor_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { data: baskets, isLoading, isError } = useQuery({
     queryKey: ['getAllBaskets'],
@@ -41,10 +42,10 @@ export default function Boleta_form2({ boleta }: Props) {
   const { mutate, isPending } = useMutation({
     mutationFn: createProdData,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/rmp');
     }
   });
@@ -110,7 +111,7 @@ export default function Boleta_form2({ boleta }: Props) {
         >
           {errors.gross_weight && <Error>{errors.gross_weight?.message?.toString()}</Error>}
         </InputComponent>
-      
+
 
         <div className="space-y-2">
           <div className="space-y-2 text-center">

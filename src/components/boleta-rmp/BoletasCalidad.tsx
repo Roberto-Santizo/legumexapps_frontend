@@ -1,4 +1,4 @@
-import { BoletaRmpAllInfo } from "types/rmpDocTypes";
+import { BoletaRmpAllInfo } from "@/types/rmpDocTypes";
 import LogoLegumex from "../logos/LogoLegumex";
 
 type Props = {

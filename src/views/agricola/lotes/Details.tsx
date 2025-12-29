@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { Search } from "lucide-react";
 import { getFincas, getLotesByFincaId } from "@/api/FincasAPI";
 import { getAllCdpsByLoteId } from "@/api/LotesAPI";
 import { useQuery } from "@tanstack/react-query";
-import { getCDPInfoByCDPId } from "@/api/PlantationControlAPI";
+import { useNotification } from "@/core/notifications/NotificationContext";
 import Spinner from "@/components/utilities-components/Spinner";
 import LoteDetails from "@/components/consulta-lote/LoteDetails";
+import { getCDPInfoByCDPId } from "../cdps/api/api";
 
 export default function Details() {
   const [selectedFincaId, setSelectedFincaId] = useState<string>("");
   const [selectedLoteId, setSelectedLoteId] = useState<string>("");
   const [selectedCdpId, setSelectedCdpId] = useState<string>("");
+  const notify = useNotification();
 
   const { data: fincas } = useQuery({
     queryKey: ['getAllFincas'],
@@ -40,7 +41,7 @@ export default function Details() {
 
   const searchInfo = async () => {
     if (!selectedCdpId) {
-      toast.error("El CDP es necesario para la búsqueda");
+      notify.error("El CDP es necesario para la búsqueda");
       return;
     }
     refetch();

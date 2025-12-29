@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { GetFinishedTasksProduction } from "@/api/DashboardProductionAPI";
-import { TaskProductionDashboard } from "types/dashboardProductionTypes";
+import { TaskProductionDashboard } from "@/types/dashboardProductionTypes";
 import { useNavigate } from "react-router-dom";
 
 

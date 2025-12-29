@@ -1,22 +1,22 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { editTask, getTaskById } from "@/api/TasksWeeklyPlanAPI";
 import { useQueries, useMutation } from "@tanstack/react-query";
 import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
 import { FiltersPlanSemanalInitialValues } from "../plans/Index";
-import { WeeklyPlan } from "types/planificacionFincasType";
-import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { WeeklyPlan } from "@/types/planificacionFincasType";
+import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import { useRole } from "@/hooks/useRole";
 import InputComponent from "@/components/form/InputComponent";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Edit() {
   const params = useParams();
-  const id = params.id!!;
+  const id = params.id!;
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
 
@@ -25,6 +25,7 @@ export default function Edit() {
   const { data: role, isLoading: loadingRole } = useRole();
 
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const results = useQueries({
     queries: [
@@ -38,8 +39,6 @@ export default function Edit() {
     if (results[1].data) setPlans(results[1].data.data);
   }, [results]);
 
-  console.log(task);
-
   const plansOptions = plans.map((plan) => ({
     value: plan.id,
     label: `${plan.finca} - ${plan.week}`,
@@ -50,11 +49,11 @@ export default function Edit() {
   const { mutate, isPending } = useMutation({
     mutationFn: editTask,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
       navigate(previousUrl);
-      toast.success(data);
+      notify.success(data ?? '');
     }
   });
 

@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { createLinea } from "@/api/LinesAPI";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +6,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectComponent from "@/components/form/InputSelectComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type DraftLinea = {
   code: string;
@@ -17,15 +17,16 @@ export type DraftLinea = {
 
 export default function Create() {
   const navigate = useNavigate();
+  const notify = useNotification();
   const shifts = [{ value: '1', label: 'AM' }, { value: '0', label: 'PM' }]
 
   const { mutate, isPending } = useMutation({
     mutationFn: createLinea,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/lineas');
     }
   });

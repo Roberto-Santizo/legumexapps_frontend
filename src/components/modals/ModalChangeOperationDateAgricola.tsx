@@ -1,11 +1,11 @@
 import { SetStateAction } from "react";
-import { toast } from "react-toastify";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { changeOperationDate, getFincaGroups } from "@/api/TasksWeeklyPlanAPI";
+import { useNotification } from "../../core/notifications/NotificationContext";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
-import { useForm } from "react-hook-form";
 import InputSelectComponent from "../form/InputSelectComponent";
 import Error from "../utilities-components/Error";
 import InputComponent from "../form/InputComponent";
@@ -20,12 +20,13 @@ type Props = {
 
 export default function ModalChangeOperationDateAgricola({ show, setModal, ids, id, setIds }: Props) {
     const queryClient = useQueryClient();
+    const notify = useNotification();
     const params = useParams();
     const fincaId = params.finca_id!!;
 
     const { data: groups } = useQuery({
-        queryKey: ['getFincaGroups', fincaId],
-        queryFn: () => getFincaGroups(fincaId),
+        queryKey: ['getFincaGroups', fincaId, id],
+        queryFn: () => getFincaGroups({ fincaId, plan: id }),
     });
 
     const {
@@ -38,10 +39,10 @@ export default function ModalChangeOperationDateAgricola({ show, setModal, ids, 
     const { mutate, isPending } = useMutation({
         mutationFn: changeOperationDate,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             setModal(false);
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });

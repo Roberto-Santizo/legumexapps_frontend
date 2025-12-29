@@ -1,7 +1,7 @@
 import Error from "@/components/utilities-components/Error";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import InputComponent from "@/components/form/InputComponent";
-import { DraftTask } from "types/taskGeneralType";
+import { DraftTask } from "@/types/taskGeneralType";
 
 type Props = {
     errors: FieldErrors<DraftTask>;

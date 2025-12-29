@@ -3,14 +3,14 @@ import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAssigmentsProductionTasks } from "@/api/WeeklyProductionPlanAPI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 
 export default function ModalCargaPosiciones() {
     const params = useParams();
-    const id = params.plan_id!!;
+    const id = params.plan_id!;
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const modal = queryParams.get('uploadPositions');
@@ -20,6 +20,7 @@ export default function ModalCargaPosiciones() {
     const navigate = useNavigate();
 
     const queryClient = useQueryClient();
+    const notify = useNotification();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -32,10 +33,10 @@ export default function ModalCargaPosiciones() {
     const { mutate, isPending } = useMutation({
         mutationFn: createAssigmentsProductionTasks,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             setFile(null);
             queryClient.invalidateQueries({ queryKey: ['getWeeklyPlanDetails', id] });
             handleCloseModal();

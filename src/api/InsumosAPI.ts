@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios";
 import { FiltersInsumosType } from "@/views/agricola/supplies/Index";
 import { z } from "zod";
-import { DraftInsumo } from "types/insumoTypes";
+import { DraftInsumo } from "@/types/insumoTypes";
 import { InsumosSchema } from "@/utils/insumoSchemas";
 import clienteAxios from "@/config/axios";
 

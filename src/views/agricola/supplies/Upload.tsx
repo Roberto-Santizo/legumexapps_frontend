@@ -1,22 +1,23 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { uploadInsumos } from "@/api/InsumosAPI";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Upload() {
     const [file, setFile] = useState<File[] | null>(null);
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const { mutate, isPending } = useMutation({
         mutationFn: uploadInsumos,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             navigate('/insumos');
         }
     });
@@ -34,7 +35,7 @@ export default function Upload() {
         if (file) {
             mutate(file);
         } else {
-            toast.error('El archivo es necesario');
+            notify.error('El archivo es necesario');
         }
     };
 

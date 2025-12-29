@@ -33,7 +33,7 @@ export default function Calendar() {
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date');
   const params = useParams();
-  const plan_id = params.plan_id!!;
+  const plan_id = params.plan_id!;
   const navigate = useNavigate();
 
   const { hasPermission } = usePermissions();

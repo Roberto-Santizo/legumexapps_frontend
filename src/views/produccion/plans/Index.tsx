@@ -5,7 +5,7 @@ import { CalendarRange, Eye } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
-import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";

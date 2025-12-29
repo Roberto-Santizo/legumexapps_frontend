@@ -1,4 +1,4 @@
-import { BoletaRmpAllInfo } from 'types/rmpDocTypes';
+import { BoletaRmpAllInfo } from '@/types/rmpDocTypes';
 import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import React from 'react';
 import Signature from '../utilities-components/Signature';

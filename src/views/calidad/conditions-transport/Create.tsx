@@ -1,22 +1,23 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { createTransporteCondicion, DraftTransporteCondicion } from "@/api/BoletaTransporteAPI";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate,isPending } = useMutation({
     mutationFn: createTransporteCondicion,
     onError: () => {
-      toast.error('Hubo un error al crear la condición');
+      notify.error('Hubo un error al crear la condición');
     },
     onSuccess: () => {
-      toast.success('Condición creada correctamente');
+      notify.success('Condición creada correctamente');
       navigate('/transporte-boleta/condiciones');
     }
   });

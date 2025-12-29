@@ -2,14 +2,14 @@ import { updateLineaSku } from "@/api/LinesPerformanceAPI";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { usePermissions } from "@/hooks/usePermissions";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import InputSelectComponent from "../form/InputSelectComponent";
-import { LinePerformance } from "types/linePerformanceTypes";
+import { LinePerformance } from "@/types/linePerformanceTypes";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     modal: boolean;
@@ -23,15 +23,16 @@ export type DraftEditLineSku = Pick<LinePerformance, 'accepted_percentage' | 'pe
 
 export default function ModalEditLineSkuData({ modal, setModal, sku, setSelectedSku, currentPage }: Props) {
     const queryClient = useQueryClient();
+    const notify = useNotification();
     const { hasPermission } = usePermissions();
 
     const { mutate, isPending } = useMutation({
         mutationFn: updateLineaSku,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess(data) {
-            toast.success(data);
+            notify.success(data);
             setModal(false);
             setSelectedSku({} as LinePerformance);
             queryClient.invalidateQueries({ queryKey: ['getPaginatedLineasSKU', currentPage] })
@@ -71,7 +72,7 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
     ];
     const onSubmit = (data: DraftEditLineSku) => {
         if (!data.performance && data.payment_method.toString() === '0') {
-            toast.error('El metodo de pago no coincide con el rendimiento asociado');
+            notify.error('El metodo de pago no coincide con el rendimiento asociado');
             return;
         }
 

@@ -1,28 +1,22 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import { useDropzone } from "react-dropzone";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { uploadAssignments } from "@/api/TasksWeeklyPlanAPI";
-import { toast } from "react-toastify";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "@/core/notifications/NotificationContext";
 
-type Props = {
-    lote_id: string;
-}
 
-export default function ModalUploadAgricolaAssignments({ lote_id }: Props) {
-    const params = useParams();
-    const id = params.plan_id!;
+export default function ModalUploadAgricolaAssignments() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const modal = queryParams.get('upload');
     const open = modal ? true : false;
 
     const [file, setFile] = useState<File[] | null>(null);
+    const notification = useNotification();
     const navigate = useNavigate();
-
-    const queryClient = useQueryClient();
 
     const handleCloseModal = () => {
         navigate(location.pathname, { replace: true });
@@ -32,12 +26,11 @@ export default function ModalUploadAgricolaAssignments({ lote_id }: Props) {
     const { mutate, isPending } = useMutation({
         mutationFn: uploadAssignments,
         onSuccess: (data) => {
-            toast.success(data);
-            queryClient.invalidateQueries({ queryKey: ['getPlanificationEmployee', id, lote_id] });
+            notification.success(data!);
             handleCloseModal();
         },
         onError: (error) => {
-            toast.error(error.message);
+            notification.error(error.message);
         }
     });
 
@@ -51,7 +44,7 @@ export default function ModalUploadAgricolaAssignments({ lote_id }: Props) {
 
     const handleUploadAssignments = async () => {
         if (file) {
-            mutate({ file: file[0], id: id });
+            mutate({ file: file[0] });
         }
     };
 
@@ -59,8 +52,6 @@ export default function ModalUploadAgricolaAssignments({ lote_id }: Props) {
         e.preventDefault();
         handleUploadAssignments();
     };
-
-
 
     return (
         <Modal modal={open} closeModal={() => handleCloseModal()} title="Cambio de Fecha de Operación">

@@ -1,15 +1,15 @@
 import clienteAxios from "@/config/axios";
-import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail, TasksCropWeeklyPlan } from "@/types";
 import { EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema, TaskCropWeeklyPlanSchema, TasksCropIncompleteSchema, TasksCropWeeklyPlanSchema } from "@/utils/taskCropWeeklyPlan-schema";
 import { isAxiosError } from "axios";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import { DraftTaskCropWeeklyPlan } from "@/views/agricola/harvest-tasks/Create";
+import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail } from "@/types/index";
 
-export async function getTasksCrop(lote_plantation_control_id: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']): Promise<TasksCropWeeklyPlan> {
+export async function getTasksCrop(cdp: TaskWeeklyPlan['cdp_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) {
     try {
         const url = `/api/tasks-crops-lotes`;
         const { data } = await clienteAxios(url, {
-            params: { lote_plantation_control_id, weekly_plan_id }
+            params: { cdp, weekly_plan_id }
         });
         const result = TasksCropWeeklyPlanSchema.safeParse(data);
         if (result.success) {
@@ -69,7 +69,7 @@ export async function getCropEmployees(id: TaskCropWeeklyPlan['finca_id']): Prom
     }
 }
 
-export async function closeDailyAssignment(id: TaskCropWeeklyPlan['id'], data: EmployeeCrop[], plants: Number) {
+export async function closeDailyAssignment(id: TaskCropWeeklyPlan['id'], data: EmployeeCrop[], plants: number) {
     try {
         const totalLbs = data.reduce((accumulator, currentValue) => { return accumulator + (currentValue.lbs || 0) }, 0);
         const url = `/api/tasks-crops-lotes/close-daily-assigment/${id}`

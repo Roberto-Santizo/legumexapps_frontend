@@ -4,16 +4,17 @@ import { getTransportistas, Transportista } from "@/api/TransportistasAPI";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPlaca, DraftPlaca } from "@/api/PlacasAPI";
-import { toast } from "react-toastify";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
   const [transportistas, setTransportistas] = useState<Transportista[]>([]);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getAllTransportistas'],
@@ -35,10 +36,10 @@ export default function Create() {
   const { mutate, isPending } = useMutation({
     mutationFn: createPlaca,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/transportistas/placas');
     }
   });

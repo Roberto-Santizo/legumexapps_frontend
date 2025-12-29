@@ -2,10 +2,10 @@ import { Dispatch, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updatePositionsLine } from "@/api/LinesAPI";
-import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     isOpen: boolean;
@@ -14,18 +14,19 @@ type Props = {
 
 export default function ModalCargaPosicionesLinea({ isOpen, setIsOpen }: Props) {
     const params = useParams();
-    const line_id = params.id!!;
+    const line_id = params.id!;
     const queryClient = useQueryClient();
-
+    const notify = useNotification();
+    
     const [file, setFile] = useState<File[] | null>(null);
 
     const { mutate, isPending } = useMutation({
         mutationFn: updatePositionsLine,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             setIsOpen(false);
             setFile(null);
             queryClient.invalidateQueries({ queryKey: ['getLineaById', line_id] });

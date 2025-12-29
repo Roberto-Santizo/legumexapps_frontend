@@ -1,5 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { getCurrentDate } from "@/helpers";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -10,6 +9,7 @@ import Spinner from "@/components/utilities-components/Spinner";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 
 export type DraftChangeOperationDate = {
@@ -23,10 +23,11 @@ export default function ModalChangeOperationDate() {
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date')!;
   const taskId = queryParams.get('changeOperationTask')!;
-  const plan_id = params.plan_id!!;
+  const plan_id = params.plan_id!;
   const open = taskId ? true : false;
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const filters = useAppStore((state) => state.filtersWithOperationDate);
 
@@ -44,10 +45,10 @@ export default function ModalChangeOperationDate() {
   const { mutate, isPending } = useMutation({
     mutationFn: updateTaskProductionOperationDate,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
       queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
       handleCloseModal();

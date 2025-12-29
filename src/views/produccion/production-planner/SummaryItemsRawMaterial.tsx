@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { BarChart, Bar, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, YAxis, XAxis, TooltipProps } from "recharts";
 import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
-import { WeeklyProductionPlanDraftSummaryItem } from "types/draftWeeklyProductionPlanTypes";
+import { WeeklyProductionPlanDraftSummaryItem } from "@/types/draftWeeklyProductionPlanTypes";
 import * as XLSX from 'xlsx';
 import { FiltersDraftsTasks } from "./Show";
 

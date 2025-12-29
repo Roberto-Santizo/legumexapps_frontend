@@ -2,7 +2,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { TableCell } from "@/components/ui/table";
 import { TableRow } from "@mui/material";
 import { AlertCircleIcon } from "lucide-react";
-import { TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 
 type Props = {
     employee: TaskProductionEmployee;

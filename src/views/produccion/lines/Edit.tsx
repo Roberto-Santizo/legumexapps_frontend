@@ -3,17 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getLineaById, updateLinea } from "@/api/LinesAPI";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import { DraftLinea } from "./Create";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputComponent from "@/components/form/InputComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Edit() {
   const navigate = useNavigate();
   const params = useParams();
-  const id = params.id!!;
+  const id = params.id!;
+  const notify = useNotification();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getLineaById', id],
@@ -23,10 +24,10 @@ export default function Edit() {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: DraftLinea) => updateLinea(data, id),
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/lineas');
     }
   });

@@ -1,11 +1,11 @@
 import { Calendar, Divide, EditIcon, TrashIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { TaskProductionNoOperationDate } from "types/taskProductionPlanTypes";
+import { TaskProductionNoOperationDate } from "@/types/taskProductionPlanTypes";
 import { assignOperationDate, deleteTaskProduction } from "@/api/TaskProductionPlansAPI";
-import { toast } from "react-toastify";
 import { useAppStore } from "@/store";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
   task: TaskProductionNoOperationDate;
@@ -16,8 +16,9 @@ export default function TaskUnscheduled({ task }: Props) {
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date')!;
   const params = useParams();
-  const plan_id = params.plan_id!!;
+  const plan_id = params.plan_id!;
   const queryClient = useQueryClient();
+  const notify = useNotification();
 
   const { hasPermission } = usePermissions();
 
@@ -29,10 +30,10 @@ export default function TaskUnscheduled({ task }: Props) {
   const { mutate, isPending } = useMutation({
     mutationFn: assignOperationDate,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getWeeklyProductionPlanEvents', plan_id] });
       queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate] });
       queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filtersWithOperationDate] });
@@ -45,10 +46,10 @@ export default function TaskUnscheduled({ task }: Props) {
   const { mutate: deleteTask } = useMutation({
     mutationFn: deleteTaskProduction,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data);
       queryClient.invalidateQueries({ queryKey: ['getTasksNoOperationDate', plan_id, filtersNoOperationDate] });
       queryClient.invalidateQueries({ queryKey: ['getLineHoursPerWeek', plan_id] });
     }

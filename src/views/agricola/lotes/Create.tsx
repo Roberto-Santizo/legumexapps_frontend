@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { getCDPS } from "@/api/PlantationControlAPI";
 import { Finca, getFincas } from "@/api/FincasAPI";
 import { createLote } from "@/api/LotesAPI";
-import { toast } from "react-toastify";
 import { useQueries, useMutation } from "@tanstack/react-query";
-import { FiltersCdpInitialValues } from "../cdps/Index";
-import { PlantationControl } from "types/plantationControlTypes";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputComponent from "@/components/form/InputComponent";
@@ -15,29 +12,29 @@ import InputSelectSearchComponent from "@/components/form/InputSelectSearchCompo
 
 export type DraftLote = {
   name: string;
-  cdp_id: string;
   finca_id: string;
+  size: number;
+  total_plants: number;
 }
 
 export default function Create() {
   const [fincas, setFincas] = useState<Finca[]>([]);
-  const [cdps, setCdps] = useState<PlantationControl[]>([]); 
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const results = useQueries({
     queries: [
       { queryKey: ['getAllFincas'], queryFn: getFincas },
-      { queryKey: ['handleGetCDPS'], queryFn: () => getCDPS({page:1,filters : FiltersCdpInitialValues, paginated : ''}) }
     ]
   });
 
   const { mutate, isPending } = useMutation({
     mutationFn: createLote,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/lotes');
     }
   });
@@ -45,14 +42,9 @@ export default function Create() {
   useEffect(() => {
     if (results) {
       if (results[0].data) setFincas(results[0].data);
-      if (results[1].data) setCdps(results[1].data.data);
     }
   }, [results]);
 
-  const cdpsOptions = cdps.map((cdp) => ({
-    value: cdp.id,
-    label: cdp.name,
-  }));
 
   const fincasOptions = fincas.map((finca) => ({
     value: finca.id,
@@ -75,6 +67,7 @@ export default function Create() {
       <form
         className="xl:w-1/2 mx-auto p-5 space-y-5"
         onSubmit={handleSubmit(onSubmit)}
+        noValidate
       >
 
         <InputComponent<DraftLote>
@@ -90,6 +83,31 @@ export default function Create() {
           {errors.name && <Error>{errors.name?.message?.toString()}</Error>}
         </InputComponent>
 
+        <InputComponent<DraftLote>
+          label="Tamaño del lote"
+          id="size"
+          name="size"
+          placeholder="Tamaño del lote"
+          register={register}
+          validation={{ required: 'El tamaño del lote es obligatorio' }}
+          errors={errors}
+          type={'number'}
+        >
+          {errors.size && <Error>{errors.size?.message?.toString()}</Error>}
+        </InputComponent>
+
+        <InputComponent<DraftLote>
+          label="Total de plantas de lote"
+          id="total_plants"
+          name="total_plants"
+          placeholder="Total de plantas del lote"
+          register={register}
+          validation={{ required: 'El total de plantas del lote es requerido' }}
+          errors={errors}
+          type={'number'}
+        >
+          {errors.total_plants && <Error>{errors.total_plants?.message?.toString()}</Error>}
+        </InputComponent>
 
         <InputSelectSearchComponent<DraftLote>
           label="Finca"
@@ -101,18 +119,6 @@ export default function Create() {
           errors={errors}
         >
           {errors.finca_id && <Error>{errors.finca_id?.message?.toString()}</Error>}
-        </InputSelectSearchComponent>
-
-        <InputSelectSearchComponent<DraftLote>
-          label="CDP"
-          id="cdp_id"
-          name="cdp_id"
-          options={cdpsOptions}
-          control={control}
-          rules={{ required: 'El CDP es obligatorio' }}
-          errors={errors}
-        >
-          {errors.cdp_id && <Error>{errors.cdp_id?.message?.toString()}</Error>}
         </InputSelectSearchComponent>
 
         <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">

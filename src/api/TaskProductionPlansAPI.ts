@@ -1,6 +1,6 @@
-import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
 import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionEditiDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TaskProductionReprogramDetailsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
-import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionNoOperationDate, TaskProductionOperationDate, TaskProductionPlan } from "types/taskProductionPlanTypes";
+import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionNoOperationDate, TaskProductionOperationDate, TaskProductionPlan } from "@/types/taskProductionPlanTypes";
 import { isAxiosError } from "axios";
 import { DraftUnassignTaskProduction } from "@/components/modals/ModalUnassignNote";
 import { DraftPerformance } from "@/components/modals/ModalTomaRendimientoProduccion";

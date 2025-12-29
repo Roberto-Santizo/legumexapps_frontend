@@ -1,44 +1,45 @@
 import { downloadReportInsumos, downloadReportPersonalDetails, downloadReportPlanilla, downloadWeeklyPlanReport } from "@/api/WeeklyPlansAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { CalendarIcon, DownloadIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { WeeklyPlan } from "@/types/planificacionFincasType";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 
 export default function MenuColumns({ plan }: { plan: WeeklyPlan }) {
     const { hasPermission } = usePermissions();
+    const notify = useNotification();
 
     const { mutate, isPending } = useMutation({
         mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadReportInsumos(planId),
         onError: (error) => {
-            toast.error(error.message)
+            notify.error(error.message)
         }
     });
 
     const { mutate: downloadPlanilla, isPending: isPending2 } = useMutation({
         mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadReportPlanilla(planId),
         onError: (error) => {
-            toast.error(error.message)
+            notify.error(error.message)
         },
     });
 
     const { mutate: downloadPlanReport, isPending: isPending3 } = useMutation({
         mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadWeeklyPlanReport(planId),
         onError: (error) => {
-            toast.error(error.message)
+            notify.error(error.message)
         },
     });
 
     const { mutate: downloadPersonalDetails, isPending: isPending4 } = useMutation({
         mutationFn: ({ planId }: { planId: WeeklyPlan['id'] }) => downloadReportPersonalDetails(planId),
         onError: (error) => {
-            toast.error(error.message)
+            notify.error(error.message)
         },
     });
 

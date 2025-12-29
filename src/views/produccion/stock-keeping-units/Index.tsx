@@ -5,7 +5,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getSkus } from "@/api/SkusAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Bars3Icon } from "@heroicons/react/16/solid";
-import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
+import { StockKeepingUnit } from "@/types/stockKeepingUnitTypes";
 import Pagination from "@/components/utilities-components/Pagination";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";

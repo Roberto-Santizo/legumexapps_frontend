@@ -3,26 +3,27 @@ import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query";
 import { closeEmployeePermission, getPermisosEmpleadosPaginated, PermisoEmpleado } from "@/api/PermisosEmpleadosAPI";
 import { formatDate } from "@/helpers";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
-import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { Eye } from "lucide-react";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Pagination from "@/components/utilities-components/Pagination";
 import Swal from "sweetalert2";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function IndexPermisosEmpleados() {
   const [pageCount, setPageCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [empleadosPermisos, setEmpleadosPermisos] = useState<PermisoEmpleado[]>([]);
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ id, flag }: { id: PermisoEmpleado['id'], flag: string }) => closeEmployeePermission(id, flag),
     onError: () => {
-      toast.error("Hubo un error al cerrar el permiso");
+      notify.error("Hubo un error al cerrar el permiso");
     },
     onSuccess: () => {
-      toast.success("Permiso cerrado correctamente");
+      notify.success("Permiso cerrado correctamente");
       refetch();
     }
   });

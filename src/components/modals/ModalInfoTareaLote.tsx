@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Edit } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
 import Modal from '../Modal'
-import { TaskWeeklyPlanForCalendar } from 'types/taskWeeklyPlanTypes';
+import { TaskWeeklyPlanForCalendar } from '@/types/taskWeeklyPlanTypes';
 
 type Props = {
     show: boolean,

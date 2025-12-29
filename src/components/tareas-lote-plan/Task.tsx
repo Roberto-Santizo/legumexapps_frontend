@@ -1,15 +1,15 @@
 import { CircleCheck, CirclePause, Edit, Eraser, Info, PlayCircleIcon, TrashIcon } from "lucide-react";
-import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatearQuetzales } from "@/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cleanTask, closeAssigment, closeAssigmentDron, closePartialClosure, closeTask, createPartialClosure, deteleteTask } from "@/api/TasksWeeklyPlanAPI";
 import { usePermissions } from "@/hooks/usePermissions";
 import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
+import { useNotification } from "@/core/notifications/NotificationContext";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import Swal from "sweetalert2";
 import TaskLabel from "../utilities-components/TaskLabel";
 import DronIcon from "../dashboard-agricola/DronIcon";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
 import Spinner from "../utilities-components/Spinner";
 
 type TaskProps = {
@@ -20,20 +20,21 @@ type TaskProps = {
 
 export default function Task({ task, filters, isAdmin }: TaskProps) {
   const params = useParams();
-  const lote_plantation_control_id = params.lote_plantation_control_id!!;
-  const weekly_plan_id = params.weekly_plan_id!!;
+  const lote_plantation_control_id = params.lote_plantation_control_id!;
+  const weekly_plan_id = params.weekly_plan_id!;
   const queryClient = useQueryClient();
   const { hasPermission } = usePermissions();
 
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate: mutateCloseTask } = useMutation({
     mutationFn: closeTask,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
@@ -41,10 +42,10 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
   const { mutate: mutateCleanTask } = useMutation({
     mutationFn: cleanTask,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
@@ -52,10 +53,10 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
   const { mutate: startTask, isPending } = useMutation({
     mutationFn: closeAssigment,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     },
   });
@@ -63,10 +64,10 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
   const { mutate: mutateCreatePartialClosure } = useMutation({
     mutationFn: createPartialClosure,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
@@ -74,10 +75,10 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
   const { mutate: mutateClosePartialClosure } = useMutation({
     mutationFn: closePartialClosure,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
@@ -85,10 +86,10 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
   const { mutate: mutateCloseAssigmentDron } = useMutation({
     mutationFn: closeAssigmentDron,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
@@ -96,10 +97,10 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
   const { mutate: mutateDeleteTask } = useMutation({
     mutationFn: deteleteTask,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], })
     }
   });
@@ -216,6 +217,7 @@ export default function Task({ task, filters, isAdmin }: TaskProps) {
       <div className="col-span-5">
         <TaskLabel label={"ID"} text={task.id} />
         <TaskLabel label={"Lote"} text={task.lote} />
+        <TaskLabel label={"Cdp"} text={task.cdp} />
         <TaskLabel label={"Semana"} text={task.week.toString()} />
         <TaskLabel label={"Horas Teoricas"} text={`${task.hours.toString()} horas`} />
         <TaskLabel label={"Tarea"} text={task.task} />

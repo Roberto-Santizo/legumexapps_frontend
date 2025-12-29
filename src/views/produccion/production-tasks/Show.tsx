@@ -14,7 +14,7 @@ import GraphicsPlanSemanal from "../plans/GraphicsPlanSemanal";
 
 export default function Show() {
   const params = useParams();
-  const task_p_id = params.task_p_id!!;
+  const task_p_id = params.task_p_id!;
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFormatsBodega, setModalFormatsBodega] = useState<boolean>(false);

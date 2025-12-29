@@ -1,7 +1,7 @@
 import clienteAxios from "@/config/axios";
 import { MateriaPrimaItemSchema, MateriaPrimaItemsSchema } from "@/utils/materiaPrimaSchemas";
 import { isAxiosError } from "axios";
-import { DraftMateriaPrimaItem, MateriaPrimaItem } from "types/materiaPrimaTypes";
+import { DraftMateriaPrimaItem, MateriaPrimaItem } from "@/types/materiaPrimaTypes";
 
 export async function createMateriaPrimaItem({ formData }: { formData: DraftMateriaPrimaItem }) {
     try {

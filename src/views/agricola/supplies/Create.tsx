@@ -2,22 +2,23 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { createInsumo } from "@/api/InsumosAPI";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { DraftInsumo } from "types/insumoTypes";
+import { DraftInsumo } from "@/types/insumoTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createInsumo,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/insumos');
     }
   });

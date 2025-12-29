@@ -4,23 +4,23 @@ import { formatDate } from "@/helpers";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Apple, ArrowBigRight, BookCheck, Calendar, ChartLine, Info, TrashIcon, UsersIcon } from "lucide-react";
 import { confirmAssignment, createTaskProductionEmployees, getComodines, getTaskProductionDetails } from "@/api/TaskProductionPlansAPI";
-import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalChangeEmployee from "@/components/modals/ModalChangeEmployee";
 import Swal from "sweetalert2";
 import TaskProductionAsignacionSkeleton from "@/components/produccion/TaskProductionAsignacionSkeleton";
 import CardInfo from "@/components/shared/CardInfo";
 import TableEmployees from "@/components/produccion/TableEmployees";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 
 export default function ShowTaskProductionDetails() {
     const params = useParams();
-    const task_p_id = params.task_p_id!!;
-    const plan_id = params.plan_id!!;
-    const linea_id = params.linea_id!!;
+    const task_p_id = params.task_p_id!;
+    const plan_id = params.plan_id!;
+    const linea_id = params.linea_id!;
     const queryClient = useQueryClient();
 
     const location = useLocation();
@@ -34,6 +34,7 @@ export default function ShowTaskProductionDetails() {
     const [comodines, setComodines] = useState<TaskProductionEmployee[]>([]);
     const [counter, setCounter] = useState<number>(0);
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const { data: taskDetails, isLoading, isError } = useQuery({
         queryKey: ['getTaskProductionDetails', task_p_id],
@@ -96,17 +97,17 @@ export default function ShowTaskProductionDetails() {
     const { mutate: firstMutation, isPending } = useMutation({
         mutationFn: confirmAssignment,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         }
     });
 
     const { mutate: secondMutation, isPending: isPendingNewEmployees } = useMutation({
         mutationFn: createTaskProductionEmployees,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: () => {
-            toast.success("Asignación y empleados confirmados");
+            notify.success("Asignación y empleados confirmados");
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
             navigate(url);
         }
@@ -131,7 +132,7 @@ export default function ShowTaskProductionDetails() {
                 try {
                     await Promise.allSettled([firstMutation({ changes, id: task_p_id, previousConfig: true }), secondMutation({ id: task_p_id, FormData: newEmployees })]);
                 } catch (error) {
-                    toast.error("Hubo un error en el proceso");
+                    notify.error("Hubo un error en el proceso");
                 }
             }
         });
@@ -152,7 +153,7 @@ export default function ShowTaskProductionDetails() {
                 try {
                     await Promise.allSettled([firstMutation({ changes, id: task_p_id, previousConfig: false }), secondMutation({ id: task_p_id, FormData: newEmployees })]);
                 } catch (error) {
-                    toast.error("Hubo un error en el proceso");
+                    notify.error("Hubo un error en el proceso");
                 }
             }
         });

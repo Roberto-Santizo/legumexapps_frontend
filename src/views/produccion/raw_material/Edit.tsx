@@ -1,18 +1,19 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { DraftMateriaPrimaItem, MateriaPrimaItem } from "types/materiaPrimaTypes";
+import { DraftMateriaPrimaItem, MateriaPrimaItem } from "@/types/materiaPrimaTypes";
 import { editMateriaPrimaItem, getMateriaPrimaItemById } from "@/api/MateriaPrimaAPI";
-import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import FormMateriaPrima from "./Form";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Edit() {
     const params = useParams<{ id: MateriaPrimaItem['id'] }>();
-    const id = params.id!!;
+    const id = params.id!;
 
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const {
         handleSubmit,
@@ -37,10 +38,10 @@ export default function Edit() {
     const { mutate, isPending } = useMutation({
         mutationFn: editMateriaPrimaItem,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             navigate('/materia-prima');
         }
     });

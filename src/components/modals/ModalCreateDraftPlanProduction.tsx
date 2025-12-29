@@ -2,11 +2,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { createDraftWeeklyProductionPlan } from "@/api/DraftWeeklyProductionPlanAPI";
-import { toast } from "react-toastify";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftWeeklyProductionPlan = {
     week: number;
@@ -20,6 +20,7 @@ export default function ModalCreateDraftPlanProduction() {
     const show = modal ? true : false;
 
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const {
         handleSubmit,
@@ -31,7 +32,7 @@ export default function ModalCreateDraftPlanProduction() {
     const { mutate, isPending } = useMutation({
         mutationFn: createDraftWeeklyProductionPlan,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
             handleCloseModal();

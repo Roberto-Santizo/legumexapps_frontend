@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { BoxIcon, CookingPot } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
-import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
+import { StockKeepingUnit } from "@/types/stockKeepingUnitTypes";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalRawMaterialRecipe from "@/components/modals/ModalRawMaterialRecipe";

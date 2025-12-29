@@ -1,14 +1,14 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { TaskInsumo } from "@/types";
+import { TaskInsumo } from "@/types/index";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeTask, getTask, registerUsedInsumos } from "@/api/TasksWeeklyPlanAPI";
-import { toast } from "react-toastify";
 import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Spinner from "../utilities-components/Spinner";
 import ShowErrorAPI from "../utilities-components/ShowErrorAPI";
 import Modal from "../Modal";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
   filters: FiltersTareasLoteType;
@@ -16,8 +16,8 @@ type Props = {
 
 export default function InsumosModal({ filters }: Props) {
   const params = useParams();
-  const lote_plantation_control_id = params.lote_plantation_control_id!!;
-  const weekly_plan_id = params.weekly_plan_id!!;
+  const lote_plantation_control_id = params.lote_plantation_control_id!;
+  const weekly_plan_id = params.weekly_plan_id!;
   const queryClient = useQueryClient();
 
   const location = useLocation();
@@ -29,14 +29,15 @@ export default function InsumosModal({ filters }: Props) {
   const [taskInsumos, setTaskInsumo] = useState<TaskInsumo[]>([]);
 
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate: mutationCloseTask, isPending } = useMutation({
     mutationFn: closeTask,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       queryClient.invalidateQueries({ queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters], });
       navigate(location.pathname, { replace: true });
     }
@@ -45,7 +46,7 @@ export default function InsumosModal({ filters }: Props) {
   const { mutate: mutationRegisterUsedInsumos } = useMutation({
     mutationFn: registerUsedInsumos,
     onError: (error) => {
-      toast.error(error.message)
+      notify.error(error.message)
     },
   });
 

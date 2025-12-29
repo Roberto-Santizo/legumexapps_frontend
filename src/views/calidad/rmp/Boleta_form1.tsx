@@ -1,6 +1,5 @@
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Basket, getBaskets } from "@/api/BasketsAPI";
 import { createBoletaRMP } from "@/api/ReceptionsDocAPI";
@@ -12,12 +11,13 @@ import { getTransportistaInfoById, getTransportistas, Transportista, } from "@/a
 import { Placa } from "@/api/PlacasAPI";
 import { getAllProductorCDPS, ProductorCDP, } from "@/api/ProductorPlantationAPI";
 import { useMutation } from "@tanstack/react-query";
-import { DraftBoletaRMP } from "types/rmpDocTypes";
+import { DraftBoletaRMP } from "@/types/rmpDocTypes";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 import { usePermissions } from "@/hooks/usePermissions";
 
 export default function Boleta_form1() {
@@ -33,6 +33,7 @@ export default function Boleta_form1() {
   const inspector_signature = useRef({} as SignatureCanvas);
   const prod_signature = useRef({} as SignatureCanvas);
   const navigate = useNavigate();
+  const notify = useNotification();
   const { hasPermission } = usePermissions();
 
   const results = useQueries({
@@ -120,10 +121,10 @@ export default function Boleta_form1() {
   const { mutate, isPending } = useMutation({
     mutationFn: createBoletaRMP,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/rmp');
     }
   });

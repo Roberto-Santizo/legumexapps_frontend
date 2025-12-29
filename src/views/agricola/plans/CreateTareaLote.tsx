@@ -1,22 +1,20 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getTasks } from "@/api/TasksAPI";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Delete, PlusIcon } from "lucide-react";
-import { toast } from "react-toastify";
 import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
 import { getCurrentDate } from "@/helpers";
 import { FiltersTasksInitialValues } from "../tasks/Index";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { DraftTaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
+import { useNotification } from "../../../core/notifications/NotificationContext";
+import { getCDPS } from "../cdps/api/api";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import ModalAddInsumo from "@/components/modals/ModalAddInsumo";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import InputSelectComponent from "@/components/form/InputSelectComponent";
 import InputComponent from "@/components/form/InputComponent";
-import { DraftTaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
-import { Lote } from "types/lotesType";
 
 export type DraftSelectedInsumo = {
   insumo_id: string;
@@ -24,24 +22,32 @@ export type DraftSelectedInsumo = {
   name: string;
 }
 
-type Props = {
-  plans: WeeklyPlan[];
-  lotes: Lote[];
-}
 
-export default function CreateTareaLote({ plans, lotes }: Props) {
+export default function CreateTareaLote() {
   const [selectedInsumos, setSelectedInsumos] = useState<DraftSelectedInsumo[]>([]);
   const [open, setOpen] = useState<boolean>(false);
+  const params = useParams();
+  const fincaId = params.finca_id!;
+  const id = params.plan_id!;
+
   const navigate = useNavigate();
+  const notify = useNotification();
+  const queryClient = useQueryClient();
+
+  const { data } = useQuery({
+    queryKey: ['getPaginatedCDPS', fincaId],
+    queryFn: () => getCDPS({ page: 1, filters: { cdp: '', end_date: '', start_date: '' }, paginated: '', finca: fincaId }),
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: createTaskWeeklyPlan,
     onError: (error) => {
-      toast.error(error.message)
+      notify.error(error.message)
     },
     onSuccess: (data) => {
-      toast.success(data);
-      navigate('/planes-semanales');
+      notify.success(data!);
+      queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
+      navigate(location.pathname);
     }
   });
   const { data: tasks } = useQuery({
@@ -49,20 +55,11 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
     queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }),
   });
 
-  const lotesOptions = lotes.map((lote) => ({
-    value: lote.id,
-    label: lote.name,
-  }));
-
   const tareasOptions = tasks?.data.map((lote) => ({
     value: lote.id,
     label: `${lote.code} ${lote.name}`,
   }));
 
-  const plansOptions = plans.map((plan) => ({
-    value: plan.id,
-    label: `${plan.finca} - ${plan.week}`,
-  }));
 
   const {
     register,
@@ -77,177 +74,156 @@ export default function CreateTareaLote({ plans, lotes }: Props) {
   }
 
   const CreateTareaLote = async (data: DraftTaskWeeklyPlan) => {
+    data.weekly_plan_id = id!;
     const FormData = {
       ...data,
       insumos: selectedInsumos
     }
-
     mutate({ FormData });
   };
-  return (
+
+  const cdps = data?.data.map((cdp) => ({
+    value: cdp.id,
+    label: `${cdp.name}`,
+  }));
+
+  if (cdps) return (
     <>
-      <div className="my-10 w-2/3 mx-auto">
-        <form
-          onSubmit={handleSubmit(CreateTareaLote)}
-          className="space-y-5 shadow-xl p-5"
-          noValidate
+      <form
+        onSubmit={handleSubmit(CreateTareaLote)}
+        className="space-y-5"
+        noValidate
+      >
+        <InputComponent<DraftTaskWeeklyPlan>
+          label="Empleados Necesarios"
+          id="slots"
+          name="slots"
+          placeholder="Empleados necesarios para la tarea"
+          register={register}
+          validation={{
+            required: "El número de empleados es obligatorio",
+            min: {
+              value: 1,
+              message: "El número de empleados debe de ser mayor a 0",
+            },
+          }
+          }
+          errors={errors}
         >
-          <InputComponent<DraftTaskWeeklyPlan>
-            label="Empleados Necesarios"
-            id="workers_quantity"
-            name="workers_quantity"
-            placeholder="Empleados necesarios para la tarea"
-            register={register}
-            validation={{
-              required: "El número de empleados es obligatorio",
-              min: {
-                value: 1,
-                message: "El número de empleados debe de ser mayor a 0",
-              },
-            }
-            }
-            errors={errors}
-          >
-            {errors.workers_quantity && <Error>{errors.workers_quantity?.message?.toString()}</Error>}
-          </InputComponent>
+          {errors.slots && <Error>{errors.slots?.message?.toString()}</Error>}
+        </InputComponent>
 
-          <InputComponent<DraftTaskWeeklyPlan>
-            label="Horas"
-            id="hours"
-            name="hours"
-            placeholder="Horas Necesarias Para Realizar la Tarea"
-            register={register}
-            validation={{
-              required: "El número de horas es obligatorio",
-              min: {
-                value: 1,
-                message: "El número de horas debe de ser mayor a 0",
-              },
-            }}
-            errors={errors}
-          >
-            {errors.hours && <Error>{errors.hours?.message?.toString()}</Error>}
-          </InputComponent>
+        <InputComponent<DraftTaskWeeklyPlan>
+          label="Horas"
+          id="hours"
+          name="hours"
+          placeholder="Horas Necesarias Para Realizar la Tarea"
+          register={register}
+          validation={{
+            required: "El número de horas es obligatorio",
+            min: {
+              value: 1,
+              message: "El número de horas debe de ser mayor a 0",
+            },
+          }}
+          errors={errors}
+        >
+          {errors.hours && <Error>{errors.hours?.message?.toString()}</Error>}
+        </InputComponent>
 
-          <InputComponent<DraftTaskWeeklyPlan>
-            label="Presupuesto"
-            id="budget"
-            name="budget"
-            placeholder="Presupuesto De La Tarea"
-            register={register}
-            validation={{
-              required: "El presupuesto es obligatorio",
-              min: {
-                value: 1,
-                message: "El presupuesto debe de ser mayor a 0",
-              },
-            }}
-            errors={errors}
-          >
-            {errors.budget && <Error>{errors.budget?.message?.toString()}</Error>}
-          </InputComponent>
+        <InputComponent<DraftTaskWeeklyPlan>
+          label="Presupuesto"
+          id="budget"
+          name="budget"
+          placeholder="Presupuesto De La Tarea"
+          register={register}
+          validation={{
+            required: "El presupuesto es obligatorio",
+            min: {
+              value: 1,
+              message: "El presupuesto debe de ser mayor a 0",
+            },
+          }}
+          errors={errors}
+        >
+          {errors.budget && <Error>{errors.budget?.message?.toString()}</Error>}
+        </InputComponent>
 
 
-          <InputSelectSearchComponent<DraftTaskWeeklyPlan>
-            label="Lote"
-            id="lote_id"
-            name="lote_id"
-            options={lotesOptions}
-            control={control}
-            rules={{ required: 'El lote es obligatorio' }}
-            errors={errors}
-          >
-            {errors.lote_id && <Error>{errors.lote_id?.message?.toString()}</Error>}
-          </InputSelectSearchComponent>
+        <InputSelectSearchComponent<DraftTaskWeeklyPlan>
+          label="CDP"
+          id="cdp_id"
+          name="cdp_id"
+          options={cdps}
+          control={control}
+          rules={{ required: 'El CDP es obligatorio' }}
+          errors={errors}
+        >
+          {errors.cdp_id && <Error>{errors.cdp_id?.message?.toString()}</Error>}
+        </InputSelectSearchComponent>
 
-          <InputSelectSearchComponent<DraftTaskWeeklyPlan>
-            label="Tarea"
-            id="tarea_id"
-            name="tarea_id"
-            options={tareasOptions ? tareasOptions : []}
-            control={control}
-            rules={{ required: "La tarea a realizar es obligatoria" }}
-            errors={errors}
-          >
-            {errors.tarea_id && <Error>{errors.tarea_id?.message?.toString()}</Error>}
-          </InputSelectSearchComponent>
+        <InputSelectSearchComponent<DraftTaskWeeklyPlan>
+          label="Tarea"
+          id="tarea_id"
+          name="tarea_id"
+          options={tareasOptions ? tareasOptions : []}
+          control={control}
+          rules={{ required: "La tarea a realizar es obligatoria" }}
+          errors={errors}
+        >
+          {errors.tarea_id && <Error>{errors.tarea_id?.message?.toString()}</Error>}
+        </InputSelectSearchComponent>
 
-          <InputSelectSearchComponent<DraftTaskWeeklyPlan>
-            label="Plan Semanal Destino"
-            id="weekly_plan_id"
-            name="weekly_plan_id"
-            options={plansOptions}
-            control={control}
-            rules={{ required: "El plan semanal destino es obligatorio" }}
-            errors={errors}
-          >
-            {errors.weekly_plan_id && <Error>{errors.weekly_plan_id?.message?.toString()}</Error>}
-          </InputSelectSearchComponent>
+        <InputComponent<DraftTaskWeeklyPlan>
+          label="Fecha de Operación"
+          id="operation_date"
+          name="operation_date"
+          placeholder=""
+          register={register}
+          validation={{ required: 'La fecha de operación es obligatoria' }}
+          errors={errors}
+          type={'date'}
+          min={getCurrentDate()}
+        >
+          {errors.operation_date && <Error>{errors.operation_date?.message?.toString()}</Error>}
+        </InputComponent>
 
-          <InputSelectComponent<DraftTaskWeeklyPlan>
-            label="Tipo de Tarea"
-            id="extraordinary"
-            name="extraordinary"
-            options={[{ label: 'Extraordinaria', value: '1' }, { label: 'Planificada', value: '0' }]}
-            register={register}
-            validation={{ required: "Especifique el tipo de tarea" }}
-            errors={errors}
-          >
-            {errors.extraordinary && <Error>{errors.extraordinary?.message?.toString()}</Error>}
-          </InputSelectComponent>
-
-          <InputComponent<DraftTaskWeeklyPlan>
-            label="Fecha de Operación"
-            id="operation_date"
-            name="operation_date"
-            placeholder=""
-            register={register}
-            validation={{ required: 'La fecha de operación es obligatoria' }}
-            errors={errors}
-            type={'date'}
-            min={getCurrentDate()}
-          >
-            {errors.operation_date && <Error>{errors.operation_date?.message?.toString()}</Error>}
-          </InputComponent>
-
-          <fieldset className="border p-5">
-            <legend className="font-bold text-3xl">Insumos</legend>
-            <button type="button" className="button bg-indigo-500 hover:bg-indigo-600 flex" onClick={() => setOpen(true)}>
-              <PlusIcon />
-              <p>Agregar Insumo</p>
-            </button>
-
-            {selectedInsumos.length > 0 ? (
-              <table className="table mt-5">
-                <thead>
-                  <tr className="thead-tr">
-                    <th className="thead-th">Insumo</th>
-                    <th className="thead-th">Cantidad</th>
-                    <th className="thead-th">Acción</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedInsumos.map(item => (
-                    <tr className="tbody-tr" key={item.insumo_id}>
-                      <td className="tbody-td">{item.name}</td>
-                      <td className="tbody-td">{item.quantity}</td>
-                      <td className="tbody-td">
-                        <Delete className="cursor-pointer hover:text-gray-500" onClick={() => deleteItem(item.insumo_id)} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (<p className="mt-5 text-center">No existen insumos relacionados</p>)}
-
-          </fieldset>
-
-          <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-            {isPending ? <Spinner /> : <p>Crear Tarea Lote</p>}
+        <fieldset className="border p-5">
+          <legend className="font-bold text-3xl">Insumos</legend>
+          <button type="button" className="button bg-indigo-500 hover:bg-indigo-600 flex" onClick={() => setOpen(true)}>
+            <PlusIcon />
+            <p>Agregar Insumo</p>
           </button>
-        </form>
-      </div>
 
+          {selectedInsumos.length > 0 ? (
+            <table className="table mt-5">
+              <thead>
+                <tr className="thead-tr">
+                  <th className="thead-th">Insumo</th>
+                  <th className="thead-th">Cantidad</th>
+                  <th className="thead-th">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedInsumos.map(item => (
+                  <tr className="tbody-tr" key={item.insumo_id}>
+                    <td className="tbody-td">{item.name}</td>
+                    <td className="tbody-td">{item.quantity}</td>
+                    <td className="tbody-td">
+                      <Delete className="cursor-pointer hover:text-gray-500" onClick={() => deleteItem(item.insumo_id)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (<p className="mt-5 text-center">No existen insumos relacionados</p>)}
+
+        </fieldset>
+
+        <button className="button bg-indigo-500 hover:bg-indigo-600 w-full">
+          {isPending ? <Spinner /> : <p>Crear Tarea Lote</p>}
+        </button>
+      </form>
       <ModalAddInsumo open={open} setOpen={setOpen} setSelectedInsumos={setSelectedInsumos} />
     </>
   );

@@ -1,5 +1,5 @@
 import clienteAxios from "@/config/axios";
-import { userRoleSchema } from "@/utils/rolesSchemas";
+import { userRoleSchema } from "@/views/admin/roles/schemas";
 import { isAxiosError } from "axios";
 
 export async function getUserRoleByToken() {

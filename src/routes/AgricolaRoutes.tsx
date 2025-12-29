@@ -15,9 +15,9 @@ const routes = [
   { path: "/tareas/carga-masiva", component: lazy(() => import("@/views/agricola/tasks/Upload")), roles: ['admin', 'adminagricola'] },
   { path: "/tareas/edit/:id", component: lazy(() => import("@/views/agricola/tasks/Edit")), roles: ['admin', 'adminagricola'] },
 
-  { path: "/cdps", component: lazy(() => import("@/views/agricola/cdps/Index")), roles: ['admin', 'adminagricola'] },
-  { path: "/cdps/crear", component: lazy(() => import("@/views/agricola/cdps/Create")), roles: ['admin', 'adminagricola'] },
-  { path: "/cdps/carga-masiva", component: lazy(() => import("@/views/agricola/cdps/Upload")), roles: ['admin', 'adminagricola'] },
+  { path: "/cdps", component: lazy(() => import("@/views/agricola/cdps/views/Index")), roles: ['admin', 'adminagricola'] },
+  { path: "/cdps/editar/:id", component: lazy(() => import("@/views/agricola/cdps/views/Edit")), roles: ['admin', 'adminagricola'] },
+  { path: "/cdps/crear", component: lazy(() => import("@/views/agricola/cdps/views/Create")), roles: ['admin', 'adminagricola'] },
 
 
   { path: "/lotes", component: lazy(() => import("@/views/agricola/lotes/Index")), roles: ['admin', 'adminagricola'] },
@@ -31,7 +31,7 @@ const routes = [
   { path: "/planes-semanales/tareas-lote/editar/:id", component: lazy(() => import("@/views/agricola/lote-tasks/Edit")), roles: ['admin', 'adminagricola'] },
   { path: "/planes-semanales/tareas-lote/crear", component: lazy(() => import("@/views/agricola/lote-tasks/Create")), roles: ['admin', 'adminagricola'] },
 
-  { path: "/planes-semanales/tareas-cosecha-lote/:weekly_plan_id/:lote_plantation_control_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Index")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
+  { path: "/planes-semanales/tareas-cosecha-lote/:weekly_plan_id/:cdp_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Index")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-cosecha-lote/asignar/:task_crop_id/:finca_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Assign")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-cosecha-lote/toma-rendimiento/:task_crop_id", component: lazy(() => import("@/views/agricola/harvest-tasks/PersonalPerformance")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
   { path: "/planes-semanales/tareas-cosecha-lote/resumen/:task_crop_id", component: lazy(() => import("@/views/agricola/harvest-tasks/Details")), roles: ['admin', 'adminagricola', 'alameda', 'linda', 'tehuya'] },
@@ -40,6 +40,16 @@ const routes = [
   { path: "/insumos", component: lazy(() => import("@/views/agricola/supplies/Index")), roles: ['admin', 'adminagricola'] },
   { path: "/insumos/crear", component: lazy(() => import("@/views/agricola/supplies/Create")), roles: ['admin', 'adminagricola'] },
   { path: "/insumos/carga-masiva", component: lazy(() => import("@/views/agricola/supplies/Upload")), roles: ['admin', 'adminagricola'] },
+
+  { path: "/planificador-fincas", component: lazy(() => import("@/views/agricola/planner/views/Index")), roles: ['admin'] },
+  { path: "/planificador-fincas/:id", component: lazy(() => import("@/views/agricola/planner/views/Show")), roles: ['admin'] },
+
+  { path: "/maestro-tareas-fincas", component: lazy(() => import("@/views/agricola/tasks-master/views/Index")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/crear", component: lazy(() => import("@/views/agricola/tasks-master/views/Create")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/recetas", component: lazy(() => import("@/views/agricola/tasks-master/views/Recipes")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/recetas/crear", component: lazy(() => import("@/views/agricola/tasks-master/views/CreateRecipe")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/cultivos", component: lazy(() => import("@/views/agricola/tasks-master/views/Crops")), roles: ['admin'] },
+  { path: "/maestro-tareas-fincas/cultivos/crear", component: lazy(() => import("@/views/agricola/tasks-master/views/CreateCrop")), roles: ['admin'] },
 ];
 
 export default function AgricolaRoutes() {

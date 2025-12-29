@@ -1,11 +1,11 @@
 import clienteAxios from "@/config/axios";
 import { isAxiosError } from "axios";
 import { DraftLinea } from "@/views/produccion/lines/Create";
-import { WeeklyProductionPlan } from "types/weeklyProductionPlanTypes";
+import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
 import { LineDetailSchema, LinePerformanceByDaySchema, LinesHoursPerWeekSchema, LinesPaginatedSchema, LinesSelectSchema } from "@/utils/lineSchemas";
 import { Line } from "recharts";
-import { LinePerformanceByDay } from "types/linesTypes";
-import { StockKeepingUnit } from "types/stockKeepingUnitTypes";
+import { LinePerformanceByDay } from "@/types/linesTypes";
+import { StockKeepingUnit } from "@/types/stockKeepingUnitTypes";
 
 
 export async function getLineas({ page, paginated }: { page: number, paginated: string }) {

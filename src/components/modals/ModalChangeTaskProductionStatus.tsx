@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { statuses } from "../produccion/TasksWithOperationDate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTaskProductionStatus } from "@/api/TaskProductionPlansAPI";
-import { toast } from "react-toastify";
 import { useAppStore } from "@/store";
 import Modal from "../Modal";
 import Error from "../utilities-components/Error";
 import InputSelectComponent from "../form/InputSelectComponent";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 
 export default function ModalChangeTaskProductionStatus() {
@@ -16,13 +16,14 @@ export default function ModalChangeTaskProductionStatus() {
     const location = useLocation();
     const params = useParams();
 
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
     const queryParams = new URLSearchParams(location.search);
     const date = queryParams.get('date') ?? '';
     const taskId = queryParams.get('changeStatus')!;
     const show = (taskId) ? true : false;
     const filters = useAppStore((state) => state.filtersWithOperationDate);
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const handleCloseModal = () => {
         queryParams.delete('changeStatus');
@@ -32,10 +33,10 @@ export default function ModalChangeTaskProductionStatus() {
     const { mutate, isPending } = useMutation({
         mutationFn: updateTaskProductionStatus,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             queryClient.invalidateQueries({ queryKey: ['getTasksOperationDate', plan_id, date, filters] });
             handleCloseModal();
         }

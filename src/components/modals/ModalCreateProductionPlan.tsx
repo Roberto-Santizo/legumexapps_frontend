@@ -2,10 +2,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDropzone } from "react-dropzone";
-import { toast } from "react-toastify";
 import { createProductionPlan } from "@/api/WeeklyProductionPlanAPI";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     setErrors: Dispatch<SetStateAction<string[]>>;
@@ -22,6 +22,7 @@ export default function ModalCreateProductionPlan({ setErrors, setModalErrors, c
 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const notify = useNotification();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -43,14 +44,14 @@ export default function ModalCreateProductionPlan({ setErrors, setModalErrors, c
                 setErrors(error.messages);
                 setModalErrors(true);
             } else if (error.type === 'general') {
-                toast.error(error.message);
+                notify.error(error.message);
             } else {
-                toast.error("Error desconocido al cargar el plan.");
+                notify.error("Error desconocido al cargar el plan.");
             }
             queryClient.invalidateQueries({ queryKey: ['getPaginatedWeeklyProductionPlans', currentPage] });
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             queryClient.invalidateQueries({ queryKey: ['getPaginatedWeeklyProductionPlans', currentPage] });
             handleCloseModal();
         }
@@ -60,7 +61,7 @@ export default function ModalCreateProductionPlan({ setErrors, setModalErrors, c
         if (file) {
             mutate(file)
         } else {
-            toast.error('Debe cargar un archivo')
+            notify.error('Debe cargar un archivo')
         }
     }
 

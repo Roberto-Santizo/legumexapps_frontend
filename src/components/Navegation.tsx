@@ -18,7 +18,8 @@ import {
   ChartNoAxesCombined,
   FileUser, Box, ClipboardPaste,
   ChartPie,
-  Apple
+  Apple,
+  Book
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
@@ -49,13 +50,23 @@ export default function Navegation() {
       )}
 
       {hasPermission("see plan semanal finca") && (
-        <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
-          <BookCheck />
-        </NavLinkComponent>
+        <>
+          <NavLinkComponent url="/planes-semanales" text="Planes Semanales Finca">
+            <BookCheck />
+          </NavLinkComponent>
+
+          <NavLinkComponent url="/planificador-fincas" text="Plan de Siembras">
+            <ChartPie />
+          </NavLinkComponent>
+        </>
       )}
 
       {hasPermission("administrate fincas") && (
         <>
+          <NavLinkComponent url="/maestro-tareas-fincas" text="Maestro de Tareas">
+            <Book />
+          </NavLinkComponent>
+
           <NavLinkComponent url="/tareas" text="Tareas Generales">
             <ListCheck />
           </NavLinkComponent>

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import Modal from "../Modal";
-import { TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 
 type Props = {
     open: boolean;

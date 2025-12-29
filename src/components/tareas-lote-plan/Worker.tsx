@@ -1,5 +1,5 @@
 import { UserIcon } from "lucide-react";
-import { Employee } from "@/types";
+import { Employee } from "@/types/index";
 
 type WorkerProps = {
   employee: Employee;

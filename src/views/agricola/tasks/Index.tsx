@@ -4,7 +4,7 @@ import { Edit, PlusIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { getTasks } from "@/api/TasksAPI";
-import { TaskGeneral } from "types/taskGeneralType";
+import { TaskGeneral } from "@/types/taskGeneralType";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Pagination from "@/components/utilities-components/Pagination";

@@ -5,7 +5,6 @@ import { getWeeklyPlans } from "@/api/WeeklyPlansAPI";
 import { getLotes } from "@/api/LotesAPI";
 import { FiltersLoteInitialValues } from "../lotes/Index";
 import { FiltersPlanSemanalInitialValues } from "../plans/Index";
-import CreateTareaLote from "../plans/CreateTareaLote";
 import CreateTareaLoteCosecha from "../harvest-tasks/Create";
 
 export default function CreateTaskWeeklyPlan() {
@@ -48,7 +47,6 @@ export default function CreateTaskWeeklyPlan() {
               transition={{ duration: 0.3 }}
               className="absolute w-full"
             >
-              <CreateTareaLote plans={plans.data} lotes={lotes.data} />
             </motion.div>
           ) : (
             <motion.div

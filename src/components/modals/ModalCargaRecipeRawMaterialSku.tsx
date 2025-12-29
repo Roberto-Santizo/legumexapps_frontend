@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { uploadSkusRecipesRawMaterial } from "@/api/SkusAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     currentPage: number;
@@ -21,6 +21,7 @@ export default function ModalCargaRecipeRawMaterialSku({ currentPage }: Props) {
     const [file, setFile] = useState<File[] | null>(null);
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles) {
@@ -38,10 +39,10 @@ export default function ModalCargaRecipeRawMaterialSku({ currentPage }: Props) {
     const { mutate, isPending } = useMutation({
         mutationFn: (file: File[]) => uploadSkusRecipesRawMaterial(file),
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             handleCloseModal();
             queryClient.invalidateQueries({ queryKey: ['getPaginatedLineasSKU', currentPage] });
         }

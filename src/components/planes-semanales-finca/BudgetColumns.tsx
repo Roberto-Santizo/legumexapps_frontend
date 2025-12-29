@@ -1,6 +1,6 @@
 import { formatearQuetzales } from "@/helpers";
 import { usePermissions } from "@/hooks/usePermissions";
-import { WeeklyPlan } from "types/planificacionFincasType";
+import { WeeklyPlan } from "@/types/planificacionFincasType";
 
 export default function BudgetColumns({ plan }: { plan: WeeklyPlan }) {
     const { hasPermission } = usePermissions();

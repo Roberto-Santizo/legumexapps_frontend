@@ -5,10 +5,10 @@ import { DraftSelectedInsumo } from "@/views/agricola/plans/CreateTareaLote";
 import { useQuery } from "@tanstack/react-query";
 import { FiltersInsumosInitialValues } from "@/views/agricola/supplies/Index";
 import Error from "../utilities-components/Error";
-import Modal from "../Modal";
 import InputSelectSearchComponent from "../form/InputSelectSearchComponent";
 import InputComponent from "../form/InputComponent";
-import { Insumo } from "types/insumoTypes";
+import { Insumo } from "@/types/insumoTypes";
+import ModalRadixUI from "../ModalRadixUI";
 
 type Props = {
     open: boolean,
@@ -68,7 +68,7 @@ export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Pr
     };
 
     return (
-        <Modal modal={open} closeModal={() => setOpen(false)} title="Agregar Insumo">
+        <ModalRadixUI modal={open} closeModal={() => setOpen(false)} title="Agregar Insumo">
             <div className="p-6 space-y-6">
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                     <InputSelectSearchComponent<DraftSelectedInsumo>
@@ -102,7 +102,6 @@ export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Pr
                     </button>
                 </form>
             </div>
-        </Modal>
-
+        </ModalRadixUI>
     );
 }

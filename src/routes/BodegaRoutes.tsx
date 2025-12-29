@@ -5,12 +5,12 @@ import Spinner from "../components/utilities-components/Spinner";
 import ProtectedRoutes from "../components/middlewares/ProtectedRoutes";
 
 const routes = [
-  { path: "/material-empaque", component: lazy(() => import("@/views/bodega/packing-material-item/Index")), roles: ['admin','adminbodega','auxbodega'] },
-  { path: "/material-empaque/crear", component: lazy(() => import("@/views/bodega/packing-material-item/Create")), roles: ['admin','adminbodega','auxbodega'] },
+  { path: "/material-empaque", component: lazy(() => import("@/views/bodega/packing-material-item/views/Index")), roles: ['admin','adminbodega','auxbodega'] },
+  { path: "/material-empaque/crear", component: lazy(() => import("@/views/bodega/packing-material-item/views/Create")), roles: ['admin','adminbodega','auxbodega'] },
 
-  { path: "/material-empaque-transacciones", component: lazy(() => import("@/views/bodega/transactions/Index")), roles: ['admin','adminbodega','auxbodega'] },
-  { path: "/material-empaque-transacciones/crear", component: lazy(() => import("@/views/bodega/transactions/Create")), roles: ['admin','adminbodega','auxbodega'] },
-  { path: "/material-empaque-transacciones/:id", component: lazy(() => import("@/views/bodega/transactions/Show")), roles: ['admin','adminbodega','auxbodega'] }
+  { path: "/material-empaque-transacciones", component: lazy(() => import("@/views/bodega/transactions/views/Index")), roles: ['admin','adminbodega','auxbodega'] },
+  { path: "/material-empaque-transacciones/crear", component: lazy(() => import("@/views/bodega/transactions/views/Create")), roles: ['admin','adminbodega','auxbodega'] },
+  { path: "/material-empaque-transacciones/:id", component: lazy(() => import("@/views/bodega/transactions/views/Show")), roles: ['admin','adminbodega','auxbodega'] }
 ];
 
 export default function BodegaRoutes() {

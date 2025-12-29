@@ -3,24 +3,25 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { downloadPlanillaProduction, getWeeklyPlanDetails } from "@/api/WeeklyProductionPlanAPI";
 import { Eye, FileDown } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
-import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import ModalCargaPosiciones from "@/components/modals/ModalCargaPosiciones";
 import LoadingOverlay from "@/components/utilities-components/LoadingOverlay";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 
 export default function Show() {
   const params = useParams();
-  const id = params.plan_id!!;
+  const id = params.plan_id!;
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { hasPermission } = usePermissions();
 
   const { mutate, isPending } = useMutation({
     mutationFn: downloadPlanillaProduction,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     }
   });
 

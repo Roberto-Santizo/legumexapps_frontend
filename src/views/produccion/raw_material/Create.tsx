@@ -1,14 +1,15 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { DraftMateriaPrimaItem } from "types/materiaPrimaTypes";
+import { DraftMateriaPrimaItem } from "@/types/materiaPrimaTypes";
 import { createMateriaPrimaItem } from "@/api/MateriaPrimaAPI";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import FormMateriaPrima from "./Form";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const {
         handleSubmit,
@@ -19,10 +20,10 @@ export default function Create() {
     const { mutate, isPending } = useMutation({
         mutationFn: createMateriaPrimaItem,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
             navigate('/materia-prima');
         }
     });

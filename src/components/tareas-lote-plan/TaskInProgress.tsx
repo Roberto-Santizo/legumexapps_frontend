@@ -1,12 +1,12 @@
 import { Card, CardContent, Typography, IconButton, Tooltip, Box, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Clock, PlayCircle, Eye, CheckCircle } from "lucide-react";
-import { toast } from "react-toastify";
 import { closeTask } from "@/api/TasksWeeklyPlanAPI";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { TaskInProgress } from "@/api/DashboardAgricolaAPI";
 import Swal from "sweetalert2";
-import { TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
+import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
   task: TaskInProgress;
@@ -15,15 +15,16 @@ type Props = {
 
 export default function TaskCard({ task, refetch }: Props) {
   const url = `/planes-semanales/tareas-lote/informacion/${task.id}`;
+  const notify = useNotification();
 
   const { mutate } = useMutation({
     mutationFn: closeTask,
     onError: () => {
-      toast.error('Hubo un error al traer la información');
+      notify.error('Hubo un error al traer la información');
     },
     onSuccess: () => {
       refetch();
-      toast.success("Tarea Cerrada Correctamente");
+      notify.success("Tarea Cerrada Correctamente");
     }
   });
 

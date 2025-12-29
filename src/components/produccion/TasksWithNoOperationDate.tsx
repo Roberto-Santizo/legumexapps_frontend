@@ -3,7 +3,7 @@ import { getTasksNoOperationDate } from "@/api/WeeklyProductionPlanAPI";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { Line } from "types/linesTypes";
+import { Line } from "@/types/linesTypes";
 import TaskUnscheduled from "./TaskUnscheduled";
 import Spinner from "../utilities-components/Spinner";
 
@@ -13,7 +13,7 @@ type Props = {
 
 export default function TasksWithNoOperationDate({ lines }: Props) {
     const params = useParams();
-    const plan_id = params.plan_id!!;
+    const plan_id = params.plan_id!;
 
     const linesOptions = lines?.map((line) => ({
         value: line.id,

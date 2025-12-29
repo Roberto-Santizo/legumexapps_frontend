@@ -23,8 +23,8 @@ const initialValues = {
 
 export default function Index() {
   const params = useParams();
-  const lote_plantation_control_id = params.lote_plantation_control_id!!;
-  const weekly_plan_id = params.weekly_plan_id!!;
+  const lote_plantation_control_id = params.lote_plantation_control_id!;
+  const weekly_plan_id = params.weekly_plan_id!;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState<FiltersTareasLoteType>(initialValues);
   const [tempFilters, setTempFilters] = useState<FiltersTareasLoteType>(initialValues);
@@ -33,7 +33,7 @@ export default function Index() {
 
   const { data: tasks, isLoading } = useQuery({
     queryKey: ['getTasks', lote_plantation_control_id, weekly_plan_id, filters],
-    queryFn: () => getTasks({ cdp: lote_plantation_control_id, weekly_plan_id, filters })
+    queryFn: () => getTasks({ lote: lote_plantation_control_id, weekly_plan_id, filters })
   });
 
   const isAdmin = useMemo(() => role === 'admin' || role === 'adminagricola', [role]);

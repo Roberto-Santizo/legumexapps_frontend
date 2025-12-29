@@ -12,8 +12,8 @@ import TaskProductionSkeleton from "@/components/produccion/TaskProductionSkelet
 
 export default function ShowLineaDetalles() {
     const params = useParams();
-    const plan_id = params.plan_id!!;
-    const linea_id = params.linea_id!!;
+    const plan_id = params.plan_id!;
+    const linea_id = params.linea_id!;
 
     const { data: tasks, isLoading, isError } = useQuery({
         queryKey: ['getTasksByLineId', plan_id, linea_id],

@@ -1,17 +1,21 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import AppRouter from './router';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NotificationProvider } from './core/notifications/NotificationContext';
+import { ReactHotToastAdapter } from './config/notifications/ReactHostToastAdapter';
+import { Toaster } from 'react-hot-toast';
+import AppRouter from './router';
 import './index.css'
-import { ToastContainer } from 'react-toastify';
 
 const queryCliente = new QueryClient;
+const adapter = new ReactHotToastAdapter();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryCliente}>
-      <AppRouter />
+      <NotificationProvider adapter={adapter} container={<Toaster />}>
+        <AppRouter />
+      </NotificationProvider>
     </QueryClientProvider>
-    <ToastContainer pauseOnFocusLoss={false} className="z-[11000]" />
   </StrictMode>,
 )

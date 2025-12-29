@@ -1,23 +1,24 @@
 import { createTarea } from "@/api/TasksAPI";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import { DraftTask } from "types/taskGeneralType";
+import { DraftTask } from "@/types/taskGeneralType";
 import Spinner from "@/components/utilities-components/Spinner";
 import Form from "./Form";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
 
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createTarea,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/tareas');
     }
   });

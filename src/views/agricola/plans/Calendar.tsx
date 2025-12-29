@@ -1,17 +1,17 @@
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
 import { Bars3Icon } from '@heroicons/react/16/solid';
-import { Archive, PlusIcon, Trash, UploadIcon, UserIcon, XIcon } from 'lucide-react';
+import { Archive, PlusIcon, Trash, UserIcon, XIcon } from 'lucide-react';
 import { deleteEmployeeAssignment, getFincaGroups, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes } from '@/api/LotesAPI';
 import { getTasks } from '@/api/TasksAPI';
 import { FiltersTasksInitialValues } from '../tasks/Index';
-import { TaskWeeklyPlanForCalendar } from 'types/taskWeeklyPlanTypes';
-import { TaskGeneral } from 'types/taskGeneralType';
-import { Lote } from 'types/lotesType';
+import { TaskWeeklyPlanForCalendar } from '@/types/taskWeeklyPlanTypes';
+import { TaskGeneral } from '@/types/taskGeneralType';
+import { Lote } from '@/types/lotesType';
+import { useNotification } from '../../../core/notifications/NotificationContext';
 import Select from "react-select";
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
@@ -22,10 +22,10 @@ import ModalInfoTareaLote from '@/components/modals/ModalInfoTareaLote';
 import ModalInsumosPrepared from '@/components/modals/ModalInsumosPrepared';
 import Spinner from '@/components/utilities-components/Spinner';
 import TaskCalendarFincaComponent from '@/components/planes-semanales-finca/TaskCalendarFincaComponent';
-import ModalUploadAgricolaAssignments from '@/components/modals/ModalUploadAgricolaAssignments';
 import ModalCreateFincaGroup from '@/components/modals/ModalCreateFincaGroup';
 import ModalAssignGroup from '@/components/modals/ModalAssignGroup';
 import debounce from "debounce";
+import ModalCreateActivity from '@/components/modals/ModalCreateActivity';
 
 interface DateClickInfo {
     dateStr: string;
@@ -34,8 +34,8 @@ interface DateClickInfo {
 export default function Calendar() {
     const queryClient = useQueryClient();
     const params = useParams();
-    const id = params.plan_id!!;
-    const fincaId = params.finca_id!!;
+    const id = params.plan_id!;
+    const fincaId = params.finca_id!;
 
     const [ids, setIds] = useState<string[]>([]);
     const [seeTasks, setSeeTasks] = useState(false);
@@ -55,6 +55,7 @@ export default function Calendar() {
 
     const calendarRef = useRef<FullCalendar | null>(null);
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const results = useQueries({
         queries: [
@@ -96,13 +97,13 @@ export default function Calendar() {
     });
 
     const { data: employees, isLoading: isLoadingEmployees } = useQuery({
-        queryKey: ['getPlanificationEmployee', id, loteId, filterEmployee],
-        queryFn: () => getPlanificationEmployee({ id, loteId, filterEmployee }),
+        queryKey: ['getPlanificationEmployee', id, filterEmployee],
+        queryFn: () => getPlanificationEmployee({ id, filterEmployee }),
     });
 
     const { data: groups, isLoading: isLoadingGroups } = useQuery({
-        queryKey: ['getFincaGroups', fincaId],
-        queryFn: () => getFincaGroups(fincaId),
+        queryKey: ['getFincaGroups', fincaId, id],
+        queryFn: () => getFincaGroups({ fincaId, plan: id }),
     });
 
     const { data: tasksForCalendar } = useQuery({
@@ -113,11 +114,13 @@ export default function Calendar() {
     const { mutate: deleteEmployee } = useMutation({
         mutationFn: deleteEmployeeAssignment,
         onSuccess: (data) => {
-            toast.success(data);
-            queryClient.invalidateQueries({ queryKey: ['getPlanificationEmployee', id, loteId] });
+            notify.success(data ?? '');
+            setModal(false);
+            queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
+            queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
         },
         onError: (error) => {
-            toast.error(error.message)
+            notify.error(error.message)
         },
     });
 
@@ -218,13 +221,20 @@ export default function Calendar() {
 
                             <button
                                 disabled={ids.length === 0}
-                                className={`button w-full py-2 rounded-lg transition ${ids.length === 0
+                                className={`button w-full py-2 rounded-lg transition mb-3 ${ids.length === 0
                                     ? "bg-gray-300 cursor-not-allowed"
                                     : "bg-indigo-600 hover:bg-indigo-700 text-white"
                                     }`}
                                 onClick={() => setModal(true)}
                             >
                                 Actualizar Tareas
+                            </button>
+
+                            <button
+                                className={'button w-full py-2 rounded-lg transition button bg-indigo-500 hover:'}
+                                onClick={() => navigate("?createActivity=true")}
+                            >
+                                Crear Actividad
                             </button>
 
                             <div className="flex flex-col mt-5 gap-4 text-xs">
@@ -318,15 +328,6 @@ export default function Calendar() {
                                     />
 
                                     <div className="flex justify-between gap-4">
-
-                                        <button
-                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl shadow flex justify-center gap-2 items-center transition-all"
-                                            onClick={() => navigate("?upload=true")}
-                                        >
-                                            <UploadIcon />
-                                            Cargar Asignaciones
-                                        </button>
-
                                         <button
                                             className={`w-full text-white py-2 rounded-xl shadow flex justify-center gap-2 items-center transition-all ${assignmentIds.length == 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                                             onClick={() => navigate("?assignGroup=true")}
@@ -405,24 +406,52 @@ export default function Calendar() {
                                     {groups?.map((group) => (
                                         <div
                                             key={group.id}
-                                            className="rounded-xl p-4 bg-white shadow-md border hover:shadow-lg transition"
+                                            className="group rounded-2xl p-5 bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                                         >
                                             <div className="flex justify-center">
-                                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-4 group-hover:scale-105 transition">
                                                     <Archive className="w-8 h-8 text-gray-600" />
                                                 </div>
                                             </div>
 
-                                            <div className="text-center">
-                                                <p className="text-sm font-semibold text-gray-700">
+                                            <div className="text-center space-y-1">
+                                                <p className="text-xs uppercase tracking-wider text-gray-400">
                                                     {group.code}
                                                 </p>
-                                                <p className="text-sm text-gray-500">{group.lote}</p>
-                                                <p className="text-base font-medium text-gray-800 mt-1">
+
+                                                <p className="text-sm text-gray-500">
+                                                    Lote: <span className="font-medium text-gray-700">{group.lote}</span>
+                                                </p>
+
+                                                <p className="text-base font-semibold text-gray-800 mt-1">
                                                     {group.finca}
                                                 </p>
+
+                                                <div className="grid grid-cols-3 gap-3 mt-4 text-xs">
+                                                    <div className="bg-gray-50 rounded-lg py-2">
+                                                        <p className="font-semibold text-gray-700">
+                                                            {group.total_employees}
+                                                        </p>
+                                                        <p className="text-gray-400">Empleados</p>
+                                                    </div>
+
+                                                    <div className="bg-gray-50 rounded-lg py-2">
+                                                        <p className="font-semibold text-gray-700">
+                                                            {group.total_tasks}
+                                                        </p>
+                                                        <p className="text-gray-400">Tareas</p>
+                                                    </div>
+
+                                                    <div className="bg-gray-50 rounded-lg py-2">
+                                                        <p className="font-semibold text-gray-700">
+                                                            {group.total_hours}
+                                                        </p>
+                                                        <p className="text-gray-400">Horas</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
                                     ))}
                                 </div>
                             </div>
@@ -447,9 +476,9 @@ export default function Calendar() {
             />
 
             <ModalInsumosPrepared id={id} />
-            <ModalUploadAgricolaAssignments lote_id={loteId} />
             <ModalCreateFincaGroup lotes={lotesOptions} />
             <ModalAssignGroup ids={assignmentIds} loteId={loteId} setAssignmentIds={setAssignmentIds} />
+            <ModalCreateActivity />
         </div>
     );
 }

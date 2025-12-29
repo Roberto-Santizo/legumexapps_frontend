@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { EmployeeCrop } from "@/types";
+import { EmployeeCrop } from "@/types/index";
 import { motion } from "framer-motion";
-import { toast } from "react-toastify";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
   assignment: EmployeeCrop;
@@ -11,10 +11,11 @@ type Props = {
 export default function EmployeeTaskCrop({ assignment, setDataEmployees }: Props) {
   const [inputValue, setInputValue] = useState(assignment.lbs ?? 0);
   const [showSaved, setShowSaved] = useState(false);
+  const notify = useNotification();
 
   const handleSave = () => {
     if (inputValue <= 0) {
-      toast.error('Las libras deben ser mayor a 0');
+      notify.error('Las libras deben ser mayor a 0');
       return;
     }
     setDataEmployees((prev) =>

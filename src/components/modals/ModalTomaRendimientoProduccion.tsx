@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createTaskProductionPerformance } from "@/api/TaskProductionPlansAPI";
 import Modal from "../Modal";
 import Spinner from "../utilities-components/Spinner";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftPerformance = {
     tarimas_produced: number;
@@ -17,8 +17,8 @@ export type DraftPerformance = {
 export default function ModalTomaRendimientoProduccion() {
     const queryClient = useQueryClient();
     const params = useParams();
-    const plan_id = params.plan_id!!;
-    const linea_id = params.linea_id!!;
+    const plan_id = params.plan_id!;
+    const linea_id = params.linea_id!;
 
 
     const location = useLocation();
@@ -27,6 +27,7 @@ export default function ModalTomaRendimientoProduccion() {
     const modal = queryParams.get('modal')!;
     const show = (taskId && +modal === 2) ? true : false;
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const {
         handleSubmit,
@@ -38,10 +39,10 @@ export default function ModalTomaRendimientoProduccion() {
     const { mutate, isPending } = useMutation({
         mutationFn: createTaskProductionPerformance,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ??'');
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
             navigate(location.pathname, { replace: true });
             reset();

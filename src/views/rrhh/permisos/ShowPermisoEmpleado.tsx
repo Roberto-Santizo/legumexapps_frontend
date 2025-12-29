@@ -1,24 +1,25 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { closeEmployeePermission, getPermisoEmployeeById, PermisoEmpleado } from "@/api/PermisosEmpleadosAPI";
-import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Swal from "sweetalert2";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function ShowPermisoEmpleado() {
   const params = useParams();
-  const id = params.id!!;
+  const id = params.id!;
 
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ id, flag }: { id: PermisoEmpleado['id'], flag: string }) => closeEmployeePermission(id, flag),
     onError: () => {
-      toast.error("Hubo un error al cerrar el permiso");
+      notify.error("Hubo un error al cerrar el permiso");
     },
     onSuccess: () => {
-      toast.success("Permiso cerrado correctamente");
+      notify.success("Permiso cerrado correctamente");
       navigate('/permisos-empleados');
     }
   });

@@ -1,32 +1,33 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "@/helpers";
-import { EmployeeCrop } from "@/types";
+import { EmployeeCrop } from "@/types/index";
 import { AlertCircle } from "lucide-react";
-import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { closeDailyAssignment, getCropEmployees } from "@/api/TaskCropWeeklyPlanAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import EmployeeTaskCrop from "@/components/tareas-lote-plan/EmployeeTaskCrop";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function PersonalPerformance() {
   const params = useParams();
-  const task_crop_id = params.task_crop_id!!;
+  const task_crop_id = params.task_crop_id!;
   const location = useLocation();
   const previousUrl = location.state?.previousUrl || "/planes-semanales";
   const [dataEmployees, setDataEmployees] = useState<EmployeeCrop[]>([]);
   const [plants, setPlants] = useState<number>(0);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ task_crop_id, dataEmployees, plants }: { task_crop_id: string, dataEmployees: EmployeeCrop[], plants: number }) => closeDailyAssignment(task_crop_id, dataEmployees, plants),
     onError: () => {
-      toast.error("Hubo un error al cerrar la asignación, intentelo de nuevo más tarde");
+      notify.error("Hubo un error al cerrar la asignación, intentelo de nuevo más tarde");
     },
     onSuccess: () => {
       navigate(previousUrl);
-      toast.success("Datos Guardados Correctamente");
+      notify.success("Datos Guardados Correctamente");
     }
   });
 
@@ -57,7 +58,7 @@ export default function PersonalPerformance() {
 
   const handleSaveAssignment = async () => {
     if (plants <= 0) {
-      toast.error("Las plantas cosechadas deben ser mayor a 0");
+      notify.error("Las plantas cosechadas deben ser mayor a 0");
       return;
     }
 

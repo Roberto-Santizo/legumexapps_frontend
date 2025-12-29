@@ -3,7 +3,7 @@ import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletasPaginateSchema, Qual
 import { DraftFormProd } from "@/views/calidad/rmp/Boleta_form2";
 import { DraftBoletaControlCalidad } from "@/views/calidad/rmp/Boleta_form3";
 import { isAxiosError } from "axios";
-import { BoletaRMP, DraftBoletaRMP, ResultBoletaRmpCalidad } from "types/rmpDocTypes";
+import { BoletaRMP, DraftBoletaRMP, ResultBoletaRmpCalidad } from "@/types/rmpDocTypes";
 import clienteAxios from "@/config/axios";
 
 

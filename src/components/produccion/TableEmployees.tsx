@@ -1,7 +1,7 @@
 import { createColumnHelper, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, CheckCircleIcon, XCircleIcon } from "lucide-react";
 import { useState } from "react";
-import { TaskProductionEmployee } from "types/taskProductionPlanTypes";
+import { TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 
 type Props = {
     employees: TaskProductionEmployee[];

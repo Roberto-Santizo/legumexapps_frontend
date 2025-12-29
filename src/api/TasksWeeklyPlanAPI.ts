@@ -1,21 +1,21 @@
 import clienteAxios from "@/config/axios";
-import { Employee, TaskInsumo } from "@/types";
+import { Employee, TaskInsumo } from "@/types/index";
 import { EmployeesSchema } from "@/utils/employee-schema";
 import { isAxiosError } from "axios";
 import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
-import { WeeklyEmployeeAssignment, WeeklyPlan } from "types/planificacionFincasType";
+import { WeeklyEmployeeAssignment, WeeklyPlan } from "@/types/planificacionFincasType";
 import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema, WeeklyEmployeeAssignmentsSchema, FincaGroupsSchema } from "@/utils/taskWeeklyPlanSchemas";
-import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "types/taskWeeklyPlanTypes";
-import { TaskGeneral } from "types/taskGeneralType";
-import { Lote } from "types/lotesType";
+import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
+import { TaskGeneral } from "@/types/taskGeneralType";
+import { Lote } from "@/types/lotesType";
 import { ApiResponseSchema } from "@/utils/httpRequestsSchemas";
 import { DraftFincaGroup } from "@/components/modals/ModalCreateFincaGroup";
 import { Finca } from "./FincasAPI";
 
-export async function getTasks({ cdp, weekly_plan_id, filters }: { cdp: TaskWeeklyPlan['lote_plantation_control_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
+export async function getTasks({ lote, weekly_plan_id, filters }: { lote: TaskWeeklyPlan['lote'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {
-        const url = `/api/tasks-lotes?cdp=${cdp}&weekly_plan=${weekly_plan_id}&name=${filters.name}&code=${filters.code}&task_type=${filters.task_type}`;
+        const url = `/api/tasks-lotes?lote=${lote}&weekly_plan=${weekly_plan_id}&name=${filters.name}&code=${filters.code}&task_type=${filters.task_type}`;
         const { data } = await clienteAxios(url);
         const result = TasksWeeklyPlanSchema.safeParse(data);
         if (result.success) {
@@ -191,13 +191,14 @@ export async function getEmployees(id: TaskWeeklyPlan['finca_id']): Promise<Empl
 export async function createTaskWeeklyPlan({ FormData }: { FormData: DraftTaskWeeklyPlan }) {
     try {
         const url = '/api/tasks-lotes';
-        const { data } = await clienteAxios.post<string>(url, {
-            data: FormData
-        });
-        return data;
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        const result = ApiResponseSchema.safeParse(data);
+        if (result.success) {
+            return result.data.message;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            throw new Error(error.response?.data.message);
         }
     }
 }
@@ -241,13 +242,14 @@ export async function getTasksNoPlanificationDate({ id, loteId, taskId }: { id: 
     }
 }
 
-export async function uploadAssignments({ file, id }: { file: File, id: WeeklyPlan['id'], }) {
+export async function uploadAssignments({ file }: { file: File }) {
     try {
-        const url = `/api/weekly-assignment-employee/upload/${id}`;
+        const url = `/api/weekly-assignment-employee/upload`;
         const formData = new FormData();
         formData.append("file", file);
         const { data } = await clienteAxios.post(url, formData);
         const result = ApiResponseSchema.safeParse(data);
+
         if (result.success) {
             return result.data.message;
         }
@@ -259,9 +261,9 @@ export async function uploadAssignments({ file, id }: { file: File, id: WeeklyPl
     }
 }
 
-export async function getPlanificationEmployee({ id, loteId, filterEmployee }: { id: WeeklyPlan['id'], loteId: Lote['id'], filterEmployee: string }) {
+export async function getPlanificationEmployee({ id, filterEmployee }: { id: WeeklyPlan['id'], filterEmployee: string }) {
     try {
-        const url = `/api/weekly-assignment-employee/${id}?lote=${loteId}&name=${filterEmployee}`;
+        const url = `/api/weekly-assignment-employee/${id}?name=${filterEmployee}`;
         const { data } = await clienteAxios(url);
         const response = WeeklyEmployeeAssignmentsSchema.safeParse(data);
 
@@ -325,9 +327,9 @@ export async function createFincaGroup(formData: DraftFincaGroup) {
     }
 }
 
-export async function getFincaGroups(fincaId: Finca['id']) {
+export async function getFincaGroups({ fincaId, plan }: { fincaId: Finca['id'], plan: WeeklyPlan['id'] }) {
     try {
-        const url = `/api/finca-groups?fincaId=${fincaId}`;
+        const url = `/api/finca-groups?fincaId=${fincaId}&plan=${plan}`;
         const { data } = await clienteAxios(url);
         const response = FincaGroupsSchema.safeParse(data);
 

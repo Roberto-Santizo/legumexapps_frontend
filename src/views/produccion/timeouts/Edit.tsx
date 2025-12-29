@@ -4,24 +4,25 @@ import { getTimeoutById, updateTimeOut } from "@/api/TimeOutsAPI";
 import { useForm } from "react-hook-form";
 import { DraftTiempoMuerto } from "./Create";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import FormTiempoMuerto from "./Form";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Edit() {
     const params = useParams();
-    const id = params.id!!;
+    const id = params.id!;
+    const notify = useNotification();
 
     const navigate = useNavigate();
 
     const { mutate, isPending } = useMutation({
         mutationFn: updateTimeOut,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             navigate('/tiempos-muertos');
         }
     });
@@ -61,7 +62,7 @@ export default function Edit() {
                 <FormTiempoMuerto register={register} errors={errors} />
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
-                  {isPending ? <Spinner /> : <p>Guardar Cambios</p>}
+                    {isPending ? <Spinner /> : <p>Guardar Cambios</p>}
                 </button>
             </form>
         </div>

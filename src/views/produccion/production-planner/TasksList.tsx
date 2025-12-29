@@ -4,8 +4,8 @@ import { useRole } from "@/hooks/useRole";
 import { useMutation } from "@tanstack/react-query";
 import { EditIcon, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { tWeeklyProductionPlanDraftDetailsSchema } from "types/draftWeeklyProductionPlanTypes";
+import { tWeeklyProductionPlanDraftDetailsSchema } from "@/types/draftWeeklyProductionPlanTypes";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 type Props = {
     draft: tWeeklyProductionPlanDraftDetailsSchema;
@@ -15,14 +15,15 @@ export default function TasksList({ draft }: Props) {
     const navigate = useNavigate();
     const { data: role } = useRole();
     const { hasPermission } = usePermissions();
+    const notify = useNotification();
 
     const { mutate } = useMutation({
         mutationFn: deleteTaskProductionDraft,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data);
         }
     });
 

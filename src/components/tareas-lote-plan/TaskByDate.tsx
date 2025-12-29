@@ -2,9 +2,9 @@ import { TaskWeeklyPlanByDate } from "@/api/WeeklyPlansAPI";
 import { formatDate } from "@/helpers";
 import { CalendarDays, CheckCircle2Icon, MapPin, Package } from "lucide-react";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { changePreparedInsumosState } from "@/api/TasksWeeklyPlanAPI";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
     task: TaskWeeklyPlanByDate;
@@ -12,13 +12,14 @@ type Props = {
 };
 
 export default function TaskByDate({ task, refetch }: Props) {
+    const notify = useNotification();
     const { mutate, isPending } = useMutation({
         mutationFn: changePreparedInsumosState,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             refetch();
         }
     });

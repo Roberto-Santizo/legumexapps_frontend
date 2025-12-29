@@ -1,4 +1,4 @@
-import { TaskProductionTransaction } from "types/taskProductionPlanTypes";
+import { TaskProductionTransaction } from "@/types/taskProductionPlanTypes";
 import LogoLegumex from "../logos/LogoLegumex";
 
 type Props = {

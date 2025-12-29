@@ -2,21 +2,22 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { createTransportista, DraftTransportista } from "@/api/TransportistasAPI";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import Error from "@/components/utilities-components/Error";
 import Spinner from "@/components/utilities-components/Spinner";
 import InputComponent from "@/components/form/InputComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { mutate, isPending } = useMutation({
     mutationFn: createTransportista,
     onError: () => {
-      toast.error('Hubo un error al crear el transportista');
+      notify.error('Hubo un error al crear el transportista');
     },
     onSuccess: () => {
-      toast.success('Transportista creado correctamente');
+      notify.success('Transportista creado correctamente');
       navigate('/transportistas');
     }
 

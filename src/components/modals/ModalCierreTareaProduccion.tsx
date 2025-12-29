@@ -2,13 +2,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { closeTaskProduction } from "@/api/TaskProductionPlansAPI";
 import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import Error from "../utilities-components/Error";
 import Spinner from "../utilities-components/Spinner";
+import { useNotification } from "../../core/notifications/NotificationContext";
 
 
 export type DraftCloseTask = {
@@ -20,14 +20,15 @@ export type DraftCloseTask = {
 export default function ModalCierreTareaProduccion() {
     const queryClient = useQueryClient();
     const params = useParams();
-    const plan_id = params.plan_id!!;
-    const linea_id = params.linea_id!!;
+    const plan_id = params.plan_id!;
+    const linea_id = params.linea_id!;
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const taskId = queryParams.get('TaskId')!;
     const modal = queryParams.get('modal')!;
     const show = (taskId && +modal === 1) ? true : false;
     const navigate = useNavigate();
+    const notify = useNotification();
 
     const {
         handleSubmit,
@@ -40,10 +41,10 @@ export default function ModalCierreTareaProduccion() {
     const { mutate, isPending } = useMutation({
         mutationFn: closeTaskProduction,
         onError: (error) => {
-            toast.error(error.message);
+            notify.error(error.message);
         },
         onSuccess: (data) => {
-            toast.success(data);
+            notify.success(data ?? '');
             queryClient.invalidateQueries({ queryKey: ['getTasksByLineId', plan_id, linea_id] });
             navigate(location.pathname, { replace: true });
             reset();

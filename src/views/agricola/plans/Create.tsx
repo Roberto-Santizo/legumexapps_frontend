@@ -2,13 +2,14 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { createPlan } from "@/api/WeeklyPlansAPI";
-import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/utilities-components/Spinner";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
   const [file, setFile] = useState<File[] | null>(null);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles) {
@@ -21,10 +22,10 @@ export default function Create() {
   const { mutate, isPending } = useMutation({
     mutationFn: createPlan,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/planes-semanales');
       setFile([]);
     }
@@ -35,7 +36,7 @@ export default function Create() {
     if (file) {
       mutate(file);
     } else {
-      toast.error('El archivo es requerido');
+      notify.error('El archivo es requerido');
     }
   };
 

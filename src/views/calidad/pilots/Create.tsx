@@ -4,18 +4,19 @@ import { getTransportistas, Transportista } from "@/api/TransportistasAPI";
 import { useEffect, useState } from "react";
 import { createPiloto, DraftPiloto } from "@/api/PilotosAPI";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
 import InputComponent from "@/components/form/InputComponent";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Create() {
 
   const [transportistas, setTransportistas] = useState<Transportista[]>([]);
   const navigate = useNavigate();
+  const notify = useNotification();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['getAllTransportistas'],
@@ -36,10 +37,10 @@ export default function Create() {
   const { mutate, isPending } = useMutation({
     mutationFn: createPiloto,
     onError: (error) => {
-      toast.error(error.message);
+      notify.error(error.message);
     },
     onSuccess: (data) => {
-      toast.success(data);
+      notify.success(data ?? '');
       navigate('/transportistas/pilotos');
     }
   });

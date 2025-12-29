@@ -10,7 +10,7 @@ import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 
 export default function Show() {
   const params = useParams();
-  const rm_reception_id = params.rm_reception_id!!;
+  const rm_reception_id = params.rm_reception_id!;
 
   const { data: boleta, isLoading, isError } = useQuery({
     queryKey: ['getBoletaInfoAll', rm_reception_id],

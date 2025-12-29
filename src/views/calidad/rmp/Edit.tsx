@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import { getBoletaRMPDetail } from "@/api/ReceptionsDocAPI";
-import { BoletaRmpDetail } from "types/rmpDocTypes";
+import { BoletaRmpDetail } from "@/types/rmpDocTypes";
 import Boleta_form2 from "./Boleta_form2";
 import Spinner from "@/components/utilities-components/Spinner";
 import Boleta_form3 from "./Boleta_form3";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 
 
 
 
 export default function Edit() {
   const { rm_reception_id } = useParams();
+  const notify = useNotification();
   
   const [boleta, setBoleta] = useState<BoletaRmpDetail>({} as BoletaRmpDetail);
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,7 +28,7 @@ export default function Edit() {
         setBoleta(data);
       }
     } catch (error) {
-      toast.error('Hubo un error al traer la información')
+      notify.error('Hubo un error al traer la información')
     } finally {
       setLoading(false);
     }

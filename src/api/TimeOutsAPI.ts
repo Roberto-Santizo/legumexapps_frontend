@@ -1,7 +1,7 @@
 import { PaginatedTimeoutsSchema, TimeoutSchema } from "@/utils/timeOutSchema";
 import { isAxiosError } from "axios";
-import { TaskProductionPlan } from "types/taskProductionPlanTypes";
-import { Timeout } from "types/timeoutsTypes";
+import { TaskProductionPlan } from "@/types/taskProductionPlanTypes";
+import { Timeout } from "@/types/timeoutsTypes";
 import { DraftTiempoMuerto } from "@/views/produccion/timeouts/Create";
 import { z } from "zod";
 import clienteAxios from "@/config/axios";
