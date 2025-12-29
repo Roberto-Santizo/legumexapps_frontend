@@ -50,6 +50,7 @@ export default function CreateTareaLote() {
       navigate(location.pathname);
     }
   });
+  
   const { data: tasks } = useQuery({
     queryKey: ['getAllTasks'],
     queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }),

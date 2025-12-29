@@ -26,6 +26,7 @@ import ModalCreateFincaGroup from '@/components/modals/ModalCreateFincaGroup';
 import ModalAssignGroup from '@/components/modals/ModalAssignGroup';
 import debounce from "debounce";
 import ModalCreateActivity from '@/components/modals/ModalCreateActivity';
+import ModalActivateHarvest from '@/components/modals/ModalActivateHarvest';
 
 interface DateClickInfo {
     dateStr: string;
@@ -231,10 +232,17 @@ export default function Calendar() {
                             </button>
 
                             <button
-                                className={'button w-full py-2 rounded-lg transition button bg-indigo-500 hover:'}
+                                className={'button w-full py-2 rounded-lg transition button bg-indigo-500 hover:bg-indigo-600 text-white mb-3'}
                                 onClick={() => navigate("?createActivity=true")}
                             >
                                 Crear Actividad
+                            </button>
+
+                            <button
+                                className={'button w-full py-2 rounded-lg transition button bg-indigo-500 hover:bg-indigo-600 text-white mb-3'}
+                                onClick={() => navigate("?activateHarvest=true")}
+                            >
+                                Activar Cosecha
                             </button>
 
                             <div className="flex flex-col mt-5 gap-4 text-xs">
@@ -478,6 +486,7 @@ export default function Calendar() {
             <ModalInsumosPrepared id={id} />
             <ModalCreateFincaGroup lotes={lotesOptions} />
             <ModalAssignGroup ids={assignmentIds} loteId={loteId} setAssignmentIds={setAssignmentIds} />
+            <ModalActivateHarvest />
             <ModalCreateActivity />
         </div>
     );

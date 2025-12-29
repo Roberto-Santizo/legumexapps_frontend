@@ -2,8 +2,9 @@ import clienteAxios from "@/config/axios";
 import { EmployeesTaskCropPlanSchema, TaskCropWeeklyPlanDetailSchema, TaskCropWeeklyPlanSchema, TasksCropIncompleteSchema, TasksCropWeeklyPlanSchema } from "@/utils/taskCropWeeklyPlan-schema";
 import { isAxiosError } from "axios";
 import { TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
-import { DraftTaskCropWeeklyPlan } from "@/views/agricola/harvest-tasks/Create";
 import { Employee, EmployeeCrop, EmployeesCrop, TaskCropIncomplete, TaskCropWeeklyPlan, TaskCropWeeklyPlanDetail } from "@/types/index";
+import { DraftTaskCropWeeklyPlan } from "@/components/modals/ModalActivateHarvest";
+import { ApiResponseSchema } from "@/schemas/httpRequestsSchemas";
 
 export async function getTasksCrop(cdp: TaskWeeklyPlan['cdp_id'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id']) {
     try {
@@ -88,11 +89,15 @@ export async function closeDailyAssignment(id: TaskCropWeeklyPlan['id'], data: E
 export async function createTaskCropWeeklyPlan(FormData: DraftTaskCropWeeklyPlan) {
     try {
         const url = '/api/tasks-crops-lotes';
-        const { data } = await clienteAxios.post<string>(url, FormData);
-        return data;
+        const { data } = await clienteAxios.post(url, FormData);
+        const result = ApiResponseSchema.safeParse(data);
+
+        if(result.success){
+            return result.data.message;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            throw new Error(error.response?.data.message);
         };
     }
 }

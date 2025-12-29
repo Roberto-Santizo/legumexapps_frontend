@@ -14,7 +14,7 @@ export default function ModalCreateActivity() {
     }
 
     return (
-        <Modal modal={show} closeModal={() => handleCloseModal()} title="Crear Draft Planificación de Producción">
+        <Modal modal={show} closeModal={() => handleCloseModal()} title="Crear Actividad">
             <div className="p-10">
                 <CreateTareaLote />
             </div>
