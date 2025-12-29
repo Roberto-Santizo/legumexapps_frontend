@@ -25,8 +25,8 @@ export default function ModalChangeOperationDateAgricola({ show, setModal, ids, 
     const fincaId = params.finca_id!!;
 
     const { data: groups } = useQuery({
-        queryKey: ['getFincaGroups', fincaId],
-        queryFn: () => getFincaGroups(fincaId),
+        queryKey: ['getFincaGroups', fincaId, id],
+        queryFn: () => getFincaGroups({ fincaId, plan: id }),
     });
 
     const {

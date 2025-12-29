@@ -28,8 +28,8 @@ export default function ModalAssignGroup({ ids, loteId, setAssignmentIds }: Prop
     const queryClient = useQueryClient();
 
     const { data: groups } = useQuery({
-        queryKey: ['getFincaGroups', fincaId],
-        queryFn: () => getFincaGroups(fincaId),
+        queryKey: ['getFincaGroups', fincaId, id],
+        queryFn: () => getFincaGroups({ fincaId, plan: id }),
     });
 
     const {

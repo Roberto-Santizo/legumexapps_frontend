@@ -191,13 +191,14 @@ export async function getEmployees(id: TaskWeeklyPlan['finca_id']): Promise<Empl
 export async function createTaskWeeklyPlan({ FormData }: { FormData: DraftTaskWeeklyPlan }) {
     try {
         const url = '/api/tasks-lotes';
-        const { data } = await clienteAxios.post<string>(url, {
-            data: FormData
-        });
-        return data;
+        const { data } = await clienteAxios.post<string>(url, FormData);
+        const result = ApiResponseSchema.safeParse(data);
+        if (result.success) {
+            return result.data.message;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            throw new Error(error.response?.data.message);
         }
     }
 }
@@ -241,13 +242,14 @@ export async function getTasksNoPlanificationDate({ id, loteId, taskId }: { id: 
     }
 }
 
-export async function uploadAssignments({ file, id }: { file: File, id: WeeklyPlan['id'], }) {
+export async function uploadAssignments({ file }: { file: File }) {
     try {
-        const url = `/api/weekly-assignment-employee/upload/${id}`;
+        const url = `/api/weekly-assignment-employee/upload`;
         const formData = new FormData();
         formData.append("file", file);
         const { data } = await clienteAxios.post(url, formData);
         const result = ApiResponseSchema.safeParse(data);
+
         if (result.success) {
             return result.data.message;
         }
@@ -325,9 +327,9 @@ export async function createFincaGroup(formData: DraftFincaGroup) {
     }
 }
 
-export async function getFincaGroups(fincaId: Finca['id']) {
+export async function getFincaGroups({ fincaId, plan }: { fincaId: Finca['id'], plan: WeeklyPlan['id'] }) {
     try {
-        const url = `/api/finca-groups?fincaId=${fincaId}`;
+        const url = `/api/finca-groups?fincaId=${fincaId}&plan=${plan}`;
         const { data } = await clienteAxios(url);
         const response = FincaGroupsSchema.safeParse(data);
 

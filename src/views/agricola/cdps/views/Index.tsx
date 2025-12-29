@@ -27,7 +27,7 @@ export default function Index() {
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getPaginatedCDPS', currentPage, filters],
-    queryFn: () => getCDPS({ page: currentPage, filters, paginated: 'true' }),
+    queryFn: () => getCDPS({ page: currentPage, filters, paginated: 'true', finca: '' }),
   });
 
   useEffect(() => {

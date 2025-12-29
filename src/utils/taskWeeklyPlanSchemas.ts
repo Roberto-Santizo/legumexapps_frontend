@@ -37,7 +37,7 @@ export const TaskWeeklyPlanSchema = z.object({
 export const DraftTaskWeeklyPlanSchema = TaskWeeklyPlanSchema.pick({ weekly_plan_id: true, budget: true, hours: true, extraordinary: true, slots: true, start_date: true, end_date: true, start_time: true, end_time: true, operation_date: true }).extend({
     tarea_id: z.string(),
     workers_quantity: z.string(),
-    lote_id: z.string(),
+    cdp_id: z.string(),
 })
 
 export const TaskWeeklyPlanDetailsSchema = TaskWeeklyPlanSchema.pick({ task: true, lote: true, week: true }).extend({
@@ -128,7 +128,10 @@ export const FincaGroupSchema = z.object({
     id: z.number(),
     code: z.string(),
     lote: z.string(),
-    finca: z.string()
+    finca: z.string(),
+    total_employees: z.number(),
+    total_tasks: z.number(),
+    total_hours: z.number(),
 });
 
 export const FincaGroupsSchema = ApiResponseSchema.extend({

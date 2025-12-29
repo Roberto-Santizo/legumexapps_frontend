@@ -77,9 +77,9 @@ export async function uploadCDPS(file: File[]) {
     }
 }
 
-export async function getCDPS({ page, filters, paginated }: { page: number, filters: FiltersCDPType, paginated: string }) {
+export async function getCDPS({ page, filters, paginated, finca}: { page: number, filters: FiltersCDPType, paginated: string, finca: string }) {
     try {
-        const url = `/api/cdps?paginated=${paginated}&page=${page}&cdp=${filters.cdp}&start_date=${filters.start_date}&end_date=${filters.end_date}`;
+        const url = `/api/cdps?paginated=${paginated}&page=${page}&cdp=${filters.cdp}&start_date=${filters.start_date}&end_date=${filters.end_date}&finca=${finca}`;
         const { data } = await clienteAxios(url);
         const result = PlantationsControlSchema.safeParse(data);
         if (result.success) {
