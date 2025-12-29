@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getTasks } from "@/api/TasksAPI";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Delete, PlusIcon } from "lucide-react";
-import { createTaskWeeklyPlan } from "@/api/TasksWeeklyPlanAPI";
+import { createTaskWeeklyPlan, getFincaGroups } from "@/api/TasksWeeklyPlanAPI";
 import { getCurrentDate } from "@/helpers";
 import { FiltersTasksInitialValues } from "../tasks/Index";
 import { DraftTaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
@@ -50,10 +50,15 @@ export default function CreateTareaLote() {
       navigate(location.pathname);
     }
   });
-  
+
   const { data: tasks } = useQuery({
     queryKey: ['getAllTasks'],
     queryFn: () => getTasks({ page: 1, filters: FiltersTasksInitialValues, paginated: '' }),
+  });
+
+  const { data: groups } = useQuery({
+    queryKey: ['getFincaGroups', fincaId, id],
+    queryFn: () => getFincaGroups({ fincaId, plan: id }),
   });
 
   const tareasOptions = tasks?.data.map((lote) => ({
@@ -61,6 +66,10 @@ export default function CreateTareaLote() {
     label: `${lote.code} ${lote.name}`,
   }));
 
+  const groupsOptions = groups?.map((group) => ({
+    value: `${group.id}`,
+    label: group.code,
+  }));
 
   const {
     register,
@@ -88,7 +97,7 @@ export default function CreateTareaLote() {
     label: `${cdp.name}`,
   }));
 
-  if (cdps) return (
+  if (cdps && groupsOptions) return (
     <>
       <form
         onSubmit={handleSubmit(CreateTareaLote)}
@@ -161,6 +170,18 @@ export default function CreateTareaLote() {
           errors={errors}
         >
           {errors.cdp_id && <Error>{errors.cdp_id?.message?.toString()}</Error>}
+        </InputSelectSearchComponent>
+
+        <InputSelectSearchComponent<DraftTaskWeeklyPlan>
+          label="Grupo"
+          id="finca_group_id"
+          name="finca_group_id"
+          options={groupsOptions}
+          control={control}
+          rules={{ required: 'El CDP es obligatorio' }}
+          errors={errors}
+        >
+          {errors.finca_group_id && <Error>{errors.finca_group_id?.message?.toString()}</Error>}
         </InputSelectSearchComponent>
 
         <InputSelectSearchComponent<DraftTaskWeeklyPlan>

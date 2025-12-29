@@ -38,6 +38,7 @@ export const DraftTaskWeeklyPlanSchema = TaskWeeklyPlanSchema.pick({ weekly_plan
     tarea_id: z.string(),
     workers_quantity: z.string(),
     cdp_id: z.string(),
+    finca_group_id: z.string(),
 })
 
 export const TaskWeeklyPlanDetailsSchema = TaskWeeklyPlanSchema.pick({ task: true, lote: true, week: true }).extend({
