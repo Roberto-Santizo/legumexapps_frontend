@@ -34,6 +34,19 @@ export const TaskWeeklyPlanSchema = z.object({
     operation_date: z.string().nullable()
 });
 
+export const EditTaskWeeklyPlanSchema = z.object({
+    id: z.number(),
+    weekly_plan_id: z.number(),
+    group_id: z.number().nullable(),
+    budget: z.number(),
+    hours: z.number(),
+    start_date: z.string().nullable(),
+    start_time: z.string().nullable(),
+    end_date: z.string().nullable(),
+    end_time: z.string().nullable(),
+    operation_date: z.string().nullable()
+});
+
 export const DraftTaskWeeklyPlanSchema = TaskWeeklyPlanSchema.pick({ weekly_plan_id: true, budget: true, hours: true, extraordinary: true, slots: true, start_date: true, end_date: true, start_time: true, end_time: true, operation_date: true }).extend({
     tarea_id: z.string(),
     workers_quantity: z.string(),

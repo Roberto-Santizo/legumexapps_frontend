@@ -2,13 +2,12 @@ import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { Bars3Icon } from '@heroicons/react/16/solid';
 import { Archive, PlusIcon, Trash, UserIcon, XIcon } from 'lucide-react';
-import { deleteEmployeeAssignment, getFincaGroups, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
+import { changeOperationDate, deleteEmployeeAssignment, getFincaGroups, getPlanificationEmployee, getTasksForCalendar, getTasksNoPlanificationDate } from '@/api/TasksWeeklyPlanAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { getLotes } from '@/api/LotesAPI';
 import { getTasks } from '@/api/TasksAPI';
 import { FiltersTasksInitialValues } from '../tasks/Index';
-import { TaskWeeklyPlanForCalendar } from '@/types/taskWeeklyPlanTypes';
 import { TaskGeneral } from '@/types/taskGeneralType';
 import { Lote } from '@/types/lotesType';
 import { useNotification } from '../../../core/notifications/NotificationContext';
@@ -42,8 +41,6 @@ export default function Calendar() {
     const [seeTasks, setSeeTasks] = useState(false);
     const [seePersonal, setSeePersonal] = useState(false);
     const [modal, setModal] = useState(false);
-    const [modalInfoTarea, setModalInfoTarea] = useState(false);
-    const [selectedTask, setSelectedTask] = useState<TaskWeeklyPlanForCalendar>({} as TaskWeeklyPlanForCalendar);
     const [loteId, setLoteId] = useState<string>('');
     const [taskId, setTaskId] = useState<string>('');
     const [lotes, setLotes] = useState<Lote[]>([]);
@@ -125,6 +122,17 @@ export default function Calendar() {
         },
     });
 
+    const { mutate } = useMutation({
+        mutationFn: changeOperationDate,
+        onError: (error) => {
+            notify.error(error.message);
+        },
+        onSuccess: (data) => {
+            notify.success(data!);
+            setIds([]);
+        },
+    });
+
     useEffect(() => {
         if (tasksForCalendar) {
             const calendarApi = calendarRef.current?.getApi();
@@ -139,6 +147,10 @@ export default function Calendar() {
     const handleOpenDate = (info: DateClickInfo) => {
         navigate(`${location.pathname}?date=${info.dateStr}`);
     };
+
+    const handleEventDrop = (eventId: string, newDate: string) => {
+        mutate({ id: eventId, date: newDate });
+    }
 
     const handleAddId = (id: number) => {
         const exists = assignmentIds.filter((assign) => assign === id);
@@ -190,15 +202,13 @@ export default function Calendar() {
                         events={tasksForCalendar?.data}
                         initialDate={tasksForCalendar?.initial_date}
                         dateClick={handleOpenDate}
-                        eventClick={(info) => {
-                            const task = tasksForCalendar?.data.find(
-                                (task) => task.id === info.event.id
-                            );
-                            if (task) {
-                                setSelectedTask(task);
-                                setModalInfoTarea(true);
+                        eventDrop={(e) => handleEventDrop(e.event.id, e.event.startStr)}
+                        eventClick={(e) => {
+                            if (hasPermission('administrate plans production')) {
+                                navigate(`${location.pathname}?infoTask=${e.event.id}`)
                             }
-                        }}
+                        }
+                        }
                         dayMaxEventRows={true}
                     />
                 </div>
@@ -476,13 +486,8 @@ export default function Calendar() {
                 setIds={setIds}
             />
 
-            <ModalInfoTareaLote
-                show={modalInfoTarea}
-                setModal={setModalInfoTarea}
-                task={selectedTask}
-                setSelectedTask={setSelectedTask}
-            />
 
+            <ModalInfoTareaLote />
             <ModalInsumosPrepared id={id} />
             <ModalCreateFincaGroup lotes={lotesOptions} />
             <ModalAssignGroup ids={assignmentIds} loteId={loteId} setAssignmentIds={setAssignmentIds} />

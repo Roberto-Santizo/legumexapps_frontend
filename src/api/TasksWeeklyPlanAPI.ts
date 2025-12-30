@@ -5,13 +5,14 @@ import { isAxiosError } from "axios";
 import { FiltersTareasLoteType } from "@/views/agricola/lote-tasks/Index";
 import { TaskWeeklyPlanByDate } from "./WeeklyPlansAPI";
 import { WeeklyEmployeeAssignment, WeeklyPlan } from "@/types/planificacionFincasType";
-import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema, WeeklyEmployeeAssignmentsSchema, FincaGroupsSchema } from "@/utils/taskWeeklyPlanSchemas";
+import { TasksWeeklyPlanWithNoOperationDateSchema, TasksWeeklyPlanSchema, TaskWeeklyPlanDetailsSchema, TaskWeeklyPlanSchema, TasksWeeklyPlanForCalendarSchema, WeeklyEmployeeAssignmentsSchema, FincaGroupsSchema, EditTaskWeeklyPlanSchema } from "@/utils/taskWeeklyPlanSchemas";
 import { DraftTaskWeeklyPlan, TaskWeeklyPlan } from "@/types/taskWeeklyPlanTypes";
 import { TaskGeneral } from "@/types/taskGeneralType";
 import { Lote } from "@/types/lotesType";
 import { ApiResponseSchema } from "@/utils/httpRequestsSchemas";
 import { DraftFincaGroup } from "@/components/modals/ModalCreateFincaGroup";
 import { Finca } from "./FincasAPI";
+import { EditTaskWeeklyPlan } from "@/components/modals/ModalInfoTareaLote";
 
 export async function getTasks({ lote, weekly_plan_id, filters }: { lote: TaskWeeklyPlan['lote'], weekly_plan_id: TaskWeeklyPlan['weekly_plan_id'], filters: FiltersTareasLoteType }) {
     try {
@@ -111,7 +112,7 @@ export async function getTaskById(id: TaskWeeklyPlan['id']): Promise<TaskWeeklyP
     try {
         const url = `/api/tasks-lotes/${id}`;
         const { data } = await clienteAxios(url);
-        const result = TaskWeeklyPlanSchema.safeParse(data.data);
+        const result = TaskWeeklyPlanSchema.safeParse(data.response);
         if (result.success) {
             return result.data;
         } else {
@@ -120,6 +121,24 @@ export async function getTaskById(id: TaskWeeklyPlan['id']): Promise<TaskWeeklyP
     } catch (error) {
         console.log(error);
         throw error;
+    }
+}
+
+export async function getTaskInfoToEdit(id: TaskWeeklyPlan['id']) {
+    try {
+        const url = `/api/tasks-lotes/edit/${id}`;
+        const { data } = await clienteAxios(url);
+        const result = EditTaskWeeklyPlanSchema.safeParse(data.response);
+        if (result.success) {
+            return result.data;
+        } else {
+            throw new Error("Información no válida");
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
     }
 }
 
@@ -215,15 +234,22 @@ export async function registerUsedInsumos(data: TaskInsumo[]) {
     }
 }
 
-export async function editTask({ FormData, id }: { FormData: DraftTaskWeeklyPlan, id: TaskWeeklyPlan['id'] }) {
+export async function editTask({ FormData, id }: { FormData: EditTaskWeeklyPlan, id: TaskWeeklyPlan['id'] }) {
     try {
         const url = `/api/tasks-lotes/${id}`
-        const { data } = await clienteAxios.put<string>(url, FormData);
-        return data;
+        const { data } = await clienteAxios.put(url, FormData);
+
+        const result = ApiResponseSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data.message;
+        }
+
     } catch (error) {
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data.msg);
+            throw new Error(error.response?.data.message);
         }
+        throw new Error("Error no controlado");
     }
 }
 
@@ -377,14 +403,32 @@ export async function changePreparedInsumosState(id: TaskWeeklyPlanByDate['id'])
     }
 }
 
-export async function changeOperationDate({ date, ids, group_id }: { date: string, ids: string[], group_id: string }) {
+export async function updateTasks({ date, ids, group_id }: { date: string, ids: string[], group_id: string }) {
     try {
-        const url = '/api/tasks-lotes/change-operation-date/update';
-        const { data } = await clienteAxios.patch<string>(url, {
+        const url = '/api/tasks-lotes/update-tasks';
+        const { data } = await clienteAxios.post(url, {
             date,
             group_id,
             tasks: ids
         });
+
+        const response = ApiResponseSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.message;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
+    }
+}
+
+export async function changeOperationDate({ date, id }: { date: string, id: TaskWeeklyPlan['id'] }) {
+    try {
+        const url = `/api/tasks-lotes/change-operation-date/${id}`;
+        const { data } = await clienteAxios.patch(url, { date });
 
         const response = ApiResponseSchema.safeParse(data);
 

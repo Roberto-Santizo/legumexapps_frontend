@@ -3,11 +3,11 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getTareaById, updateTarea } from "@/api/TasksAPI";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 import { DraftTask } from "@/types/taskGeneralType";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import Form from "./Form";
-import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export default function Edit() {
   const params = useParams();
@@ -26,7 +26,7 @@ export default function Edit() {
       notify.error(error.message);
     },
     onSuccess: (data) => {
-      notify.success(data ?? '');
+      notify.success(data!);
       navigate('/tareas');
     }
   });

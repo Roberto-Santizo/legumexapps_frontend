@@ -1,6 +1,6 @@
 import { SetStateAction } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { changeOperationDate, getFincaGroups } from "@/api/TasksWeeklyPlanAPI";
+import { updateTasks, getFincaGroups } from "@/api/TasksWeeklyPlanAPI";
 import { useNotification } from "../../core/notifications/NotificationContext";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -37,12 +37,12 @@ export default function ModalChangeOperationDateAgricola({ show, setModal, ids, 
     } = useForm<{ group_id: string, date: string }>();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: changeOperationDate,
+        mutationFn: updateTasks,
         onError: (error) => {
             notify.error(error.message);
         },
         onSuccess: (data) => {
-            notify.success(data ?? '');
+            notify.success(data!);
             setModal(false);
             queryClient.invalidateQueries({ queryKey: ['getTasksNoPlanificationDate', id] });
             queryClient.invalidateQueries({ queryKey: ['getTasksForCalendar', id] });
