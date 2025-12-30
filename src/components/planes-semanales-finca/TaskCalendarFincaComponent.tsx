@@ -1,6 +1,6 @@
 import { Edit, PlusIcon, XIcon } from "lucide-react";
 import { SetStateAction } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { TaskWeeklyPlanWithNoOperationDate } from "@/types/taskWeeklyPlanTypes";
 
 type Props = {
@@ -10,6 +10,8 @@ type Props = {
 }
 
 export default function TaskCalendarFincaComponent({ task, setIds, ids }: Props) {
+    const navigate = useNavigate();
+    
     const handleAddId = (id: string) => {
         if (ids.includes(id)) {
             setIds(ids.filter((item) => item !== id));
@@ -33,9 +35,9 @@ export default function TaskCalendarFincaComponent({ task, setIds, ids }: Props)
                     <PlusIcon className="w-5 h-5 cursor-pointer hover:text-gray-500" onClick={() => handleAddId(task.id)} />
                 )}
 
-                <Link to={`/planes-semanales/tareas-lote/editar/${task.id}`} target="_blank">
+                <button onClick={() =>  navigate(`${location.pathname}?infoTask=${task.id}`)}>
                     <Edit className="w-5 h-5 cursor-pointer hover:text-gray-500" />
-                </Link>
+                </button>
             </div>
 
         </div>
