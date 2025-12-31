@@ -174,19 +174,19 @@ export async function closeAssigment(task_id: TaskWeeklyPlan['id']) {
     }
 }
 
-export async function getTask(id: TaskWeeklyPlan['id']): Promise<TaskWeeklyPlan> {
+export async function getTask(id: TaskWeeklyPlan['id']) {
     try {
         const url = `/api/tasks-lotes/${id}`;
         const { data } = await clienteAxios(url);
-        const result = TaskWeeklyPlanSchema.safeParse(data.data);
+        const result = TaskWeeklyPlanSchema.safeParse(data.response);
         if (result.success) {
             return result.data;
-        } else {
-            throw new Error("Información no válida");
         }
     } catch (error) {
-        console.log(error);
-        throw error;
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
     }
 }
 
