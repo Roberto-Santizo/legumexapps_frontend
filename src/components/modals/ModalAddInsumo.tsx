@@ -70,7 +70,7 @@ export default function ModalAddInsumo({ open, setOpen, setSelectedInsumos }: Pr
     return (
         <ModalRadixUI modal={open} closeModal={() => setOpen(false)} title="Agregar Insumo">
             <div className="p-6 space-y-6">
-                <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
                     <InputSelectSearchComponent<DraftSelectedInsumo>
                         label="Insumo"
                         id="insumo_id"
