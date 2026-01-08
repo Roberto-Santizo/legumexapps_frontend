@@ -1,23 +1,55 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getTaskProductionInProgressDetails } from "@/api/TaskProductionPlansAPI";
+import { deleteTaskProductionAssignment, getTaskProductionInProgressDetails } from "@/api/TaskProductionPlansAPI";
 import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
+import { usePermissions } from "@/hooks/usePermissions";
+import { TrashIcon } from "lucide-react";
+import { useNotification } from "@/core/notifications/NotificationContext";
 import "react-circular-progressbar/dist/styles.css";
 import GraphicsPlanSemanal, { graphDataType } from "../plans/GraphicsPlanSemanal";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Swal from "sweetalert2";
 
 export default function Details() {
   const params = useParams();
   const task_p_id = params.task_p_id!;
   const [graphData, setGraphData] = useState<graphDataType>({} as graphDataType);
+  const { hasPermission } = usePermissions();
+  const notify = useNotification();
+  const queryClient = useQueryClient();
 
   const { data: task, isLoading, isError, } = useQuery({
     queryKey: ["getTaskProductionInProgressDetail", task_p_id],
     queryFn: () => getTaskProductionInProgressDetails(task_p_id),
     refetchInterval: 10000
   });
+
+  const { mutate } = useMutation({
+    mutationFn: deleteTaskProductionAssignment,
+    onSuccess: (data) => {
+      notify.success(data!);
+      queryClient.invalidateQueries({ queryKey: ["getTaskProductionInProgressDetail", task_p_id] });
+    },
+    onError: (error) => {
+      notify.error(error.message);
+    }
+  });
+
+  const handleDeleteEmployee = (id: string) => {
+    Swal.fire({
+      title: "¿Desea eliminar al empleado?",
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: "Eliminar Empleado",
+      confirmButtonColor: 'red'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        mutate(id);
+      }
+    });
+  }
 
   useEffect(() => {
     if (task) {
@@ -122,6 +154,10 @@ export default function Details() {
                 <th className="thead-th">Código</th>
                 <th className="thead-th">Nombre</th>
                 <th className="thead-th">Posición</th>
+
+                {hasPermission('delete assignments') && (
+                  <th className="thead-th">Acción</th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -130,6 +166,11 @@ export default function Details() {
                   <td className="tbody-td">{employee.code}</td>
                   <td className="tbody-td">{employee.name}</td>
                   <td className="tbody-td">{employee.position}</td>
+                  {hasPermission('delete assignments') && (
+                    <td className="tbody-td">
+                      <TrashIcon onClick={() => handleDeleteEmployee(employee.id)} className="cursor-pointer hover:text-red-400 transition-all" />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

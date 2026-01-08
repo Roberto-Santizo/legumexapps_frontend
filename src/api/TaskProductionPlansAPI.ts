@@ -10,6 +10,7 @@ import { DraftChangeOperationDate } from "@/components/modals/ModalChangeOperati
 import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
 import clienteAxios from "@/config/axios";
 import { Line } from "recharts";
+import { ApiResponseSchema } from "@/schemas/httpRequestsSchemas";
 
 export async function getComodines() {
     try {
@@ -186,6 +187,23 @@ export async function getTaskProductionInProgressDetails(id: TaskProductionPlan[
     } catch (error) {
         console.log(error);
         throw error;
+    }
+}
+
+export async function deleteTaskProductionAssignment(id: string) {
+    try {
+        const url = `/api/tasks-production/delete/${id}`;
+        const { data } = await clienteAxios.delete(url);
+
+        const result = ApiResponseSchema.safeParse(data);
+        if (result.success) {
+            return result.data.message
+        }
+    } catch (error) {
+        if(isAxiosError(error)){
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
     }
 }
 
