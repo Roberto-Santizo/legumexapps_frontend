@@ -98,17 +98,19 @@ export default function MenuTaskProductionActions({ task, setModalEntrega }: Pro
                             </MenuItem>
                         )}
 
-                        {(!task.finished && !task.working && hasPermission('administrate plans production') && Number(task.status_id) < 3) && (
+                        {(!task.finished && !task.working && +task.status_id < 3) && (
                             <>
-                                <MenuItem>
-                                    <button
-                                        onClick={() => navigate(`${location.pathname}?${queryParams.toString()}`)}
-                                        className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                                    >
-                                        <Calendar className="w-5 h-5 text-green-500" />
-                                        <span>Cambiar fecha de operación</span>
-                                    </button>
-                                </MenuItem>
+                                {hasPermission('administrate plans production') && (
+                                    <MenuItem>
+                                        <button
+                                            onClick={() => navigate(`${location.pathname}?${queryParams.toString()}`)}
+                                            className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                                        >
+                                            <Calendar className="w-5 h-5 text-green-500" />
+                                            <span>Cambiar fecha de operación</span>
+                                        </button>
+                                    </MenuItem>
+                                )}
 
                                 {hasPermission('delete assignments') && task.has_employees && (
                                     <>
