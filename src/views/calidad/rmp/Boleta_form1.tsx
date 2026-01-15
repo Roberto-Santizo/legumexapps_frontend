@@ -12,13 +12,13 @@ import { Placa } from "@/api/PlacasAPI";
 import { getAllProductorCDPS, ProductorCDP, } from "@/api/ProductorPlantationAPI";
 import { useMutation } from "@tanstack/react-query";
 import { DraftBoletaRMP } from "@/types/rmpDocTypes";
+import { useNotification } from "../../../core/notifications/NotificationContext";
+import { usePermissions } from "@/hooks/usePermissions";
 import SignatureCanvas from "react-signature-canvas";
 import Spinner from "@/components/utilities-components/Spinner";
 import Error from "@/components/utilities-components/Error";
 import InputComponent from "@/components/form/InputComponent";
 import InputSelectSearchComponent from "@/components/form/InputSelectSearchComponent";
-import { useNotification } from "../../../core/notifications/NotificationContext";
-import { usePermissions } from "@/hooks/usePermissions";
 
 export default function Boleta_form1() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -328,6 +328,7 @@ export default function Boleta_form1() {
             validation={{
               required: "El porcentaje de calidad es obligatorio",
               min: { value: 1, message: "La cantidad minima es 1" },
+              max: { value: 100, message: "La cantidad maxima es de 100" }
             }}
             errors={errors}
             type={"number"}
