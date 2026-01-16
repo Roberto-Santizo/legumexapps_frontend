@@ -200,7 +200,7 @@ export async function deleteTaskProductionAssignment(id: string) {
             return result.data.message
         }
     } catch (error) {
-        if(isAxiosError(error)){
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data.message);
         }
         throw new Error("Error no controlado");
@@ -405,17 +405,18 @@ export async function updateTaskProductionStatus({ taskId, status }: { taskId: T
     try {
         const url = `/api/tasks-production/${taskId}/update-status`;
 
-        const { data } = await clienteAxios.patch<string>(url, {
-            status
-        });
+        const { data } = await clienteAxios.patch(url, { status });
 
-        return data;
+        const response = ApiResponseSchema.safeParse(data);
+
+        if (response.success) {
+            return response.data.message;
+        }
     } catch (error) {
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
         }
     }
 }
-
 
 
