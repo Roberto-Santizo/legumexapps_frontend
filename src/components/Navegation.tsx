@@ -19,7 +19,8 @@ import {
   FileUser, Box, ClipboardPaste,
   ChartPie,
   Apple,
-  Book
+  Book,
+  AppleIcon
 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
 import NavLinkComponent from "./utilities-components/NavLinkComponent";
@@ -84,6 +85,10 @@ export default function Navegation() {
           </NavLinkComponent>
         </>
       )}
+
+      <NavLinkComponent url="/cultivos" text="Cultivos">
+        <AppleIcon />
+      </NavLinkComponent>
 
       {hasPermission("see boleta rmp") && (
         <NavLinkComponent url="/rmp" text="Boleta Materia Prima">

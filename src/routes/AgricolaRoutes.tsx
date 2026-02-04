@@ -48,6 +48,11 @@ const routes = [
   { path: "/maestro-tareas-fincas/recetas/crear", component: lazy(() => import("@/views/agricola/tasks-master/views/CreateRecipe")), roles: ['admin'] },
   { path: "/maestro-tareas-fincas/cultivos", component: lazy(() => import("@/views/agricola/tasks-master/views/Crops")), roles: ['admin'] },
   { path: "/maestro-tareas-fincas/cultivos/crear", component: lazy(() => import("@/views/agricola/tasks-master/views/CreateCrop")), roles: ['admin'] },
+
+  { path: "/cultivos", component: lazy(() => import("@/views/agricola/crops/views/crops/Index")), roles: ['admin'] },
+  { path: "/cultivos/crear", component: lazy(() => import("@/views/agricola/crops/views/crops/Create")), roles: ['admin'] },
+  { path: "/cultivos/partes/:id", component: lazy(() => import("@/views/agricola/crops/views/crop-parts/Index")), roles: ['admin'] },
+
 ];
 
 export default function AgricolaRoutes() {
