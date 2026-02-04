@@ -365,7 +365,7 @@ const PdfBoletaCampoRMP: React.FC<{ boleta: BoletaRmpAllInfo }> = ({ boleta }) =
               </View>
 
               <View style={{ alignItems: 'center', marginRight: 6 }}>
-                <Text style={[styles.smallDataBox, { minWidth: 70 }]}>{boleta.field_data.weight_baskets}</Text>
+                <Text style={[styles.smallDataBox, { minWidth: 70 }]}>{boleta.field_data.weight_basket}</Text>
                 <Text style={[styles.boxLabel, { marginTop: 3 }]}>PESO POR</Text>
                 <Text style={styles.boxLabel}>CANASTAS</Text>
               </View>
