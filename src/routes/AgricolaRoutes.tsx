@@ -52,6 +52,8 @@ const routes = [
   { path: "/cultivos", component: lazy(() => import("@/views/agricola/crops/views/crops/Index")), roles: ['admin'] },
   { path: "/cultivos/crear", component: lazy(() => import("@/views/agricola/crops/views/crops/Create")), roles: ['admin'] },
   { path: "/cultivos/partes/:id", component: lazy(() => import("@/views/agricola/crops/views/crop-parts/Index")), roles: ['admin'] },
+  { path: "/cultivos/enfermedades/:id", component: lazy(() => import("@/views/agricola/crops/views/crop-diseases/Index")), roles: ['admin'] },
+  { path: "/cultivos/enfermedades/:id/:diseaseId", component: lazy(() => import("@/views/agricola/crops/views/crop-diseases/Show")), roles: ['admin'] },
 
 ];
 
