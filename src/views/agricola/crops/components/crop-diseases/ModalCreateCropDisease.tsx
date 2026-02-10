@@ -26,8 +26,13 @@ export default function ModalCreateCropDisease() {
     }
 
     const {
-        mutate, isPending
-    } = useMutation({
+        handleSubmit,
+        register,
+        formState: { errors },
+        reset
+    } = useForm<DraftCropDisease>();
+
+    const { mutate, isPending } = useMutation({
         mutationFn: createCropDisease,
         onError: (error) => {
             notify.error(error.message);
@@ -36,14 +41,10 @@ export default function ModalCreateCropDisease() {
             notify.success(message!);
             handleCloseModal();
             queryClient.invalidateQueries({ queryKey: ['getCropDiseases', id] });
+            reset();
         }
     });
 
-    const {
-        handleSubmit,
-        register,
-        formState: { errors }
-    } = useForm<DraftCropDisease>();
 
     const onSubmit = (data: DraftCropDisease) => {
         data.crop_id = +id;

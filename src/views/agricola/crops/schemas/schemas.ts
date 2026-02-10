@@ -54,6 +54,9 @@ export const CropDiseaseImagesByIdResponseSchema = z.object({
 export const CropDiseaseSymptomSchema = z.object({
     id: z.number(),
     symptom: z.string(),
+    part: z.string(),
+    disease: z.string(),
+    cropDiseaseId: z.number(),
     crop_disease_id: z.number(),
     crop_part_id: z.number()
 });

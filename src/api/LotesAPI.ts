@@ -1,10 +1,11 @@
 import { DraftLote } from "@/views/agricola/lotes/Create";
 import { isAxiosError } from "axios";
 import { FiltersLotesType } from "@/views/agricola/lotes/Index";
-import { Lote } from "@/types/lotesType";
+import { Lote, LoteChecklistCondition } from "@/types/lotesType";
 import { LotesSchema } from "@/utils/lotesSchemas";
 import { PlantationsControlSchema } from "@/views/agricola/cdps/schemas/schemas";
 import clienteAxios from "@/config/axios";
+import { ApiResponseSchema } from "@/schemas/httpRequestsSchemas";
 
 export async function createLote(draftlote: DraftLote) {
     try {
@@ -62,5 +63,22 @@ export async function updateLotes(file: File[]) {
         if (isAxiosError(error)) {
             throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
         }
+    }
+}
+
+export async function createLoteChecklist({ formData, loteId }: { formData: LoteChecklistCondition[], loteId: string }) {
+    try {
+        const url = `/api/lotes/checklist/${loteId}`;
+        const { data } = await clienteAxios.post(url, { data: formData });
+        const result = ApiResponseSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data.message;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
     }
 }

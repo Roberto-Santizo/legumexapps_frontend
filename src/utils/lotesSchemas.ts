@@ -9,7 +9,8 @@ export const LoteSchema = z.object({
     name: z.string(),
     finca: z.string(),
     size: z.number(),
-    total_plants: z.number()
+    total_plants: z.number(),
+    flag: z.boolean()
 });
 
 export const DataLoteSchema = z.object({
@@ -28,4 +29,11 @@ export const LotesSchema = z.object({
 export const LoteCDPDetailsSchema = z.object({
     data_lote: DataLoteSchema,
     data: DataSchema,
+});
+
+export const LoteChecklistConditionSchema = z.object({
+    crop_disease_syptom_id: z.number(),
+    exists: z.boolean(),
+    level: z.string(),
+    observations: z.string()
 });

@@ -3,6 +3,7 @@ import { Crop, CropDisease, CropDiseaseImage, DraftCrop, DraftCropDisease, Draft
 import { CropDiseaseByIdResponseSchema, CropDiseaseImagesByIdResponseSchema, CropDiseaseResponseSchema, CropDiseaseSymptoResponseSchema, CropPartResponseSchema, CropsResponseSchema } from "../schemas/schemas";
 import { isAxiosError } from "axios";
 import clienteAxios from "@/config/axios";
+import { Lote } from "@/types/lotesType";
 
 export async function getCrops() {
     try {
@@ -126,9 +127,9 @@ export async function getCropDiseaseImagesById(diseaseId: CropDisease['id']) {
     }
 }
 
-export async function getCropDiseaseSymptonsById(diseaseId: CropDisease['id']) {
+export async function getCropDiseaseSymptonsById({ diseaseId, loteId }: { diseaseId: CropDisease['id'] | null, loteId: Lote['id'] }) {
     try {
-        const url = `/api/crop-disease-symptom?cropDisease=${diseaseId}`
+        const url = `/api/crop-disease-symptom?cropDisease=${diseaseId ?? ''}&lote=${loteId ?? ''}`
         const { data } = await clienteAxios.get(url);
         const result = CropDiseaseSymptoResponseSchema.safeParse(data);
 

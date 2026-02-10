@@ -31,5 +31,4 @@ export type DraftWeeklyPlan = z.infer<typeof DraftWeeklyPlanSchema>;
 export type TaskPlantationControl = z.infer<typeof TaskPlantationControlSchema>;
 export type DraftTaskPlantationControl = Pick<TaskPlantationControl,'budget' | 'hours' | 'slots' | 'tags' | 'draft_weekly_plan_id'>;
 
-
-
+//CHECKLIST LOTE

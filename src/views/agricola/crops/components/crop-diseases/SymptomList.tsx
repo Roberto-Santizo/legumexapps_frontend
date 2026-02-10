@@ -10,10 +10,10 @@ export default function SymptomList() {
 
     const { data: symptoms, isLoading: loadingSymptoms } = useQuery({
         queryKey: ['getCropDiseaseSymptonsById', diseaseId],
-        queryFn: () => getCropDiseaseSymptonsById(+diseaseId)
+        queryFn: () => getCropDiseaseSymptonsById({ diseaseId: +diseaseId, loteId: '' })
     });
 
-    return (
+    if (symptoms) return (
         <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
             <div className="flex justify-between">
                 <h2 className="text-lg font-medium text-gray-800">
@@ -34,7 +34,7 @@ export default function SymptomList() {
             )}
 
             <ul className="space-y-2">
-                {symptoms?.map((symptom) => (
+                {symptoms.map((symptom) => (
                     <li
                         key={symptom.id}
                         className="flex items-start gap-3 text-sm text-gray-700"

@@ -25,9 +25,15 @@ export default function ModalCreateCropPart() {
         navigate(location.pathname);
     }
 
+
     const {
-        mutate, isPending
-    } = useMutation({
+        handleSubmit,
+        register,
+        formState: { errors },
+        reset
+    } = useForm<DraftCropPart>();
+    
+    const { mutate, isPending } = useMutation({
         mutationFn: createCropPart,
         onError: (error) => {
             notify.error(error.message);
@@ -36,14 +42,9 @@ export default function ModalCreateCropPart() {
             notify.success(message!);
             handleCloseModal();
             queryClient.invalidateQueries({ queryKey: ['getCropParts', id] });
+            reset();
         }
     });
-
-    const {
-        handleSubmit,
-        register,
-        formState: { errors }
-    } = useForm<DraftCropPart>();
 
     const onSubmit = (data: DraftCropPart) => {
         data.crop_id = +id;

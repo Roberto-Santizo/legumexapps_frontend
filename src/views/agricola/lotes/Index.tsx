@@ -2,7 +2,7 @@ import { PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Bars3Icon } from "@heroicons/react/16/solid";
+import { Bars3Icon, CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { getLotes } from "@/api/LotesAPI";
 import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
@@ -94,6 +94,9 @@ export default function Index() {
               <th scope="col" className="thead-th">
                 Total de Plantas
               </th>
+              <th scope="col" className="thead-th">
+
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -104,6 +107,25 @@ export default function Index() {
                 <td className="tbody-td">{lote.finca}</td>
                 <td className="tbody-td">{lote.size}</td>
                 <td className="tbody-td">{lote.total_plants}</td>
+                <td className="tbody-td">
+                  {lote.flag ? (
+                    <div className="flex justify-center">
+                      <span className="flex items-center gap-1 px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
+                        <CheckBadgeIcon className="w-5" />
+                        Completo
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-center">
+                      <Link
+                        className="button bg-indigo-500 hover:bg-indigo-600 transition duration-200 shadow-sm"
+                        to={`/lotes/checklist/${lote.id}`}
+                      >
+                        Crear Checklist
+                      </Link>
+                    </div>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
