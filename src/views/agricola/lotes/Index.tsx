@@ -95,6 +95,9 @@ export default function Index() {
                 Total de Plantas
               </th>
               <th scope="col" className="thead-th">
+                Ultima Validación
+              </th>
+              <th scope="col" className="thead-th">
 
               </th>
             </tr>
@@ -107,6 +110,7 @@ export default function Index() {
                 <td className="tbody-td">{lote.finca}</td>
                 <td className="tbody-td">{lote.size}</td>
                 <td className="tbody-td">{lote.total_plants}</td>
+                <td className="tbody-td">{lote.date}</td>
                 <td className="tbody-td">
                   {lote.flag ? (
                     <div className="flex justify-center">

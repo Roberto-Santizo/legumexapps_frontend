@@ -11,6 +11,7 @@ import TasksCropInProgress from "@/components/dashboard-agricola/TasksCropInProg
 import FinishedTasksCrop from "@/components/dashboard-agricola/FinishedTasksCrop";
 import Spinner from "../utilities-components/Spinner";
 import ProductionDashboard from "./ProductionDashboard";
+import LotesValidation from "../dashboard-agricola/LotesValidation";
 
 export default function AgricolaDashboard() {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ export default function AgricolaDashboard() {
           <FinishedTasks />
           <TasksCropInProgress />
           <FinishedTasksCrop />
+          <LotesValidation />
         </div>
       )}
 
