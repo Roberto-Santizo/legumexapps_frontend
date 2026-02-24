@@ -24,6 +24,7 @@ export default function LotesValidation() {
                                 <th scope="col" className="thead-th">Finca</th>
                                 <th scope="col" className="thead-th">Lote</th>
                                 <th scope="col" className="thead-th">Ultima Validación</th>
+                                <th scope="col" className="thead-th">Validado Por</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,6 +33,7 @@ export default function LotesValidation() {
                                     <td className="tbody-td">{lote.finca}</td>
                                     <td className="tbody-td">{lote.name}</td>
                                     <td className="tbody-td">{lote.date}</td>
+                                    <td className="tbody-td">{lote.validation_by}</td>
                                 </tr>
                             ))}
                         </tbody>

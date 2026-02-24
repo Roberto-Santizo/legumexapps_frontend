@@ -155,6 +155,7 @@ export default function Checklist() {
                                             onChange={(e) => handleChangeInput(symptom.id, e)}
                                         >
                                             <option value="">Seleccionar nivel</option>
+                                            <option value="NULL">Sin presencia</option>
                                             <option value="LOW">Bajo</option>
                                             <option value="MEDIUM">Medio</option>
                                             <option value="HIGH">Alto</option>

@@ -62,18 +62,24 @@ export default function Navegation() {
         </>
       )}
 
+      {hasPermission('create lote checklist') && (
+        <NavLinkComponent url="/lotes" text="Lotes">
+          <Map />
+        </NavLinkComponent>
+      )}
+
       {hasPermission("administrate fincas") && (
         <>
           <NavLinkComponent url="/maestro-tareas-fincas" text="Maestro de Tareas">
             <Book />
           </NavLinkComponent>
 
-          <NavLinkComponent url="/tareas" text="Tareas Generales">
-            <ListCheck />
+          <NavLinkComponent url="/cultivos" text="Cultivos">
+            <AppleIcon />
           </NavLinkComponent>
 
-          <NavLinkComponent url="/lotes" text="Lotes">
-            <Map />
+          <NavLinkComponent url="/tareas" text="Tareas Generales">
+            <ListCheck />
           </NavLinkComponent>
 
           <NavLinkComponent url="/cdps" text="Control Plantación">
@@ -86,9 +92,7 @@ export default function Navegation() {
         </>
       )}
 
-      <NavLinkComponent url="/cultivos" text="Cultivos">
-        <AppleIcon />
-      </NavLinkComponent>
+
 
       {hasPermission("see boleta rmp") && (
         <NavLinkComponent url="/rmp" text="Boleta Materia Prima">

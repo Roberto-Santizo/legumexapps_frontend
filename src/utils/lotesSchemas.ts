@@ -10,6 +10,7 @@ export const LoteSchema = z.object({
     finca: z.string(),
     size: z.number(),
     date: z.string(),
+    validation_by: z.string(),
     total_plants: z.number(),
     flag: z.boolean()
 });

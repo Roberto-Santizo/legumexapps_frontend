@@ -20,8 +20,8 @@ const routes = [
   { path: "/cdps/crear", component: lazy(() => import("@/views/agricola/cdps/views/Create")), roles: ['admin', 'adminagricola'] },
 
 
-  { path: "/lotes", component: lazy(() => import("@/views/agricola/lotes/Index")), roles: ['admin', 'adminagricola'] },
-  { path: "/lotes/checklist/:id", component: lazy(() => import("@/views/agricola/lotes/Checklist")), roles: ['admin', 'adminagricola'] },
+  { path: "/lotes", component: lazy(() => import("@/views/agricola/lotes/Index")), roles: ['admin', 'adminagricola', 'tehuya', 'alameda', 'linda'] },
+  { path: "/lotes/checklist/:id", component: lazy(() => import("@/views/agricola/lotes/Checklist")), roles: ['admin', 'adminagricola', 'tehuya', 'alameda', 'linda'] },
   { path: "/lotes/crear", component: lazy(() => import("@/views/agricola/lotes/Create")), roles: ['admin', 'adminagricola'] },
   { path: "/lotes/consulta", component: lazy(() => import("@/views/agricola/lotes/Details")), roles: ['admin', 'adminagricola'] },
   { path: "/lotes/actualizacion", component: lazy(() => import("@/views/agricola/lotes/Update")), roles: ['admin', 'adminagricola'] },
