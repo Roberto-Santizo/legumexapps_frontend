@@ -7,6 +7,7 @@ import CalidadDashboard from "./dashboards/CalidadDashboard";
 import CostosDashboard from "./dashboards/CostosDashboard";
 import RecursosDashboard from "./dashboards/RecursosDashboard";
 import ProductionDashboard from "./dashboards/ProductionDashboard";
+import AgroDashboard from "./dashboards/AgroDashboard";
 
 export default function Dashboard() {
   const dashboards = {
@@ -28,6 +29,7 @@ export default function Dashboard() {
     'audiproceso': (<ProductionDashboard />),
     'costosuser': (<ProductionDashboard />),
     'exportuser': (<ProductionDashboard />),
+    'agricola': (<AgroDashboard />),
   };
 
   const { data: role, isLoading } = useRole();
