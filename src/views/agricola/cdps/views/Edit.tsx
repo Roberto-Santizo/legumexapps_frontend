@@ -43,7 +43,7 @@ export default function Edit() {
     if (data) {
       setValue('name', data.name);
       setValue('start_date', data.start_date);
-      setValue('end_date', data.end_date);
+      setValue('end_date', data.end_date ?? '');
     }
   }, [data]);
 
