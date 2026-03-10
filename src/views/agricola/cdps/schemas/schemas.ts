@@ -7,7 +7,7 @@ export const PlantationControlSchema = z.object({
     name: z.string(),
     lote: z.string(),
     start_date: z.string(),
-    end_date: z.string()
+    end_date: z.string().nullable()
 })
 
 export const PlantationControlDetailsSchema = ApiResponseSchema.extend({

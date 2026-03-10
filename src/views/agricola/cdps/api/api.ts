@@ -49,7 +49,7 @@ export async function updateCDP({ id, data }: { id: PlantationControl['id'], dat
 
         if (result.success) {
             return result.data.message;
-        }else{
+        } else {
             throw new Error("Error al actualizar el CDP");
         }
     } catch (error) {
@@ -77,7 +77,7 @@ export async function uploadCDPS(file: File[]) {
     }
 }
 
-export async function getCDPS({ page, filters, paginated, finca}: { page: number, filters: FiltersCDPType, paginated: string, finca: string }) {
+export async function getCDPS({ page, filters, paginated, finca }: { page: number, filters: FiltersCDPType, paginated: string, finca: string }) {
     try {
         const url = `/api/cdps?paginated=${paginated}&page=${page}&cdp=${filters.cdp}&start_date=${filters.start_date}&end_date=${filters.end_date}&finca=${finca}`;
         const { data } = await clienteAxios(url);
@@ -136,7 +136,7 @@ export async function getRecipes() {
 
 export async function getCDPInfoByCDPId(lote_plantation_control_id: PlantationControl['id']) {
     try {
-        const url = `/api/cdps/${lote_plantation_control_id}`;
+        const url = `/api/cdps/tasks-details/${lote_plantation_control_id}`;
         const { data } = await clienteAxios(url)
         const result = LoteCDPDetailsSchema.safeParse(data);
         if (result.success) {
