@@ -121,7 +121,7 @@ export default function SummaryItemsRawMaterial({filters} : Props) {
     if (items) return (
         <section className="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">Materia Prima</h2>
+                <h2 className="text-lg font-semibold text-gray-800">Material de Empaque</h2>
                 <div className="flex flex-wrap gap-3 mt-3 md:mt-0">
                     <button
                         onClick={() => setMpView('A')}

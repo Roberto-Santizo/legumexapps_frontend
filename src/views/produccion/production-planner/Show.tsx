@@ -9,7 +9,6 @@ import { useRole } from "@/hooks/useRole";
 import { usePermissions } from "@/hooks/usePermissions";
 import ModalAddNewDraftProductionTask from "@/components/modals/ModalAddNewDraftProductionTask";
 import SummaryLines from "./SummaryLines";
-import SummaryItems from "./SummaryItems";
 import ModalEditTaskProductionDraft from "@/components/modals/ModalEditTaskProductionDraft";
 import SummaryItemsRawMaterial from "./SummaryItemsRawMaterial";
 import Spinner from "@/components/utilities-components/Spinner";
@@ -136,7 +135,7 @@ export default function Show() {
         </section>
 
         <SummaryLines setFilters={setFilters} filters={filters} />
-        <SummaryItems filters={filters} />
+        {/* <SummaryItems filters={filters} /> */}
         <SummaryItemsRawMaterial filters={filters} />
       </div>
 
