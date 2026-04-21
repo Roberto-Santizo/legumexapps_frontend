@@ -13,7 +13,7 @@ export default function Index() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data } = useQuery({
-    queryKey: ['getWeeklyProductionPlanDrafts'],
+    queryKey: ['getWeeklyProductionPlanDrafts', currentPage],
     queryFn: () => getWeeklyProductionPlanDrafts({ paginated: 'true', currentPage })
   });
 
