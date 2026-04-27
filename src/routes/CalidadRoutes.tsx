@@ -6,7 +6,7 @@ import ProtectedRoutes from "../components/middlewares/ProtectedRoutes";
 
 const routes = [
   { path: "/rmp", component: lazy(() => import("@/views/calidad/rmp/Index")), roles: ['admin', 'pprod', 'pcampo', 'pcalidad', 'pcostos', 'admincalidad', 'auxcalidad', 'agricola'] },
-  { path: "/rmp/crear", component: lazy(() => import("@/views/calidad/rmp/Boleta_form1")), roles: ['admin', 'pprod', 'pcampo', 'pcalidad', 'pcostos', 'admincalidad', 'auxcalidad'] },
+  { path: "/rmp/crear", component: lazy(() => import("@/views/calidad/rmp/Boleta_form1")), roles: ['admin', 'pprod', 'pcampo', 'pcalidad', 'pcostos', 'admincalidad', 'auxcalidad', 'agricola'] },
   { path: "/rmp/editar/:rm_reception_id", component: lazy(() => import("@/views/calidad/rmp/Edit")), roles: ['admin', 'pprod', 'pcampo', 'pcalidad', 'pcostos', 'admincalidad', 'auxcalidad'] },
   { path: "/rmp/documentos/:rm_reception_id", component: lazy(() => import("@/views/calidad/rmp/Show")), roles: ['admin', 'pprod', 'pcampo', 'pcalidad', 'pcostos', 'admincalidad', 'auxcalidad', 'agricola'] },
 
