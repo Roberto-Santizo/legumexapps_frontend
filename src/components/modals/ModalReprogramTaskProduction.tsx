@@ -55,7 +55,7 @@ export default function ModalReprogramTaskProduction() {
         }
     });
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: createNewTasksProduction,
         onError: (error) => {
             notify.error(error.message);
@@ -197,8 +197,8 @@ export default function ModalReprogramTaskProduction() {
                                 </div>
                             </div>
                         ))}
-                        <button onClick={() => handleReprogramTasks()} disabled={disabled} type="submit" className={`${disabled ? 'cursor-not-allowed bg-indigo-500/40' : 'bg-indigo-500 hover:bg-indigo-600 cursor-pointer'} button w-full`}>
-                            {false ? <Spinner /> : <p>Reprogramar tarea</p>}
+                        <button onClick={() => handleReprogramTasks()} disabled={isPending || disabled} type="submit" className={`${isPending || disabled ? 'cursor-not-allowed bg-indigo-500/40' : 'bg-indigo-500 hover:bg-indigo-600 cursor-pointer'} button w-full`}>
+                            {isPending || disabled ? <Spinner /> : <p>Reprogramar tarea</p>}
                         </button>
                     </div>
                 )}
