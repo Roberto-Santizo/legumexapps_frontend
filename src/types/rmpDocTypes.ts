@@ -1,4 +1,4 @@
-import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, QualityStatusSchema, ResultsQualityControlDocSchema } from "@/utils/rmpDocSchemas";
+import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletaSchema, BoletasPaginateSchema, QualityStatusSchema, ResultsQualityControlDocSchema, UpdateRmpDocSchema } from "@/utils/rmpDocSchemas";
 import { z } from "zod";
 
 export type DraftBoletaRMP = {
@@ -30,6 +30,6 @@ export type BoletaRmpDetail = z.infer<typeof BoletaRMPDetailSchema>;
 export type QualityStatus = z.infer<typeof QualityStatusSchema>;
 
 export type ResultBoletaRmpCalidad = z.infer<typeof ResultsQualityControlDocSchema>
-
+export type UpdateRmpDocData = z.infer<typeof UpdateRmpDocSchema>
 
 

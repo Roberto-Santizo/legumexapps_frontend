@@ -121,6 +121,18 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
+      {hasPermission('create productor cdp') && (
+        <NavLinkComponent url="/productor-cdps" text="CDPS Productores">
+          <BookXIcon />
+        </NavLinkComponent>
+      )}
+
+       {hasPermission('create finca') && (
+        <NavLinkComponent url="/fincas" text="Fincas">
+          <HomeIcon />
+        </NavLinkComponent>
+      )}
+
       {hasPermission("create carriers") && (
         <NavLinkComponent url="/transportistas" text="Transportistas">
           <Users />

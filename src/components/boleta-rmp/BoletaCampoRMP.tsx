@@ -1,19 +1,34 @@
-import { AlertCircle, CheckCircle } from "lucide-react";
+import { AlertCircle, CheckCircle, EditIcon } from "lucide-react";
 import { BoletaRmpAllInfo } from "@/types/rmpDocTypes";
-import LogoLegumex from "../logos/LogoLegumex";
+import { useNavigate } from "react-router-dom";
+import { usePermissions } from "@/hooks/usePermissions";
 import DownloadPDF from "./DownloadPDF";
+import LogoLegumex from "../logos/LogoLegumex";
 
 type Props = {
   boleta: BoletaRmpAllInfo;
 };
 
 const BoletaCampoRMP = ({ boleta }: Props) => {
+  const { hasPermission } = usePermissions();
+  const navigate = useNavigate();
+
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-5">
         <div className="p-4 inline-block bg-indigo-500 hover:bg-indigo-600 button">
           <DownloadPDF boleta={boleta} buttonClassName="text-white" />
         </div>
+
+        {hasPermission('edit rmp doc') && (
+          <button
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded uppercase flex justify-center items-center"
+            onClick={() => navigate('?editDoc=true')}
+          >
+            <EditIcon className="w-6 md:w-8" />
+            <p className="text-sm md:text-base">Editar</p>
+          </button>
+        )}
       </div>
       <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8 bg-yellow-100 border border-gray-300 mt-4 md:mt-8 lg:mt-10 ">
         <div className="flex items-start justify-between mb-6">

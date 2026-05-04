@@ -52,7 +52,7 @@ export default function Boleta_form1() {
         queryKey: ["getAllTransportistas"],
         queryFn: () => getTransportistas({ page: 1, paginated: "" }),
       },
-      { queryKey: ["getAllProductorCDPS"], queryFn: getAllProductorCDPS },
+      { queryKey: ["getAllProductorCDPS"], queryFn: () => getAllProductorCDPS({ page: 1, paginated: '' }) },
     ],
   });
 
@@ -74,7 +74,7 @@ export default function Boleta_form1() {
     if (results[2].data) setBaskets(results[2].data);
     if (results[3].data) setFincas(results[3].data);
     if (results[4].data) setTransportistas(results[4].data.data);
-    if (results[5].data) setCDPS(results[5].data);
+    if (results[5].data) setCDPS(results[5].data.data);
   }, [results]);
 
   useEffect(() => {

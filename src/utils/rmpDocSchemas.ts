@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const UpdateRmpDocSchema = z.object({
+    weight: z.number(),
+    quality_percentage: z.number(),
+    total_baskets: z.number(),
+    cdp_id: z.string(),
+    plate_id: z.string(),
+    grn: z.string().nullable()
+});
+
 export const fieldDataSchema = z.object({
     id: z.string(),
     ref_doc: z.number(),
@@ -7,6 +16,7 @@ export const fieldDataSchema = z.object({
     producer_code: z.string(),
     product_id: z.string(),
     plate: z.string(),
+    plate_id: z.number(),
     product: z.string(),
     variety: z.string(),
     coordinator: z.string(),
@@ -14,6 +24,7 @@ export const fieldDataSchema = z.object({
     pilot_name: z.string(),
     doc_date: z.string(),
     cdp: z.string(),
+    cdp_id: z.number(),
     transport: z.string(),
     baskets: z.number(),
     weight_basket: z.number(),
@@ -96,8 +107,6 @@ export const TransportDocSchema = z.object({
     verify_by_signature: z.string(),
     conditions: z.array(TransportDocConditionSchema)
 })
-
-
 
 export const BoletaInfoAllSchema = z.object({
     status: z.number(),

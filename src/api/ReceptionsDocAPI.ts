@@ -3,7 +3,7 @@ import { BoletaInfoAllSchema, BoletaRMPDetailSchema, BoletasPaginateSchema, Qual
 import { DraftFormProd } from "@/views/calidad/rmp/Boleta_form2";
 import { DraftBoletaControlCalidad } from "@/views/calidad/rmp/Boleta_form3";
 import { isAxiosError } from "axios";
-import { BoletaRMP, DraftBoletaRMP, ResultBoletaRmpCalidad } from "@/types/rmpDocTypes";
+import { BoletaRMP, DraftBoletaRMP, ResultBoletaRmpCalidad, UpdateRmpDocData } from "@/types/rmpDocTypes";
 import clienteAxios from "@/config/axios";
 
 
@@ -109,6 +109,18 @@ export async function rejectBoleta(id: BoletaRMP['id']) {
     try {
         const url = `/api/boleta-rmp/${id}/reject`;
         const { data } = await clienteAxios.patch<string>(url);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+        }
+    }
+}
+
+export async function updateRmpDocInfo({ id, payload }: { id: string, payload: UpdateRmpDocData }) {
+    try {
+        const url = `/api/boleta-rmp-info-doc/updateDocData/${id}`;
+        const { data } = await clienteAxios.patch(url, payload);
         return data;
     } catch (error) {
         if (isAxiosError(error)) {

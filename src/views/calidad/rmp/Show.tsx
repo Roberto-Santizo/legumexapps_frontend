@@ -1,12 +1,12 @@
+import { getBoletaInfoAll } from "@/api/ReceptionsDocAPI";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import BoletaCampoRMP from "@/components/boleta-rmp/BoletaCampoRMP";
 import BoletasCalidad from "@/components/boleta-rmp/BoletasCalidad";
-import { useParams } from "react-router-dom";
-
 import InspeccionTransporte from "@/components/boleta-camion/InspeccionTransporte";
-import { useQuery } from "@tanstack/react-query";
-import { getBoletaInfoAll } from "@/api/ReceptionsDocAPI";
-import Spinner from "@/components/utilities-components/Spinner";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
+import Spinner from "@/components/utilities-components/Spinner";
+import ModalEditRmpDoc from "@/components/modals/ModalEditRmpDoc";
 
 export default function Show() {
   const params = useParams();
@@ -22,7 +22,6 @@ export default function Show() {
   if (boleta) return (
     <>
       <h1 className="font-bold text-4xl">Documentos</h1>
-
       <section className="flex flex-col gap-10 mt-10">
         <BoletaCampoRMP boleta={boleta} />
         {boleta.quality_doc_data && (
@@ -34,6 +33,7 @@ export default function Show() {
         )}
       </section>
 
+      <ModalEditRmpDoc />
     </>
   )
 }
