@@ -33,11 +33,11 @@ const routes = [
   { path: "/transportistas/placas", component: lazy(() => import("@/views/calidad/plates/Index")), roles: ['admin'] },
   { path: "/transportistas/placas/crear", component: lazy(() => import("@/views/calidad/plates/Create")), roles: ['admin'] },
 
-  { path: "/productor-cdps", component: lazy(() => import("@/views/calidad/productor-cdps/Index")), roles: ['admin'] },
-  { path: "/productor-cdps/crear", component: lazy(() => import("@/views/calidad/productor-cdps/Create")), roles: ['admin'] },
+  { path: "/productor-cdps", component: lazy(() => import("@/views/calidad/productor-cdps/Index")), roles: ['admin', 'pprod'] },
+  { path: "/productor-cdps/crear", component: lazy(() => import("@/views/calidad/productor-cdps/Create")), roles: ['admin', 'pprod'] },
 
-  { path: "/fincas", component: lazy(() => import("@/views/calidad/fincas/Index")), roles: ['admin'] },
-  { path: "/fincas/crear", component: lazy(() => import("@/views/calidad/fincas/Create")), roles: ['admin'] },
+  { path: "/fincas", component: lazy(() => import("@/views/calidad/fincas/Index")), roles: ['admin', 'pprod'] },
+  { path: "/fincas/crear", component: lazy(() => import("@/views/calidad/fincas/Create")), roles: ['admin', 'pprod'] },
 ];
 
 export default function CalidadRoutes() {
