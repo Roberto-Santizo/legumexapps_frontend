@@ -77,7 +77,7 @@ export default function ModalEditRmpDoc() {
     if (boleta && cdpsOptions) return (
         <Modal modal={show} closeModal={() => handleCloseModal()} title="Editar Documento" >
             <div className="p-5">
-                <form className="md:w-full mx-auto space-y-5 shadow-xl p-10" onSubmit={handleSubmit(onSubmit)}>
+                <form className="md:w-full mx-auto space-y-5 shadow-xl p-10" onSubmit={handleSubmit(onSubmit)} noValidate>
                     <InputComponent<UpdateRmpDocData>
                         label="Peso Bruto"
                         id="weight"
