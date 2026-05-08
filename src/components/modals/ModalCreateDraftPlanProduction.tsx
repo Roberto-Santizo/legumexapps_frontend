@@ -58,7 +58,7 @@ export default function ModalCreateDraftPlanProduction() {
                         name="week"
                         placeholder="Número de semana"
                         register={register}
-                        validation={{ required: 'La semana del plan es requerido' }}
+                        validation={{ required: 'La semana del plan es requerido', min: { value: 1, message: 'El valor minimo es 1' }, max: { value: 52, message: 'El valor maximo es 52' } }}
                         errors={errors}
                         type={'number'}
                     >
