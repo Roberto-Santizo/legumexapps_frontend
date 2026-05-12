@@ -142,10 +142,29 @@ export async function updateDraftWeeklyProductionPlanTasks(file: File[]) {
         return data;
     } catch (error) {
         if (isAxiosError(error)) {
-            if(error.response?.data){
+            if (error.response?.data) {
                 throw new Error(error.response.data.msg);
-                
+
             }
         }
     }
 }
+
+export async function uploadDraftTasksProduction(id: string, file: File) {
+    try {
+        const url = `/api/weekly-production-plans-drafts/${id}/upload-tasks`;
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const { data } = await clienteAxios.post<string>(url, formData);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.data) {
+                throw new Error(error.response.data.msg);
+
+            }
+        }
+    }
+}
+

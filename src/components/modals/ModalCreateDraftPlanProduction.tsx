@@ -10,6 +10,7 @@ import { useNotification } from "../../core/notifications/NotificationContext";
 
 export type DraftWeeklyProductionPlan = {
     week: number;
+    year: number;
 }
 
 
@@ -63,6 +64,31 @@ export default function ModalCreateDraftPlanProduction() {
                         type={'number'}
                     >
                         {errors.week && <Error>{errors.week?.message?.toString()}</Error>}
+                    </InputComponent>
+
+                    <InputComponent<DraftWeeklyProductionPlan>
+                        label="Año"
+                        id="year"
+                        name="year"
+                        placeholder="Año del plan semanal"
+                        register={register}
+                        validation={{
+                            required: 'El año del plan es requerido',
+                            min: {
+                                value: 2000,
+                                message: 'El año no puede ser menor a 2000'
+                            },
+                            max: {
+                                value: new Date().getFullYear() + 1,
+                                message: 'El año no es válido'
+                            },
+                            validate: (value: number) =>
+                                /^\d{4}$/.test(value.toString()) || 'Debe ser un año válido de 4 dígitos'
+                        }}
+                        errors={errors}
+                        type="number"
+                    >
+                        {errors.year && <Error>{errors.year?.message?.toString()}</Error>}
                     </InputComponent>
 
 

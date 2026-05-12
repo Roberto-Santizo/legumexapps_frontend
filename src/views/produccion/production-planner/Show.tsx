@@ -1,22 +1,23 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query";
+import "@/lib/echo";
 import { ChangeEvent, useMemo, useState } from "react";
-import { DownloadIcon, PlusIcon } from "lucide-react";
 import { confirmPlan, createWeeklyProductionPlanFromDraft, getDraftWeeklyPlanById } from "@/api/DraftWeeklyProductionPlanAPI";
-import { usePlanificationWebSocket } from "@/lib/echo";
 import { downloadDraftWeeklyProductionPlanUpdateFile, downloadWeeklyProductionDraftTasks } from "@/api/WeeklyProductionPlanAPI";
-import { useRole } from "@/hooks/useRole";
+import { DownloadIcon, FileIcon, PlusIcon } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useNotification } from "../../../core/notifications/NotificationContext";
 import { usePermissions } from "@/hooks/usePermissions";
+import { usePlanificationWebSocket } from "@/lib/echo";
+import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query";
+import { useRole } from "@/hooks/useRole";
 import ModalAddNewDraftProductionTask from "@/components/modals/ModalAddNewDraftProductionTask";
-import SummaryLines from "./SummaryLines";
 import ModalEditTaskProductionDraft from "@/components/modals/ModalEditTaskProductionDraft";
-import SummaryItemsRawMaterial from "./SummaryItemsRawMaterial";
+import ModalUpdateDraftTasks from "@/components/modals/ModalUpdateDraftTasks";
+import ModalUploadDraftTasksProduction from "@/components/modals/ModalUploadDraftTasksProduction";
 import Spinner from "@/components/utilities-components/Spinner";
+import SummaryItemsRawMaterial from "./SummaryItemsRawMaterial";
+import SummaryLines from "./SummaryLines";
 import Swal from "sweetalert2";
 import TasksList from "./TasksList";
-import "@/lib/echo";
-import ModalUpdateDraftTasks from "@/components/modals/ModalUpdateDraftTasks";
-import { useNotification } from "../../../core/notifications/NotificationContext";
 
 export type FiltersDraftsTasks = {
   sku: string;
@@ -29,6 +30,7 @@ const FiltersIntialValues: FiltersDraftsTasks = {
   product: '',
   line: ''
 }
+
 
 export default function Show() {
   const params = useParams<{ id: string }>();
@@ -173,6 +175,14 @@ export default function Show() {
             {(!draft.confirmation_date && hasPermission('create task production draft')) && (
               <>
                 <button
+                  onClick={() => navigate(`${location.pathname}?uploadTasks=true`, { replace: true })}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition"
+                >
+                  <FileIcon className="w-4 h-4" />
+                  <span>Subir Tareas</span>
+                </button>
+
+                <button
                   onClick={() => navigate(`${location.pathname}?newTask=true`, { replace: true })}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition"
                 >
@@ -232,6 +242,7 @@ export default function Show() {
       <ModalAddNewDraftProductionTask />
       <ModalEditTaskProductionDraft />
       <ModalUpdateDraftTasks />
+      <ModalUploadDraftTasksProduction />
     </div>
   )
 }

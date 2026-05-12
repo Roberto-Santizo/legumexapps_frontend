@@ -34,8 +34,7 @@ export const usePlanificationWebSocket = (id: WeeklyProductionPlanDraft['id']) =
     useEffect(() => {
         const channel = window.Echo.private('planification.change');
 
-        channel.subscribed(() => console.log('suscrito'))
-            .listen('.UpdateProductionPlanification', () => {
+        channel.subscribed().listen('.UpdateProductionPlanification', () => {
                 queryClient.invalidateQueries({ queryKey: ['getSummaryDraftLines', id] });
                 queryClient.invalidateQueries({ queryKey: ['getDraftWeeklyPlanById', id] });
                 queryClient.invalidateQueries({ queryKey: ['getSummaryDraftItems', id] });
