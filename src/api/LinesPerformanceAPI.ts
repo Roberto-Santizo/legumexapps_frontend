@@ -1,13 +1,14 @@
 import { DraftEditLineSku } from "@/components/modals/ModalEditLineSkuData";
-import { isAxiosError } from "axios";
 import { DraftLineaSku } from "@/views/produccion/lines-performances/Create";
-import clienteAxios from "@/config/axios";
-import { PaginatedLinesPerformancesSchema } from "@/utils/linePerformance";
+import { FiltersLinesPerformance } from "@/views/produccion/lines-performances/Index";
+import { isAxiosError } from "axios";
 import { LinePerformance } from "@/types/linePerformanceTypes";
+import { PaginatedLinesPerformancesSchema } from "@/utils/linePerformance";
+import clienteAxios from "@/config/axios";
 
-export async function getPaginatedLineasSKU(page: number){
+export async function getPaginatedLineasSKU({ page, filters }: { page: number, filters: FiltersLinesPerformance }) {
     try {
-        const url = `/api/lines-skus?page=${page}`;
+        const url = `/api/lines-skus?page=${page}&sku=${filters.sku}&line=${filters.line}`;
         const { data } = await clienteAxios(url);
         const result = PaginatedLinesPerformancesSchema.safeParse(data);
         if (result.success) {

@@ -1,22 +1,35 @@
 import { getPaginatedLineasSKU } from "@/api/LinesPerformanceAPI";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { PlusIcon } from "lucide-react";
 import { LinePerformance } from "@/types/linePerformanceTypes";
+import { Link, useSearchParams } from "react-router-dom";
+import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Bars3Icon } from "@heroicons/react/16/solid";
+import ModalCargaLineaSku from "@/components/modals/ModalCargaLineaSku";
+import ModalEditLineSkuData from "@/components/modals/ModalEditLineSkuData";
 import Pagination from "@/components/utilities-components/Pagination";
 import ShowErrorAPI from "@/components/utilities-components/ShowErrorAPI";
 import Spinner from "@/components/utilities-components/Spinner";
-import ModalEditLineSkuData from "@/components/modals/ModalEditLineSkuData";
-import ModalCargaLineaSku from "@/components/modals/ModalCargaLineaSku";
+import FiltersLineSku from "@/components/filters/FiltersLineSku";
 
+export type FiltersLinesPerformance = {
+    sku: string;
+    line: string;
+}
+export const FiltersLinesPerformanceInitialValues: FiltersLinesPerformance = {
+    sku: '',
+    line: ''
+};
 
 export default function Index() {
     const [skus, setSkus] = useState<LinePerformance[]>([]);
     const [pageCount, setPageCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [modal, setModal] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [filters, setFilters] = useState<FiltersLinesPerformance>(FiltersLinesPerformanceInitialValues);
     const [selectedSku, setSelectedSku] = useState<LinePerformance>({} as LinePerformance);
+    const [searchParams, setSearchParams] = useSearchParams();
     const [uploadModal, setUploadModal] = useState<boolean>(false);
 
     const handlePageChange = (selectedItem: { selected: number }) => {
@@ -24,8 +37,8 @@ export default function Index() {
     };
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ['getPaginatedLineasSKU', currentPage],
-        queryFn: () => getPaginatedLineasSKU(currentPage),
+        queryKey: ['getPaginatedLineasSKU', currentPage, filters],
+        queryFn: () => getPaginatedLineasSKU({ page: currentPage, filters }),
         placeholderData: keepPreviousData
     });
 
@@ -36,6 +49,15 @@ export default function Index() {
             setSkus(data.data);
         }
     }, [data])
+
+    useEffect(() => {
+        const filters = {
+            'sku': searchParams.get('sku') ?? '',
+            'line': searchParams.get('line') ?? '',
+        }
+
+        setFilters(filters);
+    }, [searchParams]);
 
     if (isLoading) return <Spinner />;
     if (isError) return <ShowErrorAPI />;
@@ -58,6 +80,11 @@ export default function Index() {
                     <PlusIcon className="w-5 h-5" />
                     <p>Carga Masiva</p>
                 </button>
+
+                <Bars3Icon
+                    className="w-6 md:w-8 cursor-pointer hover:text-gray-500"
+                    onClick={() => setIsOpen(true)}
+                />
             </div>
 
             <div className="table-wrapper">
@@ -72,6 +99,7 @@ export default function Index() {
                             <th className="thead-th">Libras/Hora</th>
                             <th className="thead-th">Porcentaje Aceptado</th>
                             <th className="thead-th">Método de Pago</th>
+                            <th className="thead-th">Estado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,6 +116,11 @@ export default function Index() {
                                 <td className="tbody-td">{sku.performance}</td>
                                 <td className="tbody-td"><span>{sku.accepted_percentage} %</span></td>
                                 <td className="tbody-td">{sku.payment_method ? 'HORAS LINEA' : 'HORAS RENDIMIENTO'}</td>
+                                <td className="tbody-td text-center">{sku.status ?
+                                    <p className="bg-green-500 p-1 text-white font-bold">ACTIVO</p>
+                                    :
+                                    <p className="bg-red-500 p-1 text-white font-bold">INACTIVO</p>
+                                }</td>
                             </tr>
                         ))}
                     </tbody>
@@ -105,6 +138,10 @@ export default function Index() {
             <ModalEditLineSkuData modal={modal} setModal={setModal} sku={selectedSku} setSelectedSku={setSelectedSku} currentPage={currentPage} />
 
             <ModalCargaLineaSku modal={uploadModal} setModal={setUploadModal} currentPage={currentPage} />
+
+            {isOpen && (
+                <FiltersLineSku isOpen={isOpen} setIsOpen={setIsOpen} filters={filters} setFilters={setFilters} setSearchParams={setSearchParams} searchParams={searchParams} />
+            )}
         </div>
     )
 }

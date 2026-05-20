@@ -1,15 +1,15 @@
-import { updateLineaSku } from "@/api/LinesPerformanceAPI";
 import { Dispatch, SetStateAction, useEffect } from "react";
+import { LinePerformance } from "@/types/linePerformanceTypes";
+import { updateLineaSku } from "@/api/LinesPerformanceAPI";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from "../../core/notifications/NotificationContext";
 import { usePermissions } from "@/hooks/usePermissions";
 import Error from "../utilities-components/Error";
-import Spinner from "../utilities-components/Spinner";
-import Modal from "../Modal";
 import InputComponent from "../form/InputComponent";
 import InputSelectComponent from "../form/InputSelectComponent";
-import { LinePerformance } from "@/types/linePerformanceTypes";
-import { useNotification } from "../../core/notifications/NotificationContext";
+import Modal from "../Modal";
+import Spinner from "../utilities-components/Spinner";
 
 type Props = {
     modal: boolean;
@@ -19,7 +19,29 @@ type Props = {
     currentPage: number;
 }
 
-export type DraftEditLineSku = Pick<LinePerformance, 'accepted_percentage' | 'performance' | 'payment_method'>;
+const paymentMethodOptions = [
+    {
+        value: '0',
+        label: 'Horas Rendimiento'
+    },
+    {
+        value: '1',
+        label: 'Horas Linea'
+    }
+];
+
+const statusOptions = [
+    {
+        value: '0',
+        label: 'Inactivo'
+    },
+    {
+        value: '1',
+        label: 'Activo'
+    }
+];
+
+export type DraftEditLineSku = Pick<LinePerformance, 'accepted_percentage' | 'performance' | 'payment_method' | 'status'>;
 
 export default function ModalEditLineSkuData({ modal, setModal, sku, setSelectedSku, currentPage }: Props) {
     const queryClient = useQueryClient();
@@ -52,6 +74,7 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
             setValue('accepted_percentage', sku.accepted_percentage);
             setValue('performance', sku.performance);
             setValue('payment_method', sku.payment_method);
+            setValue('status', sku.status);
         }
     }, [sku]);
 
@@ -60,16 +83,6 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
         setSelectedSku({} as LinePerformance);
     }
 
-    const options = [
-        {
-            value: '0',
-            label: 'Horas Rendimiento'
-        },
-        {
-            value: '1',
-            label: 'Horas Linea'
-        }
-    ];
     const onSubmit = (data: DraftEditLineSku) => {
         if (!data.performance && data.payment_method.toString() === '0') {
             notify.error('El metodo de pago no coincide con el rendimiento asociado');
@@ -114,12 +127,24 @@ export default function ModalEditLineSkuData({ modal, setModal, sku, setSelected
                     label="Método de pago"
                     id="payment_method"
                     name="payment_method"
-                    options={options}
+                    options={paymentMethodOptions}
                     register={register}
                     validation={{ required: 'El metodo de pago es requerido' }}
                     errors={errors}
                 >
                     {errors.payment_method && <Error>{errors.payment_method?.message?.toString()}</Error>}
+                </InputSelectComponent>
+
+                <InputSelectComponent<DraftEditLineSku>
+                    label="Estado"
+                    id="status"
+                    name="status"
+                    options={statusOptions}
+                    register={register}
+                    validation={{ required: 'El estado requerido' }}
+                    errors={errors}
+                >
+                    {errors.status && <Error>{errors.status?.message?.toString()}</Error>}
                 </InputSelectComponent>
 
                 <button disabled={isPending} className="button bg-indigo-500 hover:bg-indigo-600 w-full">
