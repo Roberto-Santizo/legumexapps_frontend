@@ -127,7 +127,7 @@ export default function Navegation() {
         </NavLinkComponent>
       )}
 
-       {hasPermission('create finca') && (
+      {hasPermission('create finca') && (
         <NavLinkComponent url="/fincas" text="Fincas">
           <HomeIcon />
         </NavLinkComponent>
@@ -160,10 +160,6 @@ export default function Navegation() {
             <ChartLine />
           </NavLinkComponent>
 
-          <NavLinkComponent url="/skus" text="Sku's">
-            <ChartBarIncreasing />
-          </NavLinkComponent>
-
           <NavLinkComponent url="/lineas" text="Lineas">
             <Users />
           </NavLinkComponent>
@@ -172,6 +168,13 @@ export default function Navegation() {
             <AlarmClockPlus />
           </NavLinkComponent>
         </>
+      )}
+
+      {hasPermission('see skus') && (
+        <NavLinkComponent url="/skus" text="Sku's">
+          <ChartBarIncreasing />
+        </NavLinkComponent>
+
       )}
 
       {hasPermission("see daily production graphics") && (
