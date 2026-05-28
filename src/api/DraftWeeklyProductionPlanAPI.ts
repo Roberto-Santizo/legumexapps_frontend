@@ -72,7 +72,7 @@ export async function getSummaryDraftLines({ id, line }: { id: WeeklyProductionP
 
 export async function getSummaryDraftItems({ id, line }: { id: WeeklyProductionPlanDraft['id'], line: FiltersDraftsTasks['line'] }) {
     try {
-        const url = `/api/weekly-production-plans-drafts/${id}/packing-material-necessity?line=${line}`;
+        const url = `/api/weekly-production-plans-drafts/${id}/raw-material-necessity?line=${line}`;
         const { data } = await clienteAxios(url);
 
         const result = DraftWeeklyProductionPlanRecipeSchema.safeParse(data);

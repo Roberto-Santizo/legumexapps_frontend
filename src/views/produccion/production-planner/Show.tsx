@@ -18,6 +18,7 @@ import SummaryItemsRawMaterial from "./SummaryItemsRawMaterial";
 import SummaryLines from "./SummaryLines";
 import Swal from "sweetalert2";
 import TasksList from "./TasksList";
+import SummaryItems from "./SummaryItems";
 
 export type FiltersDraftsTasks = {
   sku: string;
@@ -137,7 +138,7 @@ export default function Show() {
         </section>
 
         <SummaryLines setFilters={setFilters} filters={filters} />
-        {/* <SummaryItems filters={filters} /> */}
+        <SummaryItems filters={filters} />
         <SummaryItemsRawMaterial filters={filters} />
       </div>
 
