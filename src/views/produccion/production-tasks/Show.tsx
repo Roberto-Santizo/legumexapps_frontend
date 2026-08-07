@@ -50,6 +50,7 @@ export default function Show() {
           <div className="flex flex-col">
             <p className="font-medium"><strong>Fecha de Inicio:</strong> {task_details.start_date}</p>
             <p className="font-medium"><strong>Fecha Final:</strong> {task_details.end_date}</p>
+            <p className="font-medium"><strong>Observaciones:</strong> {task_details.observations || 'SIN OBSERVACIONES'}</p>
             {!task_details.is_minimum_require && (
               <HoverCardNote note={task_details.note} />
 

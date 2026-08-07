@@ -61,13 +61,15 @@ export const TaskProductionSchema = z.object({
     paused: z.boolean(),
     is_minimum_requrire: z.boolean().nullable(),
     is_justified: z.boolean().nullable(),
-    status: z.number()
+    status: z.number(),
+    observations: z.string().default('')
 });
 
 export const TaskProductionDetailsSchema = TaskProductionSchema.pick({ id: true, line: true, operation_date: true, start_date: true, total_lbs: true }).extend({
     sku: StockKeepingUnitSchema,
     employees: z.array(TaskProductionEmployeeSchema),
     exists_previuos_config: z.boolean(),
+    observations: z.string().default('')
     // flag: z.boolean()
 });
 
@@ -86,7 +88,8 @@ export const TaskProductionInProgressSchema = TaskProductionSchema.pick({ line: 
     percentage: z.number(),
     total_produced: z.number(),
     total_lbs: z.number(),
-    total_tarimas: z.number()
+    total_tarimas: z.number(),
+    observations: z.string().default('')
 })
 
 
@@ -142,6 +145,7 @@ export const FinishedTaskProductionDetailsSchema = z.object({
     end_date: z.string(),
     max_value: z.number(),
     is_minimum_require: z.boolean(),
+    observations: z.string().default(''),
     summary: SummaryGraphHoursByTaskProductionSchema,
     note: NoteTaskProductionSchema.nullable(),
     timeouts: z.array(TaskProductionTimeOutSchema),
@@ -228,6 +232,7 @@ export const TaskProductionReprogramDetailsSchema = TaskProductionOperationDateS
 export const TaskProductionEditiDetailsSchema = TaskProductionSchema.pick({ id: true, total_lbs: true, operation_date: true }).extend({
     sku_id: z.string(),
     line_id: z.string(),
-    destination: z.string()
+    destination: z.string(),
+    observations: z.string().default('')
 });
 

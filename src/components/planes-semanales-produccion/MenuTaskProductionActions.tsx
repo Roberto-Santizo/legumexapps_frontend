@@ -1,4 +1,4 @@
-import { Boxes, BoxIcon, Calendar, EditIcon, EyeIcon, File, TrashIcon } from "lucide-react";
+import { Boxes, BoxIcon, Calendar, EditIcon, EyeIcon, File, MessageSquareText, TrashIcon } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Dispatch, Fragment } from 'react';
 import { Menu, MenuItem, MenuItems, Transition } from '@headlessui/react';
@@ -57,6 +57,12 @@ export default function MenuTaskProductionActions({ task, setModalEntrega }: Pro
     const handleEditClick = () => {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set("editTask", task.id);
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+    };
+
+    const handleObservationsClick = () => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set("observationsTask", task.id);
         navigate(`${location.pathname}?${searchParams.toString()}`);
     };
 
@@ -192,6 +198,18 @@ export default function MenuTaskProductionActions({ task, setModalEntrega }: Pro
                                 >
                                     <EditIcon className="w-5 h-5 text-yellow-500" />
                                     <span>Editar Tarea</span>
+                                </button>
+                            </MenuItem>
+                        )}
+
+                        {(hasPermission('edit production task') || hasPermission('create production task observation')) && (
+                            <MenuItem>
+                                <button
+                                    onClick={() => handleObservationsClick()}
+                                    className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                                >
+                                    <MessageSquareText className="w-5 h-5 text-sky-500" />
+                                    <span>Observaciones</span>
                                 </button>
                             </MenuItem>
                         )}

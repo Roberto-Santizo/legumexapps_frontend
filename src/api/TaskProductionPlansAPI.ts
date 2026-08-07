@@ -1,16 +1,17 @@
-import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
-import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionEditiDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TaskProductionReprogramDetailsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
-import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionNoOperationDate, TaskProductionOperationDate, TaskProductionPlan } from "@/types/taskProductionPlanTypes";
-import { isAxiosError } from "axios";
-import { DraftUnassignTaskProduction } from "@/components/modals/ModalUnassignNote";
-import { DraftPerformance } from "@/components/modals/ModalTomaRendimientoProduccion";
-import { DraftCloseTask } from "@/components/modals/ModalCierreTareaProduccion";
-import { DraftNote } from "@/components/modals/ModalNotasProblemas";
-import { DraftChangeOperationDate } from "@/components/modals/ModalChangeOperationDate";
-import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
-import clienteAxios from "@/config/axios";
-import { Line } from "recharts";
 import { ApiResponseSchema } from "@/schemas/httpRequestsSchemas";
+import { DraftChangeOperationDate } from "@/components/modals/ModalChangeOperationDate";
+import { DraftCloseTask } from "@/components/modals/ModalCierreTareaProduccion";
+import { DraftNewTaskProduction } from "@/components/modals/ModalCrearTareaProduccion";
+import { DraftNote } from "@/components/modals/ModalNotasProblemas";
+import { DraftPerformance } from "@/components/modals/ModalTomaRendimientoProduccion";
+import { DraftTaskProductionObservations } from "@/components/modals/ModalObservacionesTareaProduccion";
+import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionNoOperationDate, TaskProductionOperationDate, TaskProductionPlan } from "@/types/taskProductionPlanTypes";
+import { DraftUnassignTaskProduction } from "@/components/modals/ModalUnassignNote";
+import { EmployeesComodinesSchema, FinishedTaskProductionDetailsSchema, TaskProductionDetailsSchema, TaskProductionEditiDetailsSchema, TaskProductionInProgressSchema, TaskProductionItemsSchema, TaskProductionReprogramDetailsSchema, TasksByLineSchema, TasksProductionSelectSchema } from "@/utils/taskProductionPlanSchemas";
+import { isAxiosError } from "axios";
+import { Line } from "recharts";
+import { WeeklyProductionPlan } from "@/types/weeklyProductionPlanTypes";
+import clienteAxios from "@/config/axios";
 
 export async function getComodines() {
     try {
@@ -398,6 +399,34 @@ export async function editProductionTask({ taskId, formData }: { taskId: TaskPro
         if (isAxiosError(error)) {
             throw new Error(error.response?.data.msg);
         }
+    }
+}
+
+export async function updateTaskProductionObservations({ taskId, formData }: { taskId: TaskProductionPlan['id'], formData: DraftTaskProductionObservations }) {
+    try {
+        const url = `/api/tasks-production/${taskId}/observations`;
+
+        const observations = formData.observations.trim();
+
+        const { data } = await clienteAxios.patch(url, {
+            observations: observations === '' ? null : observations
+        });
+
+        const result = ApiResponseSchema.safeParse(data);
+
+        if (result.success) {
+            return result.data.message;
+        }
+
+        throw new Error("Información no válida");
+    } catch (error) {
+        if (isAxiosError(error)) {
+            if (error.response?.data.errors) {
+                throw new Error(Object.values(error.response?.data?.errors || {}).flat().join('\n'));
+            }
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error("Error no controlado");
     }
 }
 

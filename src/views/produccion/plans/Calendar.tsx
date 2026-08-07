@@ -16,6 +16,7 @@ import ModalCrearTareaProduccion from '@/components/modals/ModalCrearTareaProduc
 import HoverSummaryHoursPerLine from '@/components/ui/HoverSummaryHoursPerLine';
 import ModalReprogramTaskProduction from '@/components/modals/ModalReprogramTaskProduction';
 import ModalEditTareaProduccion from '@/components/modals/ModalEditTareaProduccion';
+import ModalObservacionesTareaProduccion from '@/components/modals/ModalObservacionesTareaProduccion';
 import ModalReturnPackingMaterial from '@/components/modals/ModalReturnPackingMaterial';
 
 type DateClickInfo = {
@@ -120,6 +121,8 @@ export default function Calendar() {
       <ModalReprogramTaskProduction />
 
       <ModalEditTareaProduccion />
+
+      <ModalObservacionesTareaProduccion />
 
       <ModalReturnPackingMaterial />
 

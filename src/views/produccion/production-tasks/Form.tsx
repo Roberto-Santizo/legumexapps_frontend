@@ -13,10 +13,11 @@ type Props = {
     skus: { value: string; label: string }[];
     lines: { value: string; label: string }[];
     disabled?: boolean;
+    showObservations?: boolean;
     setSkuId?: Dispatch<SetStateAction<string>>;
 }
 
-export default function FormProductionTask({ control, errors, register, skus, lines, disabled = false, setSkuId }: Props) {
+export default function FormProductionTask({ control, errors, register, skus, lines, disabled = false, showObservations = false, setSkuId }: Props) {
     return (
         <>
             <InputSelectSearchComponent<DraftNewTaskProduction>
@@ -86,7 +87,18 @@ export default function FormProductionTask({ control, errors, register, skus, li
                 {errors.operation_date && <Error>{errors.operation_date?.message?.toString()}</Error>}
             </InputComponent>
 
-
+            {showObservations && (
+                <div>
+                    <label htmlFor="observations" className="text-sm font-bold uppercase">Observaciones</label>
+                    <textarea
+                        id="observations"
+                        className="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+                        placeholder="Observaciones de la tarea (opcional)"
+                        {...register("observations", { maxLength: { value: 255, message: 'La observación no puede exceder los 255 caracteres' } })}
+                    />
+                    {errors.observations && <Error>{errors.observations?.message?.toString()}</Error>}
+                </div>
+            )}
         </>
     )
 }

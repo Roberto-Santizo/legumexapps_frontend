@@ -75,6 +75,10 @@ export default function Details() {
           SKU: <span className="font-normal text-gray-900">{task.sku}</span>
         </div>
 
+        <div className="text-base sm:text-lg font-semibold text-gray-700">
+          Observaciones: <span className="font-normal text-gray-900">{task.observations || 'SIN OBSERVACIONES'}</span>
+        </div>
+
         <div className="grid gap-10 xl:grid-cols-2">
           <div className="bg-white rounded-2xl shadow-md p-4 sm:p-7 overflow-x-auto scrollbar-hide">
             <h3 className="text-lg sm:text-xl font-bold mb-4 uppercase">Información de Rendimientos</h3>

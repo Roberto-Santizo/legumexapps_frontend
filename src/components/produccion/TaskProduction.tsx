@@ -70,6 +70,10 @@ export default function TaskProduction({ task }: Props) {
           label="Fecha de Cierre"
           text={task.end_date || "SIN FECHA DE CIERRE"}
         />
+        <TaskLabel
+          label="Observaciones"
+          text={task.observations || "SIN OBSERVACIONES"}
+        />
 
         <div className="mt-6">
           <span className="inline-block bg-sky-500 text-white px-4 py-2 font-semibold shadow">

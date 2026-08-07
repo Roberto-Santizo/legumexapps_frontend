@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "@/helpers";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { Apple, ArrowBigRight, BookCheck, Calendar, ChartLine, Info, TrashIcon, UsersIcon } from "lucide-react";
+import { Apple, ArrowBigRight, BookCheck, Calendar, ChartLine, Info, NotebookPen, TrashIcon, UsersIcon } from "lucide-react";
 import { confirmAssignment, createTaskProductionEmployees, getComodines, getTaskProductionDetails } from "@/api/TaskProductionPlansAPI";
 import { DraftTaskProductionEmployee, TaskProductionChange, TaskProductionEmployee } from "@/types/taskProductionPlanTypes";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -203,6 +203,7 @@ export default function ShowTaskProductionDetails() {
                 <CardInfo label="Producto" text={taskDetails.sku.product_name} child={<Apple className="h-10 w-10 text-blue-600" />} />
                 <CardInfo label="Total Empleados Validados" text={`${validated_employees} / ${taskDetails.employees.length}`} child={<UsersIcon className="h-10 w-10 text-blue-600" />} />
                 <CardInfo label="Total Comodines Asignados" text={`${newEmployees.length + counter}`} child={<UsersIcon className="h-10 w-10 text-blue-600" />} />
+                <CardInfo label="Observaciones" text={taskDetails.observations || 'SIN OBSERVACIONES'} child={<NotebookPen className="h-10 w-10 text-blue-600" />} />
             </div>
 
             <section className="mt-10 flex flex-col lg:flex-row gap-8">

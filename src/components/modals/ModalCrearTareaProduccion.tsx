@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { createNewTaskProduction } from "@/api/TaskProductionPlansAPI";
 import { useAppStore } from "@/store";
+import { usePermissions } from "@/hooks/usePermissions";
 import { getSkus } from "@/api/SkusAPI";
 import { getLinesBySkuId } from "@/api/LinesAPI";
 import { FiltersSkuInitialValues } from "@/views/produccion/stock-keeping-units/Index";
@@ -18,6 +19,7 @@ export type DraftNewTaskProduction = {
     operation_date: string,
     total_lbs: number,
     destination: string;
+    observations?: string;
 }
 
 export default function ModalCrearTareaProduccion() {
@@ -32,6 +34,7 @@ export default function ModalCrearTareaProduccion() {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const notify = useNotification();
+    const { hasPermission } = usePermissions();
 
     const filtersNoOperationDate = useAppStore((state) => state.filtersNoOperationDate);
     const filters = useAppStore((state) => state.filtersWithOperationDate);
@@ -92,7 +95,7 @@ export default function ModalCrearTareaProduccion() {
         <Modal modal={show} closeModal={() => handleCloseModal()} title="Creación de Tarea Produccion Extraordinaria">
             <form className="w-full mx-auto shadow p-10 space-y-5" noValidate onSubmit={handleSubmit(onSubmit)}>
 
-                <FormProductionTask register={register} errors={errors} control={control} skus={skuOptions ?? []} lines={lineas ?? []} setSkuId={setSkuId} />
+                <FormProductionTask register={register} errors={errors} control={control} skus={skuOptions ?? []} lines={lineas ?? []} setSkuId={setSkuId} showObservations={hasPermission('create production task observation')} />
 
                 <button className="button w-full bg-indigo-500 hover:bg-indigo-600">
                     {isPending ? <Spinner /> : <p>Crear Tarea Producción</p>}
