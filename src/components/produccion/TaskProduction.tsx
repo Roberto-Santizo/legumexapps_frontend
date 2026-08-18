@@ -8,7 +8,6 @@ import { useMemo } from "react";
 import { usePermissions } from "@/hooks/usePermissions";
 import TaskLabel from "@/components/utilities-components/TaskLabel";
 import Spinner from "../utilities-components/Spinner";
-import { PaperClipIcon } from "@heroicons/react/16/solid";
 import { useNotification } from "../../core/notifications/NotificationContext";
 
 type Props = {
@@ -85,7 +84,7 @@ export default function TaskProduction({ task }: Props) {
       <div className="col-span-6 md:col-span-1 flex flex-col justify-between items-center space-y-6">
         {isUpdating ? (<Spinner />) : (
           <div className="flex xl:flex-col gap-5 items-center">
-            {task.status === 2 && (
+            {/* {task.status === 2 && (
               <button
                 onClick={() =>
                   navigate(
@@ -96,9 +95,9 @@ export default function TaskProduction({ task }: Props) {
               >
                 <PaperClipIcon className="w-6 h-6 text-gray-700 hover:text-gray-500 transition" />
               </button>
-            )}
+            )} */}
 
-            {(!task.start_date && task.status === 3) && (
+            {(!task.start_date && (task.status === 3 || task.status === 2)) && (
               <SquarePlay
                 onClick={() => startTask(task.id)}
                 className="w-6 h-6 text-gray-700 hover:text-gray-500 cursor-pointer transition"
